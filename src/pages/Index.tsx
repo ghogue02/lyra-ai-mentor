@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,17 +6,13 @@ import { PersonalizationFlow } from '@/components/PersonalizationFlow';
 import { Navbar } from '@/components/Navbar';
 import { Target, Heart, Award, MessageCircle, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
 const Index = () => {
   const [showPersonalization, setShowPersonalization] = useState(false);
   const navigate = useNavigate();
-
   if (showPersonalization) {
     return <PersonalizationFlow onComplete={() => setShowPersonalization(false)} />;
   }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+  return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={true} />
       
       {/* Hero Section */}
@@ -79,7 +74,7 @@ const Index = () => {
                   <Award className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="font-semibold text-lg mb-2">Confidence Building</h3>
-                <p className="text-gray-600">Complete with certificate and actionable next steps</p>
+                <p className="text-gray-600">Complete fundamental course with actionable next steps</p>
               </CardContent>
             </Card>
           </div>
@@ -92,8 +87,6 @@ const Index = () => {
           
         </Card>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
