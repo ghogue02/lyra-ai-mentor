@@ -4,7 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { EmbeddedChat } from './EmbeddedChat';
+import { LyraChatButton } from './LyraChatButton';
+import { FullScreenChatOverlay } from './FullScreenChatOverlay';
 import { MessageCircle, CheckSquare, PenTool, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -35,6 +36,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [reflectionText, setReflectionText] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const getElementIcon = () => {
     switch (element.type) {
@@ -175,19 +177,17 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           </div>
         )}
         
-        {config.suggested_task && (
-          <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg mb-4">
-            <p className="text-sm text-gray-700 font-medium">Try this:</p>
-            <p className="text-sm text-gray-600">{config.suggested_task}</p>
-          </div>
-        )}
+        <LyraChatButton
+          onClick={() => setIsChatOpen(true)}
+          lessonTitle={lessonContext?.lessonTitle}
+        />
         
-        <div className="h-[500px] border border-gray-200 rounded-lg bg-white">
-          <EmbeddedChat 
-            lessonContext={lessonContext} 
-            suggestedTask={config.suggested_task}
-          />
-        </div>
+        <FullScreenChatOverlay
+          isOpen={isChatOpen}
+          onClose={() => setIsChatOpen(false)}
+          lessonContext={lessonContext}
+          suggestedTask={config.suggested_task}
+        />
       </div>
     );
   };
