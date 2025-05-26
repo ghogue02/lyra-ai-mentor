@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -8,7 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Navbar } from '@/components/Navbar';
 import { ContentBlockRenderer } from '@/components/lesson/ContentBlockRenderer';
 import { InteractiveElementRenderer } from '@/components/lesson/InteractiveElementRenderer';
-import { LessonProgress } from '@/components/lesson/LessonProgress';
+import { ChatInterface } from '@/components/ChatInterface';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, ArrowRight, Clock, CheckCircle } from 'lucide-react';
@@ -52,6 +51,7 @@ export const Lesson = () => {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [completedBlocks, setCompletedBlocks] = useState<Set<number>>(new Set());
+  const [isChatExpanded, setIsChatExpanded] = useState(false);
 
   useEffect(() => {
     fetchLessonData();
@@ -190,11 +190,21 @@ export const Lesson = () => {
     );
   }
 
+  // Create lesson context for chat
+  const lessonContext = lesson ? {
+    chapterTitle: lesson.chapter.title,
+    lessonTitle: lesson.title,
+    content: contentBlocks.map(block => `${block.title}: ${block.content}`).join('\n\n').substring(0, 1000)
+  } : undefined;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} />
       
-      <div className="container mx-auto px-4 pt-20 pb-8">
+      <div className={cn(
+        "container mx-auto px-4 pt-20 pb-8 transition-all duration-300",
+        isChatExpanded && "md:mr-[450px]"
+      )}>
         {/* Header */}
         <div className="mb-8">
           <Button 
@@ -274,6 +284,13 @@ export const Lesson = () => {
           )}
         </div>
       </div>
+
+      {/* Enhanced Chat Interface */}
+      <ChatInterface
+        isExpanded={isChatExpanded}
+        onToggleExpanded={() => setIsChatExpanded(!isChatExpanded)}
+        lessonContext={lessonContext}
+      />
     </div>
   );
 };
