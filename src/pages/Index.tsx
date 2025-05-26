@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,17 +6,13 @@ import { PersonalizationFlow } from '@/components/PersonalizationFlow';
 import { Navbar } from '@/components/Navbar';
 import { Target, Heart, Award, MessageCircle, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-
 const Index = () => {
   const [showPersonalization, setShowPersonalization] = useState(false);
   const navigate = useNavigate();
-
   if (showPersonalization) {
     return <PersonalizationFlow onComplete={() => setShowPersonalization(false)} />;
   }
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+  return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar />
       
       {/* Hero Section */}
@@ -36,28 +31,19 @@ const Index = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12">
-            <Button 
-              size="lg" 
-              className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105"
-              onClick={() => setShowPersonalization(true)}
-            >
+            <Button size="lg" className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white px-8 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105" onClick={() => setShowPersonalization(true)}>
               Start Your AI Journey
             </Button>
             
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={() => navigate('/auth')}
-              className="flex items-center gap-2"
-            >
+            <Button variant="outline" size="lg" onClick={() => navigate('/auth')} className="flex items-center gap-2">
               <LogIn className="w-4 h-4" />
               Already have an account?
             </Button>
           </div>
           
           <div className="flex items-center justify-center gap-2 text-gray-600 mb-12">
-            <MessageCircle className="w-5 h-5" />
-            <span>Chat with Lyra, your AI mentor</span>
+            
+            
           </div>
           
           {/* Key Benefits */}
@@ -98,24 +84,9 @@ const Index = () => {
       {/* Call to Action */}
       <section className="container mx-auto px-4 py-16 text-center">
         <Card className="max-w-2xl mx-auto border-0 shadow-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white">
-          <CardContent className="p-8">
-            <h3 className="text-2xl font-bold mb-4">Ready to Amplify Your Impact?</h3>
-            <p className="text-lg mb-6 text-purple-50">
-              Join thousands of non-profit professionals who've transformed their work with AI
-            </p>
-            <Button 
-              size="lg" 
-              variant="secondary"
-              className="bg-white text-purple-600 hover:bg-gray-50 px-8 py-3 text-lg font-semibold"
-              onClick={() => setShowPersonalization(true)}
-            >
-              Get Started Free
-            </Button>
-          </CardContent>
+          
         </Card>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Index;
