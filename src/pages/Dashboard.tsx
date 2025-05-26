@@ -29,6 +29,7 @@ export const Dashboard = () => {
     user,
     signOut
   } = useAuth();
+  const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('journey');
@@ -126,6 +127,9 @@ export const Dashboard = () => {
         console.error('Error updating chapter progress:', error);
       }
     }
+
+    // Navigate to the first lesson of the chapter
+    navigate(`/chapter/${chapterId}/lesson/1`);
   };
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
