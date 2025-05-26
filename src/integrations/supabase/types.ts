@@ -9,6 +9,124 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      chapters: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          duration: string | null
+          icon: string | null
+          id: number
+          is_published: boolean | null
+          order_index: number
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          duration?: string | null
+          icon?: string | null
+          id?: number
+          is_published?: boolean | null
+          order_index: number
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          duration?: string | null
+          icon?: string | null
+          id?: number
+          is_published?: boolean | null
+          order_index?: number
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      content_blocks: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: number
+          lesson_id: number | null
+          metadata: Json | null
+          order_index: number
+          title: string | null
+          type: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: number
+          lesson_id?: number | null
+          metadata?: Json | null
+          order_index: number
+          title?: string | null
+          type: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: number
+          lesson_id?: number | null
+          metadata?: Json | null
+          order_index?: number
+          title?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_blocks_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      interactive_elements: {
+        Row: {
+          configuration: Json | null
+          content: string
+          created_at: string | null
+          id: number
+          lesson_id: number | null
+          order_index: number
+          title: string | null
+          type: string
+        }
+        Insert: {
+          configuration?: Json | null
+          content: string
+          created_at?: string | null
+          id?: number
+          lesson_id?: number | null
+          order_index: number
+          title?: string | null
+          type: string
+        }
+        Update: {
+          configuration?: Json | null
+          content?: string
+          created_at?: string | null
+          id?: number
+          lesson_id?: number | null
+          order_index?: number
+          title?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interactive_elements_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_progress: {
         Row: {
           completed: boolean | null
@@ -38,6 +156,98 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      lesson_progress_detailed: {
+        Row: {
+          completed: boolean | null
+          content_block_id: number | null
+          created_at: string | null
+          id: string
+          last_accessed: string | null
+          lesson_id: number | null
+          time_spent: number | null
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean | null
+          content_block_id?: number | null
+          created_at?: string | null
+          id?: string
+          last_accessed?: string | null
+          lesson_id?: number | null
+          time_spent?: number | null
+          user_id: string
+        }
+        Update: {
+          completed?: boolean | null
+          content_block_id?: number | null
+          created_at?: string | null
+          id?: string
+          last_accessed?: string | null
+          lesson_id?: number | null
+          time_spent?: number | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lesson_progress_detailed_content_block_id_fkey"
+            columns: ["content_block_id"]
+            isOneToOne: false
+            referencedRelation: "content_blocks"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "lesson_progress_detailed_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lessons: {
+        Row: {
+          chapter_id: number | null
+          created_at: string | null
+          estimated_duration: number | null
+          id: number
+          is_published: boolean | null
+          order_index: number
+          subtitle: string | null
+          title: string
+          updated_at: string | null
+        }
+        Insert: {
+          chapter_id?: number | null
+          created_at?: string | null
+          estimated_duration?: number | null
+          id?: number
+          is_published?: boolean | null
+          order_index: number
+          subtitle?: string | null
+          title: string
+          updated_at?: string | null
+        }
+        Update: {
+          chapter_id?: number | null
+          created_at?: string | null
+          estimated_duration?: number | null
+          id?: number
+          is_published?: boolean | null
+          order_index?: number
+          subtitle?: string | null
+          title?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lessons_chapter_id_fkey"
+            columns: ["chapter_id"]
+            isOneToOne: false
+            referencedRelation: "chapters"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -116,6 +326,54 @@ export type Database = {
           years_experience?: string | null
         }
         Relationships: []
+      }
+      user_interactions: {
+        Row: {
+          content: string
+          created_at: string | null
+          id: string
+          interaction_type: string
+          interactive_element_id: number | null
+          lesson_id: number | null
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          created_at?: string | null
+          id?: string
+          interaction_type: string
+          interactive_element_id?: number | null
+          lesson_id?: number | null
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          created_at?: string | null
+          id?: string
+          interaction_type?: string
+          interactive_element_id?: number | null
+          lesson_id?: number | null
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_interactions_interactive_element_id_fkey"
+            columns: ["interactive_element_id"]
+            isOneToOne: false
+            referencedRelation: "interactive_elements"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_interactions_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {

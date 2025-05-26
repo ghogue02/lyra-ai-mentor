@@ -10,6 +10,7 @@ import { ProfileForm } from '@/components/ProfileForm';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, Settings, Heart, Scale, Target, BookOpen, User, LogOut, GraduationCap, UserCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
   role: string;

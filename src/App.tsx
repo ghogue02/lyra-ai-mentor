@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -12,6 +11,7 @@ import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
+import Lesson from "./pages/Lesson";
 
 const queryClient = new QueryClient();
 
@@ -33,6 +33,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <Dashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/:chapterId/lesson/:lessonId" 
+                element={
+                  <ProtectedRoute>
+                    <Lesson />
                   </ProtectedRoute>
                 } 
               />
