@@ -204,7 +204,8 @@ export const Lesson = () => {
       
       <div className={cn(
         "container mx-auto px-4 pt-20 pb-8 transition-all duration-300",
-        isChatExpanded && "md:mr-[450px]"
+        // Responsive layout adjustments when chat is expanded
+        isChatExpanded && "md:max-w-[calc(100%-400px)] md:mr-4"
       )}>
         {/* Header */}
         <div className="mb-8">
@@ -230,10 +231,18 @@ export const Lesson = () => {
             )}
           </div>
           
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+          <h1 className={cn(
+            "text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent transition-all duration-300",
+            isChatExpanded && "md:text-3xl"
+          )}>
             {lesson.title}
           </h1>
-          <p className="text-xl text-gray-600 mb-4">{lesson.subtitle}</p>
+          <p className={cn(
+            "text-xl text-gray-600 mb-4 transition-all duration-300",
+            isChatExpanded && "md:text-lg"
+          )}>
+            {lesson.subtitle}
+          </p>
           <p className="text-gray-500">Chapter: {lesson.chapter.title}</p>
           
           {user && (
@@ -242,13 +251,19 @@ export const Lesson = () => {
                 <span>Progress</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <Progress value={progress} className="w-full max-w-md" />
+              <Progress value={progress} className={cn(
+                "w-full transition-all duration-300",
+                isChatExpanded ? "max-w-sm" : "max-w-md"
+              )} />
             </div>
           )}
         </div>
 
         {/* Content */}
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className={cn(
+          "mx-auto space-y-8 transition-all duration-300",
+          isChatExpanded ? "max-w-3xl" : "max-w-4xl"
+        )}>
           {allContent.map((item) => (
             <div key={`${item.contentType}-${item.id}`}>
               {item.contentType === 'block' ? (
@@ -268,7 +283,10 @@ export const Lesson = () => {
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between items-center mt-12 max-w-4xl mx-auto">
+        <div className={cn(
+          "flex justify-between items-center mt-12 mx-auto transition-all duration-300",
+          isChatExpanded ? "max-w-3xl" : "max-w-4xl"
+        )}>
           <Button variant="outline" onClick={() => navigate('/dashboard')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Chapters
