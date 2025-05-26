@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -6,14 +7,18 @@ import { PersonalizationFlow } from '@/components/PersonalizationFlow';
 import { Navbar } from '@/components/Navbar';
 import { Target, Heart, Award, MessageCircle, LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+
 const Index = () => {
   const [showPersonalization, setShowPersonalization] = useState(false);
   const navigate = useNavigate();
+
   if (showPersonalization) {
     return <PersonalizationFlow onComplete={() => setShowPersonalization(false)} />;
   }
-  return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
-      <Navbar />
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+      <Navbar showAuthButtons={true} />
       
       {/* Hero Section */}
       <section className="container mx-auto px-4 pt-20 pb-16">
@@ -87,6 +92,8 @@ const Index = () => {
           
         </Card>
       </section>
-    </div>;
+    </div>
+  );
 };
+
 export default Index;

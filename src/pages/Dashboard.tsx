@@ -10,6 +10,7 @@ import { ProfileForm } from '@/components/ProfileForm';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, Settings, Heart, Scale, Target, BookOpen, User, LogOut, GraduationCap, UserCircle } from 'lucide-react';
+
 interface UserProfile {
   role: string;
   tech_comfort: string;
@@ -140,8 +141,9 @@ export const Dashboard = () => {
   }
   const onboardingComplete = profile?.profile_completed && profile?.first_chapter_started && profile?.first_chapter_completed;
   const userName = profile?.first_name && profile?.last_name ? `${profile.first_name} ${profile.last_name}` : user?.email;
-  return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
-      <Navbar />
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+      <Navbar showAuthButtons={false} onSignOut={signOut} />
       
       {/* Header Section */}
       <section className="container mx-auto px-4 pt-20 pb-8">
@@ -154,21 +156,17 @@ export const Dashboard = () => {
               {onboardingComplete ? "Continue your AI learning journey" : "Let's get you started on your AI learning journey"}
             </p>
           </div>
-          
-          <div className="flex items-center gap-4">
-            <Card className="border-0 shadow-lg bg-white/60 backdrop-blur-sm">
-              
-            </Card>
-            
-            <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
-          </div>
         </div>
 
         {/* Onboarding Progress */}
-        {profile && !onboardingComplete && <OnboardingProgress profileCompleted={profile.profile_completed} firstChapterStarted={profile.first_chapter_started} firstChapterCompleted={profile.first_chapter_completed} onboardingStep={profile.onboarding_step} />}
+        {profile && !onboardingComplete && (
+          <OnboardingProgress 
+            profileCompleted={profile.profile_completed} 
+            firstChapterStarted={profile.first_chapter_started} 
+            firstChapterCompleted={profile.first_chapter_completed} 
+            onboardingStep={profile.onboarding_step} 
+          />
+        )}
 
         {/* Tabbed Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -196,11 +194,13 @@ export const Dashboard = () => {
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
               {chapters.map(chapter => {
-              const isLocked = !onboardingComplete && chapter.id > 1;
-              return <div key={chapter.id} onClick={() => handleChapterClick(chapter.id)}>
+                const isLocked = !onboardingComplete && chapter.id > 1;
+                return (
+                  <div key={chapter.id} onClick={() => handleChapterClick(chapter.id)}>
                     <ChapterCard chapter={chapter} isLocked={isLocked} />
-                  </div>;
-            })}
+                  </div>
+                );
+              })}
             </div>
           </TabsContent>
 
@@ -219,6 +219,8 @@ export const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </section>
-    </div>;
+    </div>
+  );
 };
+
 export default Dashboard;
