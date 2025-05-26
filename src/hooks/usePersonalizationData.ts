@@ -5,9 +5,9 @@ import { useToast } from '@/hooks/use-toast';
 
 interface PersonalizationAnswers {
   role: string;
-  techComfort: string;
-  aiExperience: string;
-  learningStyle: string;
+  tech_comfort: string;
+  ai_experience: string;
+  learning_style: string;
 }
 
 export const usePersonalizationData = () => {
@@ -21,9 +21,9 @@ export const usePersonalizationData = () => {
         .from('profiles')
         .update({
           role: answers.role,
-          tech_comfort: answers.techComfort,
-          ai_experience: answers.aiExperience,
-          learning_style: answers.learningStyle,
+          tech_comfort: answers.tech_comfort,
+          ai_experience: answers.ai_experience,
+          learning_style: answers.learning_style,
           updated_at: new Date().toISOString(),
         })
         .eq('user_id', userId);
