@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,7 +10,6 @@ import { ProfileForm } from '@/components/ProfileForm';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { supabase } from '@/integrations/supabase/client';
 import { Brain, Settings, Heart, Scale, Target, BookOpen, User, LogOut, GraduationCap, UserCircle } from 'lucide-react';
-
 interface UserProfile {
   role: string;
   tech_comfort: string;
@@ -24,36 +22,61 @@ interface UserProfile {
   first_name: string;
   last_name: string;
 }
-
 export const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const {
+    user,
+    signOut
+  } = useAuth();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('journey');
-
-  const chapters = [
-    { id: 1, title: "What Is AI Anyway?", icon: Brain, description: "Demystify artificial intelligence with real-world examples", duration: "15 min" },
-    { id: 2, title: "How Machines Learn", icon: Settings, description: "ML basics without the technical jargon", duration: "20 min" },
-    { id: 3, title: "From Data to Insight", icon: Target, description: "Practical AI tools you can use today", duration: "25 min" },
-    { id: 4, title: "AI Ethics & Impact", icon: Scale, description: "Navigate the ethical landscape responsibly", duration: "18 min" },
-    { id: 5, title: "Non-Profit Playbook", icon: Heart, description: "Grant writing, donor outreach, and operations", duration: "30 min" },
-    { id: 6, title: "Your Action Plan", icon: BookOpen, description: "Create your AI-powered workflow", duration: "20 min" }
-  ];
-
+  const chapters = [{
+    id: 1,
+    title: "What Is AI Anyway?",
+    icon: Brain,
+    description: "Demystify artificial intelligence with real-world examples",
+    duration: "15 min"
+  }, {
+    id: 2,
+    title: "How Machines Learn",
+    icon: Settings,
+    description: "ML basics without the technical jargon",
+    duration: "20 min"
+  }, {
+    id: 3,
+    title: "From Data to Insight",
+    icon: Target,
+    description: "Practical AI tools you can use today",
+    duration: "25 min"
+  }, {
+    id: 4,
+    title: "AI Ethics & Impact",
+    icon: Scale,
+    description: "Navigate the ethical landscape responsibly",
+    duration: "18 min"
+  }, {
+    id: 5,
+    title: "Non-Profit Playbook",
+    icon: Heart,
+    description: "Grant writing, donor outreach, and operations",
+    duration: "30 min"
+  }, {
+    id: 6,
+    title: "Your Action Plan",
+    icon: BookOpen,
+    description: "Create your AI-powered workflow",
+    duration: "20 min"
+  }];
   useEffect(() => {
     fetchProfile();
   }, [user]);
-
   const fetchProfile = async () => {
     if (!user) return;
-    
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('user_id', user.id)
-        .single();
-      
+      const {
+        data,
+        error
+      } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching profile:', error);
       } else if (data) {
@@ -69,7 +92,7 @@ export const Dashboard = () => {
           first_name: data.first_name || '',
           last_name: data.last_name || ''
         });
-        
+
         // Auto-switch to profile tab if profile isn't completed
         if (!data.profile_completed) {
           setActiveTab('profile');
@@ -81,28 +104,22 @@ export const Dashboard = () => {
       setLoading(false);
     }
   };
-
   const handleChapterClick = async (chapterId: number) => {
     if (!user || !profile) return;
-    
+
     // Only allow Chapter 1 during onboarding, or any chapter if onboarding is complete
     const onboardingComplete = profile.profile_completed && profile.first_chapter_started && profile.first_chapter_completed;
-    
     if (!onboardingComplete && chapterId > 1) {
       return; // Chapter is locked
     }
-    
+
     // Mark first chapter as started if clicking on Chapter 1
     if (chapterId === 1 && !profile.first_chapter_started) {
       try {
-        await supabase
-          .from('profiles')
-          .update({ 
-            first_chapter_started: true,
-            onboarding_step: 3
-          })
-          .eq('user_id', user.id);
-        
+        await supabase.from('profiles').update({
+          first_chapter_started: true,
+          onboarding_step: 3
+        }).eq('user_id', user.id);
         setProfile(prev => prev ? {
           ...prev,
           first_chapter_started: true,
@@ -113,25 +130,17 @@ export const Dashboard = () => {
       }
     }
   };
-
   if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
+    return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading your dashboard...</p>
         </div>
-      </div>
-    );
+      </div>;
   }
-
   const onboardingComplete = profile?.profile_completed && profile?.first_chapter_started && profile?.first_chapter_completed;
-  const userName = profile?.first_name && profile?.last_name 
-    ? `${profile.first_name} ${profile.last_name}`
-    : user?.email;
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+  const userName = profile?.first_name && profile?.last_name ? `${profile.first_name} ${profile.last_name}` : user?.email;
+  return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar />
       
       {/* Header Section */}
@@ -142,23 +151,13 @@ export const Dashboard = () => {
               Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}!
             </h1>
             <p className="text-xl text-gray-600">
-              {onboardingComplete 
-                ? "Continue your AI learning journey" 
-                : "Let's get you started on your AI learning journey"}
+              {onboardingComplete ? "Continue your AI learning journey" : "Let's get you started on your AI learning journey"}
             </p>
           </div>
           
           <div className="flex items-center gap-4">
             <Card className="border-0 shadow-lg bg-white/60 backdrop-blur-sm">
-              <CardContent className="p-4 flex items-center gap-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center">
-                  <User className="w-5 h-5 text-white" />
-                </div>
-                <div>
-                  <p className="font-semibold text-sm">{userName}</p>
-                  <p className="text-xs text-gray-600">Learner</p>
-                </div>
-              </CardContent>
+              
             </Card>
             
             <Button variant="outline" onClick={signOut} className="flex items-center gap-2">
@@ -169,14 +168,7 @@ export const Dashboard = () => {
         </div>
 
         {/* Onboarding Progress */}
-        {profile && !onboardingComplete && (
-          <OnboardingProgress
-            profileCompleted={profile.profile_completed}
-            firstChapterStarted={profile.first_chapter_started}
-            firstChapterCompleted={profile.first_chapter_completed}
-            onboardingStep={profile.onboarding_step}
-          />
-        )}
+        {profile && !onboardingComplete && <OnboardingProgress profileCompleted={profile.profile_completed} firstChapterStarted={profile.first_chapter_started} firstChapterCompleted={profile.first_chapter_completed} onboardingStep={profile.onboarding_step} />}
 
         {/* Tabbed Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -203,17 +195,12 @@ export const Dashboard = () => {
             </div>
             
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {chapters.map((chapter) => {
-                const isLocked = !onboardingComplete && chapter.id > 1;
-                return (
-                  <div key={chapter.id} onClick={() => handleChapterClick(chapter.id)}>
-                    <ChapterCard 
-                      chapter={chapter}
-                      isLocked={isLocked}
-                    />
-                  </div>
-                );
-              })}
+              {chapters.map(chapter => {
+              const isLocked = !onboardingComplete && chapter.id > 1;
+              return <div key={chapter.id} onClick={() => handleChapterClick(chapter.id)}>
+                    <ChapterCard chapter={chapter} isLocked={isLocked} />
+                  </div>;
+            })}
             </div>
           </TabsContent>
 
@@ -232,8 +219,6 @@ export const Dashboard = () => {
           </TabsContent>
         </Tabs>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default Dashboard;
