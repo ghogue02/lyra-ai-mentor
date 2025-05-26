@@ -94,11 +94,6 @@ export const Dashboard = () => {
           first_name: data.first_name || '',
           last_name: data.last_name || ''
         });
-
-        // Auto-switch to profile tab if profile isn't completed
-        if (!data.profile_completed) {
-          setActiveTab('profile');
-        }
       }
     } catch (error) {
       console.error('Error:', error);
@@ -172,7 +167,10 @@ export const Dashboard = () => {
         {/* Tabbed Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8">
-            <TabsTrigger value="journey" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="journey" 
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+            >
               <GraduationCap className="w-4 h-4" />
               Your Learning Journey
             </TabsTrigger>
