@@ -60,6 +60,16 @@ export const Lesson = () => {
   const fetchLessonData = async () => {
     if (!chapterId || !lessonId) return;
 
+    // Convert string params to numbers
+    const chapterIdNum = parseInt(chapterId);
+    const lessonIdNum = parseInt(lessonId);
+
+    if (isNaN(chapterIdNum) || isNaN(lessonIdNum)) {
+      console.error('Invalid chapter or lesson ID');
+      setLoading(false);
+      return;
+    }
+
     try {
       // Fetch lesson with chapter info
       const { data: lessonData, error: lessonError } = await supabase
@@ -74,8 +84,8 @@ export const Lesson = () => {
             icon
           )
         `)
-        .eq('id', lessonId)
-        .eq('chapter_id', chapterId)
+        .eq('id', lessonIdNum)
+        .eq('chapter_id', chapterIdNum)
         .single();
 
       if (lessonError) throw lessonError;
@@ -84,7 +94,7 @@ export const Lesson = () => {
       const { data: blocksData, error: blocksError } = await supabase
         .from('content_blocks')
         .select('*')
-        .eq('lesson_id', lessonId)
+        .eq('lesson_id', lessonIdNum)
         .order('order_index');
 
       if (blocksError) throw blocksError;
@@ -93,7 +103,7 @@ export const Lesson = () => {
       const { data: elementsData, error: elementsError } = await supabase
         .from('interactive_elements')
         .select('*')
-        .eq('lesson_id', lessonId)
+        .eq('lesson_id', lessonIdNum)
         .order('order_index');
 
       if (elementsError) throw elementsError;
@@ -111,7 +121,7 @@ export const Lesson = () => {
           .from('lesson_progress_detailed')
           .select('content_block_id, completed')
           .eq('user_id', user.id)
-          .eq('lesson_id', lessonId);
+          .eq('lesson_id', lessonIdNum);
 
         const completed = new Set(
           progressData?.filter(p => p.completed).map(p => p.content_block_id) || []
@@ -127,14 +137,17 @@ export const Lesson = () => {
   };
 
   const markBlockCompleted = async (blockId: number) => {
-    if (!user || completedBlocks.has(blockId)) return;
+    if (!user || !lessonId || completedBlocks.has(blockId)) return;
+
+    const lessonIdNum = parseInt(lessonId);
+    if (isNaN(lessonIdNum)) return;
 
     try {
       await supabase
         .from('lesson_progress_detailed')
         .upsert({
           user_id: user.id,
-          lesson_id: parseInt(lessonId!),
+          lesson_id: lessonIdNum,
           content_block_id: blockId,
           completed: true,
           last_accessed: new Date().toISOString()
