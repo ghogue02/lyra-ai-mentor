@@ -1,10 +1,12 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, ArrowLeft, Heart, Users, Settings, Megaphone, Code, Briefcase } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
+import { useAuth } from '@/contexts/AuthContext';
+import { usePersonalizationData } from '@/hooks/usePersonalizationData';
+import { useNavigate } from 'react-router-dom';
 
 interface PersonalizationFlowProps {
   onComplete: () => void;
@@ -18,6 +20,10 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     aiExperience: '',
     learningStyle: ''
   });
+  
+  const { user } = useAuth();
+  const { savePersonalizationData, loading } = usePersonalizationData();
+  const navigate = useNavigate();
 
   const steps = [
     {
@@ -73,6 +79,18 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     setTimeout(() => setCurrentStep(currentStep + 1), 200);
   };
 
+  const handleComplete = async () => {
+    if (user) {
+      // User is logged in, save data and go to dashboard
+      await savePersonalizationData(answers, user.id);
+      navigate('/dashboard');
+    } else {
+      // User not logged in, redirect to auth with state
+      localStorage.setItem('pendingPersonalization', JSON.stringify(answers));
+      navigate('/auth');
+    }
+  };
+
   const currentStepData = steps[currentStep];
   const isComplete = currentStep === steps.length;
 
@@ -84,7 +102,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
             <LyraAvatar className="mx-auto mb-6" />
             
             <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
-              Perfect! I'm excited to be your AI mentor 🎉
+              Perfect! Let's get you registered 🎉
             </h2>
             
             <div className="bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg p-6 mb-6">
@@ -110,16 +128,17 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
             </div>
             
             <p className="text-gray-600 mb-8">
-              I've tailored the entire course to match your preferences. Ready to unlock AI's potential for your mission?
+              Create your account to save your personalized learning path and track your progress.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
                 size="lg"
                 className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white px-8 py-3 text-lg font-semibold"
-                onClick={onComplete}
+                onClick={handleComplete}
+                disabled={loading}
               >
-                Start Learning Journey
+                {loading ? 'Saving...' : (user ? 'Continue to Dashboard' : 'Create Account & Continue')}
               </Button>
               
               <Button variant="outline" size="lg" onClick={() => setCurrentStep(0)}>
