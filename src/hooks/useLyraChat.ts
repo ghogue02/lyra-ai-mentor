@@ -52,20 +52,32 @@ export const useLyraChat = (lessonContext?: LessonContext) => {
     abortControllerRef.current = new AbortController();
 
     try {
-      const { data, error } = await supabase.functions.invoke('chat-with-lyra', {
-        body: {
+      const response = await fetch('https://hfkzwjnlxrwynactcmpe.supabase.co/functions/v1/chat-with-lyra', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${supabase.supabaseKey}`,
+        },
+        body: JSON.stringify({
           messages: [...messages, userMessage].map(msg => ({
             role: msg.isUser ? 'user' : 'assistant',
             content: msg.content
           })),
           lessonContext
-        }
+        }),
+        signal: abortControllerRef.current.signal
       });
 
-      if (error) throw error;
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
 
       // Handle streaming response
-      const reader = data.getReader();
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error('No response body reader available');
+      }
+
       const decoder = new TextDecoder();
       let aiResponseContent = '';
 

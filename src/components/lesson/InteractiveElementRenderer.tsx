@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -184,7 +183,10 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         )}
         
         <div className="h-[500px] border border-gray-200 rounded-lg bg-white">
-          <EmbeddedChat lessonContext={lessonContext} />
+          <EmbeddedChat 
+            lessonContext={lessonContext} 
+            suggestedTask={config.suggested_task}
+          />
         </div>
       </div>
     );

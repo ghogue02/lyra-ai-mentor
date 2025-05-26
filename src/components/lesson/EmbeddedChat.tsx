@@ -14,9 +14,10 @@ interface EmbeddedChatProps {
     lessonTitle?: string;
     content?: string;
   };
+  suggestedTask?: string;
 }
 
-export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext }) => {
+export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, suggestedTask }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -50,18 +51,34 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext }) => 
     }
   };
 
-  const quickActions = [
-    "Explain this concept",
-    "Give me an example",
-    "What's the key takeaway?",
-    "How does this apply in practice?"
-  ];
+  // Create context-aware quick actions
+  const getQuickActions = () => {
+    const actions = [];
+    
+    // Always include the suggested task if available
+    if (suggestedTask) {
+      actions.push(suggestedTask);
+    }
+    
+    // Add lesson-specific actions
+    if (lessonContext) {
+      actions.push("Explain this concept");
+      actions.push("Give me a nonprofit example");
+      actions.push("What's the key takeaway?");
+    } else {
+      actions.push("Explain this concept");
+      actions.push("Give me an example");
+      actions.push("What's the key takeaway?");
+      actions.push("How does this apply in practice?");
+    }
+    
+    return actions;
+  };
+
+  const quickActions = getQuickActions();
 
   const handleQuickAction = (action: string) => {
-    const contextualAction = lessonContext 
-      ? `${action} from "${lessonContext.lessonTitle}"`
-      : action;
-    sendMessage(contextualAction);
+    sendMessage(action);
   };
 
   return (
@@ -90,7 +107,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext }) => 
       </div>
 
       {/* Quick Actions */}
-      {lessonContext && (
+      {quickActions.length > 0 && (
         <div className="p-3 border-b bg-gray-50/50">
           <p className="text-xs text-gray-600 mb-2">Quick actions:</p>
           <div className="flex flex-wrap gap-2">
@@ -170,7 +187,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext }) => 
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder={lessonContext ? "Ask about this lesson..." : "Ask me anything about AI..."}
+            placeholder=""
             className="flex-1"
             disabled={isTyping}
           />
