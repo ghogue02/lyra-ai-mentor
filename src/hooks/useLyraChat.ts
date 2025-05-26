@@ -59,8 +59,7 @@ export const useLyraChat = (lessonContext?: LessonContext) => {
             content: msg.content
           })),
           lessonContext
-        },
-        signal: abortControllerRef.current.signal
+        }
       });
 
       if (error) throw error;

@@ -182,7 +182,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
                     message.isUser && "flex-row-reverse"
                   )}>
                     {!message.isUser && (
-                      <LyraAvatar size="xs" withWave={false} className="mt-1" />
+                      <LyraAvatar size="sm" withWave={false} className="mt-1" />
                     )}
                     <div
                       className={cn(
@@ -201,7 +201,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
               {isTyping && (
                 <div className="flex justify-start">
                   <div className="flex items-start gap-2">
-                    <LyraAvatar size="xs" withWave={false} className="mt-1" />
+                    <LyraAvatar size="sm" withWave={false} className="mt-1" />
                     <div className="bg-gray-100 p-3 rounded-lg rounded-bl-none">
                       <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>

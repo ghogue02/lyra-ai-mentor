@@ -10,6 +10,7 @@ import { InteractiveElementRenderer } from '@/components/lesson/InteractiveEleme
 import { ChatInterface } from '@/components/ChatInterface';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, Clock, CheckCircle } from 'lucide-react';
 
 interface Lesson {
