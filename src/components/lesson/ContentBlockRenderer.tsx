@@ -1,10 +1,12 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, Eye } from 'lucide-react';
+import { CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useScrollCompletion } from '@/hooks/useScrollCompletion';
+import { InteractiveEngagement } from './InteractiveEngagement';
+import { ScrollProgress } from './ScrollProgress';
 
 interface ContentBlock {
   id: number;
@@ -23,14 +25,41 @@ interface ContentBlockRendererProps {
 
 export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   block,
-  isCompleted,
+  isCompleted: initiallyCompleted,
   onComplete
 }) => {
-  const [isViewed, setIsViewed] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
+  
+  // Use scroll completion for introduction and basic content blocks
+  const shouldUseScrollCompletion = ['introduction', 'section'].includes(block.type);
+  
+  const { elementRef, isCompleted: scrollCompleted, progress } = useScrollCompletion({
+    threshold: 0.8,
+    delay: shouldUseScrollCompletion ? 3000 : 0,
+    onComplete: shouldUseScrollCompletion ? onComplete : undefined
+  });
 
-  const handleMarkAsRead = () => {
-    setIsViewed(true);
-    onComplete();
+  // Determine completion state
+  const isCompleted = initiallyCompleted || scrollCompleted || hasInteracted;
+
+  // Handle interactive completion
+  const handleInteraction = () => {
+    setHasInteracted(true);
+    if (!shouldUseScrollCompletion) {
+      onComplete();
+    }
+  };
+
+  // Get engagement type based on block type
+  const getEngagementType = () => {
+    switch (block.type) {
+      case 'example':
+        return 'understanding';
+      case 'section':
+        return 'insight';
+      default:
+        return null;
+    }
   };
 
   const getBlockStyle = () => {
@@ -60,13 +89,17 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   };
 
   const typeInfo = getTypeLabel();
+  const engagementType = getEngagementType();
 
   return (
-    <Card className={cn(
-      "border-0 shadow-lg bg-white/60 backdrop-blur-sm transition-all duration-300",
-      getBlockStyle(),
-      isCompleted && "ring-2 ring-green-200"
-    )}>
+    <Card 
+      ref={elementRef}
+      className={cn(
+        "border-0 shadow-lg bg-white/60 backdrop-blur-sm transition-all duration-300",
+        getBlockStyle(),
+        isCompleted && "ring-2 ring-green-200"
+      )}
+    >
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className="flex-1">
@@ -88,6 +121,17 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
             )}
           </div>
         </div>
+        
+        {/* Show scroll progress for auto-completing blocks */}
+        {shouldUseScrollCompletion && !isCompleted && (
+          <div className="mt-3">
+            <ScrollProgress 
+              progress={progress} 
+              isCompleted={isCompleted}
+              showLabel={true}
+            />
+          </div>
+        )}
       </CardHeader>
       
       <CardContent className="prose prose-gray max-w-none">
@@ -95,16 +139,26 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           {block.content}
         </div>
         
-        {!isCompleted && (
+        {/* Interactive engagement for specific block types */}
+        {engagementType && !isCompleted && (
           <div className="mt-6 pt-4 border-t border-gray-200">
-            <Button
-              onClick={handleMarkAsRead}
-              variant="outline"
-              className="flex items-center gap-2"
-            >
-              <Eye className="w-4 h-4" />
-              Mark as Read
-            </Button>
+            <InteractiveEngagement
+              type={engagementType}
+              onInteract={handleInteraction}
+              isCompleted={isCompleted}
+            />
+          </div>
+        )}
+        
+        {/* Completion celebration */}
+        {isCompleted && (shouldUseScrollCompletion || hasInteracted) && (
+          <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+            <div className="flex items-center gap-2 text-green-700">
+              <CheckCircle className="w-4 h-4" />
+              <span className="text-sm font-medium">
+                {shouldUseScrollCompletion ? "Great! You've absorbed this content." : "Excellent engagement!"}
+              </span>
+            </div>
           </div>
         )}
       </CardContent>
