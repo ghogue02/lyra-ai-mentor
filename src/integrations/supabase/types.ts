@@ -44,34 +44,76 @@ export type Database = {
           ai_experience: string | null
           created_at: string | null
           email: string | null
+          first_chapter_completed: boolean | null
+          first_chapter_started: boolean | null
+          first_name: string | null
+          how_did_you_hear: string | null
           id: string
+          job_title: string | null
+          last_name: string | null
           learning_style: string | null
+          location: string | null
+          onboarding_step: number | null
+          organization_name: string | null
+          organization_size: string | null
+          organization_type: string | null
+          phone_number: string | null
+          profile_completed: boolean | null
           role: string | null
           tech_comfort: string | null
           updated_at: string | null
           user_id: string
+          years_experience: string | null
         }
         Insert: {
           ai_experience?: string | null
           created_at?: string | null
           email?: string | null
+          first_chapter_completed?: boolean | null
+          first_chapter_started?: boolean | null
+          first_name?: string | null
+          how_did_you_hear?: string | null
           id?: string
+          job_title?: string | null
+          last_name?: string | null
           learning_style?: string | null
+          location?: string | null
+          onboarding_step?: number | null
+          organization_name?: string | null
+          organization_size?: string | null
+          organization_type?: string | null
+          phone_number?: string | null
+          profile_completed?: boolean | null
           role?: string | null
           tech_comfort?: string | null
           updated_at?: string | null
           user_id: string
+          years_experience?: string | null
         }
         Update: {
           ai_experience?: string | null
           created_at?: string | null
           email?: string | null
+          first_chapter_completed?: boolean | null
+          first_chapter_started?: boolean | null
+          first_name?: string | null
+          how_did_you_hear?: string | null
           id?: string
+          job_title?: string | null
+          last_name?: string | null
           learning_style?: string | null
+          location?: string | null
+          onboarding_step?: number | null
+          organization_name?: string | null
+          organization_size?: string | null
+          organization_type?: string | null
+          phone_number?: string | null
+          profile_completed?: boolean | null
           role?: string | null
           tech_comfort?: string | null
           updated_at?: string | null
           user_id?: string
+          years_experience?: string | null
         }
         Relationships: []
       }

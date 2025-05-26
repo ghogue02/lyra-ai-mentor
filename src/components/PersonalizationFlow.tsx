@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -81,13 +80,21 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
   };
 
   const handleComplete = async () => {
+    // Convert answers to match database field names
+    const personalizationData = {
+      role: answers.role,
+      tech_comfort: answers.techComfort,
+      ai_experience: answers.aiExperience,
+      learning_style: answers.learningStyle
+    };
+
     if (user) {
       // User is logged in, save data and go to dashboard
-      await savePersonalizationData(answers, user.id);
+      await savePersonalizationData(personalizationData, user.id);
       navigate('/dashboard');
     } else {
       // User not logged in, save data temporarily and redirect to auth
-      localStorage.setItem('pendingPersonalization', JSON.stringify(answers));
+      localStorage.setItem('pendingPersonalization', JSON.stringify(personalizationData));
       navigate('/auth');
     }
   };
@@ -133,7 +140,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
                 🚀 Next Step: Create Your Free Account
               </p>
               <p className="text-blue-700 text-sm">
-                Save your personalized learning path and start your AI journey with Lyra as your guide.
+                Save your personalized learning path and complete your profile to start your AI journey.
               </p>
             </div>
             
