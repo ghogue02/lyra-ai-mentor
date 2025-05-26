@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -8,14 +8,25 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { LyraAvatar } from '@/components/LyraAvatar';
+import { usePersonalizationData } from '@/hooks/usePersonalizationData';
 
 export const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
+  const [isLogin, setIsLogin] = useState(false); // Default to signup
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [isFromOnboarding, setIsFromOnboarding] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
+  const { savePersonalizationData } = usePersonalizationData();
+
+  useEffect(() => {
+    // Check if user is coming from personalization flow
+    const pendingPersonalization = localStorage.getItem('pendingPersonalization');
+    if (pendingPersonalization) {
+      setIsFromOnboarding(true);
+    }
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,11 +41,24 @@ export const Auth = () => {
         if (error) throw error;
         navigate('/dashboard');
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
         });
         if (error) throw error;
+        
+        // Handle pending personalization data after successful signup
+        const pendingPersonalization = localStorage.getItem('pendingPersonalization');
+        if (pendingPersonalization && data.user) {
+          try {
+            const personalizationData = JSON.parse(pendingPersonalization);
+            await savePersonalizationData(personalizationData, data.user.id);
+            localStorage.removeItem('pendingPersonalization');
+          } catch (err) {
+            console.error('Error saving personalization data:', err);
+          }
+        }
+        
         toast({
           title: "Account created!",
           description: "You've been signed up and logged in successfully.",
@@ -52,6 +76,22 @@ export const Auth = () => {
     }
   };
 
+  const getTitle = () => {
+    if (isFromOnboarding && !isLogin) {
+      return "Almost There! Create Your Account";
+    }
+    return isLogin ? 'Welcome Back!' : 'Create Your Account';
+  };
+
+  const getDescription = () => {
+    if (isFromOnboarding && !isLogin) {
+      return "Save your personalized AI learning path and start your journey";
+    }
+    return isLogin 
+      ? 'Sign in to continue your AI learning journey' 
+      : 'Join thousands learning AI for social good';
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center p-4">
       <Card className="max-w-md w-full border-0 shadow-xl bg-white/80 backdrop-blur-sm">
@@ -60,14 +100,18 @@ export const Auth = () => {
             <LyraAvatar />
           </div>
           <CardTitle className="text-2xl font-bold">
-            {isLogin ? 'Welcome Back!' : 'Create Your Account'}
+            {getTitle()}
           </CardTitle>
-          <CardDescription>
-            {isLogin 
-              ? 'Sign in to continue your AI learning journey' 
-              : 'Join thousands learning AI for social good'
-            }
+          <CardDescription className="text-base">
+            {getDescription()}
           </CardDescription>
+          {isFromOnboarding && !isLogin && (
+            <div className="mt-3 p-3 bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg">
+              <p className="text-sm text-purple-700 font-medium">
+                🎯 Your personalized learning path is ready to be saved!
+              </p>
+            </div>
+          )}
         </CardHeader>
         
         <CardContent>
@@ -99,10 +143,10 @@ export const Auth = () => {
             
             <Button 
               type="submit" 
-              className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+              className="w-full bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-lg font-semibold py-3"
               disabled={loading}
             >
-              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account')}
+              {loading ? 'Please wait...' : (isLogin ? 'Sign In' : 'Create Account & Start Learning')}
             </Button>
           </form>
           
@@ -110,10 +154,10 @@ export const Auth = () => {
             <Button
               variant="ghost"
               onClick={() => setIsLogin(!isLogin)}
-              className="text-sm"
+              className="text-sm text-gray-600"
             >
               {isLogin 
-                ? "Don't have an account? Sign up" 
+                ? "Need an account? Sign up here" 
                 : "Already have an account? Sign in"
               }
             </Button>

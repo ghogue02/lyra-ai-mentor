@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -85,7 +86,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
       await savePersonalizationData(answers, user.id);
       navigate('/dashboard');
     } else {
-      // User not logged in, redirect to auth with state
+      // User not logged in, save data temporarily and redirect to auth
       localStorage.setItem('pendingPersonalization', JSON.stringify(answers));
       navigate('/auth');
     }
@@ -102,7 +103,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
             <LyraAvatar className="mx-auto mb-6" />
             
             <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
-              Perfect! Let's get you registered 🎉
+              Perfect! Your Learning Path is Ready 🎯
             </h2>
             
             <div className="bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg p-6 mb-6">
@@ -127,9 +128,14 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
               </div>
             </div>
             
-            <p className="text-gray-600 mb-8">
-              Create your account to save your personalized learning path and track your progress.
-            </p>
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+              <p className="text-blue-800 font-medium mb-2">
+                🚀 Next Step: Create Your Free Account
+              </p>
+              <p className="text-blue-700 text-sm">
+                Save your personalized learning path and start your AI journey with Lyra as your guide.
+              </p>
+            </div>
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <Button
@@ -138,7 +144,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
                 onClick={handleComplete}
                 disabled={loading}
               >
-                {loading ? 'Saving...' : (user ? 'Continue to Dashboard' : 'Create Account & Continue')}
+                {loading ? 'Saving...' : (user ? 'Continue to Dashboard' : 'Create Free Account')}
               </Button>
               
               <Button variant="outline" size="lg" onClick={() => setCurrentStep(0)}>
