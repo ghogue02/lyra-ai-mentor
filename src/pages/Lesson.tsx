@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -7,10 +8,8 @@ import { Progress } from "@/components/ui/progress";
 import { Navbar } from '@/components/Navbar';
 import { ContentBlockRenderer } from '@/components/lesson/ContentBlockRenderer';
 import { InteractiveElementRenderer } from '@/components/lesson/InteractiveElementRenderer';
-import { ChatInterface } from '@/components/ChatInterface';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, Clock, CheckCircle } from 'lucide-react';
 
 interface Lesson {
@@ -52,7 +51,6 @@ export const Lesson = () => {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [completedBlocks, setCompletedBlocks] = useState<Set<number>>(new Set());
-  const [isChatExpanded, setIsChatExpanded] = useState(false);
 
   useEffect(() => {
     fetchLessonData();
@@ -191,7 +189,7 @@ export const Lesson = () => {
     );
   }
 
-  // Create lesson context for chat
+  // Create lesson context for embedded chat
   const lessonContext = lesson ? {
     chapterTitle: lesson.chapter.title,
     lessonTitle: lesson.title,
@@ -202,11 +200,7 @@ export const Lesson = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} />
       
-      <div className={cn(
-        "container mx-auto px-4 pt-20 pb-8 transition-all duration-300",
-        // Responsive layout adjustments when chat is expanded
-        isChatExpanded && "md:max-w-[calc(100%-400px)] md:mr-4"
-      )}>
+      <div className="container mx-auto px-4 pt-20 pb-8">
         {/* Header */}
         <div className="mb-8">
           <Button 
@@ -231,16 +225,10 @@ export const Lesson = () => {
             )}
           </div>
           
-          <h1 className={cn(
-            "text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent transition-all duration-300",
-            isChatExpanded && "md:text-3xl"
-          )}>
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
             {lesson.title}
           </h1>
-          <p className={cn(
-            "text-xl text-gray-600 mb-4 transition-all duration-300",
-            isChatExpanded && "md:text-lg"
-          )}>
+          <p className="text-xl text-gray-600 mb-4">
             {lesson.subtitle}
           </p>
           <p className="text-gray-500">Chapter: {lesson.chapter.title}</p>
@@ -251,19 +239,13 @@ export const Lesson = () => {
                 <span>Progress</span>
                 <span>{Math.round(progress)}%</span>
               </div>
-              <Progress value={progress} className={cn(
-                "w-full transition-all duration-300",
-                isChatExpanded ? "max-w-sm" : "max-w-md"
-              )} />
+              <Progress value={progress} className="w-full max-w-md" />
             </div>
           )}
         </div>
 
         {/* Content */}
-        <div className={cn(
-          "mx-auto space-y-8 transition-all duration-300",
-          isChatExpanded ? "max-w-3xl" : "max-w-4xl"
-        )}>
+        <div className="mx-auto space-y-8 max-w-4xl">
           {allContent.map((item) => (
             <div key={`${item.contentType}-${item.id}`}>
               {item.contentType === 'block' ? (
@@ -276,6 +258,7 @@ export const Lesson = () => {
                 <InteractiveElementRenderer
                   element={item as InteractiveElement}
                   lessonId={parseInt(lessonId!)}
+                  lessonContext={lessonContext}
                 />
               )}
             </div>
@@ -283,10 +266,7 @@ export const Lesson = () => {
         </div>
 
         {/* Navigation */}
-        <div className={cn(
-          "flex justify-between items-center mt-12 mx-auto transition-all duration-300",
-          isChatExpanded ? "max-w-3xl" : "max-w-4xl"
-        )}>
+        <div className="flex justify-between items-center mt-12 mx-auto max-w-4xl">
           <Button variant="outline" onClick={() => navigate('/dashboard')}>
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back to Chapters
@@ -303,13 +283,6 @@ export const Lesson = () => {
           )}
         </div>
       </div>
-
-      {/* Enhanced Chat Interface */}
-      <ChatInterface
-        isExpanded={isChatExpanded}
-        onToggleExpanded={() => setIsChatExpanded(!isChatExpanded)}
-        lessonContext={lessonContext}
-      />
     </div>
   );
 };

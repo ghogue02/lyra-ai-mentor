@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
-import { ChatInterface } from '@/components/ChatInterface';
+import { EmbeddedChat } from './EmbeddedChat';
 import { MessageCircle, CheckSquare, PenTool, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -21,16 +21,21 @@ interface InteractiveElement {
 interface InteractiveElementRendererProps {
   element: InteractiveElement;
   lessonId: number;
+  lessonContext?: {
+    chapterTitle?: string;
+    lessonTitle?: string;
+    content?: string;
+  };
 }
 
 export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProps> = ({
   element,
-  lessonId
+  lessonId,
+  lessonContext
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [reflectionText, setReflectionText] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
-  const [showChat, setShowChat] = useState(false);
 
   const getElementIcon = () => {
     switch (element.type) {
@@ -166,30 +171,21 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         <p className="text-gray-700 mb-4">{element.content}</p>
         
         {config.greeting && (
-          <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+          <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg mb-4">
             <p className="text-purple-800 text-sm">{config.greeting}</p>
           </div>
         )}
         
         {config.suggested_task && (
-          <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg">
+          <div className="p-3 bg-gray-50 border border-gray-200 rounded-lg mb-4">
             <p className="text-sm text-gray-700 font-medium">Try this:</p>
             <p className="text-sm text-gray-600">{config.suggested_task}</p>
           </div>
         )}
         
-        <Button
-          onClick={() => setShowChat(!showChat)}
-          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
-        >
-          {showChat ? 'Close Chat' : 'Start Chat with Lyra'}
-        </Button>
-        
-        {showChat && (
-          <div className="mt-4">
-            <ChatInterface isExpanded={true} onToggleExpanded={() => {}} />
-          </div>
-        )}
+        <div className="h-[500px] border border-gray-200 rounded-lg bg-white">
+          <EmbeddedChat lessonContext={lessonContext} />
+        </div>
       </div>
     );
   };
