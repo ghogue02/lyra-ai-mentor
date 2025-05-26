@@ -70,9 +70,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     const newAnswers = { ...answers, [steps[currentStep].key]: value };
     setAnswers(newAnswers);
     
-    if (currentStep < steps.length - 1) {
-      setTimeout(() => setCurrentStep(currentStep + 1), 200);
-    }
+    setTimeout(() => setCurrentStep(currentStep + 1), 200);
   };
 
   const currentStepData = steps[currentStep];
