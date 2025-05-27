@@ -10,7 +10,9 @@ import { InteractiveElementRenderer } from '@/components/lesson/InteractiveEleme
 import { LessonProgress } from '@/components/lesson/LessonProgress';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, Clock, CheckCircle } from 'lucide-react';
+
 interface Lesson {
   id: number;
   title: string;
@@ -46,12 +48,15 @@ export const Lesson = () => {
   const {
     user
   } = useAuth();
+  const { toast } = useToast();
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>([]);
   const [interactiveElements, setInteractiveElements] = useState<InteractiveElement[]>([]);
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [completedBlocks, setCompletedBlocks] = useState<Set<number>>(new Set());
+  const [completedInteractiveElements, setCompletedInteractiveElements] = useState<Set<number>>(new Set());
+  const [isChapterCompleted, setIsChapterCompleted] = useState(false);
   const [chatEngagement, setChatEngagement] = useState<{
     hasReachedMinimum: boolean;
     exchangeCount: number;
@@ -112,12 +117,44 @@ export const Lesson = () => {
 
       // Fetch user progress if authenticated
       if (user) {
-        const {
-          data: progressData
-        } = await supabase.from('lesson_progress_detailed').select('content_block_id, completed').eq('user_id', user.id).eq('lesson_id', lessonIdNum);
-        const completed = new Set(progressData?.filter(p => p.completed).map(p => p.content_block_id) || []);
-        setCompletedBlocks(completed);
-        setProgress(completed.size / (blocksData?.length || 1) * 100);
+        // Fetch content block progress
+        const { data: progressData } = await supabase
+          .from('lesson_progress_detailed')
+          .select('content_block_id, completed')
+          .eq('user_id', user.id)
+          .eq('lesson_id', lessonIdNum);
+
+        const completedBlockIds = new Set(
+          progressData?.filter(p => p.completed).map(p => p.content_block_id) || []
+        );
+        setCompletedBlocks(completedBlockIds);
+
+        // Fetch interactive element progress
+        const { data: interactiveProgressData } = await supabase
+          .from('interactive_element_progress')
+          .select('interactive_element_id, completed')
+          .eq('user_id', user.id)
+          .eq('lesson_id', lessonIdNum);
+
+        const completedInteractiveIds = new Set(
+          interactiveProgressData?.filter(p => p.completed).map(p => p.interactive_element_id) || []
+        );
+        setCompletedInteractiveElements(completedInteractiveIds);
+
+        // Check if chapter is completed
+        const { data: chapterProgressData } = await supabase
+          .from('lesson_progress')
+          .select('chapter_completed')
+          .eq('user_id', user.id)
+          .eq('lesson_id', lessonIdNum)
+          .maybeSingle();
+
+        setIsChapterCompleted(chapterProgressData?.chapter_completed || false);
+
+        // Calculate progress
+        const totalItems = (blocksData?.length || 0) + (elementsData?.length || 0);
+        const completedItems = completedBlockIds.size + completedInteractiveIds.size;
+        setProgress(totalItems > 0 ? (completedItems / totalItems) * 100 : 0);
       }
     } catch (error) {
       console.error('Error fetching lesson data:', error);
@@ -139,20 +176,61 @@ export const Lesson = () => {
       });
       const newCompleted = new Set([...completedBlocks, blockId]);
       setCompletedBlocks(newCompleted);
-      setProgress(newCompleted.size / contentBlocks.length * 100);
+      updateProgress(newCompleted, completedInteractiveElements);
     } catch (error) {
       console.error('Error updating progress:', error);
     }
   };
 
+  const handleInteractiveElementComplete = (elementId: number) => {
+    const newCompleted = new Set([...completedInteractiveElements, elementId]);
+    setCompletedInteractiveElements(newCompleted);
+    updateProgress(completedBlocks, newCompleted);
+  };
+
+  const updateProgress = (blockIds: Set<number>, elementIds: Set<number>) => {
+    const totalItems = contentBlocks.length + interactiveElements.length;
+    const completedItems = blockIds.size + elementIds.size;
+    setProgress(totalItems > 0 ? (completedItems / totalItems) * 100 : 0);
+  };
+
+  const handleMarkChapterComplete = async () => {
+    if (!user || !lessonId) return;
+
+    const lessonIdNum = parseInt(lessonId);
+    if (isNaN(lessonIdNum)) return;
+
+    try {
+      await supabase.from('lesson_progress').upsert({
+        user_id: user.id,
+        lesson_id: lessonIdNum,
+        completed: true,
+        progress_percentage: 100,
+        chapter_completed: true,
+        chapter_completed_at: new Date().toISOString(),
+        last_accessed: new Date().toISOString()
+      });
+
+      setIsChapterCompleted(true);
+      toast({
+        title: "Chapter Complete!",
+        description: "Congratulations! You can now move on to the next chapter."
+      });
+    } catch (error) {
+      console.error('Error marking chapter complete:', error);
+      toast({
+        title: "Error",
+        description: "Failed to mark chapter as complete. Please try again.",
+        variant: "destructive"
+      });
+    }
+  };
+
   // Merge and sort content blocks and interactive elements
-  const allContent = [...contentBlocks.map(block => ({
-    ...block,
-    contentType: 'block'
-  })), ...interactiveElements.map(element => ({
-    ...element,
-    contentType: 'interactive'
-  }))].sort((a, b) => a.order_index - b.order_index);
+  const allContent = [
+    ...contentBlocks.map(block => ({ ...block, contentType: 'block' })),
+    ...interactiveElements.map(element => ({ ...element, contentType: 'interactive' }))
+  ].sort((a, b) => a.order_index - b.order_index);
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
         <div className="text-center">
@@ -189,11 +267,18 @@ export const Lesson = () => {
           </Button>
           
           <div className="flex items-center gap-3 mb-4">
-            
-            {user && progress === 100 && <Badge className="bg-green-100 text-green-700 flex items-center gap-2">
+            {user && progress === 100 && (
+              <Badge className="bg-green-100 text-green-700 flex items-center gap-2">
                 <CheckCircle className="w-3 h-3" />
                 Completed
-              </Badge>}
+              </Badge>
+            )}
+            {isChapterCompleted && (
+              <Badge className="bg-blue-100 text-blue-700 flex items-center gap-2">
+                <CheckCircle className="w-3 h-3" />
+                Chapter Complete
+              </Badge>
+            )}
           </div>
           
           <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
@@ -202,15 +287,26 @@ export const Lesson = () => {
           
           <p className="text-gray-500">Chapter: {lesson.chapter.title}</p>
           
-          {user && <div className="mt-6">
-              <LessonProgress completedBlocks={completedBlocks.size} totalBlocks={contentBlocks.length} estimatedDuration={lesson.estimated_duration} isCompleted={progress === 100} chatEngagement={chatEngagement} />
-            </div>}
+          {user && (
+            <div className="mt-6">
+              <LessonProgress 
+                completedBlocks={completedBlocks.size} 
+                totalBlocks={contentBlocks.length}
+                completedInteractiveElements={completedInteractiveElements.size}
+                totalInteractiveElements={interactiveElements.length}
+                estimatedDuration={lesson.estimated_duration} 
+                isCompleted={isChapterCompleted}
+                chatEngagement={chatEngagement}
+                onMarkChapterComplete={handleMarkChapterComplete}
+              />
+            </div>
+          )}
         </div>
 
         {/* Content */}
         <div className="mx-auto space-y-8 max-w-4xl">
           {allContent.map(item => <div key={`${item.contentType}-${item.id}`}>
-              {item.contentType === 'block' ? <ContentBlockRenderer block={item as ContentBlock} isCompleted={completedBlocks.has(item.id)} onComplete={() => markBlockCompleted(item.id)} /> : <InteractiveElementRenderer element={item as InteractiveElement} lessonId={parseInt(lessonId!)} lessonContext={lessonContext} onChatEngagementChange={setChatEngagement} />}
+              {item.contentType === 'block' ? <ContentBlockRenderer block={item as ContentBlock} isCompleted={completedBlocks.has(item.id)} onComplete={() => markBlockCompleted(item.id)} /> : <InteractiveElementRenderer element={item as InteractiveElement} lessonId={parseInt(lessonId!)} lessonContext={lessonContext} onChatEngagementChange={setChatEngagement} onElementComplete={handleInteractiveElementComplete} />}
             </div>)}
         </div>
 
@@ -221,10 +317,15 @@ export const Lesson = () => {
             Back to Chapters
           </Button>
           
-          {user && progress === 100 && <Button className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600" onClick={() => navigate('/dashboard')}>
+          {user && isChapterCompleted && (
+            <Button 
+              className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600" 
+              onClick={() => navigate('/dashboard')}
+            >
               Continue Learning
               <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>}
+            </Button>
+          )}
         </div>
       </div>
     </div>;

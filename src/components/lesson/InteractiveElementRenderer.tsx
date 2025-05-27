@@ -33,13 +33,15 @@ interface InteractiveElementRendererProps {
     hasReachedMinimum: boolean;
     exchangeCount: number;
   }) => void;
+  onElementComplete?: (elementId: number) => void;
 }
 
 export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProps> = ({
   element,
   lessonId,
   lessonContext,
-  onChatEngagementChange
+  onChatEngagementChange,
+  onElementComplete
 }) => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -49,6 +51,30 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isReflectionSaving, setIsReflectionSaving] = useState(false);
   const [reflectionSaved, setReflectionSaved] = useState(false);
+  const [isElementCompleted, setIsElementCompleted] = useState(false);
+
+  const markElementComplete = async () => {
+    if (!user || isElementCompleted) return;
+
+    try {
+      const { error } = await supabase
+        .from('interactive_element_progress')
+        .upsert({
+          user_id: user.id,
+          lesson_id: lessonId,
+          interactive_element_id: element.id,
+          completed: true,
+          completed_at: new Date().toISOString()
+        });
+
+      if (error) throw error;
+
+      setIsElementCompleted(true);
+      onElementComplete?.(element.id);
+    } catch (error: any) {
+      console.error('Error marking element complete:', error);
+    }
+  };
 
   const getElementIcon = () => {
     switch (element.type) {
@@ -76,8 +102,9 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     }
   };
 
-  const handleKnowledgeCheck = () => {
+  const handleKnowledgeCheck = async () => {
     setShowFeedback(true);
+    await markElementComplete();
   };
 
   const handleReflectionSubmit = async () => {
@@ -102,6 +129,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       if (error) throw error;
 
       setReflectionSaved(true);
+      await markElementComplete();
       toast({
         title: "Reflection saved!",
         description: "Your thoughts have been saved to your learning journal."
@@ -115,6 +143,16 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       });
     } finally {
       setIsReflectionSaving(false);
+    }
+  };
+
+  const handleChatEngagementChange = (engagement: {
+    hasReachedMinimum: boolean;
+    exchangeCount: number;
+  }) => {
+    onChatEngagementChange?.(engagement);
+    if (engagement.hasReachedMinimum && !isElementCompleted) {
+      markElementComplete();
     }
   };
 
@@ -139,8 +177,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
             </div>)}
         </div>
         
-        <Button onClick={handleKnowledgeCheck} size="sm" className="mt-4">
-          Check Answers
+        <Button onClick={handleKnowledgeCheck} size="sm" className="mt-4" disabled={isElementCompleted}>
+          {isElementCompleted ? 'Completed' : 'Check Answers'}
         </Button>
         
         {showFeedback && config.feedback && <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-md">
@@ -204,7 +242,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         
         <LyraChatButton onClick={() => setIsChatOpen(true)} lessonTitle={lessonContext?.lessonTitle} />
         
-        <FullScreenChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} lessonContext={lessonContext} suggestedTask={config.suggested_task} onEngagementChange={onChatEngagementChange} />
+        <FullScreenChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} lessonContext={lessonContext} suggestedTask={config.suggested_task} onEngagementChange={handleChatEngagementChange} />
       </div>;
   };
 
@@ -251,6 +289,12 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           <CardTitle className="text-lg font-medium">
             {element.title}
           </CardTitle>
+          {isElementCompleted && (
+            <Badge className="bg-green-100 text-green-700 ml-auto">
+              <CheckSquare className="w-3 h-3 mr-1" />
+              Completed
+            </Badge>
+          )}
         </div>
       </CardHeader>
       

@@ -86,6 +86,36 @@ export type Database = {
           },
         ]
       }
+      interactive_element_progress: {
+        Row: {
+          completed: boolean
+          completed_at: string | null
+          created_at: string
+          id: string
+          interactive_element_id: number
+          lesson_id: number
+          user_id: string
+        }
+        Insert: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          interactive_element_id: number
+          lesson_id: number
+          user_id: string
+        }
+        Update: {
+          completed?: boolean
+          completed_at?: string | null
+          created_at?: string
+          id?: string
+          interactive_element_id?: number
+          lesson_id?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
       interactive_elements: {
         Row: {
           configuration: Json | null
@@ -129,6 +159,8 @@ export type Database = {
       }
       lesson_progress: {
         Row: {
+          chapter_completed: boolean | null
+          chapter_completed_at: string | null
           completed: boolean | null
           created_at: string | null
           id: string
@@ -138,6 +170,8 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          chapter_completed?: boolean | null
+          chapter_completed_at?: string | null
           completed?: boolean | null
           created_at?: string | null
           id?: string
@@ -147,6 +181,8 @@ export type Database = {
           user_id: string
         }
         Update: {
+          chapter_completed?: boolean | null
+          chapter_completed_at?: string | null
           completed?: boolean | null
           created_at?: string | null
           id?: string
