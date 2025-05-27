@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -127,7 +126,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
 
             <LyraAvatar className="mx-auto mb-6" />
             
-            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+            <h2 className="text-3xl font-bold mb-4 text-purple-600">
               Perfect! Your Learning Path is Ready 🎯
             </h2>
             

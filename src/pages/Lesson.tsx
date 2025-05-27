@@ -336,7 +336,7 @@ export const Lesson = () => {
             )}
           </div>
           
-          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+          <h1 className="text-4xl font-bold mb-2 text-purple-600">
             {lesson.title}
           </h1>
           

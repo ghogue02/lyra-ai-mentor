@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -26,7 +27,7 @@ const Index = () => {
             For Non-Profit & Public Interest Professionals
           </Badge>
           
-          <h1 className="text-responsive-xl font-bold mb-4 sm:mb-6 gradient-text leading-tight">
+          <h1 className="text-responsive-xl font-bold mb-4 sm:mb-6 text-purple-600 leading-tight">
             Master AI Without the Mystery
           </h1>
           

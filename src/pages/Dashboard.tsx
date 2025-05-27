@@ -149,7 +149,7 @@ export const Dashboard = () => {
       <section className="container mx-auto px-4 pt-20 pb-8">
         <div className="flex justify-between items-start mb-8">
           <div>
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+            <h1 className="text-4xl font-bold mb-4 text-purple-600">
               Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}!
             </h1>
             <p className="text-xl text-gray-600">
@@ -187,7 +187,7 @@ export const Dashboard = () => {
           <TabsContent value="journey" className="space-y-8">
             {/* Learning Journey Content */}
             <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold mb-4 text-cyan-600">
                 Your Learning Journey
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -210,7 +210,7 @@ export const Dashboard = () => {
           <TabsContent value="profile" className="space-y-8">
             {/* Profile Content */}
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+              <h2 className="text-3xl font-bold mb-4 text-purple-600">
                 Profile & Personalization
               </h2>
               <p className="text-lg text-gray-600 max-w-2xl mx-auto">
