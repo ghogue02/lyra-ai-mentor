@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -137,8 +136,8 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
             maxHeight: '100vh'
           }}
         >
-          {/* Use CSS Grid for predictable layout */}
-          <div className="grid grid-rows-[auto_auto_1fr_auto] h-full bg-gray-900">
+          {/* Use CSS Grid with minmax(0,1fr) to fix scrolling */}
+          <div className="grid grid-rows-[auto_auto_minmax(0,1fr)_auto] h-full bg-gray-900">
             {/* Header */}
             <DialogHeader className="p-6 border-b border-gray-700 bg-gray-800">
               <div className="flex items-center justify-between">
@@ -205,8 +204,8 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
               </div>
             )}
 
-            {/* Messages - Fixed with proper overflow and height constraints */}
-            <div className="overflow-y-auto p-6 bg-gray-900" style={{ minHeight: 0 }}>
+            {/* Messages - Now properly constrained with minmax(0,1fr) */}
+            <div className="overflow-y-auto p-6 bg-gray-900 min-h-0">
               <div className="space-y-4">
                 {messages.map((message) => (
                   <div
