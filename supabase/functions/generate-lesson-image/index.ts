@@ -2,6 +2,8 @@
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.7.1';
+import { GoogleGenerativeAI } from "https://esm.sh/@google/generative-ai@0.16.0";
+import { decode } from "https://deno.land/std@0.177.0/encoding/base64.ts";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -15,9 +17,9 @@ serve(async (req) => {
   }
 
   try {
-    const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
-    if (!openAIApiKey) {
-      throw new Error('OPENAI_API_KEY is not set');
+    const googleApiKey = Deno.env.get('GOOGLE_API_KEY');
+    if (!googleApiKey) {
+      throw new Error('GOOGLE_API_KEY is not set');
     }
 
     const { prompt, size = '1024x1024' } = await req.json();
@@ -32,58 +34,73 @@ serve(async (req) => {
       );
     }
 
-    console.log('Generating image with prompt:', prompt);
+    console.log('Generating image with Gemini, prompt:', prompt);
 
-    // Create the request payload for OpenAI - only using supported parameters for gpt-image-1
-    const requestBody = {
-      model: 'gpt-image-1',
-      prompt,
-      n: 1,
-      size
+    // Initialize Google Generative AI
+    const genAI = new GoogleGenerativeAI(googleApiKey);
+    const modelId = "gemini-2.0-flash-preview-image-generation";
+    const model = genAI.getGenerativeModel({ model: modelId });
+
+    // Configure generation settings
+    const generationConfig = {
+      temperature: 0.4,
+      responseModalities: ["TEXT", "IMAGE"]
     };
 
-    const response = await fetch('https://api.openai.com/v1/images/generations', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${openAIApiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody),
+    const safetySettings = [
+      { category: "HARM_CATEGORY_HARASSMENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+      { category: "HARM_CATEGORY_HATE_SPEECH", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+      { category: "HARM_CATEGORY_SEXUALLY_EXPLICIT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+      { category: "HARM_CATEGORY_DANGEROUS_CONTENT", threshold: "BLOCK_MEDIUM_AND_ABOVE" },
+    ];
+
+    // Generate content with Gemini
+    const result = await model.generateContent({
+      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      generationConfig,
+      safetySettings,
     });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('OpenAI API error:', errorData);
-      
-      if (errorData.error?.type === 'content_policy_violation') {
-        return new Response(
-          JSON.stringify({ 
-            error: 'Content policy violation. Please try a different prompt that complies with OpenAI guidelines.' 
-          }),
-          { 
-            status: 400, 
-            headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
-          }
-        );
+    const response = result.response;
+    console.log('Received response from Gemini');
+
+    // Process Gemini response
+    if (!response.candidates?.length || !response.candidates[0].content?.parts?.length) {
+      console.error('Invalid response structure from Gemini:', JSON.stringify(response));
+      throw new Error('Invalid response structure received from Gemini API');
+    }
+
+    const parts = response.candidates[0].content.parts;
+    let altText: string | undefined;
+    let imageDataBase64: string | undefined;
+
+    // Extract text and image data from response parts
+    for (const part of parts) {
+      if (part.text) {
+        altText = part.text;
+      } else if (part.inlineData?.data && part.inlineData?.mimeType === 'image/png') {
+        imageDataBase64 = part.inlineData.data;
       }
-      
-      throw new Error(`OpenAI API error: ${errorData.error?.message || 'Unknown error'}`);
     }
 
-    const data = await response.json();
-    console.log('OpenAI response:', data);
-
-    const imageUrl = data.data[0]?.url;
-    const revisedPrompt = data.data[0]?.revised_prompt;
-
-    if (!imageUrl) {
-      throw new Error('No image URL received from OpenAI');
+    if (!imageDataBase64) {
+      console.error('No image data found in Gemini response parts:', JSON.stringify(parts));
+      throw new Error('No image data found in Gemini response');
     }
+
+    if (!altText) {
+      console.warn('No alt text found in Gemini response. Using default.');
+      altText = `AI-generated illustration`;
+    }
+
+    // For this implementation, we'll return the base64 data directly
+    // You could optionally store it in Supabase Storage like the reference code
+    const imageUrl = `data:image/png;base64,${imageDataBase64}`;
 
     return new Response(
       JSON.stringify({ 
-        imageUrl, 
-        revisedPrompt
+        imageUrl,
+        revisedPrompt: altText
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
