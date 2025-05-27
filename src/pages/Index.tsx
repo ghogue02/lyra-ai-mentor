@@ -23,6 +23,15 @@ const Index = () => {
       {/* Hero Section */}
       <section className="container mx-auto spacing-mobile spacing-mobile-y pt-20 pb-8 sm:pb-16">
         <div className="text-center max-w-4xl mx-auto">
+          {/* Hero Image */}
+          <div className="mb-8 flex justify-center">
+            <img 
+              src="/lovable-uploads/78b6315a-aa2d-415e-b3a1-fa9b74b33b97.png" 
+              alt="AI Mentor Lyra"
+              className="w-32 h-32 sm:w-40 sm:h-40 object-contain"
+            />
+          </div>
+
           <Badge className="mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 to-cyan-500 text-white px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium">
             For Non-Profit & Public Interest Professionals
           </Badge>
