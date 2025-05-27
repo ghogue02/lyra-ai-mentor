@@ -2,7 +2,7 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle2, Circle, User, BookOpen, Trophy } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 
 interface OnboardingProgressProps {
   profileCompleted: boolean;
@@ -22,7 +22,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
       id: 1,
       title: "Complete Your Profile",
       description: "Fill out your personal and organization details",
-      icon: User,
+      iconSrc: "/lovable-uploads/6ded9c9c-9b78-4ce7-b2d9-fa4c8b0b2f3e.png",
       completed: profileCompleted,
       current: onboardingStep === 1 && !profileCompleted
     },
@@ -30,7 +30,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
       id: 2,
       title: "Start Your First Chapter",
       description: "Begin your AI learning journey",
-      icon: BookOpen,
+      iconSrc: "/lovable-uploads/c4ca451a-4e36-4b11-8d9b-e4e0bf70bb95.png",
       completed: firstChapterStarted,
       current: onboardingStep === 2 && profileCompleted && !firstChapterStarted
     },
@@ -38,7 +38,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
       id: 3,
       title: "Complete Your First Chapter",
       description: "Finish Chapter 1: What Is AI Anyway?",
-      icon: Trophy,
+      iconSrc: "/lovable-uploads/77c0e73b-e754-4a08-aefb-96be00aac64a.png",
       completed: firstChapterCompleted,
       current: onboardingStep === 3 && firstChapterStarted && !firstChapterCompleted
     }
@@ -75,7 +75,6 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
 
         <div className="grid md:grid-cols-3 gap-4">
           {steps.map((step, index) => {
-            const IconComponent = step.icon;
             return (
               <div 
                 key={step.id}
@@ -97,9 +96,13 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
                   {step.completed ? (
                     <CheckCircle2 className="w-4 h-4 text-green-600" />
                   ) : (
-                    <IconComponent className={`w-4 h-4 ${
-                      step.current ? 'text-purple-600' : 'text-gray-400'
-                    }`} />
+                    <img 
+                      src={step.iconSrc} 
+                      alt={step.title}
+                      className={`w-4 h-4 object-contain ${
+                        step.current ? 'opacity-100' : 'opacity-40'
+                      }`}
+                    />
                   )}
                 </div>
                 <div className="flex-1 min-w-0">

@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { MessageCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface LyraAvatarProps {
@@ -20,16 +19,23 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
     lg: 'w-20 h-20'
   };
 
+  const iconSizeClasses = {
+    sm: 'w-6 h-6',
+    md: 'w-10 h-10',
+    lg: 'w-12 h-12'
+  };
+
   return (
     <div className={cn("relative", className)}>
       <div className={cn(
-        "bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg",
+        "bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg p-2",
         sizeClasses[size]
       )}>
-        <MessageCircle className={cn(
-          "text-white",
-          size === 'sm' ? 'w-5 h-5' : size === 'md' ? 'w-8 h-8' : 'w-10 h-10'
-        )} />
+        <img 
+          src="/lovable-uploads/89bfb1be-6b72-42a6-b6c1-48c8eccd2034.png" 
+          alt="Lyra AI Assistant"
+          className={cn("object-contain", iconSizeClasses[size])}
+        />
       </div>
       
       {withWave && (

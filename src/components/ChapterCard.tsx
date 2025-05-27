@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Lock, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { getChapterIcon } from '@/utils/chapterIcons';
 
 interface Chapter {
   id: number;
@@ -27,7 +28,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
   isCompleted = false,
   progress = 0
 }) => {
-  const IconComponent = chapter.icon;
+  const chapterIconSrc = getChapterIcon(chapter.id);
 
   return (
     <Card className={cn(
@@ -37,7 +38,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className={cn(
-            "w-12 h-12 rounded-full flex items-center justify-center",
+            "w-12 h-12 rounded-full flex items-center justify-center p-2",
             isLocked 
               ? "bg-gray-200" 
               : "bg-gradient-to-r from-purple-500 to-cyan-500"
@@ -45,7 +46,11 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
             {isLocked ? (
               <Lock className="w-6 h-6 text-gray-500" />
             ) : (
-              <IconComponent className="w-6 h-6 text-white" />
+              <img 
+                src={chapterIconSrc} 
+                alt={`Chapter ${chapter.id} icon`}
+                className="w-8 h-8 object-contain"
+              />
             )}
           </div>
           
