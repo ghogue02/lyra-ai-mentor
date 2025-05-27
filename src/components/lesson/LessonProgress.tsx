@@ -17,6 +17,7 @@ interface LessonProgressProps {
     exchangeCount: number;
   };
   onMarkChapterComplete?: () => void;
+  hasContentBlocking?: boolean;
 }
 
 export const LessonProgress: React.FC<LessonProgressProps> = ({
@@ -27,7 +28,8 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
   estimatedDuration,
   isCompleted = false,
   chatEngagement,
-  onMarkChapterComplete
+  onMarkChapterComplete,
+  hasContentBlocking = false
 }) => {
   const totalItems = totalBlocks + totalInteractiveElements;
   const completedItems = completedBlocks + completedInteractiveElements;
@@ -48,6 +50,12 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
             <Badge className="bg-purple-100 text-purple-700 flex items-center gap-2 animate-fade-in">
               <MessageCircle className="w-3 h-3" />
               Chat Completed
+            </Badge>
+          )}
+          {hasContentBlocking && !chatEngagement?.hasReachedMinimum && (
+            <Badge className="bg-orange-100 text-orange-700 flex items-center gap-2">
+              <Clock className="w-3 h-3" />
+              Content Locked
             </Badge>
           )}
         </div>
@@ -71,9 +79,17 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
         {chatEngagement && chatEngagement.exchangeCount > 0 && (
           <div className="flex justify-between text-xs text-gray-500">
             <span>Chat interactions: {chatEngagement.exchangeCount}/3</span>
-            {chatEngagement.hasReachedMinimum && (
+            {chatEngagement.hasReachedMinimum ? (
               <span className="text-purple-600 font-medium">✓ Learning goal achieved</span>
-            )}
+            ) : hasContentBlocking ? (
+              <span className="text-orange-600 font-medium">Complete to unlock content</span>
+            ) : null}
+          </div>
+        )}
+        
+        {hasContentBlocking && !chatEngagement?.hasReachedMinimum && (
+          <div className="text-xs text-orange-600 bg-orange-50 p-2 rounded border border-orange-200">
+            <strong>Note:</strong> Some lesson content is locked until you complete the chat interaction above.
           </div>
         )}
       </div>

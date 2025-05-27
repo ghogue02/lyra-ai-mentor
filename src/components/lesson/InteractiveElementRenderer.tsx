@@ -34,6 +34,7 @@ interface InteractiveElementRendererProps {
     exchangeCount: number;
   }) => void;
   onElementComplete?: (elementId: number) => void;
+  isBlockingContent?: boolean;
 }
 
 export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProps> = ({
@@ -41,7 +42,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   lessonId,
   lessonContext,
   onChatEngagementChange,
-  onElementComplete
+  onElementComplete,
+  isBlockingContent = false
 }) => {
   const { user } = useAuth();
   const { toast } = useToast();
@@ -376,6 +378,21 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   const renderLyraChat = () => {
     return (
       <div className="space-y-4">
+        {isBlockingContent && (
+          <div className="p-4 bg-gradient-to-r from-purple-100 to-cyan-100 border border-purple-300 rounded-lg mb-4">
+            <div className="flex items-center gap-2 mb-2">
+              <MessageCircle className="w-5 h-5 text-purple-600" />
+              <span className="font-medium text-purple-800">Required Interaction</span>
+              <Badge className="bg-purple-600 text-white text-xs">
+                {chatEngagement.exchangeCount}/3
+              </Badge>
+            </div>
+            <p className="text-sm text-purple-700">
+              Complete this chat session to unlock the rest of the lesson content.
+            </p>
+          </div>
+        )}
+        
         <LyraChatButton onClick={() => setIsChatOpen(true)} lessonTitle={lessonContext?.lessonTitle} />
         
         <FullScreenChatOverlay 

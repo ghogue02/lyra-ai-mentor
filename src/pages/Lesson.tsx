@@ -8,6 +8,7 @@ import { Navbar } from '@/components/Navbar';
 import { ContentBlockRenderer } from '@/components/lesson/ContentBlockRenderer';
 import { InteractiveElementRenderer } from '@/components/lesson/InteractiveElementRenderer';
 import { LessonProgress } from '@/components/lesson/LessonProgress';
+import { ContentBlocker } from '@/components/lesson/ContentBlocker';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -264,6 +265,37 @@ export const Lesson = () => {
     }
   };
 
+  // Find the first Lyra chat element to determine blocking point
+  const findFirstLyraChatIndex = () => {
+    return regularContent.findIndex(item => 
+      item.contentType === 'interactive' && item.type === 'lyra_chat'
+    );
+  };
+
+  // Check if content should be blocked based on chat completion
+  const shouldBlockContent = (index: number) => {
+    const firstLyraChatIndex = findFirstLyraChatIndex();
+    
+    // If no Lyra chat found, don't block anything
+    if (firstLyraChatIndex === -1) return false;
+    
+    // If this is before or at the first Lyra chat, don't block
+    if (index <= firstLyraChatIndex) return false;
+    
+    // Block if chat engagement hasn't reached minimum
+    return !chatEngagement.hasReachedMinimum;
+  };
+
+  // Count blocked items for display
+  const getBlockedItemsCount = () => {
+    const firstLyraChatIndex = findFirstLyraChatIndex();
+    if (firstLyraChatIndex === -1) return 0;
+    
+    return chatEngagement.hasReachedMinimum 
+      ? 0 
+      : regularContent.length - firstLyraChatIndex - 1;
+  };
+
   // Merge and sort content blocks and interactive elements, but filter out AI images for separate processing
   const regularContent = [
     ...contentBlocks.filter(block => block.type !== 'ai_generated_image').map(block => ({ ...block, contentType: 'block' })),
@@ -309,6 +341,9 @@ export const Lesson = () => {
     content: contentBlocks.map(block => `${block.title}: ${block.content}`).join('\n\n').substring(0, 1000)
   } : undefined;
 
+  const firstLyraChatIndex = findFirstLyraChatIndex();
+  const hasContentBlocking = firstLyraChatIndex !== -1;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} />
@@ -353,6 +388,7 @@ export const Lesson = () => {
                 isCompleted={isChapterCompleted}
                 chatEngagement={chatEngagement}
                 onMarkChapterComplete={handleMarkChapterComplete}
+                hasContentBlocking={hasContentBlocking}
               />
             </div>
           )}
@@ -360,26 +396,52 @@ export const Lesson = () => {
 
         {/* Content */}
         <div className="mx-auto space-y-8 max-w-4xl">
-          {regularContent.map((item, index) => (
-            <div key={`${item.contentType}-${item.id}`}>
-              {item.contentType === 'block' ? (
-                <ContentBlockRenderer 
-                  block={item as ContentBlock} 
-                  isCompleted={completedBlocks.has(item.id)} 
-                  onComplete={() => markBlockCompleted(item.id)}
-                  nextAIImage={getNextAIImage(index)}
-                />
-              ) : (
-                <InteractiveElementRenderer 
-                  element={item as InteractiveElement} 
-                  lessonId={parseInt(lessonId!)} 
-                  lessonContext={lessonContext} 
-                  onChatEngagementChange={setChatEngagement} 
-                  onElementComplete={handleInteractiveElementComplete} 
-                />
-              )}
-            </div>
-          ))}
+          {regularContent.map((item, index) => {
+            const isBlocked = shouldBlockContent(index);
+            
+            if (isBlocked && index === firstLyraChatIndex + 1) {
+              // Show the content blocker only once, right after the first Lyra chat
+              return (
+                <div key={`blocker-${index}`}>
+                  <ContentBlocker 
+                    chatEngagement={chatEngagement}
+                    blockedItemsCount={getBlockedItemsCount()}
+                  />
+                </div>
+              );
+            }
+            
+            if (isBlocked) {
+              // Hide subsequent blocked content
+              return null;
+            }
+
+            return (
+              <div key={`${item.contentType}-${item.id}`} className={
+                chatEngagement.hasReachedMinimum && index > firstLyraChatIndex 
+                  ? "animate-fade-in" 
+                  : ""
+              }>
+                {item.contentType === 'block' ? (
+                  <ContentBlockRenderer 
+                    block={item as ContentBlock} 
+                    isCompleted={completedBlocks.has(item.id)} 
+                    onComplete={() => markBlockCompleted(item.id)}
+                    nextAIImage={getNextAIImage(index)}
+                  />
+                ) : (
+                  <InteractiveElementRenderer 
+                    element={item as InteractiveElement} 
+                    lessonId={parseInt(lessonId!)} 
+                    lessonContext={lessonContext} 
+                    onChatEngagementChange={setChatEngagement} 
+                    onElementComplete={handleInteractiveElementComplete}
+                    isBlockingContent={item.type === 'lyra_chat' && hasContentBlocking}
+                  />
+                )}
+              </div>
+            );
+          })}
         </div>
 
         {/* Navigation */}
