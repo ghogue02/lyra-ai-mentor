@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { CheckCircle2, User, Building, Briefcase, MapPin } from 'lucide-react';
+import { ReflectionsSection } from './ReflectionsSection';
 
 interface ProfileData {
   first_name: string;
@@ -342,6 +342,9 @@ export const ProfileForm = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Learning Reflections */}
+      <ReflectionsSection />
 
       <div className="flex justify-end">
         <Button 

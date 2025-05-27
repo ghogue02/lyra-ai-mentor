@@ -8,6 +8,10 @@ import { LyraChatButton } from './LyraChatButton';
 import { FullScreenChatOverlay } from './FullScreenChatOverlay';
 import { MessageCircle, CheckSquare, PenTool } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
+
 interface InteractiveElement {
   id: number;
   type: string;
@@ -16,6 +20,7 @@ interface InteractiveElement {
   configuration: any;
   order_index: number;
 }
+
 interface InteractiveElementRendererProps {
   element: InteractiveElement;
   lessonId: number;
@@ -29,16 +34,22 @@ interface InteractiveElementRendererProps {
     exchangeCount: number;
   }) => void;
 }
+
 export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProps> = ({
   element,
   lessonId,
   lessonContext,
   onChatEngagementChange
 }) => {
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [reflectionText, setReflectionText] = useState('');
   const [showFeedback, setShowFeedback] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isReflectionSaving, setIsReflectionSaving] = useState(false);
+  const [reflectionSaved, setReflectionSaved] = useState(false);
+
   const getElementIcon = () => {
     switch (element.type) {
       case 'lyra_chat':
@@ -51,6 +62,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         return <MessageCircle className="w-4 h-4" />;
     }
   };
+
   const getElementStyle = () => {
     switch (element.type) {
       case 'lyra_chat':
@@ -63,12 +75,49 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         return 'border border-gray-200 bg-gray-50/30';
     }
   };
+
   const handleKnowledgeCheck = () => {
     setShowFeedback(true);
   };
-  const handleReflectionSubmit = () => {
-    console.log('Reflection submitted:', reflectionText);
+
+  const handleReflectionSubmit = async () => {
+    if (!user || !reflectionText.trim()) return;
+
+    setIsReflectionSaving(true);
+    try {
+      const { error } = await supabase
+        .from('user_interactions')
+        .insert({
+          user_id: user.id,
+          lesson_id: lessonId,
+          interactive_element_id: element.id,
+          interaction_type: 'reflection',
+          content: reflectionText.trim(),
+          metadata: {
+            question: element.content,
+            element_title: element.title
+          }
+        });
+
+      if (error) throw error;
+
+      setReflectionSaved(true);
+      toast({
+        title: "Reflection saved!",
+        description: "Your thoughts have been saved to your learning journal."
+      });
+    } catch (error: any) {
+      console.error('Error saving reflection:', error);
+      toast({
+        title: "Error saving reflection",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsReflectionSaving(false);
+    }
   };
+
   const renderKnowledgeCheck = () => {
     const config = element.configuration || {};
     const options = config.options || [];
@@ -99,6 +148,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           </div>}
       </div>;
   };
+
   const renderReflection = () => {
     const config = element.configuration || {};
     const suggestions = config.suggestions || [];
@@ -114,17 +164,35 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
             </ul>
           </div>}
         
-        <Textarea placeholder="Share your thoughts..." value={reflectionText} onChange={e => setReflectionText(e.target.value)} className="min-h-[80px]" />
+        <Textarea
+          placeholder="Share your thoughts..."
+          value={reflectionText}
+          onChange={(e) => setReflectionText(e.target.value)}
+          className="min-h-[80px]"
+          disabled={reflectionSaved}
+        />
         
-        <Button onClick={handleReflectionSubmit} disabled={!reflectionText.trim()} size="sm">
-          Save Reflection
-        </Button>
+        {reflectionSaved ? (
+          <div className="flex items-center gap-2 text-green-600">
+            <CheckSquare className="w-4 h-4" />
+            <span className="text-sm">Reflection saved to your learning journal</span>
+          </div>
+        ) : (
+          <Button
+            onClick={handleReflectionSubmit}
+            disabled={!reflectionText.trim() || isReflectionSaving}
+            size="sm"
+          >
+            {isReflectionSaving ? 'Saving...' : 'Save Reflection'}
+          </Button>
+        )}
         
         {config.follow_up && <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
             <p className="text-sm text-gray-700">{config.follow_up}</p>
           </div>}
       </div>;
   };
+
   const renderLyraChat = () => {
     const config = element.configuration || {};
     return <div className="space-y-4">
@@ -139,6 +207,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         <FullScreenChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} lessonContext={lessonContext} suggestedTask={config.suggested_task} onEngagementChange={onChatEngagementChange} />
       </div>;
   };
+
   const renderCalloutBox = () => {
     const config = element.configuration || {};
     const icon = config.icon || '💡';
@@ -152,6 +221,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         </div>
       </div>;
   };
+
   const renderContent = () => {
     switch (element.type) {
       case 'knowledge_check':
@@ -166,10 +236,13 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         return <p className="text-gray-700">{element.content}</p>;
     }
   };
+
   if (element.type === 'callout_box') {
     return renderCalloutBox();
   }
-  return <Card className={cn("shadow-sm backdrop-blur-sm transition-all duration-300 my-8", getElementStyle())}>
+
+  return (
+    <Card className={cn("shadow-sm backdrop-blur-sm transition-all duration-300 my-8", getElementStyle())}>
       <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <div className="text-gray-500">
@@ -178,12 +251,12 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           <CardTitle className="text-lg font-medium">
             {element.title}
           </CardTitle>
-          
         </div>
       </CardHeader>
       
       <CardContent className="pt-0">
         {renderContent()}
       </CardContent>
-    </Card>;
+    </Card>
+  );
 };
