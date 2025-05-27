@@ -374,18 +374,19 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   };
 
   const renderLyraChat = () => {
-    const config = element.configuration || {};
-    return <div className="space-y-4">
-        <p className="text-gray-700 leading-relaxed">{element.content}</p>
-        
-        {config.greeting && <div className="p-3 bg-purple-50 border border-purple-200 rounded-md">
-            <p className="text-purple-800 text-sm">{config.greeting}</p>
-          </div>}
-        
+    return (
+      <div className="space-y-4">
         <LyraChatButton onClick={() => setIsChatOpen(true)} lessonTitle={lessonContext?.lessonTitle} />
         
-        <FullScreenChatOverlay isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} lessonContext={lessonContext} suggestedTask={config.suggested_task} onEngagementChange={handleChatEngagementChange} />
-      </div>;
+        <FullScreenChatOverlay 
+          isOpen={isChatOpen} 
+          onClose={() => setIsChatOpen(false)} 
+          lessonContext={lessonContext} 
+          suggestedTask={element.configuration?.suggested_task} 
+          onEngagementChange={handleChatEngagementChange} 
+        />
+      </div>
+    );
   };
 
   const renderCalloutBox = () => {
@@ -436,6 +437,15 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
 
   if (element.type === 'callout_box') {
     return renderCalloutBox();
+  }
+
+  // Special handling for lyra_chat - render without card wrapper
+  if (element.type === 'lyra_chat') {
+    return (
+      <div className="my-8">
+        {renderLyraChat()}
+      </div>
+    );
   }
 
   return (

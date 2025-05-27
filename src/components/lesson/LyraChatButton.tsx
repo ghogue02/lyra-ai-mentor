@@ -49,8 +49,7 @@ export const LyraChatButton: React.FC<LyraChatButtonProps> = ({
               <MessageCircle className="w-5 h-5 text-purple-500 animate-pulse" />
             </div>
             <p className="text-sm text-gray-600">
-              Your friendly AI learning companion who explains AI concepts in simple terms, 
-              shares real nonprofit examples, and helps make AI less mysterious and more practical.
+              Your friendly AI learning companion who explains AI concepts in simple terms with real nonprofit examples.
             </p>
             <p className="text-xs text-purple-500 mt-1 font-medium">
               Click to start an interactive conversation →
