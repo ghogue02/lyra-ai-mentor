@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -12,6 +11,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Lesson from "./pages/Lesson";
+import IconGeneration from "./pages/IconGeneration";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +42,7 @@ const App = () => {
                   </ProtectedRoute>
                 } 
               />
+              <Route path="/generate-icons" element={<IconGeneration />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
