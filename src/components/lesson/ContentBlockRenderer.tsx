@@ -121,11 +121,13 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   };
 
   const formatInlineText = (text: string) => {
-    // Handle bold text formatting (**text** becomes bold)
+    // Handle bold text formatting and remove asterisks completely
+    // Split on **text** pattern but remove the asterisks from display
     const parts = text.split(/(\*\*.*?\*\*)/g);
     
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
+        // Remove the asterisks and make text bold
         const boldText = part.slice(2, -2);
         return (
           <strong key={index} className="font-semibold text-gray-800">
