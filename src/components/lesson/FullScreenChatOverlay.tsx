@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -126,18 +127,21 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={handleClose}>
+      <Dialog open={isOpen} onOpenChange={handleClose} modal>
         <DialogContent 
-          className="max-w-none border-0 p-0 gap-0 rounded-none bg-gray-900"
+          className="fixed inset-0 z-[100] border-0 p-0 gap-0 rounded-none bg-gray-900 max-w-none max-h-none"
           style={{ 
             width: '100vw', 
             height: '100vh',
-            maxWidth: '100vw',
-            maxHeight: '100vh'
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0
           }}
         >
           {/* Use CSS Grid with minmax(0,1fr) to fix scrolling */}
-          <div className="grid grid-rows-[auto_auto_minmax(0,1fr)_auto] h-full bg-gray-900">
+          <div className="grid grid-rows-[auto_auto_minmax(0,1fr)_auto] h-screen w-screen bg-gray-900">
             {/* Header */}
             <DialogHeader className="p-6 border-b border-gray-700 bg-gray-800">
               <div className="flex items-center justify-between">
