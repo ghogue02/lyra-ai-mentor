@@ -196,73 +196,77 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
               </div>
             )}
 
-            {/* Messages - Fixed height with scrolling */}
-            <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-4 bg-gray-900">
-              {messages.map((message) => (
-                <div
-                  key={message.id}
-                  className={cn(
-                    "flex animate-fade-in",
-                    message.isUser ? "justify-end" : "justify-start"
-                  )}
-                >
-                  <div className={cn(
-                    "flex items-start gap-3 max-w-[80%]",
-                    message.isUser && "flex-row-reverse"
-                  )}>
-                    {!message.isUser && (
-                      <LyraAvatar size="sm" withWave={false} className="mt-1" />
-                    )}
+            {/* Messages - Fixed scrolling with proper height constraints */}
+            <div className="flex-1 flex flex-col min-h-0 bg-gray-900">
+              <div className="flex-1 overflow-y-auto p-6">
+                <div className="space-y-4 pb-4">
+                  {messages.map((message) => (
                     <div
+                      key={message.id}
                       className={cn(
-                        "p-4 rounded-lg text-sm leading-relaxed shadow-lg",
-                        message.isUser
-                          ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-br-none"
-                          : "bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700"
+                        "flex animate-fade-in",
+                        message.isUser ? "justify-end" : "justify-start"
                       )}
                     >
-                      {message.content}
-                    </div>
-                  </div>
-                </div>
-              ))}
-              
-              {isTyping && (
-                <div className="flex justify-start animate-fade-in">
-                  <div className="flex items-start gap-3">
-                    <LyraAvatar size="sm" withWave={false} className="mt-1" />
-                    <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg rounded-bl-none">
-                      <div className="flex space-x-1">
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                        <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                      <div className={cn(
+                        "flex items-start gap-3 max-w-[80%]",
+                        message.isUser && "flex-row-reverse"
+                      )}>
+                        {!message.isUser && (
+                          <LyraAvatar size="sm" withWave={false} className="mt-1" />
+                        )}
+                        <div
+                          className={cn(
+                            "p-4 rounded-lg text-sm leading-relaxed shadow-lg",
+                            message.isUser
+                              ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-br-none"
+                              : "bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700"
+                          )}
+                        >
+                          {message.content}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </div>
-              )}
+                  ))}
+                  
+                  {isTyping && (
+                    <div className="flex justify-start animate-fade-in">
+                      <div className="flex items-start gap-3">
+                        <LyraAvatar size="sm" withWave={false} className="mt-1" />
+                        <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg rounded-bl-none">
+                          <div className="flex space-x-1">
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                            <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
-              {/* Completion message */}
-              {engagement.hasReachedMinimum && (
-                <div className="flex justify-center animate-fade-in">
-                  <div className="bg-green-900/50 border border-green-700 rounded-lg p-4 max-w-md text-center">
-                    <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-                    <h4 className="font-semibold text-green-200 mb-1">Great work!</h4>
-                    <p className="text-sm text-green-300">
-                      You've completed your learning session with Lyra. Feel free to continue chatting or close to move on to the next part of your lesson.
-                    </p>
-                    <Button
-                      onClick={forceClose}
-                      className="mt-3 bg-green-600 hover:bg-green-700 text-white"
-                      size="sm"
-                    >
-                      Continue Learning
-                    </Button>
-                  </div>
+                  {/* Completion message */}
+                  {engagement.hasReachedMinimum && (
+                    <div className="flex justify-center animate-fade-in">
+                      <div className="bg-green-900/50 border border-green-700 rounded-lg p-4 max-w-md text-center">
+                        <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
+                        <h4 className="font-semibold text-green-200 mb-1">Great work!</h4>
+                        <p className="text-sm text-green-300">
+                          You've completed your learning session with Lyra. Feel free to continue chatting or close to move on to the next part of your lesson.
+                        </p>
+                        <Button
+                          onClick={forceClose}
+                          className="mt-3 bg-green-600 hover:bg-green-700 text-white"
+                          size="sm"
+                        >
+                          Continue Learning
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div ref={messagesEndRef} />
                 </div>
-              )}
-              
-              <div ref={messagesEndRef} />
+              </div>
             </div>
             
             {/* Input */}
