@@ -139,6 +139,7 @@ export const Lesson = () => {
           progressData?.filter(p => p.completed).map(p => p.content_block_id) || []
         );
         console.log('Lesson.tsx: Completed content blocks:', Array.from(completedBlockIds));
+        console.log('Lesson.tsx: Total content blocks:', blocksData?.length || 0);
         setCompletedBlocks(completedBlockIds);
 
         // Fetch interactive element progress
@@ -213,7 +214,7 @@ export const Lesson = () => {
       const newCompleted = new Set([...completedBlocks, blockId]);
       setCompletedBlocks(newCompleted);
       
-      console.log(`Lesson.tsx: Content block ${blockId} marked as completed successfully`);
+      console.log(`Lesson.tsx: Content block ${blockId} marked as completed. Total completed: ${newCompleted.size}/${contentBlocks.length}`);
     } catch (error) {
       console.error('Error updating content block progress:', error);
     }

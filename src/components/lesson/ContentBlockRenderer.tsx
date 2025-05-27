@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -33,25 +32,29 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   const blockRef = useRef<HTMLDivElement>(null);
   const hasTriggeredCompletion = useRef(false);
 
-  // Auto-complete content blocks when they come into view
+  // Improved auto-complete logic with lower thresholds and better timing
   useEffect(() => {
     if (!user || isCompleted || hasTriggeredCompletion.current) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const entry = entries[0];
-        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
-          // Mark as completed after 2 seconds of viewing
+        // Lower threshold - mark as read when 30% is visible
+        if (entry.isIntersectionRatio > 0.3) {
+          // Much shorter delay - 1 second instead of 2
           setTimeout(() => {
             if (!hasTriggeredCompletion.current && !isCompleted) {
               console.log(`Auto-completing content block ${block.id}: ${block.title}`);
               hasTriggeredCompletion.current = true;
               onComplete();
             }
-          }, 2000);
+          }, 1000);
         }
       },
-      { threshold: 0.5 }
+      { 
+        threshold: [0.1, 0.3, 0.5, 0.7], // Multiple thresholds for better detection
+        rootMargin: '0px 0px -10% 0px' // Start detection slightly before fully visible
+      }
     );
 
     if (blockRef.current) {
@@ -62,6 +65,15 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
       observer.disconnect();
     };
   }, [user, isCompleted, onComplete, block.id, block.title]);
+
+  // Manual completion fallback - click anywhere on the card to mark as read
+  const handleCardClick = () => {
+    if (!isCompleted && user && !hasTriggeredCompletion.current) {
+      console.log(`Manual completion triggered for block ${block.id}: ${block.title}`);
+      hasTriggeredCompletion.current = true;
+      onComplete();
+    }
+  };
 
   const getBlockIcon = () => {
     switch (block.type) {
@@ -253,9 +265,11 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   return (
     <Card 
       ref={blockRef}
+      onClick={handleCardClick}
       className={cn(
-        "shadow-sm backdrop-blur-sm transition-all duration-300 my-8",
-        "border border-gray-200 bg-white/60"
+        "shadow-sm backdrop-blur-sm transition-all duration-300 my-8 cursor-pointer",
+        "border border-gray-200 bg-white/60",
+        isCompleted ? "border-green-200 bg-green-50/30" : "hover:bg-gray-50/80"
       )}
     >
       <CardHeader className="pb-4">
@@ -271,6 +285,9 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
               <CheckCircle className="w-3 h-3 mr-1" />
               Read
             </Badge>
+          )}
+          {!isCompleted && (
+            <span className="text-xs text-gray-500 ml-auto">Click to mark as read</span>
           )}
         </div>
       </CardHeader>
