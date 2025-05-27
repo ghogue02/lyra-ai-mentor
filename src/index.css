@@ -1,3 +1,4 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -97,5 +98,30 @@
 
   body {
     @apply bg-background text-foreground;
+  }
+}
+
+/* Custom styles for proper text flow and list alignment */
+@layer utilities {
+  .clear-left {
+    clear: left;
+  }
+  
+  /* Ensure floated images don't interfere with list alignment */
+  ul li {
+    clear: none;
+    overflow: hidden;
+  }
+  
+  /* Prevent floated images from affecting bullet list structure */
+  .prose ul {
+    overflow: hidden;
+  }
+  
+  /* Ensure proper containment for floated elements */
+  .prose::after {
+    content: "";
+    display: table;
+    clear: both;
   }
 }

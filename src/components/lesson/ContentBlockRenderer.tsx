@@ -80,8 +80,26 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     }
   };
 
+  // Analyze content to determine if it's primarily lists or paragraphs
+  const analyzeContentType = (content: string) => {
+    const lines = content.split('\n').filter(line => line.trim());
+    const bulletLines = lines.filter(line => 
+      line.trim().startsWith('•') || 
+      line.trim().startsWith('-') || 
+      line.trim().startsWith('*')
+    );
+    
+    // If more than 60% of lines are bullet points, consider it a list-heavy content
+    const isListHeavy = bulletLines.length / lines.length > 0.6;
+    return {
+      isListHeavy,
+      totalLines: lines.length,
+      bulletLines: bulletLines.length
+    };
+  };
+
   const formatTextContent = (content: string) => {
-    // Split content by double line breaks to create paragraphs
+    const contentAnalysis = analyzeContentType(content);
     const sections = content.split('\n\n').filter(section => section.trim());
     
     return sections.map((section, index) => {
@@ -96,37 +114,49 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
       );
       
       if (isBulletList) {
-        // Render as a list
+        // For bullet lists, place image above the list if it's the first section and content is list-heavy
         return (
-          <ul key={index} className="space-y-3 mb-6 pl-1">
-            {lines.map((line, lineIndex) => {
-              const cleanLine = line.trim().replace(/^[•\-\*]\s*/, '');
-              if (!cleanLine) return null;
-              
-              return (
-                <li key={lineIndex} className="flex items-start gap-3 leading-relaxed">
-                  <span className="text-purple-500 mt-1 text-sm font-bold">•</span>
-                  <span className="text-gray-700 text-base leading-relaxed">
-                    {formatInlineText(cleanLine)}
-                  </span>
-                </li>
-              );
-            }).filter(Boolean)}
-          </ul>
+          <div key={index} className="mb-6 last:mb-0">
+            {index === 0 && nextAIImage && contentAnalysis.isListHeavy && (
+              <div className="mb-4 flex justify-center">
+                <AIGeneratedImage 
+                  prompt={nextAIImage.content} 
+                  className="w-32 h-24"
+                />
+              </div>
+            )}
+            <ul className="space-y-3 pl-1">
+              {lines.map((line, lineIndex) => {
+                const cleanLine = line.trim().replace(/^[•\-\*]\s*/, '');
+                if (!cleanLine) return null;
+                
+                return (
+                  <li key={lineIndex} className="flex items-start gap-3 leading-relaxed">
+                    <span className="text-purple-500 mt-1 text-sm font-bold">•</span>
+                    <span className="text-gray-700 text-base leading-relaxed">
+                      {formatInlineText(cleanLine)}
+                    </span>
+                  </li>
+                );
+              }).filter(Boolean)}
+            </ul>
+          </div>
         );
       } else {
-        // Render as a paragraph with potential inline image
+        // For paragraph text, use inline floating image if content is not list-heavy
         return (
           <div key={index} className="text-gray-700 text-base leading-relaxed mb-6 last:mb-0">
-            {index === 0 && nextAIImage && (
+            {index === 0 && nextAIImage && !contentAnalysis.isListHeavy && (
               <AIGeneratedImage 
                 prompt={nextAIImage.content} 
-                className="float-left mr-4 mb-2"
+                className="float-left mr-4 mb-2 w-32 h-24"
               />
             )}
             <p className="inline">
               {formatInlineText(trimmedSection.replace(/\n/g, ' '))}
             </p>
+            {/* Clear float after paragraph to prevent layout issues */}
+            <div className="clear-left"></div>
           </div>
         );
       }
@@ -135,7 +165,6 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
 
   const formatInlineText = (text: string) => {
     // Handle bold text formatting - catch any text surrounded by asterisks
-    // This will match *text*, **text**, *text**, **text*, etc.
     const parts = text.split(/(\*+[^*]+\*+)/g);
     
     return parts.map((part, index) => {
@@ -157,23 +186,33 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     switch (block.type) {
       case 'text':
         return (
-          <div className="prose prose-base max-w-none">
+          <div className="prose prose-base max-w-none overflow-hidden">
             {formatTextContent(block.content)}
           </div>
         );
       case 'list':
         const listItems = block.content.split('\n').filter(item => item.trim());
         return (
-          <ul className="space-y-3 pl-1">
-            {listItems.map((item, index) => (
-              <li key={index} className="flex items-start gap-3 leading-relaxed">
-                <span className="text-purple-500 mt-1 text-sm font-bold">•</span>
-                <span className="text-gray-700 text-base leading-relaxed">
-                  {formatInlineText(item.replace(/^[•\-\*]\s*/, ''))}
-                </span>
-              </li>
-            ))}
-          </ul>
+          <div className="mb-6 last:mb-0">
+            {nextAIImage && (
+              <div className="mb-4 flex justify-center">
+                <AIGeneratedImage 
+                  prompt={nextAIImage.content} 
+                  className="w-32 h-24"
+                />
+              </div>
+            )}
+            <ul className="space-y-3 pl-1">
+              {listItems.map((item, index) => (
+                <li key={index} className="flex items-start gap-3 leading-relaxed">
+                  <span className="text-purple-500 mt-1 text-sm font-bold">•</span>
+                  <span className="text-gray-700 text-base leading-relaxed">
+                    {formatInlineText(item.replace(/^[•\-\*]\s*/, ''))}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         );
       case 'image':
         return (
@@ -199,7 +238,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         );
       default:
         return (
-          <div className="prose prose-base max-w-none">
+          <div className="prose prose-base max-w-none overflow-hidden">
             {formatTextContent(block.content)}
           </div>
         );
