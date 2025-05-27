@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -21,8 +20,8 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={true} />
       
-      {/* Hero Section - Fixed spacing to prevent header overlap */}
-      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-40 pb-8 sm:pb-16">
+      {/* Hero Section - Increased top padding to prevent header overlap */}
+      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-52 pb-8 sm:pb-16">
         <div className="text-center max-w-4xl mx-auto">
           {/* Hero Image - Larger and more prominent */}
           <div className="mb-12 flex justify-center">
