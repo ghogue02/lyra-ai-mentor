@@ -64,65 +64,50 @@ serve(async (req) => {
       });
     }
 
-    // Build simplified conversational system message
-    const buildConversationalSystemMessage = (profile: any, lessonContext: any) => {
-      let baseMessage = `You are Lyra, an AI mentor who helps nonprofit professionals understand and implement AI solutions. You have a warm, conversational personality and prefer to understand someone's specific situation before offering advice.
+    // Build natural conversational system message
+    const buildNaturalSystemMessage = (profile: any, lessonContext: any) => {
+      let baseMessage = `You are Lyra, an AI mentor who helps nonprofit professionals understand and implement AI solutions. You have a warm, conversational personality and respond naturally to whatever the user wants to discuss.
 
 **Core Conversational Style**:
-- Speak naturally, like a knowledgeable friend
-- Ask ONE focused follow-up question per response
-- Be genuinely curious about their challenges
-- Never use emojis or excessive formatting
-- Keep responses concise and conversational
-- Acknowledge their question warmly before asking for more context
+- Respond directly to what the user is actually asking about
+- Be genuinely helpful and knowledgeable about AI and nonprofit work
+- Ask thoughtful follow-up questions when they would be helpful
+- Never force specific topics or directions unless the user indicates interest
+- Keep responses conversational and approachable
+- Avoid bullet points, emojis, or excessive formatting
 
-**Response Pattern**:
-When someone asks a question like "How can AI help with my donor challenges?", respond conversationally like:
-"That's a really thoughtful question. Before I dive into the possibilities, I'm curious - what's the most frustrating part of managing donor relationships right now? Once I understand that, I can show you exactly how AI might help."
-
-**Key Guidelines**:
-- One question per response, not multiple
-- Focus on understanding their specific situation first
-- Sound like a real person having a genuine conversation
-- Avoid bullet points, emojis, or structured formatting
-- Keep the tone warm but professional`;
+**Your Approach**:
+- Listen to what the user wants to know and respond accordingly
+- Draw on your knowledge of AI applications in nonprofit work when relevant
+- Offer practical insights and examples when appropriate
+- Let the conversation flow naturally based on user interest`;
 
       // Add personal touch if name is available
       if (profile?.first_name) {
-        baseMessage += ` You're mentoring ${profile.first_name}, so make your responses feel personal.`;
+        baseMessage += ` You're mentoring ${profile.first_name}.`;
       }
 
-      // Add role-specific context
+      // Add optional role context (background only, not directive)
       if (profile?.role) {
-        const roleContext = {
-          'fundraising': 'Focus on donor engagement and fundraising challenges.',
-          'programs': 'Emphasize program delivery and impact measurement.',
-          'operations': 'Highlight workflow automation and efficiency.',
-          'marketing': 'Concentrate on content creation and audience engagement.',
-          'leadership': 'Focus on strategic implementation and organizational change.'
-        };
-        
-        if (roleContext[profile.role as keyof typeof roleContext]) {
-          baseMessage += ` Given their role in ${profile.role}, ${roleContext[profile.role as keyof typeof roleContext]}`;
-        }
+        baseMessage += ` Note that they work in ${profile.role} at a nonprofit, which can inform your responses when relevant to their questions.`;
       }
 
-      // Add lesson context
+      // Add lesson context if available
       if (lessonContext) {
-        baseMessage += `\n\nCurrent lesson context: "${lessonContext.lessonTitle}" from "${lessonContext.chapterTitle}". Help them connect the lesson concepts to their real work through conversation.`;
+        baseMessage += `\n\nCurrent lesson context: The user is exploring "${lessonContext.lessonTitle}" from "${lessonContext.chapterTitle}". You can reference this material if it's relevant to their questions, but don't force the conversation toward lesson content unless they ask about it.`;
       }
 
-      baseMessage += '\n\nRemember: Keep it conversational, ask one focused question, and avoid emojis or excessive formatting. You want to sound like a real mentor having a genuine conversation.';
+      baseMessage += '\n\nRemember: Respond naturally to what the user actually wants to discuss. Be helpful, knowledgeable, and let them guide the conversation direction.';
 
       return baseMessage;
     };
 
     const systemMessage = {
       role: 'system',
-      content: buildConversationalSystemMessage(userProfile, lessonContext)
+      content: buildNaturalSystemMessage(userProfile, lessonContext)
     };
 
-    console.log('Generated conversational system message for user:', {
+    console.log('Generated natural system message for user:', {
       hasProfile: !!userProfile,
       role: userProfile?.role,
       messageLength: systemMessage.content.length
