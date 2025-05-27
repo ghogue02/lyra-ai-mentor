@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 // Simplified icon categories using only existing icons in Supabase Storage
@@ -23,15 +22,15 @@ export const SUPABASE_ICONS = {
     loading: 'lyra-avatar.png'
   },
   
-  // User role specific avatars (using existing icons only)
+  // User role specific avatars (using correct role-specific icons)
   userRoles: {
-    fundraising: 'user-role-it.png', // fallback to existing role icon
-    programs: 'user-role-marketing.png', // fallback to existing role icon
-    operations: 'user-role-it.png',
-    marketing: 'user-role-marketing.png', // using existing icon
-    it: 'user-role-it.png', // using existing icon
-    leadership: 'user-role-marketing.png', // fallback
-    other: 'user-role-it.png' // fallback
+    fundraising: 'user-role-fundraising.png',
+    programs: 'user-role-programs.png',
+    operations: 'user-role-operations.png',
+    marketing: 'user-role-marketing.png',
+    it: 'user-role-it.png',
+    leadership: 'user-role-leadership.png',
+    other: 'user-role-other.png'
   },
   
   // Chapter icons (mapped to existing icons)
