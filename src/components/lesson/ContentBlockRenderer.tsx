@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -121,14 +120,15 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   };
 
   const formatInlineText = (text: string) => {
-    // Handle bold text formatting and remove asterisks completely
-    // Split on **text** pattern but remove the asterisks from display
-    const parts = text.split(/(\*\*.*?\*\*)/g);
+    // Handle bold text formatting - catch any text surrounded by asterisks
+    // This will match *text*, **text**, *text**, **text*, etc.
+    const parts = text.split(/(\*+[^*]+\*+)/g);
     
     return parts.map((part, index) => {
-      if (part.startsWith('**') && part.endsWith('**')) {
-        // Remove the asterisks and make text bold
-        const boldText = part.slice(2, -2);
+      // Check if this part contains asterisks (indicating bold text)
+      if (part.includes('*') && part.match(/\*+[^*]+\*+/)) {
+        // Remove ALL asterisks and make text bold
+        const boldText = part.replace(/\*/g, '');
         return (
           <strong key={index} className="font-semibold text-gray-800">
             {boldText}
