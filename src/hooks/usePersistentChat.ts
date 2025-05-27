@@ -56,42 +56,58 @@ export const usePersistentChat = (
   // Load existing conversation when component mounts
   useEffect(() => {
     if (user && lessonId && chapterId) {
-      loadUserProfile();
-      loadOrCreateConversation();
+      initializeChat();
     }
   }, [user, lessonId, chapterId]);
+
+  const initializeChat = async () => {
+    setIsLoading(true);
+    console.log('Starting chat initialization...');
+    
+    // Load user profile FIRST
+    await loadUserProfile();
+    
+    // Then load or create conversation with profile data available
+    await loadOrCreateConversation();
+    
+    setIsLoading(false);
+  };
 
   const loadUserProfile = async () => {
     if (!user) return;
 
     try {
+      console.log('Loading user profile...');
       const { data: profile } = await supabase
         .from('profiles')
         .select('profile_completed, first_name, role, tech_comfort, ai_experience, learning_style, organization_name, organization_type')
         .eq('user_id', user.id)
         .single();
 
+      console.log('User profile loaded:', profile);
       setUserProfile(profile);
     } catch (error) {
       console.error('Error loading user profile:', error);
     }
   };
 
-  const createPersonalizedInitialMessage = () => {
-    if (!userProfile) {
+  const createPersonalizedInitialMessage = (profile: UserProfile | null) => {
+    console.log('Creating personalized initial message with profile:', profile);
+    
+    if (!profile) {
       return lessonContext 
         ? `Hi! 👋 I'm Lyra, your AI mentor. I can see you're working on "${lessonContext.lessonTitle}". What questions do you have about this lesson?`
         : "Hi there! 👋 I'm Lyra, your AI mentor. I'm here to help you navigate your learning journey. What questions do you have about AI?";
     }
 
-    let greeting = `Hi${userProfile.first_name ? ` ${userProfile.first_name}` : ''}! 👋 I'm Lyra, your AI mentor.`;
+    let greeting = `Hi${profile.first_name ? ` ${profile.first_name}` : ''}! 👋 I'm Lyra, your AI mentor.`;
     
     if (lessonContext) {
       greeting += ` I can see you're working on "${lessonContext.lessonTitle}".`;
     }
 
     // Add role-specific context if available
-    if (userProfile.role) {
+    if (profile.role) {
       const roleContext = {
         'fundraising': 'As someone in fundraising, I can help you explore how AI can enhance donor engagement and optimize your fundraising strategies.',
         'programs': 'As a programs professional, I can show you how AI can improve program delivery and impact measurement.',
@@ -100,19 +116,20 @@ export const usePersistentChat = (
         'leadership': 'As a leader, I can help you understand strategic AI implementation for your organization.'
       };
       
-      const context = roleContext[userProfile.role as keyof typeof roleContext];
+      const context = roleContext[profile.role as keyof typeof roleContext];
       if (context) {
         greeting += ` ${context}`;
       }
     }
 
     // Add profile completion reminder if needed
-    if (!userProfile.profile_completed) {
+    if (!profile.profile_completed) {
       greeting += '\n\n💡 *Tip: Complete your profile to unlock even more personalized guidance tailored to your specific role and experience level!*';
     }
 
     greeting += '\n\nWhat questions do you have?';
     
+    console.log('Generated greeting:', greeting);
     return greeting;
   };
 
@@ -120,7 +137,7 @@ export const usePersistentChat = (
     if (!user) return;
 
     try {
-      setIsLoading(true);
+      console.log('Loading or creating conversation...');
       
       // Try to find existing conversation for this lesson
       const { data: existingConversation } = await supabase
@@ -136,6 +153,7 @@ export const usePersistentChat = (
       let currentConversationId = existingConversation?.id;
 
       if (!existingConversation) {
+        console.log('Creating new conversation...');
         // Create new conversation - cast lessonContext to Json type
         const { data: newConversation, error } = await supabase
           .from('chat_conversations')
@@ -152,8 +170,8 @@ export const usePersistentChat = (
         if (error) throw error;
         currentConversationId = newConversation.id;
 
-        // Add personalized initial AI message
-        const initialMessage = createPersonalizedInitialMessage();
+        // Add personalized initial AI message using the loaded profile
+        const initialMessage = createPersonalizedInitialMessage(userProfile);
         await saveMessage(currentConversationId, initialMessage, false, 0);
       }
 
@@ -168,12 +186,10 @@ export const usePersistentChat = (
       // Set default message if loading fails
       setMessages([{
         id: '1',
-        content: createPersonalizedInitialMessage(),
+        content: createPersonalizedInitialMessage(userProfile),
         isUser: false,
         timestamp: new Date()
       }]);
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -358,7 +374,7 @@ export const usePersistentChat = (
         .eq('conversation_id', conversationId);
 
       // Create new personalized initial message
-      const initialMessage = createPersonalizedInitialMessage();
+      const initialMessage = createPersonalizedInitialMessage(userProfile);
       await saveMessage(conversationId, initialMessage, false, 0);
 
       setMessages([{
