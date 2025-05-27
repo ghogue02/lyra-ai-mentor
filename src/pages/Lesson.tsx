@@ -7,6 +7,7 @@ import { Progress } from "@/components/ui/progress";
 import { Navbar } from '@/components/Navbar';
 import { ContentBlockRenderer } from '@/components/lesson/ContentBlockRenderer';
 import { InteractiveElementRenderer } from '@/components/lesson/InteractiveElementRenderer';
+import { LessonProgress } from '@/components/lesson/LessonProgress';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { ArrowLeft, ArrowRight, Clock, CheckCircle } from 'lucide-react';
@@ -50,6 +51,10 @@ export const Lesson = () => {
   const [loading, setLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [completedBlocks, setCompletedBlocks] = useState<Set<number>>(new Set());
+  const [chatEngagement, setChatEngagement] = useState<{ hasReachedMinimum: boolean; exchangeCount: number }>({
+    hasReachedMinimum: false,
+    exchangeCount: 0
+  });
 
   useEffect(() => {
     fetchLessonData();
@@ -234,11 +239,13 @@ export const Lesson = () => {
           
           {user && (
             <div className="mt-6">
-              <div className="flex justify-between text-sm text-gray-600 mb-2">
-                <span>Progress</span>
-                <span>{Math.round(progress)}%</span>
-              </div>
-              <Progress value={progress} className="w-full max-w-md" />
+              <LessonProgress
+                completedBlocks={completedBlocks.size}
+                totalBlocks={contentBlocks.length}
+                estimatedDuration={lesson.estimated_duration}
+                isCompleted={progress === 100}
+                chatEngagement={chatEngagement}
+              />
             </div>
           )}
         </div>
@@ -258,6 +265,7 @@ export const Lesson = () => {
                   element={item as InteractiveElement}
                   lessonId={parseInt(lessonId!)}
                   lessonContext={lessonContext}
+                  onChatEngagementChange={setChatEngagement}
                 />
               )}
             </div>

@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -18,13 +17,15 @@ interface FullScreenChatOverlayProps {
     content?: string;
   };
   suggestedTask?: string;
+  onEngagementChange?: (engagement: { hasReachedMinimum: boolean; exchangeCount: number }) => void;
 }
 
 export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   isOpen,
   onClose,
   lessonContext,
-  suggestedTask
+  suggestedTask,
+  onEngagementChange
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -40,6 +41,11 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   } = useLyraChat(lessonContext);
 
   const { engagement, incrementExchange, resetEngagement } = useChatEngagement(3);
+
+  // Notify parent component of engagement changes
+  useEffect(() => {
+    onEngagementChange?.(engagement);
+  }, [engagement, onEngagementChange]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });

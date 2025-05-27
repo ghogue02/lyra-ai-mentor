@@ -1,8 +1,7 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
-import { CheckCircle } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
+import { FormattedMessage } from './FormattedMessage';
 import { cn } from '@/lib/utils';
 
 interface Message {
@@ -24,9 +23,7 @@ interface ChatMessagesProps {
 export const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   isTyping,
-  engagement,
-  messagesEndRef,
-  onForceClose
+  messagesEndRef
 }) => {
   return (
     <div className="overflow-y-auto p-6 bg-gray-900 min-h-0">
@@ -48,13 +45,17 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
               )}
               <div
                 className={cn(
-                  "p-4 rounded-lg text-sm leading-relaxed shadow-lg",
+                  "p-4 rounded-lg shadow-lg",
                   message.isUser
                     ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-br-none"
                     : "bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700"
                 )}
               >
-                {message.content}
+                {message.isUser ? (
+                  <div className="text-sm leading-relaxed">{message.content}</div>
+                ) : (
+                  <FormattedMessage content={message.content} />
+                )}
               </div>
             </div>
           </div>
@@ -71,26 +72,6 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
                 </div>
               </div>
-            </div>
-          </div>
-        )}
-
-        {/* Completion message */}
-        {engagement.hasReachedMinimum && (
-          <div className="flex justify-center animate-fade-in">
-            <div className="bg-green-900/50 border border-green-700 rounded-lg p-4 max-w-md text-center">
-              <CheckCircle className="w-6 h-6 text-green-400 mx-auto mb-2" />
-              <h4 className="font-semibold text-green-200 mb-1">Great work!</h4>
-              <p className="text-sm text-green-300">
-                You've completed your learning session with Lyra. Feel free to continue chatting or close to move on to the next part of your lesson.
-              </p>
-              <Button
-                onClick={onForceClose}
-                className="mt-3 bg-green-600 hover:bg-green-700 text-white"
-                size="sm"
-              >
-                Continue Learning
-              </Button>
             </div>
           </div>
         )}
