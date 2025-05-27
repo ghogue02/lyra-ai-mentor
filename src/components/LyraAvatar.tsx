@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { cn } from '@/lib/utils';
 import { getLyraIconUrl } from '@/utils/supabaseIcons';
 
@@ -18,6 +18,9 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
   expression = 'default',
   animated = true
 }) => {
+  const [imageError, setImageError] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   const sizeClasses = {
     sm: 'w-12 h-12',
     md: 'w-20 h-20',
@@ -39,6 +42,19 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
     xl: 'text-4xl'
   };
 
+  const iconUrl = getLyraIconUrl(expression);
+  console.log(`LyraAvatar rendering with expression: ${expression}, URL: ${iconUrl}`);
+
+  const handleImageError = () => {
+    console.error(`Failed to load Lyra image for expression: ${expression}, URL: ${iconUrl}`);
+    setImageError(true);
+  };
+
+  const handleImageLoad = () => {
+    console.log(`Successfully loaded Lyra image for expression: ${expression}`);
+    setImageLoaded(true);
+  };
+
   return (
     <div className={cn("relative", className)}>
       <div className={cn(
@@ -46,18 +62,33 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
         sizeClasses[size],
         animated && "transition-transform duration-300 hover:scale-105"
       )}>
-        <img 
-          src={getLyraIconUrl(expression)} 
-          alt={`Lyra AI Assistant - ${expression}`}
-          className={cn(
-            "object-contain rounded-lg",
-            iconSizeClasses[size],
-            expression === 'loading' && "animate-pulse"
-          )}
-        />
+        {imageError ? (
+          // Fallback content when image fails to load
+          <div className={cn(
+            "bg-gradient-to-br from-purple-100 to-cyan-100 rounded-lg flex items-center justify-center text-purple-600 font-bold",
+            iconSizeClasses[size]
+          )}>
+            <span className="text-xl">🤖</span>
+          </div>
+        ) : (
+          <img 
+            src={iconUrl} 
+            alt={`Lyra AI Assistant - ${expression}`}
+            className={cn(
+              "object-contain rounded-lg",
+              iconSizeClasses[size],
+              expression === 'loading' && "animate-pulse",
+              !imageLoaded && "opacity-0",
+              imageLoaded && "opacity-100 transition-opacity duration-300"
+            )}
+            onError={handleImageError}
+            onLoad={handleImageLoad}
+            loading="eager"
+          />
+        )}
       </div>
       
-      {withWave && expression !== 'loading' && (
+      {withWave && expression !== 'loading' && !imageError && (
         <div className={cn(
           "absolute -top-2 -right-2 animate-bounce",
           waveSize[size]

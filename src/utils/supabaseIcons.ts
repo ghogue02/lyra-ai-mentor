@@ -13,7 +13,7 @@ export const SUPABASE_ICONS = {
     logoCompact: 'navbar-logo.png'
   },
   
-  // Lyra expressions (using specialized icons)
+  // Lyra expressions (using specialized icons with better fallbacks)
   lyra: {
     default: 'lyra-avatar.png',
     thinking: 'lyra-thinking.png',
@@ -124,10 +124,11 @@ export const ROLE_MESSAGING = {
 } as const;
 
 /**
- * Get the full Supabase Storage URL for an icon with error handling
+ * Get the full Supabase Storage URL for an icon with enhanced error handling and fallbacks
  */
 export const getSupabaseIconUrl = (iconPath: string): string => {
   try {
+    console.log(`Getting icon URL for: ${iconPath}`);
     const { data } = supabase.storage
       .from('app-icons')
       .getPublicUrl(iconPath);
@@ -136,13 +137,14 @@ export const getSupabaseIconUrl = (iconPath: string): string => {
     const url = new URL(data.publicUrl);
     url.searchParams.set('t', Date.now().toString());
     
+    console.log(`Generated URL: ${url.toString()}`);
     return url.toString();
   } catch (error) {
     console.warn(`Failed to get icon URL for: ${iconPath}`, error);
-    // Return a fallback to lyra-avatar if there's an error
+    // Return a fallback using a known working icon
     const { data } = supabase.storage
       .from('app-icons')
-      .getPublicUrl('lyra-avatar.png');
+      .getPublicUrl('navbar-logo.png'); // Use navbar logo as ultimate fallback
     return data.publicUrl;
   }
 };
@@ -180,11 +182,30 @@ export const getRoleOnboardingIconUrl = (role: string): string => {
 };
 
 /**
- * Get Lyra expression icon URL by state with fallback
+ * Get Lyra expression icon URL by state with enhanced fallback system
  */
 export const getLyraIconUrl = (state: keyof typeof SUPABASE_ICONS.lyra = 'default'): string => {
-  const iconPath = SUPABASE_ICONS.lyra[state] || SUPABASE_ICONS.lyraAvatar;
-  return getSupabaseIconUrl(iconPath);
+  console.log(`Getting Lyra icon for state: ${state}`);
+  
+  // First try the specific state icon
+  let iconPath = SUPABASE_ICONS.lyra[state];
+  
+  // If the specific state doesn't exist, fallback to default
+  if (!iconPath) {
+    console.log(`State ${state} not found, falling back to default`);
+    iconPath = SUPABASE_ICONS.lyra.default;
+  }
+  
+  // Enhanced fallback - if Lyra-specific icons don't work, use a known working icon
+  try {
+    const url = getSupabaseIconUrl(iconPath);
+    console.log(`Lyra icon URL generated: ${url}`);
+    return url;
+  } catch (error) {
+    console.warn(`Failed to get Lyra icon, using ultimate fallback`, error);
+    // Use navbar logo as ultimate fallback since we know it exists
+    return getSupabaseIconUrl('navbar-logo.png');
+  }
 };
 
 /**
