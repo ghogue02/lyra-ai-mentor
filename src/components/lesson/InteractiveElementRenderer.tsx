@@ -77,6 +77,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     if (!user) return;
 
     try {
+      console.log(`Loading completion status for element ${element.id}`);
+      
       const { data, error } = await supabase
         .from('interactive_element_progress')
         .select('completed')
@@ -88,6 +90,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       if (error) throw error;
 
       if (data?.completed) {
+        console.log(`Element ${element.id} is already completed`);
         setIsElementCompleted(true);
       }
     } catch (error: any) {
@@ -158,6 +161,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     if (!user || isElementCompleted) return;
 
     try {
+      console.log(`Marking element ${element.id} as completed`);
+      
       const { error } = await supabase
         .from('interactive_element_progress')
         .upsert({
@@ -170,6 +175,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
 
       if (error) throw error;
 
+      console.log(`Element ${element.id} marked as completed successfully`);
       setIsElementCompleted(true);
       onElementComplete?.(element.id);
     } catch (error: any) {
@@ -217,7 +223,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
 
     setIsReflectionSaving(true);
     try {
-      const { error } = await supabase
+      // Save the reflection
+      const { error: reflectionError } = await supabase
         .from('user_interactions')
         .insert({
           user_id: user.id,
@@ -231,10 +238,13 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           }
         });
 
-      if (error) throw error;
+      if (reflectionError) throw reflectionError;
 
       setReflectionSaved(true);
+      
+      // Mark the element as completed after saving reflection
       await markElementComplete();
+      
       toast({
         title: "Reflection saved!",
         description: "Your thoughts have been saved to your learning journal."
@@ -397,6 +407,12 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
                 <Eye className="w-3 h-3 mr-1" />
                 Mark as Read
               </Button>
+            )}
+            {isElementCompleted && (
+              <Badge className="bg-green-100 text-green-700 text-xs">
+                <CheckSquare className="w-3 h-3 mr-1" />
+                Read
+              </Badge>
             )}
           </div>
         </div>

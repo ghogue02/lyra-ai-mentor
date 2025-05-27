@@ -70,10 +70,14 @@ export const Lesson = () => {
     fetchLessonData();
   }, [chapterId, lessonId, user]);
 
+  // Calculate progress whenever completion states change
+  useEffect(() => {
+    updateProgress(completedBlocks, completedInteractiveElements);
+  }, [completedBlocks, completedInteractiveElements, contentBlocks.length, interactiveElements.length]);
+
   const fetchLessonData = async () => {
     if (!chapterId || !lessonId) return;
 
-    // Convert string params to numbers
     const chapterIdNum = parseInt(chapterId);
     const lessonIdNum = parseInt(lessonId);
     if (isNaN(chapterIdNum) || isNaN(lessonIdNum)) {
@@ -111,6 +115,7 @@ export const Lesson = () => {
         error: elementsError
       } = await supabase.from('interactive_elements').select('*').eq('lesson_id', lessonIdNum).order('order_index');
       if (elementsError) throw elementsError;
+      
       setLesson({
         ...lessonData,
         chapter: lessonData.chapters
@@ -120,6 +125,8 @@ export const Lesson = () => {
 
       // Fetch user progress if authenticated
       if (user) {
+        console.log('Fetching progress for user:', user.id, 'lesson:', lessonIdNum);
+        
         // Fetch content block progress
         const { data: progressData } = await supabase
           .from('lesson_progress_detailed')
@@ -130,9 +137,10 @@ export const Lesson = () => {
         const completedBlockIds = new Set(
           progressData?.filter(p => p.completed).map(p => p.content_block_id) || []
         );
+        console.log('Completed content blocks:', Array.from(completedBlockIds));
         setCompletedBlocks(completedBlockIds);
 
-        // Fetch interactive element progress - now properly checking all elements
+        // Fetch interactive element progress
         const { data: interactiveProgressData } = await supabase
           .from('interactive_element_progress')
           .select('interactive_element_id, completed')
@@ -142,6 +150,7 @@ export const Lesson = () => {
         const completedInteractiveIds = new Set(
           interactiveProgressData?.filter(p => p.completed).map(p => p.interactive_element_id) || []
         );
+        console.log('Completed interactive elements:', Array.from(completedInteractiveIds));
         setCompletedInteractiveElements(completedInteractiveIds);
 
         // Check if chapter is completed
@@ -153,11 +162,6 @@ export const Lesson = () => {
           .maybeSingle();
 
         setIsChapterCompleted(chapterProgressData?.chapter_completed || false);
-
-        // Calculate progress properly
-        const totalItems = (blocksData?.length || 0) + (elementsData?.length || 0);
-        const completedItems = completedBlockIds.size + completedInteractiveIds.size;
-        setProgress(totalItems > 0 ? (completedItems / totalItems) * 100 : 0);
 
         // Load overall chat engagement for this lesson
         const { data: chatData } = await supabase
@@ -187,7 +191,10 @@ export const Lesson = () => {
     if (!user || !lessonId || completedBlocks.has(blockId)) return;
     const lessonIdNum = parseInt(lessonId);
     if (isNaN(lessonIdNum)) return;
+    
     try {
+      console.log(`Marking content block ${blockId} as completed`);
+      
       await supabase.from('lesson_progress_detailed').upsert({
         user_id: user.id,
         lesson_id: lessonIdNum,
@@ -195,24 +202,34 @@ export const Lesson = () => {
         completed: true,
         last_accessed: new Date().toISOString()
       });
+      
       const newCompleted = new Set([...completedBlocks, blockId]);
       setCompletedBlocks(newCompleted);
-      updateProgress(newCompleted, completedInteractiveElements);
+      
+      console.log(`Content block ${blockId} marked as completed successfully`);
     } catch (error) {
-      console.error('Error updating progress:', error);
+      console.error('Error updating content block progress:', error);
     }
   };
 
   const handleInteractiveElementComplete = (elementId: number) => {
+    if (completedInteractiveElements.has(elementId)) return;
+    
+    console.log(`Interactive element ${elementId} completed`);
     const newCompleted = new Set([...completedInteractiveElements, elementId]);
     setCompletedInteractiveElements(newCompleted);
-    updateProgress(completedBlocks, newCompleted);
   };
 
   const updateProgress = (blockIds: Set<number>, elementIds: Set<number>) => {
     const totalItems = contentBlocks.length + interactiveElements.length;
     const completedItems = blockIds.size + elementIds.size;
-    setProgress(totalItems > 0 ? (completedItems / totalItems) * 100 : 0);
+    const newProgress = totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
+    
+    console.log(`Progress update: ${completedItems}/${totalItems} = ${newProgress}%`);
+    console.log('Completed blocks:', Array.from(blockIds));
+    console.log('Completed elements:', Array.from(elementIds));
+    
+    setProgress(newProgress);
   };
 
   const handleMarkChapterComplete = async () => {
@@ -261,6 +278,7 @@ export const Lesson = () => {
         </div>
       </div>;
   }
+  
   if (!lesson) {
     return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
         <Navbar showAuthButtons={false} />

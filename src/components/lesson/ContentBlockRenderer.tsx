@@ -1,9 +1,10 @@
 
-import React, { useState } from 'react';
-import { CheckCircle } from 'lucide-react';
+import React, { useEffect, useRef } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { CheckCircle, FileText, Image, Video, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useScrollCompletion } from '@/hooks/useScrollCompletion';
-import { InteractiveEngagement } from './InteractiveEngagement';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ContentBlock {
   id: number;
@@ -22,100 +23,133 @@ interface ContentBlockRendererProps {
 
 export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   block,
-  isCompleted: initiallyCompleted,
+  isCompleted,
   onComplete
 }) => {
-  const [hasInteracted, setHasInteracted] = useState(false);
-  
-  // Use scroll completion for introduction and basic content blocks
-  const shouldUseScrollCompletion = ['introduction', 'section'].includes(block.type);
-  
-  const { elementRef, isCompleted: scrollCompleted } = useScrollCompletion({
-    threshold: 0.8,
-    delay: shouldUseScrollCompletion ? 3000 : 0,
-    onComplete: shouldUseScrollCompletion ? onComplete : undefined
-  });
+  const { user } = useAuth();
+  const blockRef = useRef<HTMLDivElement>(null);
+  const hasTriggeredCompletion = useRef(false);
 
-  // Determine completion state
-  const isCompleted = initiallyCompleted || scrollCompleted || hasInteracted;
+  // Auto-complete content blocks when they come into view
+  useEffect(() => {
+    if (!user || isCompleted || hasTriggeredCompletion.current) return;
 
-  // Handle interactive completion
-  const handleInteraction = () => {
-    setHasInteracted(true);
-    if (!shouldUseScrollCompletion) {
-      onComplete();
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          // Mark as completed after 2 seconds of viewing
+          setTimeout(() => {
+            if (!hasTriggeredCompletion.current && !isCompleted) {
+              console.log(`Auto-completing content block ${block.id}: ${block.title}`);
+              hasTriggeredCompletion.current = true;
+              onComplete();
+            }
+          }, 2000);
+        }
+      },
+      { threshold: 0.5 }
+    );
+
+    if (blockRef.current) {
+      observer.observe(blockRef.current);
     }
-  };
 
-  // Get engagement type based on block type
-  const getEngagementType = () => {
+    return () => {
+      observer.disconnect();
+    };
+  }, [user, isCompleted, onComplete, block.id, block.title]);
+
+  const getBlockIcon = () => {
     switch (block.type) {
-      case 'example':
-        return 'understanding';
-      case 'section':
-        return 'insight';
+      case 'text':
+        return <FileText className="w-4 h-4" />;
+      case 'image':
+        return <Image className="w-4 h-4" />;
+      case 'video':
+        return <Video className="w-4 h-4" />;
+      case 'list':
+        return <List className="w-4 h-4" />;
       default:
-        return null;
+        return <FileText className="w-4 h-4" />;
     }
   };
 
-  const getBlockStyle = () => {
+  const renderContent = () => {
     switch (block.type) {
-      case 'introduction':
-        return 'border-l-2 border-l-purple-300 pl-6';
-      case 'section':
-        return 'border-l-2 border-l-blue-300 pl-6';
-      case 'example':
-        return 'border-l-2 border-l-green-300 pl-6 bg-green-50/30';
-      default:
-        return '';
-    }
-  };
-
-  const engagementType = getEngagementType();
-
-  return (
-    <div 
-      ref={elementRef}
-      className={cn(
-        "relative py-6 transition-all duration-300",
-        getBlockStyle()
-      )}
-    >
-      {/* Small completion indicator */}
-      {isCompleted && (
-        <div className="absolute -left-2 top-6">
-          <div className="bg-white rounded-full p-1 shadow-sm">
-            <CheckCircle className="w-3 h-3 text-green-600" />
+      case 'text':
+        return (
+          <div className="prose prose-sm max-w-none">
+            <div dangerouslySetInnerHTML={{ __html: block.content.replace(/\n/g, '<br />') }} />
           </div>
-        </div>
-      )}
-      
-      {/* Content */}
-      <div className="space-y-4">
-        {block.title && (
-          <h3 className="text-xl font-semibold text-gray-800 leading-relaxed">
-            {block.title}
-          </h3>
-        )}
-        
-        <div className="prose prose-gray max-w-none prose-p:leading-relaxed prose-p:text-gray-700">
-          <div className="whitespace-pre-wrap text-gray-700 leading-relaxed text-base">
-            {block.content}
-          </div>
-        </div>
-        
-        {/* Interactive engagement for specific block types */}
-        {engagementType && !isCompleted && (
-          <div className="mt-4 pt-3 border-t border-gray-100">
-            <InteractiveEngagement
-              type={engagementType}
-              onInteract={handleInteraction}
-              isCompleted={isCompleted}
+        );
+      case 'list':
+        const listItems = block.content.split('\n').filter(item => item.trim());
+        return (
+          <ul className="space-y-2">
+            {listItems.map((item, index) => (
+              <li key={index} className="flex items-start gap-2">
+                <span className="text-purple-500 mt-1">•</span>
+                <span>{item.replace(/^[•\-\*]\s*/, '')}</span>
+              </li>
+            ))}
+          </ul>
+        );
+      case 'image':
+        return (
+          <div className="flex justify-center">
+            <img 
+              src={block.metadata?.url || '/placeholder.svg'} 
+              alt={block.title}
+              className="max-w-full h-auto rounded-lg shadow-sm"
             />
           </div>
-        )}
-      </div>
-    </div>
+        );
+      case 'video':
+        return (
+          <div className="flex justify-center">
+            <video 
+              controls 
+              className="max-w-full h-auto rounded-lg shadow-sm"
+              src={block.metadata?.url}
+            >
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        );
+      default:
+        return <p className="text-gray-700 leading-relaxed">{block.content}</p>;
+    }
+  };
+
+  return (
+    <Card 
+      ref={blockRef}
+      className={cn(
+        "shadow-sm backdrop-blur-sm transition-all duration-300 my-8",
+        "border border-gray-200 bg-white/60"
+      )}
+    >
+      <CardHeader className="pb-3">
+        <div className="flex items-center gap-2">
+          <div className="text-gray-500">
+            {getBlockIcon()}
+          </div>
+          <CardTitle className="text-lg font-medium">
+            {block.title}
+          </CardTitle>
+          {isCompleted && (
+            <Badge className="bg-green-100 text-green-700 ml-auto">
+              <CheckCircle className="w-3 h-3 mr-1" />
+              Read
+            </Badge>
+          )}
+        </div>
+      </CardHeader>
+      
+      <CardContent className="pt-0">
+        {renderContent()}
+      </CardContent>
+    </Card>
   );
 };
