@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
@@ -6,7 +7,6 @@ import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { JourneyTab } from '@/components/dashboard/JourneyTab';
 import { ProfileTab } from '@/components/dashboard/ProfileTab';
-import { AdminRenameButton } from '@/components/AdminRenameButton';
 import { supabase } from '@/integrations/supabase/client';
 import { GraduationCap, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -145,9 +145,6 @@ export const Dashboard = () => {
           onboardingComplete={onboardingComplete}
           onSignOut={handleSignOut}
         />
-
-        {/* Admin Rename Button - Temporary for bulk rename operation */}
-        <AdminRenameButton />
 
         {/* Onboarding Progress */}
         {profile && !onboardingComplete && (
