@@ -39,11 +39,11 @@ export const Navbar = ({
             className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
             onClick={handleHomeClick}
           >
-            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center p-2">
+            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-xl flex items-center justify-center p-2 border border-purple-300">
               <img 
                 src={getNavbarIconUrl('logo')} 
                 alt="AI Learning Platform"
-                className="w-6 h-6 object-contain"
+                className="w-8 h-8 object-contain rounded-lg"
               />
             </div>
             <div className="hidden sm:block">

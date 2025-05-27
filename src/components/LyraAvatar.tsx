@@ -26,10 +26,10 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
   };
 
   const iconSizeClasses = {
-    sm: 'w-6 h-6',
-    md: 'w-10 h-10',
-    lg: 'w-12 h-12',
-    xl: 'w-16 h-16'
+    sm: 'w-8 h-8',
+    md: 'w-12 h-12',
+    lg: 'w-16 h-16',
+    xl: 'w-20 h-20'
   };
 
   const waveSize = {
@@ -42,7 +42,7 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
   return (
     <div className={cn("relative", className)}>
       <div className={cn(
-        "bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center shadow-lg p-2",
+        "bg-gradient-to-r from-purple-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg p-2",
         sizeClasses[size],
         animated && "transition-transform duration-300 hover:scale-105"
       )}>
@@ -50,7 +50,7 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
           src={getLyraIconUrl(expression)} 
           alt={`Lyra AI Assistant - ${expression}`}
           className={cn(
-            "object-contain",
+            "object-contain rounded-lg",
             iconSizeClasses[size],
             expression === 'loading' && "animate-pulse"
           )}
@@ -71,7 +71,7 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
       {/* Enhanced pulse animation */}
       {animated && (
         <div className={cn(
-          "absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full animate-pulse opacity-20",
+          "absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-xl animate-pulse opacity-20",
           sizeClasses[size]
         )} />
       )}
