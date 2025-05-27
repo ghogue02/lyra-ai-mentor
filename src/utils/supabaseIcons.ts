@@ -8,10 +8,10 @@ export const SUPABASE_ICONS = {
   heroMain: 'hero-main.png',
   dashboardMeditation: 'dashboard-meditation.png',
   
-  // Navbar and branding (using existing icons)
+  // Navbar and branding (using uploaded navbar logo)
   navbar: {
-    logo: 'lyra-avatar.png', // fallback to lyra avatar
-    logoCompact: 'lyra-avatar.png'
+    logo: 'navbar-logo.png', // now using the uploaded brain/lightbulb logo
+    logoCompact: 'navbar-logo.png'
   },
   
   // Lyra expressions (simplified to use existing icons)
@@ -94,7 +94,11 @@ export const getSupabaseIconUrl = (iconPath: string): string => {
       .from('app-icons')
       .getPublicUrl(iconPath);
     
-    return data.publicUrl;
+    // Add cache busting parameter to force refresh for updated files
+    const url = new URL(data.publicUrl);
+    url.searchParams.set('t', Date.now().toString());
+    
+    return url.toString();
   } catch (error) {
     console.warn(`Failed to get icon URL for: ${iconPath}`, error);
     // Return a fallback to lyra-avatar if there's an error
