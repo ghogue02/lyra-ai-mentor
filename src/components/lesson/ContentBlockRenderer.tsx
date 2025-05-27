@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, FileText, Image, Video, List } from 'lucide-react';
+import { CheckCircle, FileText, Image, Video, List, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { AIGeneratedImage } from './AIGeneratedImage';
 
 interface ContentBlock {
   id: number;
@@ -65,6 +66,8 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         return <FileText className="w-4 h-4" />;
       case 'image':
         return <Image className="w-4 h-4" />;
+      case 'ai_generated_image':
+        return <Sparkles className="w-4 h-4" />;
       case 'video':
         return <Video className="w-4 h-4" />;
       case 'list':
@@ -171,6 +174,18 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
             />
           </div>
         );
+      case 'ai_generated_image':
+        return (
+          <AIGeneratedImage
+            prompt={block.content}
+            title={block.title}
+            metadata={block.metadata || {
+              style: 'natural',
+              quality: 'standard',
+              size: '1024x1024'
+            }}
+          />
+        );
       case 'video':
         return (
           <div className="flex justify-center my-6">
@@ -191,6 +206,23 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         );
     }
   };
+
+  // For AI-generated images, render without the card wrapper for a cleaner look
+  if (block.type === 'ai_generated_image') {
+    return (
+      <div ref={blockRef} className="my-8">
+        {renderContent()}
+        {isCompleted && (
+          <div className="flex justify-center mt-4">
+            <Badge className="bg-green-100 text-green-700">
+              <CheckCircle className="w-3 h-3 mr-1" />
+              Viewed
+            </Badge>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <Card 
