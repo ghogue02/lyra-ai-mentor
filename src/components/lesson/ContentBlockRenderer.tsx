@@ -75,29 +75,93 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     }
   };
 
+  const formatTextContent = (content: string) => {
+    // Split content by double line breaks to create paragraphs
+    const sections = content.split('\n\n').filter(section => section.trim());
+    
+    return sections.map((section, index) => {
+      const trimmedSection = section.trim();
+      
+      // Check if this section contains bullet points
+      const lines = trimmedSection.split('\n');
+      const isBulletList = lines.some(line => 
+        line.trim().startsWith('•') || 
+        line.trim().startsWith('-') || 
+        line.trim().startsWith('*')
+      );
+      
+      if (isBulletList) {
+        // Render as a list
+        return (
+          <ul key={index} className="space-y-3 mb-6 pl-1">
+            {lines.map((line, lineIndex) => {
+              const cleanLine = line.trim().replace(/^[•\-\*]\s*/, '');
+              if (!cleanLine) return null;
+              
+              return (
+                <li key={lineIndex} className="flex items-start gap-3 leading-relaxed">
+                  <span className="text-purple-500 mt-1 text-sm font-bold">•</span>
+                  <span className="text-gray-700 text-base leading-relaxed">
+                    {formatInlineText(cleanLine)}
+                  </span>
+                </li>
+              );
+            }).filter(Boolean)}
+          </ul>
+        );
+      } else {
+        // Render as a paragraph
+        return (
+          <p key={index} className="text-gray-700 text-base leading-relaxed mb-6 last:mb-0">
+            {formatInlineText(trimmedSection.replace(/\n/g, ' '))}
+          </p>
+        );
+      }
+    });
+  };
+
+  const formatInlineText = (text: string) => {
+    // Handle bold text formatting (**text** becomes bold)
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    
+    return parts.map((part, index) => {
+      if (part.startsWith('**') && part.endsWith('**')) {
+        const boldText = part.slice(2, -2);
+        return (
+          <strong key={index} className="font-semibold text-gray-800">
+            {boldText}
+          </strong>
+        );
+      }
+      return part;
+    });
+  };
+
   const renderContent = () => {
     switch (block.type) {
       case 'text':
         return (
-          <div className="prose prose-sm max-w-none">
-            <div dangerouslySetInnerHTML={{ __html: block.content.replace(/\n/g, '<br />') }} />
+          <div className="prose prose-base max-w-none">
+            {formatTextContent(block.content)}
           </div>
         );
       case 'list':
         const listItems = block.content.split('\n').filter(item => item.trim());
         return (
-          <ul className="space-y-2">
+          <ul className="space-y-3 pl-1">
             {listItems.map((item, index) => (
-              <li key={index} className="flex items-start gap-2">
-                <span className="text-purple-500 mt-1">•</span>
-                <span>{item.replace(/^[•\-\*]\s*/, '')}</span>
+              <li key={index} className="flex items-start gap-3 leading-relaxed">
+                <span className="text-purple-500 mt-1 text-sm font-bold">•</span>
+                <span className="text-gray-700 text-base leading-relaxed">
+                  {formatInlineText(item.replace(/^[•\-\*]\s*/, ''))}
+                </span>
               </li>
             ))}
           </ul>
         );
       case 'image':
         return (
-          <div className="flex justify-center">
+          <div className="flex justify-center my-6">
             <img 
               src={block.metadata?.url || '/placeholder.svg'} 
               alt={block.title}
@@ -107,7 +171,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         );
       case 'video':
         return (
-          <div className="flex justify-center">
+          <div className="flex justify-center my-6">
             <video 
               controls 
               className="max-w-full h-auto rounded-lg shadow-sm"
@@ -118,7 +182,11 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           </div>
         );
       default:
-        return <p className="text-gray-700 leading-relaxed">{block.content}</p>;
+        return (
+          <div className="prose prose-base max-w-none">
+            {formatTextContent(block.content)}
+          </div>
+        );
     }
   };
 
@@ -130,12 +198,12 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         "border border-gray-200 bg-white/60"
       )}
     >
-      <CardHeader className="pb-3">
+      <CardHeader className="pb-4">
         <div className="flex items-center gap-2">
           <div className="text-gray-500">
             {getBlockIcon()}
           </div>
-          <CardTitle className="text-lg font-medium">
+          <CardTitle className="text-xl font-semibold text-gray-800">
             {block.title}
           </CardTitle>
           {isCompleted && (
@@ -147,7 +215,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         </div>
       </CardHeader>
       
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 px-6 pb-6">
         {renderContent()}
       </CardContent>
     </Card>
