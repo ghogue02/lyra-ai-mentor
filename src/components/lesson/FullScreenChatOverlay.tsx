@@ -135,15 +135,14 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
               />
             </div>
             
-            <div className="flex-shrink-0">
-              <ChatInput
-                inputValue={inputValue}
-                setInputValue={setInputValue}
-                onSendMessage={handleSendMessage}
-                isTyping={isTyping}
-                inputRef={inputRef}
-              />
-            </div>
+            <ChatInput
+              inputValue={inputValue}
+              setInputValue={setInputValue}
+              onSendMessage={handleSendMessage}
+              isTyping={isTyping}
+              inputRef={inputRef}
+              engagement={engagement}
+            />
           </div>
         </DialogContent>
       </Dialog>
