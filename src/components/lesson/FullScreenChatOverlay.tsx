@@ -140,6 +140,12 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     }
   };
 
+  const handleResetChat = () => {
+    clearChat();
+    resetEngagement();
+    setShowQuickActions(true);
+  };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={handleClose} modal>
@@ -160,6 +166,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
                   lessonContext={lessonContext}
                   suggestedTask={suggestedTask}
                   onQuickAction={handleQuickAction}
+                  onResetChat={handleResetChat}
                   userProfile={userProfile}
                 />
               </div>

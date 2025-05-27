@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap } from 'lucide-react';
+import { Sparkles, Zap, RotateCcw } from 'lucide-react';
 
 interface QuickActionsProps {
   lessonContext?: {
@@ -11,6 +11,7 @@ interface QuickActionsProps {
   };
   suggestedTask?: string;
   onQuickAction: (action: string) => void;
+  onResetChat?: () => void;
   userProfile?: {
     role?: string;
     first_name?: string;
@@ -21,6 +22,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   lessonContext,
   suggestedTask,
   onQuickAction,
+  onResetChat,
   userProfile
 }) => {
   const getQuickActions = () => {
@@ -40,28 +42,28 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       actions.push({ text: shortTask, value: shortTask });
     }
     
-    // Add role-specific discovery prompts
+    // Add role-specific discovery prompts phrased as user questions to Lyra
     if (userProfile?.role) {
       const roleActions = {
         'fundraising': [
-          { text: "My donor challenges", value: "What are your biggest challenges with donor engagement right now?" },
-          { text: "Fundraising goals", value: "Tell me about your current fundraising goals and what's holding you back." }
+          { text: "How can AI help with my donor challenges?", value: "How can AI help me navigate my donor engagement challenges?" },
+          { text: "What AI tools exist for fundraising?", value: "What AI tools could help me achieve my fundraising goals?" }
         ],
         'programs': [
-          { text: "Program outcomes", value: "What program outcomes are you trying to improve?" },
-          { text: "Participant tracking", value: "How do you currently track participant progress and success?" }
+          { text: "How would AI improve my programs?", value: "How would AI help me improve my program outcomes?" },
+          { text: "Can AI help track participants?", value: "Can AI help me better track participant progress and success?" }
         ],
         'operations': [
-          { text: "Daily bottlenecks", value: "What operational tasks take up most of your time each day?" },
-          { text: "Efficiency goals", value: "If you could automate one thing at work, what would it be?" }
+          { text: "What AI tools reduce my workload?", value: "What AI tools could help reduce my daily operational workload?" },
+          { text: "How can I automate repetitive tasks?", value: "How can I use AI to automate my most time-consuming tasks?" }
         ],
         'marketing': [
-          { text: "Engagement struggles", value: "What's your biggest challenge in reaching your audience?" },
-          { text: "Content creation", value: "How much time do you spend creating content each week?" }
+          { text: "How does AI help reach audiences?", value: "How does AI help nonprofits reach their target audience better?" },
+          { text: "Can AI speed up content creation?", value: "Can AI help me create content more efficiently?" }
         ],
         'leadership': [
-          { text: "Strategic priorities", value: "What are your top 3 strategic priorities for the next year?" },
-          { text: "Team challenges", value: "What organizational challenges keep you up at night?" }
+          { text: "How do I implement AI strategically?", value: "How do I implement AI strategically across my organization?" },
+          { text: "What AI challenges should I expect?", value: "What organizational challenges should I expect when adopting AI?" }
         ]
       };
       
@@ -71,16 +73,16 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       }
     }
     
-    // Add general discovery prompts
+    // Add general discovery prompts phrased as user questions
     if (lessonContext) {
       actions.push(
-        { text: "Real examples", value: "Can you share a real-world example of this concept?" },
-        { text: "My situation", value: "How would this apply to my specific organization?" }
+        { text: "Can you share real examples?", value: "Can you share a real-world example of this concept in action?" },
+        { text: "How does this apply to me?", value: "How would this specifically apply to my organization?" }
       );
     } else {
       actions.push(
-        { text: "Getting started", value: "Where should someone like me start with AI?" },
-        { text: "Quick wins", value: "What's the fastest way to see AI benefits?" }
+        { text: "Where should I start with AI?", value: "Where should someone like me start with AI implementation?" },
+        { text: "What are the quickest AI wins?", value: "What are the fastest ways to see AI benefits in my work?" }
       );
     }
     
@@ -104,9 +106,23 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
 
   return (
     <div className="px-3 py-2 sm:px-4 sm:py-3 border-b border-gray-700 bg-gray-800/50">
-      <p className="text-xs text-gray-400 mb-2 font-medium">
-        {userProfile?.first_name ? `Quick prompts for ${userProfile.first_name}:` : 'Quick prompts:'}
-      </p>
+      <div className="flex items-center justify-between mb-2">
+        <p className="text-xs text-gray-400 font-medium">
+          {userProfile?.first_name ? `Quick prompts for ${userProfile.first_name}:` : 'Quick prompts:'}
+        </p>
+        {onResetChat && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onResetChat}
+            className="h-6 px-2 text-xs text-gray-400 hover:text-white hover:bg-gray-700"
+            title="Reset chat (Dev)"
+          >
+            <RotateCcw className="w-3 h-3 mr-1" />
+            Reset
+          </Button>
+        )}
+      </div>
       <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
         {quickActions.map((action, index) => (
           <Button

@@ -305,6 +305,25 @@ export const usePersistentChat = (
       if (contentType?.includes('application/json')) {
         // Non-streaming response (for dummy data)
         const data = await response.json();
+        
+        // Show enhanced processing animation for dummy data
+        if (isDummyDataRequest) {
+          const processingMessage: Message = {
+            id: (Date.now() + 0.5).toString(),
+            content: "⚡ AI Analysis in Progress...\n🔍 Processing patterns...\n📊 Cross-referencing metrics...\n🎯 Identifying opportunities...\n💡 Generating insights...",
+            isUser: false,
+            timestamp: new Date()
+          };
+          
+          setMessages(prev => [...prev, processingMessage]);
+          
+          // Wait for processing animation
+          await new Promise(resolve => setTimeout(resolve, 3000));
+          
+          // Remove processing message and add real response
+          setMessages(prev => prev.filter(msg => msg.id !== processingMessage.id));
+        }
+        
         const aiMessage: Message = {
           id: (Date.now() + 1).toString(),
           content: data.generatedText,
@@ -318,7 +337,7 @@ export const usePersistentChat = (
         // Save AI response to database
         await saveMessage(conversationId, data.generatedText, false, currentMessageOrder + 1);
       } else {
-        // Streaming response
+        // Streaming response with natural pacing
         const reader = response.body?.getReader();
         if (!reader) {
           throw new Error('No response body reader available');
@@ -336,6 +355,9 @@ export const usePersistentChat = (
 
         setMessages(prev => [...prev, aiMessage]);
         setIsTyping(false);
+
+        // Add thinking delay before starting to type
+        await new Promise(resolve => setTimeout(resolve, 800));
 
         while (true) {
           const { done, value } = await reader.read();
@@ -355,6 +377,18 @@ export const usePersistentChat = (
                       ? { ...msg, content: aiResponseContent }
                       : msg
                   ));
+                  
+                  // Natural pacing delays
+                  let delay = 75; // Base delay
+                  
+                  // Longer pauses for punctuation
+                  if (data.content.includes('.') || data.content.includes('!') || data.content.includes('?')) {
+                    delay = 200;
+                  } else if (data.content.includes(',') || data.content.includes(';')) {
+                    delay = 100;
+                  }
+                  
+                  await new Promise(resolve => setTimeout(resolve, delay));
                 }
               } catch (e) {
                 console.error('Error parsing streaming data:', e);

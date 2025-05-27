@@ -58,7 +58,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     }
   };
 
-  // Create enhanced context-aware quick actions with discovery focus
+  // Create enhanced context-aware quick actions with user-question phrasing
   const getQuickActions = () => {
     const actions = [];
     
@@ -75,28 +75,28 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
       actions.push({ text: shortTask, value: shortTask });
     }
     
-    // Add role-specific discovery questions based on user profile
+    // Add role-specific discovery questions phrased as user questions to Lyra
     if (userProfile?.role) {
       const roleActions = {
         'fundraising': [
-          { text: "My donor struggles", value: "What's your biggest challenge with donor engagement?" },
-          { text: "Fundraising goals", value: "Tell me about your fundraising goals and obstacles." }
+          { text: "How can AI help my donors?", value: "How can AI help me better engage with my donors?" },
+          { text: "What AI fundraising tools exist?", value: "What AI tools are available for fundraising work?" }
         ],
         'programs': [
-          { text: "Program challenges", value: "What program outcomes would you most like to improve?" },
-          { text: "Participant success", value: "How do you currently measure participant success?" }
+          { text: "How would AI improve programs?", value: "How would AI help me improve my program outcomes?" },
+          { text: "Can AI track participants?", value: "Can AI help me track participant success better?" }
         ],
         'operations': [
-          { text: "Daily bottlenecks", value: "What operational tasks consume most of your time?" },
-          { text: "Automation dreams", value: "If you could automate one work process, what would it be?" }
+          { text: "What AI reduces my workload?", value: "What AI tools could reduce my daily workload?" },
+          { text: "How do I automate tasks?", value: "How can I use AI to automate repetitive tasks?" }
         ],
         'marketing': [
-          { text: "Audience challenges", value: "What's your biggest struggle in reaching your audience?" },
-          { text: "Content creation", value: "How much time do you spend on content creation weekly?" }
+          { text: "How does AI help outreach?", value: "How does AI help with audience outreach?" },
+          { text: "Can AI create content?", value: "Can AI help me create content more efficiently?" }
         ],
         'leadership': [
-          { text: "Strategic priorities", value: "What are your top strategic priorities this year?" },
-          { text: "Organizational challenges", value: "What organizational challenges concern you most?" }
+          { text: "How do I implement AI?", value: "How should I implement AI across my organization?" },
+          { text: "What AI challenges exist?", value: "What challenges should I expect when adopting AI?" }
         ]
       };
       
@@ -108,9 +108,9 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     
     // Add general discovery-focused lesson actions (shorter text)
     if (lessonContext) {
-      actions.push({ text: "Real examples", value: "Can you share a real example of this?" });
+      actions.push({ text: "Can you share examples?", value: "Can you share real examples of this?" });
     } else {
-      actions.push({ text: "Getting started", value: "Where should I start with AI?" });
+      actions.push({ text: "Where should I start?", value: "Where should I start with AI?" });
     }
     
     return actions.slice(0, 4); // Limit to 4 actions to avoid clutter
