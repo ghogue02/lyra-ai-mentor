@@ -3,14 +3,13 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Lock, Play } from 'lucide-react';
+import { Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { getChapterIcon } from '@/utils/chapterIcons';
+import { getChapterIconUrl, getUIStateIconUrl } from '@/utils/supabaseIcons';
 
 interface Chapter {
   id: number;
   title: string;
-  icon: React.ComponentType<any>;
   description: string;
   duration: string;
 }
@@ -28,7 +27,8 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
   isCompleted = false,
   progress = 0
 }) => {
-  const chapterIconSrc = getChapterIcon(chapter.id);
+  const chapterIconSrc = getChapterIconUrl(chapter.id);
+  const lockIconSrc = getUIStateIconUrl('lockState');
 
   return (
     <Card className={cn(
@@ -44,7 +44,11 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
               : "bg-gradient-to-r from-purple-500 to-cyan-500"
           )}>
             {isLocked ? (
-              <Lock className="w-6 h-6 text-gray-500" />
+              <img 
+                src={lockIconSrc} 
+                alt="Locked chapter"
+                className="w-6 h-6 object-contain opacity-60"
+              />
             ) : (
               <img 
                 src={chapterIconSrc} 
@@ -99,10 +103,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
           disabled={isLocked}
         >
           {isLocked ? (
-            <>
-              <Lock className="w-4 h-4 mr-2" />
-              Locked
-            </>
+            "Complete Previous Chapter"
           ) : isCompleted ? (
             "Review Chapter"
           ) : (

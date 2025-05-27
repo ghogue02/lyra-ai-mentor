@@ -1,20 +1,23 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Brain, LogOut } from 'lucide-react';
+import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { getNavbarIconUrl } from '@/utils/supabaseIcons';
+
 interface NavbarProps {
   showAuthButtons?: boolean;
   onSignOut?: () => void;
 }
+
 export const Navbar = ({
   showAuthButtons = true,
   onSignOut
 }: NavbarProps) => {
   const navigate = useNavigate();
-  const {
-    signOut
-  } = useAuth();
+  const { signOut } = useAuth();
+
   const handleSignOut = () => {
     if (onSignOut) {
       onSignOut();
@@ -22,7 +25,50 @@ export const Navbar = ({
       signOut();
     }
   };
-  return <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200/50 z-50 safe-top">
-      
-    </nav>;
+
+  const handleHomeClick = () => {
+    navigate('/');
+  };
+
+  return (
+    <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200/50 z-50 safe-top">
+      <div className="container mx-auto px-4 py-3">
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          <div 
+            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+            onClick={handleHomeClick}
+          >
+            <div className="w-10 h-10 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center p-2">
+              <img 
+                src={getNavbarIconUrl('logo')} 
+                alt="AI Learning Platform"
+                className="w-6 h-6 object-contain"
+              />
+            </div>
+            <div className="hidden sm:block">
+              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+                AI Learning Hub
+              </h1>
+              <p className="text-xs text-gray-600">For Non-Profit Professionals</p>
+            </div>
+          </div>
+
+          {/* Auth Actions */}
+          {showAuthButtons && (
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                onClick={handleSignOut}
+                className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+              >
+                <LogOut className="w-4 h-4" />
+                <span className="hidden sm:inline">Sign Out</span>
+              </Button>
+            </div>
+          )}
+        </div>
+      </div>
+    </nav>
+  );
 };

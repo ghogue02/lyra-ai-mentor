@@ -1,12 +1,38 @@
 
 import { supabase } from '@/integrations/supabase/client';
 
-// Icon categories and their corresponding file names in Supabase Storage
+// Enhanced icon categories and their corresponding file names in Supabase Storage
 export const SUPABASE_ICONS = {
   // Core application icons
   lyraAvatar: 'lyra-avatar.png',
   heroMain: 'hero-main.png',
   dashboardMeditation: 'dashboard-meditation.png',
+  
+  // Navbar and branding
+  navbar: {
+    logo: 'navbar-logo.png',
+    logoCompact: 'navbar-logo-compact.png'
+  },
+  
+  // Lyra expressions for different states
+  lyra: {
+    default: 'lyra-avatar.png',
+    thinking: 'lyra-thinking.png',
+    celebrating: 'lyra-celebrating.png',
+    helping: 'lyra-helping.png',
+    loading: 'loading-lyra.png'
+  },
+  
+  // User role specific avatars
+  userRoles: {
+    fundraising: 'user-role-fundraising.png',
+    programs: 'user-role-programs.png',
+    operations: 'user-role-operations.png',
+    marketing: 'user-role-marketing.png',
+    it: 'user-role-it.png',
+    leadership: 'user-role-leadership.png',
+    other: 'user-role-other.png'
+  },
   
   // Chapter icons (mapped by chapter ID)
   chapters: {
@@ -20,6 +46,22 @@ export const SUPABASE_ICONS = {
     8: 'communication.png',        // Communication & Outreach
     9: 'achievement-trophy.png',   // Security & Privacy
     10: 'growth-plant.png'         // Growth & Scaling
+  },
+  
+  // UI state icons
+  uiStates: {
+    loading: 'loading-lyra.png',
+    errorFriendly: 'error-state-friendly.png',
+    successCompletion: 'success-completion.png',
+    emptyWelcome: 'empty-state-welcome.png',
+    lockState: 'lock-state.png'
+  },
+  
+  // Achievement badges
+  achievements: {
+    firstChapter: 'badge-first-chapter.png',
+    courseComplete: 'badge-course-complete.png',
+    profileComplete: 'badge-profile-complete.png'
   },
   
   // Onboarding and progress icons
@@ -75,5 +117,45 @@ export const getFeatureIconUrl = (featureName: keyof typeof SUPABASE_ICONS.featu
  */
 export const getOnboardingIconUrl = (stepName: keyof typeof SUPABASE_ICONS.onboarding): string => {
   const iconPath = SUPABASE_ICONS.onboarding[stepName];
+  return getSupabaseIconUrl(iconPath);
+};
+
+/**
+ * Get Lyra expression icon URL by state
+ */
+export const getLyraIconUrl = (state: keyof typeof SUPABASE_ICONS.lyra = 'default'): string => {
+  const iconPath = SUPABASE_ICONS.lyra[state];
+  return getSupabaseIconUrl(iconPath);
+};
+
+/**
+ * Get user role avatar URL by role
+ */
+export const getUserRoleIconUrl = (role: keyof typeof SUPABASE_ICONS.userRoles): string => {
+  const iconPath = SUPABASE_ICONS.userRoles[role];
+  return getSupabaseIconUrl(iconPath);
+};
+
+/**
+ * Get UI state icon URL by state
+ */
+export const getUIStateIconUrl = (state: keyof typeof SUPABASE_ICONS.uiStates): string => {
+  const iconPath = SUPABASE_ICONS.uiStates[state];
+  return getSupabaseIconUrl(iconPath);
+};
+
+/**
+ * Get achievement badge URL by achievement type
+ */
+export const getAchievementIconUrl = (achievement: keyof typeof SUPABASE_ICONS.achievements): string => {
+  const iconPath = SUPABASE_ICONS.achievements[achievement];
+  return getSupabaseIconUrl(iconPath);
+};
+
+/**
+ * Get navbar icon URL by type
+ */
+export const getNavbarIconUrl = (type: keyof typeof SUPABASE_ICONS.navbar): string => {
+  const iconPath = SUPABASE_ICONS.navbar[type];
   return getSupabaseIconUrl(iconPath);
 };

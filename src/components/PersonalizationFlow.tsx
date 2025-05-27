@@ -1,12 +1,14 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ArrowLeft, Heart, Users, Settings, Megaphone, Code, Briefcase, Home } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Home } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePersonalizationData } from '@/hooks/usePersonalizationData';
 import { useNavigate } from 'react-router-dom';
+import { getUserRoleIconUrl } from '@/utils/supabaseIcons';
 
 interface PersonalizationFlowProps {
   onComplete: () => void;
@@ -30,12 +32,12 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
       title: "What's your primary role?",
       subtitle: "Help us tailor your learning experience",
       options: [
-        { id: 'fundraising', label: 'Fundraising & Development', icon: Heart },
-        { id: 'programs', label: 'Programs & Services', icon: Users },
-        { id: 'operations', label: 'Operations & Admin', icon: Settings },
-        { id: 'marketing', label: 'Marketing & Communications', icon: Megaphone },
-        { id: 'it', label: 'IT & Technology', icon: Code },
-        { id: 'other', label: 'Other', icon: Briefcase }
+        { id: 'fundraising', label: 'Fundraising & Development', description: 'Grant writing, donor relations, campaigns' },
+        { id: 'programs', label: 'Programs & Services', description: 'Direct service delivery, program management' },
+        { id: 'operations', label: 'Operations & Admin', description: 'HR, finance, general administration' },
+        { id: 'marketing', label: 'Marketing & Communications', description: 'Outreach, social media, content creation' },
+        { id: 'it', label: 'IT & Technology', description: 'Tech support, digital infrastructure' },
+        { id: 'other', label: 'Leadership & Other', description: 'Executive, board, volunteer roles' }
       ],
       key: 'role'
     },
@@ -124,7 +126,11 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
               </Button>
             </div>
 
-            <LyraAvatar className="mx-auto mb-6" />
+            <LyraAvatar 
+              className="mx-auto mb-6" 
+              expression="celebrating"
+              size="lg"
+            />
             
             <h2 className="text-3xl font-bold mb-4 text-purple-600">
               Perfect! Your Learning Path is Ready 🎯
@@ -133,9 +139,18 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
             <div className="bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg p-6 mb-6">
               <h3 className="font-semibold text-lg mb-4">Your Personalized Learning Path:</h3>
               <div className="grid gap-3 text-left">
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span className="text-gray-600">Role:</span>
-                  <Badge variant="secondary">{answers.role}</Badge>
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full overflow-hidden">
+                      <img 
+                        src={getUserRoleIconUrl(answers.role as any)} 
+                        alt={`${answers.role} role`}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <Badge variant="secondary">{answers.role}</Badge>
+                  </div>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Tech Comfort:</span>
@@ -199,7 +214,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
           </div>
 
           <div className="flex justify-center mb-4">
-            <LyraAvatar />
+            <LyraAvatar expression="helping" />
           </div>
           
           <div className="flex justify-center mb-4">
@@ -225,7 +240,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
         
         <CardContent className="space-y-4">
           {currentStepData.options.map((option) => {
-            const IconComponent = option.icon;
+            const isRoleStep = currentStepData.key === 'role';
             return (
               <Button
                 key={option.id}
@@ -234,9 +249,13 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
                 onClick={() => handleAnswer(option.id)}
               >
                 <div className="flex items-start gap-4 w-full">
-                  {IconComponent && (
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-100 to-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1">
-                      <IconComponent className="w-5 h-5 text-purple-600" />
+                  {isRoleStep && (
+                    <div className="w-10 h-10 bg-gradient-to-r from-purple-100 to-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 p-1">
+                      <img 
+                        src={getUserRoleIconUrl(option.id as any)} 
+                        alt={`${option.label} role`}
+                        className="w-full h-full object-contain"
+                      />
                     </div>
                   )}
                   <div className="flex-1">
