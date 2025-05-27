@@ -96,37 +96,16 @@ export const usePersistentChat = (
     
     if (!profile) {
       return lessonContext 
-        ? `Hi! I'm Lyra, your AI mentor. I can see you're exploring "${lessonContext.lessonTitle}". What's driving your interest in this topic right now?`
-        : "Hi there! I'm Lyra, your AI mentor. What brought you here today, and what AI challenge has been on your mind?";
+        ? `Hi! I'm Lyra, your AI mentor. I can see you're exploring "${lessonContext.lessonTitle}". What's got you most curious about this topic right now?`
+        : "Hi there! I'm Lyra, your AI mentor. What's got you most curious about AI right now?";
     }
 
     let greeting = `Hi${profile.first_name ? ` ${profile.first_name}` : ''}! I'm Lyra, and I'm excited to be your AI mentor.`;
     
     if (lessonContext) {
-      greeting += ` I see you're diving into "${lessonContext.lessonTitle}" - that's great timing.`;
-    }
-
-    // Add role-specific discovery questions as single, natural questions
-    if (profile.role) {
-      const roleQuestions = {
-        'fundraising': 'Before we explore AI possibilities, I\'m curious - what\'s the most challenging part of donor engagement for you right now?',
-        'programs': 'I\'d love to know - what program outcome are you most hoping to improve?',
-        'operations': 'Tell me, what operational task takes up most of your time these days?',
-        'marketing': 'I\'m curious - what\'s the biggest challenge you face when trying to reach your audience?',
-        'leadership': 'As a leader, what organizational challenge keeps you up at night?'
-      };
-      
-      const question = roleQuestions[profile.role as keyof typeof roleQuestions];
-      if (question) {
-        greeting += ` ${question}`;
-      }
+      greeting += ` I see you're diving into "${lessonContext.lessonTitle}" - that's great timing. What's got you most curious about this topic right now?`;
     } else {
-      // General question if no specific role
-      if (lessonContext) {
-        greeting += ' What\'s driving your interest in AI right now?';
-      } else {
-        greeting += ' What challenge are you hoping AI might help with?';
-      }
+      greeting += ' What's got you most curious about AI right now?';
     }
 
     // Add profile completion note if needed (simplified)
@@ -134,7 +113,7 @@ export const usePersistentChat = (
       greeting += '\n\nP.S. - Once you complete your profile, I can provide even more personalized insights tailored to your specific role and experience.';
     }
     
-    console.log('Generated conversational greeting:', greeting);
+    console.log('Generated welcoming greeting:', greeting);
     return greeting;
   };
 
