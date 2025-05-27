@@ -10,6 +10,23 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Transform prompts to create consistent, brand-appropriate illustrations
+const transformPromptForBrandConsistency = (originalPrompt: string): string => {
+  // Base style instructions for consistent branding
+  const baseStyle = "Minimalist flat design illustration, abstract geometric shapes, no people or human figures, clean vector art style, simple icons and symbols";
+  const colorScheme = "purple and cyan gradient color palette, soft pastels, modern tech aesthetic";
+  const composition = "centered composition, plenty of white space, clean lines, simple geometric forms";
+  
+  // Remove any mentions of people/humans and replace with abstract concepts
+  let cleanedPrompt = originalPrompt
+    .replace(/people|person|human|worker|man|woman|team|group|individual/gi, 'abstract shapes')
+    .replace(/face|faces|portrait/gi, 'geometric elements')
+    .replace(/photorealistic|realistic|photo/gi, 'minimalist illustration');
+  
+  // Combine with style instructions
+  return `${baseStyle}, ${colorScheme}, ${composition}. Visual concept: ${cleanedPrompt}. Style: flat design, no gradients on shapes, simple geometric forms, icon-like quality, tech startup aesthetic`;
+};
+
 serve(async (req) => {
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -22,7 +39,7 @@ serve(async (req) => {
       throw new Error('GOOGLE_API_KEY is not set');
     }
 
-    const { prompt, size = '1024x1024' } = await req.json();
+    const { prompt, size = '512x512' } = await req.json();
 
     if (!prompt) {
       return new Response(
@@ -34,16 +51,20 @@ serve(async (req) => {
       );
     }
 
-    console.log('Generating image with Gemini, prompt:', prompt);
+    // Transform the prompt for brand consistency
+    const enhancedPrompt = transformPromptForBrandConsistency(prompt);
+    
+    console.log('Original prompt:', prompt);
+    console.log('Enhanced prompt:', enhancedPrompt);
 
     // Initialize Google Generative AI
     const genAI = new GoogleGenerativeAI(googleApiKey);
     const modelId = "gemini-2.0-flash-preview-image-generation";
     const model = genAI.getGenerativeModel({ model: modelId });
 
-    // Configure generation settings
+    // Configure generation settings for consistent style
     const generationConfig = {
-      temperature: 0.4,
+      temperature: 0.3, // Lower temperature for more consistent results
       responseModalities: ["TEXT", "IMAGE"]
     };
 
@@ -56,7 +77,7 @@ serve(async (req) => {
 
     // Generate content with Gemini
     const result = await model.generateContent({
-      contents: [{ role: "user", parts: [{ text: prompt }] }],
+      contents: [{ role: "user", parts: [{ text: enhancedPrompt }] }],
       generationConfig,
       safetySettings,
     });
@@ -90,11 +111,10 @@ serve(async (req) => {
 
     if (!altText) {
       console.warn('No alt text found in Gemini response. Using default.');
-      altText = `AI-generated illustration`;
+      altText = `Minimalist illustration`;
     }
 
-    // For this implementation, we'll return the base64 data directly
-    // You could optionally store it in Supabase Storage like the reference code
+    // Return the base64 data directly
     const imageUrl = `data:image/png;base64,${imageDataBase64}`;
 
     return new Response(

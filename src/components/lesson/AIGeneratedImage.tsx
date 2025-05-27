@@ -34,7 +34,7 @@ export const AIGeneratedImage: React.FC<AIGeneratedImageProps> = ({
       const { data, error: functionError } = await supabase.functions.invoke('generate-lesson-image', {
         body: {
           prompt,
-          size: metadata.size || '1024x1024'
+          size: metadata.size || '512x512' // Default to smaller size
         }
       });
 
@@ -73,17 +73,17 @@ export const AIGeneratedImage: React.FC<AIGeneratedImageProps> = ({
 
   if (loading || retrying) {
     return (
-      <div className="my-8 space-y-4">
-        <div className="text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
+      <div className="my-6 flex items-center gap-4">
+        <div className="flex-shrink-0">
+          <Skeleton className="w-48 h-32 rounded-lg" />
+        </div>
+        <div className="flex-1">
+          <div className="flex items-center gap-2 mb-2">
             <RefreshCw className={`w-4 h-4 ${(loading || retrying) ? 'animate-spin' : ''}`} />
             <span className="text-sm text-gray-600">
-              {retrying ? 'Regenerating image...' : 'Generating AI image...'}
+              {retrying ? 'Regenerating illustration...' : 'Generating illustration...'}
             </span>
           </div>
-        </div>
-        <Skeleton className="w-full h-64 rounded-lg" />
-        <div className="text-center">
           <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
         </div>
       </div>
@@ -92,45 +92,49 @@ export const AIGeneratedImage: React.FC<AIGeneratedImageProps> = ({
 
   if (error) {
     return (
-      <div className="my-8">
+      <div className="my-6">
         <Alert className="mb-4">
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            Failed to generate image: {error}
+            Failed to generate illustration: {error}
           </AlertDescription>
         </Alert>
-        <div className="text-center">
-          <Button 
-            onClick={handleRetry} 
-            variant="outline" 
-            size="sm"
-            className="mb-4"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Try Again
-          </Button>
-          <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+        <div className="flex items-center gap-4">
+          <div className="flex-shrink-0 w-48 h-32 bg-gray-100 rounded-lg flex items-center justify-center">
+            <span className="text-gray-400 text-sm">Image unavailable</span>
+          </div>
+          <div className="flex-1">
+            <Button 
+              onClick={handleRetry} 
+              variant="outline" 
+              size="sm"
+              className="mb-2"
+            >
+              <RefreshCw className="w-4 h-4 mr-2" />
+              Try Again
+            </Button>
+            <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+          </div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="my-8">
-      <div className="flex justify-center mb-4">
+    <div className="my-6 flex items-start gap-4">
+      <div className="flex-shrink-0">
         <img 
           src={imageUrl || '/placeholder.svg'} 
           alt={title}
-          className="max-w-full h-auto rounded-lg shadow-lg"
-          style={{ maxHeight: '500px' }}
+          className="w-48 h-32 object-cover rounded-lg shadow-sm border border-gray-200"
           onError={() => {
             console.error('Image failed to load:', imageUrl);
             setError('Image failed to load');
           }}
         />
       </div>
-      <div className="text-center">
-        <h3 className="text-lg font-semibold text-gray-800 mb-2">{title}</h3>
+      <div className="flex-1">
+        <h3 className="text-lg font-semibold text-gray-800 mb-1">{title}</h3>
         <p className="text-sm text-gray-500 italic">AI-generated illustration</p>
       </div>
     </div>
