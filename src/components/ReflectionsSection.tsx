@@ -13,7 +13,7 @@ interface Reflection {
   metadata: {
     question: string;
     element_title: string;
-  };
+  } | null;
   lesson_id: number;
 }
 
@@ -24,6 +24,14 @@ interface LessonInfo {
     title: string;
   };
 }
+
+// Type guard to check if metadata has the expected structure
+const isValidReflectionMetadata = (metadata: any): metadata is { question: string; element_title: string } => {
+  return metadata && 
+         typeof metadata === 'object' && 
+         typeof metadata.question === 'string' && 
+         typeof metadata.element_title === 'string';
+};
 
 export const ReflectionsSection = () => {
   const { user } = useAuth();
@@ -52,10 +60,19 @@ export const ReflectionsSection = () => {
       if (reflectionsError) throw reflectionsError;
 
       if (reflectionsData && reflectionsData.length > 0) {
-        setReflections(reflectionsData);
+        // Transform the data to match our Reflection interface
+        const transformedReflections: Reflection[] = reflectionsData.map(item => ({
+          id: item.id,
+          content: item.content,
+          created_at: item.created_at,
+          metadata: isValidReflectionMetadata(item.metadata) ? item.metadata : null,
+          lesson_id: item.lesson_id
+        }));
+
+        setReflections(transformedReflections);
 
         // Get unique lesson IDs
-        const lessonIds = [...new Set(reflectionsData.map(r => r.lesson_id))];
+        const lessonIds = [...new Set(transformedReflections.map(r => r.lesson_id))];
 
         // Fetch lesson info for context
         const { data: lessonsData, error: lessonsError } = await supabase
