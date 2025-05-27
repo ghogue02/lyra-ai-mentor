@@ -1,4 +1,3 @@
-
 import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
@@ -18,7 +17,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, lessonContext, conversationId, userId, lessonId, isDummyDataRequest } = await req.json();
+    const { messages, lessonContext, conversationId, userId, lessonId, isDummyDataRequest, demoStage } = await req.json();
 
     console.log('Received chat request:', { 
       messagesCount: messages.length, 
@@ -26,7 +25,8 @@ serve(async (req) => {
       conversationId,
       userId,
       lessonId,
-      isDummyDataRequest
+      isDummyDataRequest,
+      demoStage
     });
 
     // Create Supabase client with service role key to fetch user profile
@@ -54,6 +54,15 @@ serve(async (req) => {
       }
     } catch (error) {
       console.log('Error fetching profile:', error);
+    }
+
+    // Handle staged demo requests
+    if (isDummyDataRequest || demoStage) {
+      const stageName = demoStage || 'complete';
+      const demoResponse = generateStagedDemoResponse(userProfile, stageName);
+      return new Response(JSON.stringify({ generatedText: demoResponse }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
     }
 
     // Handle dummy data request
@@ -189,6 +198,134 @@ serve(async (req) => {
     });
   }
 });
+
+function generateStagedDemoResponse(userProfile: any, stage: string) {
+  const role = userProfile?.role || 'nonprofit work';
+  const firstName = userProfile?.first_name || '';
+  const greeting = firstName ? `${firstName}, ` : '';
+  
+  switch (stage) {
+    case 'loading':
+      return `${greeting}let me load some realistic ${role} data that shows how AI handles messy, real-world information...
+
+📊 **SAMPLE DATA LOADING...**
+
+Here's what messy ${role} data typically looks like:
+
+\`\`\`
+DONOR_EXPORT_Q4_2024.csv
+========================
+Name,Amount,Date,Method,Notes
+Sarah Johnson,$245,"11/15/24",Online,"Recurring donor, loves events"
+M. Chen,$89,"10/22/24",Check,"First time, met at fundraiser"
+Patricia W.,$520,"12/01/24",Online,"Major donor, board connection"
+...incomplete_record,$,"09/18/24",,
+\`\`\`
+
+**🔍 This is exactly the kind of messy data AI excels at!**
+
+Notice the inconsistencies? Different name formats, missing data, various payment methods? This would take hours to clean manually.
+
+*Ready for the next step? Click "Continue" to see how AI analyzes this chaos!*`;
+
+    case 'analysis':
+      return `${greeting}now watch AI work its magic on that messy data...
+
+🧠 **AI ANALYSIS IN PROGRESS...**
+
+*Processing 1,247 donor records...*
+*Identifying patterns...*
+*Cross-referencing engagement data...*
+*Calculating predictive metrics...*
+
+**✨ PATTERNS DISCOVERED:**
+
+🎯 **Donor Segmentation:**
+- Monthly sustainers: 23% of donors, 67% of revenue
+- Event-driven donors: 45% higher lifetime value
+- Online vs. offline preference patterns identified
+
+📈 **Behavioral Insights:**
+- Thursday emails: 34% higher open rates
+- Personal stories: 2.8x better conversion
+- Follow-up timing: 48-72 hours optimal
+
+🔮 **Predictive Analysis:**
+- 47 donors likely to lapse next month
+- 23 donors showing major gift potential
+- $18,400 revenue at risk without intervention
+
+*This analysis would take a human analyst 2-3 days. AI did it in seconds!*
+
+*Ready to see the actionable insights? Click "Continue"!*`;
+
+    case 'insights':
+      return `${greeting}here are the game-changing insights AI discovered in your data...
+
+💡 **KEY INSIGHTS REVEALED**
+
+**🎯 Hidden Revenue Opportunities:**
+- Convert quarterly donors to monthly = +$127,000 annually
+- Optimize email timing = +23% open rates
+- Target 'almost major' donors = +$89,000 potential
+
+**⚠️ Risk Alerts:**
+- 47 donors showing lapse patterns (prevention needed)
+- $18,400 revenue at risk in next 60 days
+- 3 major donors haven't been contacted in 90+ days
+
+**🚀 Growth Accelerators:**
+- Peer-to-peer campaigns: 340% ROI potential
+- Corporate matching untapped: $34,000 sitting there
+- Board connections: 12 warm introductions available
+
+**🎪 Event Strategy Gold:**
+- VIP attendees give 3.2x more within 30 days
+- Silent auctions outperform live by 23%
+- Follow-up parties increase retention by 67%
+
+*These insights transform guesswork into strategy!*
+
+*Ready for specific action steps? Click "Continue" for recommendations!*`;
+
+    case 'recommendations':
+      return `${greeting}now for the best part - here's exactly what to do with these insights...
+
+🚀 **YOUR AI-POWERED ACTION PLAN**
+
+**🎯 This Week (High Impact, Quick Wins):**
+1. **Call these 3 major donors** who haven't been contacted in 90+ days
+2. **Send retention emails** to the 47 at-risk donors (templates generated)
+3. **Schedule follow-up** with 12 warm board connections
+
+**📧 Next 30 Days (Revenue Boosters):**
+1. **Launch monthly conversion campaign** targeting quarterly donors
+2. **Optimize email timing** - switch to Thursday 10 AM sends
+3. **Create peer-to-peer campaign** for your top 25 advocates
+
+**💰 Next Quarter (Growth Drivers):**
+1. **Major gift cultivation** for 23 identified prospects
+2. **Corporate matching outreach** to unlock $34,000
+3. **VIP stewardship program** for high-value event attendees
+
+**🤖 Automation Opportunities:**
+- Set up automatic lapse prevention alerts
+- Create smart donor journey workflows
+- Implement predictive engagement scoring
+
+**Expected Results:**
+- 📈 +$127,000 annual revenue increase
+- 🎯 +23% donor retention improvement
+- ⚡ 75% reduction in manual analysis time
+
+*This is what AI does - transforms data into dollars and impact!*
+
+${firstName ? firstName + ', imagine' : 'Imagine'} having insights like this for YOUR actual data. Ready to explore how AI could revolutionize your ${role} work?`;
+
+    default: // complete demo
+      return generateDummyDataResponse(userProfile);
+  }
+}
 
 function generateDummyDataResponse(userProfile: any) {
   const role = userProfile?.role || 'general';

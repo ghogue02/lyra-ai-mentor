@@ -16,6 +16,10 @@ interface QuickActionsProps {
     role?: string;
     first_name?: string;
   };
+  chatEngagement?: {
+    exchangeCount: number;
+    shouldShowAiDemo: boolean;
+  };
 }
 
 export const QuickActions: React.FC<QuickActionsProps> = ({
@@ -23,18 +27,21 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   suggestedTask,
   onQuickAction,
   onResetChat,
-  userProfile
+  userProfile,
+  chatEngagement
 }) => {
   const getQuickActions = () => {
     const actions = [];
     
-    // Add the magical dummy data button as the first action
-    actions.push({
-      text: "✨ See AI in Action",
-      value: "DUMMY_DATA_MAGIC",
-      icon: <Sparkles className="w-3 h-3" />,
-      special: true
-    });
+    // Add AI Magic Demo button if user has engaged enough
+    if (chatEngagement?.shouldShowAiDemo) {
+      actions.push({
+        text: "✨ See AI Magic Demo",
+        value: "DUMMY_DATA_MAGIC",
+        icon: <Sparkles className="w-3 h-3" />,
+        special: true
+      });
+    }
     
     if (suggestedTask) {
       // Make suggested task more concise for mobile
@@ -109,6 +116,9 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       <div className="flex items-center justify-between mb-2">
         <p className="text-xs text-gray-400 font-medium">
           {userProfile?.first_name ? `Quick prompts for ${userProfile.first_name}:` : 'Quick prompts:'}
+          {chatEngagement?.shouldShowAiDemo && (
+            <span className="ml-2 text-purple-300">• AI Demo Available!</span>
+          )}
         </p>
         {onResetChat && (
           <Button

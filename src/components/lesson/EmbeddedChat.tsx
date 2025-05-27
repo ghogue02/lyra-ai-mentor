@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -5,8 +6,10 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Minimize2, Maximize2, Sparkles } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { ProfileCompletionReminder } from '@/components/ProfileCompletionReminder';
+import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
 import { cn } from '@/lib/utils';
 import { useLyraChat } from '@/hooks/useLyraChat';
+import { useChatEngagement } from '@/hooks/useChatEngagement';
 
 interface EmbeddedChatProps {
   lessonContext?: {
@@ -32,6 +35,20 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     clearChat,
     userProfile
   } = useLyraChat(lessonContext);
+
+  // Track engagement for AI demo
+  const { engagement } = useChatEngagement(3, 0);
+
+  // Update engagement based on actual message exchanges
+  useEffect(() => {
+    const userMessageCount = messages.filter(msg => msg.isUser).length;
+    const aiMessageCount = messages.filter(msg => !msg.isUser).length;
+    const actualExchanges = Math.min(userMessageCount, aiMessageCount);
+    
+    if (actualExchanges !== engagement.exchangeCount) {
+      // This will be handled by the parent component's engagement logic
+    }
+  }, [messages, engagement.exchangeCount]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -62,12 +79,14 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
   const getQuickActions = () => {
     const actions = [];
     
-    // Magic AI demo button as first action
-    actions.push({
-      text: "✨ AI Magic Demo",
-      value: "DUMMY_DATA_REQUEST",
-      special: true
-    });
+    // Magic AI demo button if engagement threshold reached
+    if (engagement.shouldShowAiDemo) {
+      actions.push({
+        text: "✨ AI Magic Demo",
+        value: "DUMMY_DATA_REQUEST",
+        special: true
+      });
+    }
     
     // Always include the suggested task if available (make it shorter for mobile)
     if (suggestedTask) {
@@ -169,11 +188,21 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
         </div>
       )}
 
+      {/* Interactive AI Demo */}
+      <InteractiveAiDemo
+        onSendMessage={sendMessage}
+        userProfile={userProfile}
+        isVisible={engagement.shouldShowAiDemo}
+      />
+
       {/* Quick Actions */}
       {showQuickActions && quickActions.length > 0 && (
         <div className="p-2 sm:p-3 border-b bg-gray-50/50">
           <p className="text-xs text-gray-600 mb-2">
             {userProfile?.first_name ? `Quick actions for ${userProfile.first_name}:` : 'Quick actions:'}
+            {engagement.shouldShowAiDemo && (
+              <span className="ml-2 text-purple-600 font-medium">• AI Demo Available!</span>
+            )}
           </p>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
             {quickActions.map((action, index) => (
@@ -184,7 +213,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
                 onClick={() => handleQuickAction(action)}
                 className={`flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap ${
                   action.special
-                    ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600 shadow-md'
+                    ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600 shadow-md animate-pulse'
                     : 'hover:bg-purple-50 hover:border-purple-300'
                 }`}
               >
@@ -276,7 +305,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           </Button>
         </div>
         <p className="text-xs text-gray-500 mt-1 sm:mt-2">
-          Press Enter to send • Try the AI Magic Demo! ✨
+          Press Enter to send {engagement.shouldShowAiDemo && "• Try the AI Magic Demo! ✨"}
         </p>
       </div>
     </div>

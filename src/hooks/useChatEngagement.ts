@@ -4,40 +4,42 @@ import { useState, useCallback } from 'react';
 interface ChatEngagement {
   exchangeCount: number;
   hasReachedMinimum: boolean;
-  shouldShowEncouragement: boolean;
-  shouldShowCompletion: boolean;
+  shouldShowAiDemo: boolean;
 }
 
 export const useChatEngagement = (minimumExchanges: number = 3, initialCount: number = 0) => {
-  const [exchangeCount, setExchangeCount] = useState(initialCount);
+  const [engagement, setEngagement] = useState<ChatEngagement>({
+    exchangeCount: initialCount,
+    hasReachedMinimum: initialCount >= minimumExchanges,
+    shouldShowAiDemo: initialCount >= 4
+  });
 
   const incrementExchange = useCallback(() => {
-    console.log('useChatEngagement: Incrementing exchange count from', exchangeCount);
-    setExchangeCount(prev => {
-      const newCount = prev + 1;
-      console.log('useChatEngagement: New exchange count:', newCount);
-      return newCount;
+    setEngagement(prev => {
+      const newCount = prev.exchangeCount + 1;
+      return {
+        exchangeCount: newCount,
+        hasReachedMinimum: newCount >= minimumExchanges,
+        shouldShowAiDemo: newCount >= 4
+      };
     });
-  }, [exchangeCount]);
+  }, [minimumExchanges]);
 
   const resetEngagement = useCallback(() => {
-    console.log('useChatEngagement: Resetting engagement to 0');
-    setExchangeCount(0);
+    setEngagement({
+      exchangeCount: 0,
+      hasReachedMinimum: false,
+      shouldShowAiDemo: false
+    });
   }, []);
 
   const setEngagementCount = useCallback((count: number) => {
-    console.log('useChatEngagement: Setting engagement count to:', count);
-    setExchangeCount(count);
-  }, []);
-
-  const engagement: ChatEngagement = {
-    exchangeCount,
-    hasReachedMinimum: exchangeCount >= minimumExchanges,
-    shouldShowEncouragement: exchangeCount > 0 && exchangeCount < minimumExchanges,
-    shouldShowCompletion: exchangeCount >= minimumExchanges
-  };
-
-  console.log('useChatEngagement: Current engagement state:', engagement);
+    setEngagement({
+      exchangeCount: count,
+      hasReachedMinimum: count >= minimumExchanges,
+      shouldShowAiDemo: count >= 4
+    });
+  }, [minimumExchanges]);
 
   return {
     engagement,
