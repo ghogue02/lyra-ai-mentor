@@ -13,6 +13,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { ArrowLeft, ArrowRight, Clock, CheckCircle } from 'lucide-react';
+
 interface Lesson {
   id: number;
   title: string;
@@ -234,8 +235,13 @@ export const Lesson = () => {
       setIsChapterCompleted(true);
       toast({
         title: "Chapter Complete!",
-        description: "Congratulations! You can now move on to the next chapter."
+        description: "Congratulations! Redirecting you to the dashboard..."
       });
+      
+      // Redirect to dashboard after a short delay to show the toast
+      setTimeout(() => {
+        navigate('/dashboard');
+      }, 2000);
     } catch (error) {
       console.error('Error marking chapter complete:', error);
       toast({
