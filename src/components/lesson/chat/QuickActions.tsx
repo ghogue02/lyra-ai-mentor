@@ -21,18 +21,20 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     const actions = [];
     
     if (suggestedTask) {
-      actions.push(suggestedTask);
+      // Make suggested task more concise for mobile
+      const shortTask = suggestedTask.length > 30 ? `${suggestedTask.substring(0, 30)}...` : suggestedTask;
+      actions.push(shortTask);
     }
     
     if (lessonContext) {
-      actions.push("Explain this concept in simple terms");
-      actions.push("Give me a real nonprofit example");
-      actions.push("What's the key takeaway here?");
-      actions.push("How can I apply this at my organization?");
+      actions.push("Explain simply");
+      actions.push("Show example");
+      actions.push("Key takeaway");
+      actions.push("How to apply");
     } else {
-      actions.push("What should I know about AI?");
-      actions.push("How can AI help nonprofits?");
-      actions.push("Give me a practical example");
+      actions.push("AI basics");
+      actions.push("Nonprofit use");
+      actions.push("Examples");
     }
     
     return actions;
@@ -45,18 +47,18 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   }
 
   return (
-    <div className="spacing-mobile spacing-mobile-y border-b border-gray-700 bg-gray-800/50">
-      <p className="text-xs text-gray-400 mb-2 sm:mb-3 font-medium">Try these prompts to get started:</p>
-      <div className="flex flex-wrap gap-2">
+    <div className="px-3 py-2 sm:px-4 sm:py-3 border-b border-gray-700 bg-gray-800/50">
+      <p className="text-xs text-gray-400 mb-2 font-medium">Quick prompts:</p>
+      <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
         {quickActions.map((action) => (
           <Button
             key={action}
             variant="outline"
             size="sm"
             onClick={() => onQuickAction(action)}
-            className="mobile-button text-xs h-7 sm:h-8 bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-colors px-2 sm:px-3"
+            className="flex-shrink-0 text-xs h-7 bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-colors px-3 whitespace-nowrap"
           >
-            <span className="truncate max-w-[120px] sm:max-w-none">{action}</span>
+            {action}
           </Button>
         ))}
       </div>

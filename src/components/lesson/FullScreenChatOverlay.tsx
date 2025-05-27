@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -30,6 +31,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
+  const [showQuickActions, setShowQuickActions] = useState(true);
 
   const {
     messages,
@@ -67,6 +69,11 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     await sendMessage(inputValue);
     incrementExchange();
     inputRef.current?.focus();
+    
+    // Hide quick actions after first message on mobile to save space
+    if (window.innerWidth < 768) {
+      setShowQuickActions(false);
+    }
   };
 
   const handleClose = () => {
@@ -87,6 +94,11 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const handleQuickAction = (action: string) => {
     sendMessage(action);
     incrementExchange();
+    
+    // Hide quick actions after use on mobile
+    if (window.innerWidth < 768) {
+      setShowQuickActions(false);
+    }
   };
 
   return (
@@ -95,18 +107,20 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
         <DialogContent 
           className="!fixed !inset-0 !z-[100] !border-0 !p-0 !gap-0 !rounded-none !bg-gray-900 !max-w-none !max-h-none !transform-none !left-0 !top-0 !translate-x-0 !translate-y-0 !w-screen !h-screen"
         >
-          <div className="grid grid-rows-[auto_auto_minmax(0,1fr)_auto] h-screen w-screen bg-gray-900">
+          <div className="grid h-screen w-screen bg-gray-900" style={{ gridTemplateRows: showQuickActions ? 'auto auto minmax(0,1fr) auto' : 'auto minmax(0,1fr) auto' }}>
             <ChatHeader
               lessonContext={lessonContext}
               engagement={engagement}
               onClose={handleClose}
             />
 
-            <QuickActions
-              lessonContext={lessonContext}
-              suggestedTask={suggestedTask}
-              onQuickAction={handleQuickAction}
-            />
+            {showQuickActions && (
+              <QuickActions
+                lessonContext={lessonContext}
+                suggestedTask={suggestedTask}
+                onQuickAction={handleQuickAction}
+              />
+            )}
 
             <ChatMessages
               messages={messages}
