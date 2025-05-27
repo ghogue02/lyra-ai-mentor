@@ -132,8 +132,8 @@ export const Dashboard = () => {
         {/* Hero Image */}
         <div className="mb-8 flex justify-center">
           <img 
-            src="/lovable-uploads/0b6ea1b6-cc3b-4ed4-8b66-5802bceab8ee.png" 
-            alt="AI Learning Meditation"
+            src="/lovable-uploads/0ca12d42-3a5d-4874-b348-0f27172fa1ed.png" 
+            alt="Meditation Figure for AI Learning"
             className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
           />
         </div>
