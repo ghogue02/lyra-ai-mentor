@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
@@ -132,8 +131,8 @@ export const Dashboard = () => {
         {/* Hero Image */}
         <div className="mb-8 flex justify-center">
           <img 
-            src="/lovable-uploads/78b6315a-aa2d-415e-b3a1-fa9b74b33b97.png" 
-            alt="AI Learning Dashboard Hero"
+            src="/lovable-uploads/e0477f1e-1063-45a9-b5c5-32190b5f4db5.png" 
+            alt="Meditation Figure for AI Learning"
             className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
           />
         </div>
