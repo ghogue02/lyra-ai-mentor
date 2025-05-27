@@ -96,40 +96,45 @@ export const usePersistentChat = (
     
     if (!profile) {
       return lessonContext 
-        ? `Hi! 👋 I'm Lyra, your AI mentor. I can see you're exploring "${lessonContext.lessonTitle}". But before I dive in... what's got you most curious about this topic? 🤔`
-        : "Hi there! 👋 I'm Lyra, your AI mentor. I'm genuinely curious - what brought you here today? What AI challenge or opportunity has been on your mind? 🤔";
+        ? `Hi! I'm Lyra, your AI mentor. I can see you're exploring "${lessonContext.lessonTitle}". What's driving your interest in this topic right now?`
+        : "Hi there! I'm Lyra, your AI mentor. What brought you here today, and what AI challenge has been on your mind?";
     }
 
-    let greeting = `Hi${profile.first_name ? ` ${profile.first_name}` : ''}! 👋 I'm Lyra, and I'm genuinely excited to be your AI mentor.`;
+    let greeting = `Hi${profile.first_name ? ` ${profile.first_name}` : ''}! I'm Lyra, and I'm excited to be your AI mentor.`;
     
     if (lessonContext) {
-      greeting += ` I see you're diving into "${lessonContext.lessonTitle}" - that's fantastic!`;
+      greeting += ` I see you're diving into "${lessonContext.lessonTitle}" - that's great timing.`;
     }
 
-    // Add role-specific discovery questions instead of statements
+    // Add role-specific discovery questions as single, natural questions
     if (profile.role) {
       const roleQuestions = {
-        'fundraising': 'Before we explore AI tools, I\'m curious - what\'s your biggest frustration with donor engagement right now? 🎯',
-        'programs': 'I\'d love to know - what program outcomes are you most passionate about improving? 📊',
-        'operations': 'Tell me, what operational task eats up most of your day? I bet there\'s a story there! ⚡',
-        'marketing': 'I\'m curious - when you think about reaching your audience, what feels like the biggest uphill battle? 🎨',
-        'leadership': 'As a leader, what organizational challenge keeps you thinking at night? Let\'s unpack that together! 🎖️'
+        'fundraising': 'Before we explore AI possibilities, I\'m curious - what\'s the most challenging part of donor engagement for you right now?',
+        'programs': 'I\'d love to know - what program outcome are you most hoping to improve?',
+        'operations': 'Tell me, what operational task takes up most of your time these days?',
+        'marketing': 'I\'m curious - what\'s the biggest challenge you face when trying to reach your audience?',
+        'leadership': 'As a leader, what organizational challenge keeps you up at night?'
       };
       
       const question = roleQuestions[profile.role as keyof typeof roleQuestions];
       if (question) {
-        greeting += `\n\n${question}`;
+        greeting += ` ${question}`;
+      }
+    } else {
+      // General question if no specific role
+      if (lessonContext) {
+        greeting += ' What\'s driving your interest in AI right now?';
+      } else {
+        greeting += ' What challenge are you hoping AI might help with?';
       }
     }
 
-    // Add profile completion hook if needed
+    // Add profile completion note if needed (simplified)
     if (!profile.profile_completed) {
-      greeting += '\n\n💡 *P.S. - Once you complete your profile, I can provide even more personalized insights tailored exactly to your role and experience!*';
+      greeting += '\n\nP.S. - Once you complete your profile, I can provide even more personalized insights tailored to your specific role and experience.';
     }
-
-    greeting += '\n\nWhat\'s on your mind? 🚀';
     
-    console.log('Generated discovery-focused greeting:', greeting);
+    console.log('Generated conversational greeting:', greeting);
     return greeting;
   };
 
@@ -255,7 +260,7 @@ export const usePersistentChat = (
     const currentMessageOrder = messages.length;
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: isDummyDataRequest ? "✨ Show me AI magic with dummy data!" : messageContent,
+      content: isDummyDataRequest ? "Show me AI magic with dummy data!" : messageContent,
       isUser: true,
       timestamp: new Date()
     };
@@ -310,7 +315,7 @@ export const usePersistentChat = (
         if (isDummyDataRequest) {
           const processingMessage: Message = {
             id: (Date.now() + 0.5).toString(),
-            content: "⚡ AI Analysis in Progress...\n🔍 Processing patterns...\n📊 Cross-referencing metrics...\n🎯 Identifying opportunities...\n💡 Generating insights...",
+            content: "AI Analysis in Progress...\nProcessing patterns...\nCross-referencing metrics...\nIdentifying opportunities...\nGenerating insights...",
             isUser: false,
             timestamp: new Date()
           };
@@ -411,7 +416,7 @@ export const usePersistentChat = (
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I'm having trouble responding right now. But hey, that just means I'm human-ish! 😅 Try asking me again?",
+        content: "I'm having trouble responding right now. But hey, that just means I'm human-ish! Try asking me again?",
         isUser: false,
         timestamp: new Date()
       };
