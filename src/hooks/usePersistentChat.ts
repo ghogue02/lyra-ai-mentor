@@ -14,6 +14,7 @@ interface LessonContext {
   chapterTitle?: string;
   lessonTitle?: string;
   content?: string;
+  [key: string]: any; // Add index signature to make it compatible with Json type
 }
 
 interface ChatConversation {
@@ -33,7 +34,7 @@ export const usePersistentChat = (
   chapterId: number, 
   lessonContext?: LessonContext
 ) => {
-  const { user } = useAuth();
+  const { user, session } = useAuth(); // Get session from auth context
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -68,7 +69,7 @@ export const usePersistentChat = (
       let currentConversationId = existingConversation?.id;
 
       if (!existingConversation) {
-        // Create new conversation
+        // Create new conversation - cast lessonContext to Json type
         const { data: newConversation, error } = await supabase
           .from('chat_conversations')
           .insert({
@@ -76,7 +77,7 @@ export const usePersistentChat = (
             lesson_id: lessonId,
             chapter_id: chapterId,
             title: lessonContext?.lessonTitle || `Lesson ${lessonId} Chat`,
-            lesson_context: lessonContext
+            lesson_context: lessonContext as any // Cast to satisfy Json type
           })
           .select()
           .single();
@@ -197,7 +198,7 @@ export const usePersistentChat = (
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.session?.access_token || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhma3p3am5seHJ3eW5hY3RjbXBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODM4NTAsImV4cCI6MjA2Mzg1OTg1MH0.WXPnn8e3_I7mAx_Qv4_2jX70nsTCxSbqMh3qo4_aEw0'}`,
+          'Authorization': `Bearer ${session?.access_token || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhma3p3am5seHJ3eW5hY3RjbXBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODM4NTAsImV4cCI6MjA2Mzg1OTg1MH0.WXPnn8e3_I7mAx_Qv4_2jX70nsTCxSbqMh3qo4_aEw0'}`,
         },
         body: JSON.stringify({
           messages: [...messages, userMessage].map(msg => ({
@@ -282,7 +283,7 @@ export const usePersistentChat = (
     } finally {
       setIsTyping(false);
     }
-  }, [messages, lessonContext, conversationId, user, lessonId]);
+  }, [messages, lessonContext, conversationId, user, lessonId, session]);
 
   const clearChat = useCallback(async () => {
     if (!conversationId) return;
