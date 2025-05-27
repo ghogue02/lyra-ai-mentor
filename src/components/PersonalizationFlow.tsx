@@ -8,7 +8,7 @@ import { LyraAvatar } from '@/components/LyraAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePersonalizationData } from '@/hooks/usePersonalizationData';
 import { useNavigate } from 'react-router-dom';
-import { getUserRoleIconUrl } from '@/utils/supabaseIcons';
+import { getUserRoleIconUrl, getRoleMessaging } from '@/utils/supabaseIcons';
 
 interface PersonalizationFlowProps {
   onComplete: () => void;
@@ -31,6 +31,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     {
       title: "What's your primary role?",
       subtitle: "Help us tailor your learning experience",
+      lyraExpression: 'helping' as const,
       options: [
         { id: 'fundraising', label: 'Fundraising & Development', description: 'Grant writing, donor relations, campaigns' },
         { id: 'programs', label: 'Programs & Services', description: 'Direct service delivery, program management' },
@@ -44,6 +45,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     {
       title: "How comfortable are you with new technology?",
       subtitle: "Be honest—there's no wrong answer!",
+      lyraExpression: 'thinking' as const,
       options: [
         { id: 'beginner', label: 'I avoid new tools when possible', description: 'Beginner-friendly pace' },
         { id: 'intermediate', label: 'I dabble and experiment sometimes', description: 'Balanced approach' },
@@ -54,6 +56,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     {
       title: "Any prior experience with AI tools?",
       subtitle: "This helps us set the right starting point",
+      lyraExpression: 'thinking' as const,
       options: [
         { id: 'none', label: 'None at all', description: 'We\'ll start from the very beginning' },
         { id: 'little', label: 'A little experimentation', description: 'Quick refresher then dive deeper' },
@@ -64,6 +67,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     {
       title: "How do you learn best?",
       subtitle: "Let's match your natural learning style",
+      lyraExpression: 'helping' as const,
       options: [
         { id: 'visual', label: 'Visual learner', description: 'Diagrams, charts, and infographics' },
         { id: 'hands-on', label: 'Hands-on practice', description: 'Try things immediately' },
@@ -107,6 +111,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
 
   const currentStepData = steps[currentStep];
   const isComplete = currentStep === steps.length;
+  const roleMessaging = answers.role ? getRoleMessaging(answers.role) : null;
 
   if (isComplete) {
     return (
@@ -136,7 +141,15 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
               Perfect! Your Learning Path is Ready 🎯
             </h2>
             
-            <div className="bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg p-6 mb-6">
+            {roleMessaging && (
+              <div className="bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg p-4 mb-6">
+                <h3 className="font-semibold text-lg mb-2">{roleMessaging.welcomeMessage}</h3>
+                <p className="text-gray-700 mb-2">{roleMessaging.examples}</p>
+                <p className="text-sm text-purple-600 font-medium">{roleMessaging.successMetric}</p>
+              </div>
+            )}
+            
+            <div className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-lg p-6 mb-6">
               <h3 className="font-semibold text-lg mb-4">Your Personalized Learning Path:</h3>
               <div className="grid gap-3 text-left">
                 <div className="flex justify-between items-center">
@@ -214,7 +227,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
           </div>
 
           <div className="flex justify-center mb-4">
-            <LyraAvatar expression="helping" />
+            <LyraAvatar expression={currentStepData.lyraExpression} />
           </div>
           
           <div className="flex justify-center mb-4">

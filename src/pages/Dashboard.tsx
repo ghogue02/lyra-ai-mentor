@@ -152,7 +152,8 @@ export const Dashboard = () => {
             profileCompleted={profile.profile_completed} 
             firstChapterStarted={profile.first_chapter_started} 
             firstChapterCompleted={profile.first_chapter_completed} 
-            onboardingStep={profile.onboarding_step} 
+            onboardingStep={profile.onboarding_step}
+            userRole={profile.role}
           />
         )}
 

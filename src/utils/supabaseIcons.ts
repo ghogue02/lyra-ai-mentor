@@ -14,12 +14,12 @@ export const SUPABASE_ICONS = {
     logoCompact: 'navbar-logo.png'
   },
   
-  // Lyra expressions (simplified to use existing icons)
+  // Lyra expressions (using specialized icons)
   lyra: {
     default: 'lyra-avatar.png',
-    thinking: 'lyra-avatar.png',
-    celebrating: 'lyra-avatar.png',
-    helping: 'lyra-avatar.png',
+    thinking: 'lyra-thinking.png',
+    celebrating: 'lyra-celebrating.png',
+    helping: 'lyra-helping.png',
     loading: 'lyra-avatar.png'
   },
   
@@ -48,27 +48,27 @@ export const SUPABASE_ICONS = {
     10: 'growth-plant.png'
   },
   
-  // UI state icons (using existing icons as fallbacks)
+  // UI state icons (using specialized icons)
   uiStates: {
     loading: 'lyra-avatar.png',
     errorFriendly: 'lyra-avatar.png',
-    successCompletion: 'achievement-trophy.png',
-    emptyWelcome: 'hero-main.png',
+    successCompletion: 'badge-course-complete.png',
+    emptyWelcome: 'onboarding-welcome.png',
     lockState: 'lyra-avatar.png'
   },
   
-  // Achievement badges (using existing trophy icon)
+  // Achievement badges (using specialized badge icons)
   achievements: {
-    firstChapter: 'achievement-trophy.png',
-    courseComplete: 'achievement-trophy.png',
+    firstChapter: 'badge-first-chapter.png',
+    courseComplete: 'badge-course-complete.png',
     profileComplete: 'achievement-trophy.png'
   },
   
-  // Onboarding and progress icons (using existing icons)
+  // Onboarding and progress icons (using specialized icons)
   onboarding: {
-    profileCompletion: 'lyra-avatar.png',
-    welcome: 'hero-main.png',
-    progress: 'learning-target.png'
+    profileCompletion: 'onboarding-profile.png',
+    welcome: 'onboarding-welcome.png',
+    progress: 'chapter-progress.png'
   },
   
   // Feature icons (all existing)
@@ -82,6 +82,45 @@ export const SUPABASE_ICONS = {
     communication: 'communication.png',
     growthPlant: 'growth-plant.png',
     successCelebration: 'achievement-trophy.png'
+  }
+} as const;
+
+// Role-specific messaging and examples
+export const ROLE_MESSAGING = {
+  fundraising: {
+    examples: 'AI for grant writing and donor research',
+    successMetric: 'Increase funding efficiency by 40%',
+    welcomeMessage: 'Master AI tools for fundraising success'
+  },
+  programs: {
+    examples: 'AI for program evaluation and service delivery',
+    successMetric: 'Improve program outcomes tracking',
+    welcomeMessage: 'Enhance your programs with AI insights'
+  },
+  operations: {
+    examples: 'AI for workflow optimization and admin tasks',
+    successMetric: 'Reduce administrative overhead by 30%',
+    welcomeMessage: 'Streamline operations with AI automation'
+  },
+  marketing: {
+    examples: 'AI for content creation and audience engagement',
+    successMetric: 'Double your content output quality',
+    welcomeMessage: 'Amplify your mission with AI-powered marketing'
+  },
+  it: {
+    examples: 'AI for system optimization and tech implementation',
+    successMetric: 'Accelerate digital transformation',
+    welcomeMessage: 'Lead your organization\'s AI adoption'
+  },
+  leadership: {
+    examples: 'AI for strategic planning and decision making',
+    successMetric: 'Make data-driven strategic decisions',
+    welcomeMessage: 'Guide your organization into the AI era'
+  },
+  other: {
+    examples: 'AI tools tailored to your unique role',
+    successMetric: 'Enhance your impact with AI',
+    welcomeMessage: 'Discover AI applications for your work'
   }
 } as const;
 
@@ -134,6 +173,14 @@ export const getOnboardingIconUrl = (stepName: keyof typeof SUPABASE_ICONS.onboa
 };
 
 /**
+ * Get role-specific onboarding icon URL
+ */
+export const getRoleOnboardingIconUrl = (role: string): string => {
+  const iconPath = SUPABASE_ICONS.userRoles[role as keyof typeof SUPABASE_ICONS.userRoles] || SUPABASE_ICONS.onboarding.profileCompletion;
+  return getSupabaseIconUrl(iconPath);
+};
+
+/**
  * Get Lyra expression icon URL by state with fallback
  */
 export const getLyraIconUrl = (state: keyof typeof SUPABASE_ICONS.lyra = 'default'): string => {
@@ -171,4 +218,11 @@ export const getAchievementIconUrl = (achievement: keyof typeof SUPABASE_ICONS.a
 export const getNavbarIconUrl = (type: keyof typeof SUPABASE_ICONS.navbar): string => {
   const iconPath = SUPABASE_ICONS.navbar[type] || SUPABASE_ICONS.lyraAvatar;
   return getSupabaseIconUrl(iconPath);
+};
+
+/**
+ * Get role-specific messaging
+ */
+export const getRoleMessaging = (role: string) => {
+  return ROLE_MESSAGING[role as keyof typeof ROLE_MESSAGING] || ROLE_MESSAGING.other;
 };

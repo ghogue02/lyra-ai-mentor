@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { cn } from '@/lib/utils';
-import { getAchievementIconUrl } from '@/utils/supabaseIcons';
+import { getAchievementIconUrl, getRoleMessaging } from '@/utils/supabaseIcons';
 
 interface AchievementBadgeProps {
   type: 'firstChapter' | 'courseComplete' | 'profileComplete';
@@ -13,6 +13,7 @@ interface AchievementBadgeProps {
   earnedDate?: Date;
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  userRole?: string;
 }
 
 export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
@@ -22,7 +23,8 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   earned = false,
   earnedDate,
   className,
-  size = 'md'
+  size = 'md',
+  userRole
 }) => {
   const sizeClasses = {
     sm: 'w-16 h-16',
@@ -35,6 +37,12 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
     md: 'w-12 h-12',
     lg: 'w-16 h-16'
   };
+
+  // Get role-specific description if available
+  const roleMessaging = userRole ? getRoleMessaging(userRole) : null;
+  const roleSpecificDescription = roleMessaging && type === 'courseComplete' 
+    ? `${description} - ${roleMessaging.successMetric}` 
+    : description;
 
   return (
     <Card className={cn(
@@ -74,7 +82,7 @@ export const AchievementBadge: React.FC<AchievementBadgeProps> = ({
           "text-gray-600 mb-2",
           size === 'sm' ? 'text-xs' : 'text-sm'
         )}>
-          {description}
+          {roleSpecificDescription}
         </p>
         
         {earned ? (

@@ -1,35 +1,40 @@
+
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2 } from 'lucide-react';
-import { getOnboardingIconUrl } from '@/utils/supabaseIcons';
+import { getOnboardingIconUrl, getRoleOnboardingIconUrl, getRoleMessaging } from '@/utils/supabaseIcons';
 
 interface OnboardingProgressProps {
   profileCompleted: boolean;
   firstChapterStarted: boolean;
   firstChapterCompleted: boolean;
   onboardingStep: number;
+  userRole?: string;
 }
 
 export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
   profileCompleted,
   firstChapterStarted,
   firstChapterCompleted,
-  onboardingStep
+  onboardingStep,
+  userRole
 }) => {
+  const roleMessaging = getRoleMessaging(userRole || 'other');
+  
   const steps = [
     {
       id: 1,
       title: "Complete Your Profile",
-      description: "Fill out your personal and organization details",
-      iconSrc: getOnboardingIconUrl('profileCompletion'),
+      description: `Set up your ${userRole || 'professional'} profile and preferences`,
+      iconSrc: userRole ? getRoleOnboardingIconUrl(userRole) : getOnboardingIconUrl('profileCompletion'),
       completed: profileCompleted,
       current: onboardingStep === 1 && !profileCompleted
     },
     {
       id: 2,
-      title: "Start Your First Chapter",
-      description: "Begin your AI learning journey",
+      title: "Start Your AI Journey",
+      description: `Begin learning ${roleMessaging.examples}`,
       iconSrc: getOnboardingIconUrl('welcome'),
       completed: firstChapterStarted,
       current: onboardingStep === 2 && profileCompleted && !firstChapterStarted
@@ -37,7 +42,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
     {
       id: 3,
       title: "Complete Your First Chapter",
-      description: "Finish Chapter 1: What Is AI Anyway?",
+      description: "Master the fundamentals: What Is AI Anyway?",
       iconSrc: getOnboardingIconUrl('progress'),
       completed: firstChapterCompleted,
       current: onboardingStep === 3 && firstChapterStarted && !firstChapterCompleted
@@ -53,7 +58,9 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-lg font-semibold">Getting Started</h3>
-            <p className="text-sm text-gray-600">Complete these steps to unlock your full learning experience</p>
+            <p className="text-sm text-gray-600">
+              {userRole ? roleMessaging.welcomeMessage : 'Complete these steps to unlock your full learning experience'}
+            </p>
           </div>
           <Badge variant={completedSteps === 3 ? "default" : "secondary"} className="px-3 py-1">
             {completedSteps} of 3 Complete
@@ -125,7 +132,9 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
         {completedSteps === 3 && (
           <div className="mt-4 p-3 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg text-center">
             <p className="text-green-800 font-medium">🎉 Congratulations! You've completed onboarding!</p>
-            <p className="text-green-600 text-sm mt-1">All chapters are now unlocked. Continue your AI learning journey!</p>
+            <p className="text-green-600 text-sm mt-1">
+              {userRole ? `${roleMessaging.successMetric} - All chapters are now unlocked!` : 'All chapters are now unlocked. Continue your AI learning journey!'}
+            </p>
           </div>
         )}
       </CardContent>
