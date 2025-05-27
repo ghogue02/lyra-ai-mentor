@@ -20,7 +20,7 @@ serve(async (req) => {
       throw new Error('OPENAI_API_KEY is not set');
     }
 
-    const { prompt, style = 'natural', quality = 'standard', size = '1024x1024', seed } = await req.json();
+    const { prompt, size = '1024x1024' } = await req.json();
 
     if (!prompt) {
       return new Response(
@@ -34,21 +34,14 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Create the request payload for OpenAI
-    const requestBody: any = {
+    // Create the request payload for OpenAI - only using supported parameters
+    const requestBody = {
       model: 'gpt-image-1',
       prompt,
       n: 1,
       size,
-      style,
-      quality,
       response_format: 'url'
     };
-
-    // Add seed if provided for reproducible results
-    if (seed !== undefined) {
-      requestBody.seed = seed;
-    }
 
     const response = await fetch('https://api.openai.com/v1/images/generations', {
       method: 'POST',
@@ -91,8 +84,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         imageUrl, 
-        revisedPrompt,
-        usage: data.usage 
+        revisedPrompt
       }),
       {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

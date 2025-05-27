@@ -9,18 +9,15 @@ import { RefreshCw, AlertTriangle } from 'lucide-react';
 interface AIGeneratedImageProps {
   prompt: string;
   title: string;
-  metadata: {
-    style: 'natural' | 'vivid';
-    quality: 'standard' | 'hd';
-    size: string;
-    seed?: number;
+  metadata?: {
+    size?: string;
   };
 }
 
 export const AIGeneratedImage: React.FC<AIGeneratedImageProps> = ({
   prompt,
   title,
-  metadata
+  metadata = {}
 }) => {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -37,10 +34,7 @@ export const AIGeneratedImage: React.FC<AIGeneratedImageProps> = ({
       const { data, error: functionError } = await supabase.functions.invoke('generate-lesson-image', {
         body: {
           prompt,
-          style: metadata.style,
-          quality: metadata.quality,
-          size: metadata.size,
-          seed: metadata.seed
+          size: metadata.size || '1024x1024'
         }
       });
 
