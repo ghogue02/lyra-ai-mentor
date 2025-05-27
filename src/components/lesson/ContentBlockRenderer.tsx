@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,12 +20,14 @@ interface ContentBlockRendererProps {
   block: ContentBlock;
   isCompleted: boolean;
   onComplete: () => void;
+  nextAIImage?: ContentBlock | null;
 }
 
 export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   block,
   isCompleted,
-  onComplete
+  onComplete,
+  nextAIImage
 }) => {
   const { user } = useAuth();
   const blockRef = useRef<HTMLDivElement>(null);
@@ -112,11 +115,19 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           </ul>
         );
       } else {
-        // Render as a paragraph
+        // Render as a paragraph with potential inline image
         return (
-          <p key={index} className="text-gray-700 text-base leading-relaxed mb-6 last:mb-0">
-            {formatInlineText(trimmedSection.replace(/\n/g, ' '))}
-          </p>
+          <div key={index} className="text-gray-700 text-base leading-relaxed mb-6 last:mb-0">
+            {index === 0 && nextAIImage && (
+              <AIGeneratedImage 
+                prompt={nextAIImage.content} 
+                className="float-left mr-4 mb-2"
+              />
+            )}
+            <p className="inline">
+              {formatInlineText(trimmedSection.replace(/\n/g, ' '))}
+            </p>
+          </div>
         );
       }
     });
@@ -174,18 +185,6 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
             />
           </div>
         );
-      case 'ai_generated_image':
-        return (
-          <AIGeneratedImage
-            prompt={block.content}
-            title={block.title}
-            metadata={block.metadata || {
-              style: 'natural',
-              quality: 'standard',
-              size: '1024x1024'
-            }}
-          />
-        );
       case 'video':
         return (
           <div className="flex justify-center my-6">
@@ -207,21 +206,9 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     }
   };
 
-  // For AI-generated images, render without the card wrapper for a cleaner look
+  // Skip rendering AI-generated image blocks as standalone items
   if (block.type === 'ai_generated_image') {
-    return (
-      <div ref={blockRef} className="my-8">
-        {renderContent()}
-        {isCompleted && (
-          <div className="flex justify-center mt-4">
-            <Badge className="bg-green-100 text-green-700">
-              <CheckCircle className="w-3 h-3 mr-1" />
-              Viewed
-            </Badge>
-          </div>
-        )}
-      </div>
-    );
+    return null;
   }
 
   return (

@@ -264,11 +264,24 @@ export const Lesson = () => {
     }
   };
 
-  // Merge and sort content blocks and interactive elements
-  const allContent = [
-    ...contentBlocks.map(block => ({ ...block, contentType: 'block' })),
+  // Merge and sort content blocks and interactive elements, but filter out AI images for separate processing
+  const regularContent = [
+    ...contentBlocks.filter(block => block.type !== 'ai_generated_image').map(block => ({ ...block, contentType: 'block' })),
     ...interactiveElements.map(element => ({ ...element, contentType: 'interactive' }))
   ].sort((a, b) => a.order_index - b.order_index);
+
+  // Get AI images for pairing with text blocks
+  const aiImages = contentBlocks.filter(block => block.type === 'ai_generated_image');
+
+  // Function to find the next AI image for a given text block
+  const getNextAIImage = (currentIndex: number) => {
+    const currentBlock = regularContent[currentIndex];
+    if (!currentBlock || currentBlock.contentType !== 'block') return null;
+    
+    // Find the AI image that comes after this block in the original order
+    const nextAIImage = aiImages.find(img => img.order_index > currentBlock.order_index);
+    return nextAIImage || null;
+  };
 
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
@@ -296,7 +309,8 @@ export const Lesson = () => {
     content: contentBlocks.map(block => `${block.title}: ${block.content}`).join('\n\n').substring(0, 1000)
   } : undefined;
 
-  return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} />
       
       <div className="container mx-auto px-4 pt-20 pb-8">
@@ -346,9 +360,26 @@ export const Lesson = () => {
 
         {/* Content */}
         <div className="mx-auto space-y-8 max-w-4xl">
-          {allContent.map(item => <div key={`${item.contentType}-${item.id}`}>
-              {item.contentType === 'block' ? <ContentBlockRenderer block={item as ContentBlock} isCompleted={completedBlocks.has(item.id)} onComplete={() => markBlockCompleted(item.id)} /> : <InteractiveElementRenderer element={item as InteractiveElement} lessonId={parseInt(lessonId!)} lessonContext={lessonContext} onChatEngagementChange={setChatEngagement} onElementComplete={handleInteractiveElementComplete} />}
-            </div>)}
+          {regularContent.map((item, index) => (
+            <div key={`${item.contentType}-${item.id}`}>
+              {item.contentType === 'block' ? (
+                <ContentBlockRenderer 
+                  block={item as ContentBlock} 
+                  isCompleted={completedBlocks.has(item.id)} 
+                  onComplete={() => markBlockCompleted(item.id)}
+                  nextAIImage={getNextAIImage(index)}
+                />
+              ) : (
+                <InteractiveElementRenderer 
+                  element={item as InteractiveElement} 
+                  lessonId={parseInt(lessonId!)} 
+                  lessonContext={lessonContext} 
+                  onChatEngagementChange={setChatEngagement} 
+                  onElementComplete={handleInteractiveElementComplete} 
+                />
+              )}
+            </div>
+          ))}
         </div>
 
         {/* Navigation */}
@@ -369,7 +400,8 @@ export const Lesson = () => {
           )}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default Lesson;
