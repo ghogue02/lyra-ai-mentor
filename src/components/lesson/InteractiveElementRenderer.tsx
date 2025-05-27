@@ -26,12 +26,14 @@ interface InteractiveElementRendererProps {
     lessonTitle?: string;
     content?: string;
   };
+  onChatEngagementChange?: (engagement: { hasReachedMinimum: boolean; exchangeCount: number }) => void;
 }
 
 export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProps> = ({
   element,
   lessonId,
-  lessonContext
+  lessonContext,
+  onChatEngagementChange
 }) => {
   const [selectedOptions, setSelectedOptions] = useState<string[]>([]);
   const [reflectionText, setReflectionText] = useState('');
@@ -187,6 +189,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           onClose={() => setIsChatOpen(false)}
           lessonContext={lessonContext}
           suggestedTask={config.suggested_task}
+          onEngagementChange={onChatEngagementChange}
         />
       </div>
     );
