@@ -7,6 +7,7 @@ import { PersonalizationFlow } from '@/components/PersonalizationFlow';
 import { Navbar } from '@/components/Navbar';
 import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getSupabaseIconUrl, getFeatureIconUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
 
 const Index = () => {
   const [showPersonalization, setShowPersonalization] = useState(false);
@@ -26,7 +27,7 @@ const Index = () => {
           {/* Hero Image */}
           <div className="mb-8 flex justify-center">
             <img 
-              src="/lovable-uploads/c6b5b6a8-1b95-41bd-8a65-74b18b01b1f5.png" 
+              src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
               alt="AI Learning Platform"
               className="w-32 h-32 sm:w-40 sm:h-40 object-contain"
             />
@@ -71,7 +72,7 @@ const Index = () => {
               <CardContent className="p-4 sm:p-6 text-center">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 p-2">
                   <img 
-                    src="/lovable-uploads/c4ca451a-4e36-4b11-8d9b-e4e0bf70bb95.png" 
+                    src={getFeatureIconUrl('learningTarget')} 
                     alt="Tailored Learning"
                     className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
                   />
@@ -85,7 +86,7 @@ const Index = () => {
               <CardContent className="p-4 sm:p-6 text-center">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 p-2">
                   <img 
-                    src="/lovable-uploads/8dc9b49c-77fc-40ad-b0a0-b36e5c47fea1.png" 
+                    src={getFeatureIconUrl('missionHeart')} 
                     alt="Mission-Focused"
                     className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
                   />
@@ -99,7 +100,7 @@ const Index = () => {
               <CardContent className="p-4 sm:p-6 text-center">
                 <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-3 sm:mb-4 p-2">
                   <img 
-                    src="/lovable-uploads/77c0e73b-e754-4a08-aefb-96be00aac64a.png" 
+                    src={getFeatureIconUrl('achievementTrophy')} 
                     alt="Confidence Building"
                     className="w-6 h-6 sm:w-8 sm:h-8 object-contain"
                   />

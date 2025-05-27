@@ -1,8 +1,8 @@
-
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle2 } from 'lucide-react';
+import { getOnboardingIconUrl } from '@/utils/supabaseIcons';
 
 interface OnboardingProgressProps {
   profileCompleted: boolean;
@@ -22,7 +22,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
       id: 1,
       title: "Complete Your Profile",
       description: "Fill out your personal and organization details",
-      iconSrc: "/lovable-uploads/6ded9c9c-9b78-4ce7-b2d9-fa4c8b0b2f3e.png",
+      iconSrc: getOnboardingIconUrl('profileCompletion'),
       completed: profileCompleted,
       current: onboardingStep === 1 && !profileCompleted
     },
@@ -30,7 +30,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
       id: 2,
       title: "Start Your First Chapter",
       description: "Begin your AI learning journey",
-      iconSrc: "/lovable-uploads/c4ca451a-4e36-4b11-8d9b-e4e0bf70bb95.png",
+      iconSrc: getOnboardingIconUrl('welcome'),
       completed: firstChapterStarted,
       current: onboardingStep === 2 && profileCompleted && !firstChapterStarted
     },
@@ -38,7 +38,7 @@ export const OnboardingProgress: React.FC<OnboardingProgressProps> = ({
       id: 3,
       title: "Complete Your First Chapter",
       description: "Finish Chapter 1: What Is AI Anyway?",
-      iconSrc: "/lovable-uploads/77c0e73b-e754-4a08-aefb-96be00aac64a.png",
+      iconSrc: getOnboardingIconUrl('progress'),
       completed: firstChapterCompleted,
       current: onboardingStep === 3 && firstChapterStarted && !firstChapterCompleted
     }

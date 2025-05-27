@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { cn } from '@/lib/utils';
+import { getSupabaseIconUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
 
 interface LyraAvatarProps {
   className?: string;
@@ -32,7 +33,7 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
         sizeClasses[size]
       )}>
         <img 
-          src="/lovable-uploads/89bfb1be-6b72-42a6-b6c1-48c8eccd2034.png" 
+          src={getSupabaseIconUrl(SUPABASE_ICONS.lyraAvatar)} 
           alt="Lyra AI Assistant"
           className={cn("object-contain", iconSizeClasses[size])}
         />

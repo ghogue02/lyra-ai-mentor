@@ -6,9 +6,11 @@ import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { JourneyTab } from '@/components/dashboard/JourneyTab';
 import { ProfileTab } from '@/components/dashboard/ProfileTab';
+import { AdminRenameButton } from '@/components/AdminRenameButton';
 import { supabase } from '@/integrations/supabase/client';
 import { GraduationCap, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { getSupabaseIconUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
 
 interface UserProfile {
   role: string;
@@ -131,7 +133,7 @@ export const Dashboard = () => {
         {/* Hero Image */}
         <div className="mb-8 flex justify-center">
           <img 
-            src="/lovable-uploads/e0477f1e-1063-45a9-b5c5-32190b5f4db5.png" 
+            src={getSupabaseIconUrl(SUPABASE_ICONS.dashboardMeditation)} 
             alt="Meditation Figure for AI Learning"
             className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
           />
@@ -143,6 +145,9 @@ export const Dashboard = () => {
           onboardingComplete={onboardingComplete}
           onSignOut={handleSignOut}
         />
+
+        {/* Admin Rename Button - Temporary for bulk rename operation */}
+        <AdminRenameButton />
 
         {/* Onboarding Progress */}
         {profile && !onboardingComplete && (
