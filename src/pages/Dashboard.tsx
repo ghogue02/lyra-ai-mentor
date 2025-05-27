@@ -1,15 +1,14 @@
+
 import React, { useEffect, useState } from 'react';
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
-import { ChapterCard } from '@/components/ChapterCard';
 import { Navbar } from '@/components/Navbar';
-import { ProfileForm } from '@/components/ProfileForm';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
+import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
+import { JourneyTab } from '@/components/dashboard/JourneyTab';
+import { ProfileTab } from '@/components/dashboard/ProfileTab';
 import { supabase } from '@/integrations/supabase/client';
-import { Brain, Settings, Heart, Scale, Target, BookOpen, User, LogOut, GraduationCap, UserCircle } from 'lucide-react';
+import { GraduationCap, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 interface UserProfile {
@@ -24,62 +23,27 @@ interface UserProfile {
   first_name: string;
   last_name: string;
 }
+
 export const Dashboard = () => {
-  const {
-    user,
-    signOut
-  } = useAuth();
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('journey');
-  const chapters = [{
-    id: 1,
-    title: "What Is AI Anyway?",
-    icon: Brain,
-    description: "Demystify artificial intelligence with real-world examples",
-    duration: "15 min"
-  }, {
-    id: 2,
-    title: "How Machines Learn",
-    icon: Settings,
-    description: "ML basics without the technical jargon",
-    duration: "20 min"
-  }, {
-    id: 3,
-    title: "From Data to Insight",
-    icon: Target,
-    description: "Practical AI tools you can use today",
-    duration: "25 min"
-  }, {
-    id: 4,
-    title: "AI Ethics & Impact",
-    icon: Scale,
-    description: "Navigate the ethical landscape responsibly",
-    duration: "18 min"
-  }, {
-    id: 5,
-    title: "Non-Profit Playbook",
-    icon: Heart,
-    description: "Grant writing, donor outreach, and operations",
-    duration: "30 min"
-  }, {
-    id: 6,
-    title: "Your Action Plan",
-    icon: BookOpen,
-    description: "Create your AI-powered workflow",
-    duration: "20 min"
-  }];
+
   useEffect(() => {
     fetchProfile();
   }, [user]);
+
   const fetchProfile = async () => {
     if (!user) return;
     try {
-      const {
-        data,
-        error
-      } = await supabase.from('profiles').select('*').eq('user_id', user.id).single();
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .single();
+      
       if (error && error.code !== 'PGRST116') {
         console.error('Error fetching profile:', error);
       } else if (data) {
@@ -102,6 +66,7 @@ export const Dashboard = () => {
       setLoading(false);
     }
   };
+
   const handleChapterClick = async (chapterId: number) => {
     if (!user || !profile) return;
 
@@ -114,10 +79,14 @@ export const Dashboard = () => {
     // Mark first chapter as started if clicking on Chapter 1
     if (chapterId === 1 && !profile.first_chapter_started) {
       try {
-        await supabase.from('profiles').update({
-          first_chapter_started: true,
-          onboarding_step: 3
-        }).eq('user_id', user.id);
+        await supabase
+          .from('profiles')
+          .update({
+            first_chapter_started: true,
+            onboarding_step: 3
+          })
+          .eq('user_id', user.id);
+        
         setProfile(prev => prev ? {
           ...prev,
           first_chapter_started: true,
@@ -141,47 +110,31 @@ export const Dashboard = () => {
   };
 
   if (loading) {
-    return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-purple-600 mx-auto"></div>
           <p className="mt-4 text-gray-600">Loading your dashboard...</p>
         </div>
-      </div>;
+      </div>
+    );
   }
+
   const onboardingComplete = profile?.profile_completed && profile?.first_chapter_started && profile?.first_chapter_completed;
   const userName = profile?.first_name && profile?.last_name ? `${profile.first_name} ${profile.last_name}` : user?.email;
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} onSignOut={signOut} />
       
       {/* Header Section */}
       <section className="container mx-auto px-4 pt-20 pb-8">
-        <div className="flex justify-between items-start mb-8">
-          <div>
-            <h1 className="text-4xl font-bold mb-4 text-purple-600">
-              Welcome back{profile?.first_name ? `, ${profile.first_name}` : ''}!
-            </h1>
-            <p className="text-xl text-gray-600">
-              {onboardingComplete ? "Continue your AI learning journey" : "Let's get you started on your AI learning journey"}
-            </p>
-          </div>
-          
-          {/* Sign Out Button */}
-          <div className="flex items-center gap-4">
-            <div className="text-right">
-              <p className="text-sm text-gray-600">Signed in as</p>
-              <p className="text-sm font-medium text-gray-800">{userName}</p>
-            </div>
-            <Button
-              variant="outline"
-              onClick={handleSignOut}
-              className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-            >
-              <LogOut className="w-4 h-4" />
-              Sign Out
-            </Button>
-          </div>
-        </div>
+        <DashboardHeader 
+          firstName={profile?.first_name}
+          userName={userName || ''}
+          onboardingComplete={onboardingComplete}
+          onSignOut={handleSignOut}
+        />
 
         {/* Onboarding Progress */}
         {profile && !onboardingComplete && (
@@ -210,40 +163,14 @@ export const Dashboard = () => {
           </TabsList>
 
           <TabsContent value="journey" className="space-y-8">
-            {/* Learning Journey Content */}
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold mb-4 text-cyan-600">
-                Your Learning Journey
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Six focused chapters designed to take you from AI curious to AI confident
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-              {chapters.map(chapter => {
-                const isLocked = !onboardingComplete && chapter.id > 1;
-                return (
-                  <div key={chapter.id} onClick={() => handleChapterClick(chapter.id)}>
-                    <ChapterCard chapter={chapter} isLocked={isLocked} />
-                  </div>
-                );
-              })}
-            </div>
+            <JourneyTab 
+              onboardingComplete={onboardingComplete}
+              onChapterClick={handleChapterClick}
+            />
           </TabsContent>
 
           <TabsContent value="profile" className="space-y-8">
-            {/* Profile Content */}
-            <div className="text-center mb-8">
-              <h2 className="text-3xl font-bold mb-4 text-purple-600">
-                Profile & Personalization
-              </h2>
-              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-                Manage your personal information and learning preferences
-              </p>
-            </div>
-            
-            <ProfileForm />
+            <ProfileTab />
           </TabsContent>
         </Tabs>
       </section>
