@@ -21,8 +21,8 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={true} />
       
-      {/* Hero Section - Increased top padding to prevent header overlap and give hero image more space */}
-      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-56 sm:pt-64 lg:pt-72 pb-8 sm:pb-16">
+      {/* Hero Section - Increased mobile padding to prevent header overlap */}
+      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-72 sm:pt-80 lg:pt-88 pb-8 sm:pb-16">
         <div className="text-center max-w-4xl mx-auto">
           {/* Hero Image - Larger and more prominent */}
           <div className="mb-12 flex justify-center">
