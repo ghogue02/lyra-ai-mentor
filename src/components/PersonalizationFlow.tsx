@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowRight, ArrowLeft, Heart, Users, Settings, Megaphone, Code, Briefcase } from 'lucide-react';
+import { ArrowRight, ArrowLeft, Heart, Users, Settings, Megaphone, Code, Briefcase, Home } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { useAuth } from '@/contexts/AuthContext';
 import { usePersonalizationData } from '@/hooks/usePersonalizationData';
@@ -79,6 +79,10 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     setTimeout(() => setCurrentStep(currentStep + 1), 200);
   };
 
+  const handleBackToHome = () => {
+    navigate('/');
+  };
+
   const handleComplete = async () => {
     // Convert answers to match database field names
     const personalizationData = {
@@ -107,6 +111,19 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
       <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center p-4">
         <Card className="max-w-2xl w-full border-0 shadow-xl bg-white/80 backdrop-blur-sm">
           <CardContent className="p-8 text-center">
+            {/* Back to Home button */}
+            <div className="flex justify-start mb-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleBackToHome}
+                className="flex items-center gap-2 text-gray-600 hover:text-gray-800 p-2"
+              >
+                <Home className="w-4 h-4" />
+                <span className="hidden sm:inline">Back to Home</span>
+              </Button>
+            </div>
+
             <LyraAvatar className="mx-auto mb-6" />
             
             <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
@@ -168,6 +185,19 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center p-4">
       <Card className="max-w-2xl w-full border-0 shadow-xl bg-white/80 backdrop-blur-sm">
         <CardHeader className="text-center pb-6">
+          {/* Back to Home button */}
+          <div className="flex justify-start mb-4">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleBackToHome}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-800 p-2"
+            >
+              <Home className="w-4 h-4" />
+              <span className="hidden sm:inline">Back to Home</span>
+            </Button>
+          </div>
+
           <div className="flex justify-center mb-4">
             <LyraAvatar />
           </div>
