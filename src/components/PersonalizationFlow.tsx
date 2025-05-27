@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -115,9 +114,9 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
 
   if (isComplete) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center spacing-mobile">
         <Card className="max-w-2xl w-full border-0 shadow-xl bg-white/80 backdrop-blur-sm">
-          <CardContent className="p-8 text-center">
+          <CardContent className="mobile-card text-center">
             {/* Back to Home button */}
             <div className="flex justify-start mb-4">
               <Button
@@ -137,15 +136,15 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
               size="lg"
             />
             
-            <h2 className="text-3xl font-bold mb-4 text-purple-600">
+            <h2 className="text-3xl font-bold mb-4 text-purple-600 text-wrap-safe">
               Perfect! Your Learning Path is Ready 🎯
             </h2>
             
             {roleMessaging && (
               <div className="bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg p-4 mb-6">
-                <h3 className="font-semibold text-lg mb-2">{roleMessaging.welcomeMessage}</h3>
-                <p className="text-gray-700 mb-2">{roleMessaging.examples}</p>
-                <p className="text-sm text-purple-600 font-medium">{roleMessaging.successMetric}</p>
+                <h3 className="font-semibold text-lg mb-2 text-wrap-safe">{roleMessaging.welcomeMessage}</h3>
+                <p className="text-gray-700 mb-2 text-wrap-safe">{roleMessaging.examples}</p>
+                <p className="text-sm text-purple-600 font-medium text-wrap-safe">{roleMessaging.successMetric}</p>
               </div>
             )}
             
@@ -181,10 +180,10 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
             </div>
             
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-              <p className="text-blue-800 font-medium mb-2">
+              <p className="text-blue-800 font-medium mb-2 text-wrap-safe">
                 🚀 Next Step: Create Your Free Account
               </p>
-              <p className="text-blue-700 text-sm">
+              <p className="text-blue-700 text-sm text-wrap-safe">
                 Save your personalized learning path and complete your profile to start your AI journey.
               </p>
             </div>
@@ -210,7 +209,7 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center spacing-mobile">
       <Card className="max-w-2xl w-full border-0 shadow-xl bg-white/80 backdrop-blur-sm">
         <CardHeader className="text-center pb-6">
           {/* Back to Home button */}
@@ -243,41 +242,41 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
             ))}
           </div>
           
-          <CardTitle className="text-2xl font-bold mb-2">
+          <CardTitle className="text-2xl font-bold mb-2 text-wrap-safe">
             {currentStepData.title}
           </CardTitle>
-          <CardDescription className="text-lg">
+          <CardDescription className="text-lg text-wrap-safe">
             {currentStepData.subtitle}
           </CardDescription>
         </CardHeader>
         
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 mobile-card">
           {currentStepData.options.map((option) => {
             const isRoleStep = currentStepData.key === 'role';
             return (
               <Button
                 key={option.id}
                 variant="outline"
-                className="w-full p-6 h-auto text-left justify-start hover:bg-gradient-to-r hover:from-purple-50 hover:to-cyan-50 hover:border-purple-300 transition-all duration-200"
+                className="w-full p-4 sm:p-6 h-auto text-left justify-start hover:bg-gradient-to-r hover:from-purple-50 hover:to-cyan-50 hover:border-purple-300 transition-all duration-200"
                 onClick={() => handleAnswer(option.id)}
               >
-                <div className="flex items-start gap-4 w-full">
+                <div className="flex items-start gap-3 sm:gap-4 w-full">
                   {isRoleStep && (
-                    <div className="w-14 h-14 bg-white rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-sm border border-gray-100">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-sm border border-gray-100">
                       <img 
                         src={getUserRoleIconUrl(option.id as any)} 
                         alt={`${option.label} role`}
-                        className="w-10 h-10 object-contain"
+                        className="w-8 h-8 sm:w-10 sm:h-10 object-contain"
                       />
                     </div>
                   )}
-                  <div className="flex-1">
-                    <div className="font-semibold text-base mb-1">{option.label}</div>
+                  <div className="flex-1 min-w-0">
+                    <div className="font-semibold text-sm sm:text-base mb-1 text-wrap-safe">{option.label}</div>
                     {option.description && (
-                      <div className="text-sm text-gray-600">{option.description}</div>
+                      <div className="text-xs sm:text-sm text-gray-600 text-wrap-safe">{option.description}</div>
                     )}
                   </div>
-                  <ArrowRight className="w-5 h-5 text-gray-400 flex-shrink-0 mt-2" />
+                  <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 flex-shrink-0 mt-2" />
                 </div>
               </Button>
             );
