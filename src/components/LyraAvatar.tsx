@@ -19,17 +19,17 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
   animated = true
 }) => {
   const sizeClasses = {
-    sm: 'w-10 h-10',
-    md: 'w-16 h-16',
-    lg: 'w-20 h-20',
-    xl: 'w-24 h-24'
+    sm: 'w-12 h-12',
+    md: 'w-20 h-20',
+    lg: 'w-28 h-28',
+    xl: 'w-32 h-32'
   };
 
   const iconSizeClasses = {
-    sm: 'w-8 h-8',
-    md: 'w-12 h-12',
-    lg: 'w-16 h-16',
-    xl: 'w-20 h-20'
+    sm: 'w-10 h-10',
+    md: 'w-16 h-16',
+    lg: 'w-24 h-24',
+    xl: 'w-28 h-28'
   };
 
   const waveSize = {
@@ -42,7 +42,7 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
   return (
     <div className={cn("relative", className)}>
       <div className={cn(
-        "bg-gradient-to-r from-purple-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg p-2",
+        "bg-white rounded-xl flex items-center justify-center shadow-lg border border-gray-100",
         sizeClasses[size],
         animated && "transition-transform duration-300 hover:scale-105"
       )}>
@@ -68,10 +68,10 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
         </div>
       )}
       
-      {/* Enhanced pulse animation */}
+      {/* Subtle pulse animation on hover */}
       {animated && (
         <div className={cn(
-          "absolute inset-0 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-xl animate-pulse opacity-20",
+          "absolute inset-0 bg-purple-100 rounded-xl opacity-0 hover:opacity-20 transition-opacity duration-300",
           sizeClasses[size]
         )} />
       )}

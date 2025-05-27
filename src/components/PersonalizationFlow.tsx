@@ -142,11 +142,11 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Role:</span>
                   <div className="flex items-center gap-2">
-                    <div className="w-6 h-6 rounded-full overflow-hidden">
+                    <div className="w-8 h-8 bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden flex items-center justify-center">
                       <img 
                         src={getUserRoleIconUrl(answers.role as any)} 
                         alt={`${answers.role} role`}
-                        className="w-full h-full object-cover"
+                        className="w-6 h-6 object-contain"
                       />
                     </div>
                     <Badge variant="secondary">{answers.role}</Badge>
@@ -250,11 +250,11 @@ export const PersonalizationFlow: React.FC<PersonalizationFlowProps> = ({ onComp
               >
                 <div className="flex items-start gap-4 w-full">
                   {isRoleStep && (
-                    <div className="w-10 h-10 bg-gradient-to-r from-purple-100 to-cyan-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-1 p-1">
+                    <div className="w-14 h-14 bg-white rounded-lg flex items-center justify-center flex-shrink-0 mt-1 shadow-sm border border-gray-100">
                       <img 
                         src={getUserRoleIconUrl(option.id as any)} 
                         alt={`${option.label} role`}
-                        className="w-full h-full object-contain"
+                        className="w-10 h-10 object-contain"
                       />
                     </div>
                   )}

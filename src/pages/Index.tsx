@@ -21,15 +21,15 @@ const Index = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={true} />
       
-      {/* Hero Section - Increased top padding to prevent header overlap */}
-      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-28 pb-8 sm:pb-16">
+      {/* Hero Section - Fixed spacing to prevent header overlap */}
+      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-40 pb-8 sm:pb-16">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Hero Image - Increased size for better visibility */}
-          <div className="mb-8 flex justify-center">
+          {/* Hero Image - Larger and more prominent */}
+          <div className="mb-12 flex justify-center">
             <img 
               src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
               alt="AI Learning Platform"
-              className="w-40 h-40 sm:w-48 sm:h-48 md:w-56 md:h-56 object-contain"
+              className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain"
             />
           </div>
 
@@ -66,15 +66,15 @@ const Index = () => {
             </Button>
           </div>
           
-          {/* Key Benefits - Updated icon containers */}
+          {/* Key Benefits - Larger icons with clean white backgrounds */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-16">
-            <Card className="mobile-card border-0 shadow-lg bg-white/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <Card className="mobile-card border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
               <CardContent className="p-4 sm:p-6 text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-purple-500 to-purple-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 p-2 border border-purple-300">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-md border border-gray-100">
                   <img 
                     src={getFeatureIconUrl('learningTarget')} 
                     alt="Tailored Learning"
-                    className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg"
+                    className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg"
                   />
                 </div>
                 <h3 className="font-semibold text-base sm:text-lg mb-2">Tailored Learning</h3>
@@ -82,13 +82,13 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="mobile-card border-0 shadow-lg bg-white/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
+            <Card className="mobile-card border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
               <CardContent className="p-4 sm:p-6 text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-cyan-500 to-cyan-600 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 p-2 border border-cyan-300">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-md border border-gray-100">
                   <img 
                     src={getFeatureIconUrl('missionHeart')} 
                     alt="Mission-Focused"
-                    className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg"
+                    className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg"
                   />
                 </div>
                 <h3 className="font-semibold text-base sm:text-lg mb-2">Mission-Focused</h3>
@@ -96,13 +96,13 @@ const Index = () => {
               </CardContent>
             </Card>
             
-            <Card className="mobile-card border-0 shadow-lg bg-white/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300 sm:col-span-2 lg:col-span-1">
+            <Card className="mobile-card border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 sm:col-span-2 lg:col-span-1">
               <CardContent className="p-4 sm:p-6 text-center">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 bg-gradient-to-r from-purple-600 to-cyan-500 rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 p-2 border border-purple-300">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-md border border-gray-100">
                   <img 
                     src={getFeatureIconUrl('achievementTrophy')} 
                     alt="Confidence Building"
-                    className="w-8 h-8 sm:w-10 sm:h-10 object-contain rounded-lg"
+                    className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg"
                   />
                 </div>
                 <h3 className="font-semibold text-base sm:text-lg mb-2">Confidence Building</h3>

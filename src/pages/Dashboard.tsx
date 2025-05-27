@@ -128,14 +128,14 @@ export const Dashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} onSignOut={signOut} />
       
-      {/* Header Section - Increased top padding to prevent header overlap */}
-      <section className="container mx-auto px-4 pt-32 pb-8">
-        {/* Hero Image - Increased size for better visibility */}
-        <div className="mb-8 flex justify-center">
+      {/* Header Section - Fixed spacing to prevent header overlap */}
+      <section className="container mx-auto px-4 pt-40 pb-8">
+        {/* Hero Image - Larger and more prominent */}
+        <div className="mb-12 flex justify-center">
           <img 
             src={getSupabaseIconUrl(SUPABASE_ICONS.dashboardMeditation)} 
             alt="Meditation Figure for AI Learning"
-            className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 object-contain"
+            className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain"
           />
         </div>
 

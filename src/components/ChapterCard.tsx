@@ -32,28 +32,28 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
 
   return (
     <Card className={cn(
-      "border-0 shadow-lg bg-white/60 backdrop-blur-sm hover:shadow-xl transition-all duration-300 transform hover:scale-105",
+      "border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 transform hover:scale-105",
       isLocked && "opacity-60"
     )}>
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className={cn(
-            "w-14 h-14 rounded-xl flex items-center justify-center p-2 border-2",
+            "w-20 h-20 rounded-xl flex items-center justify-center shadow-md border",
             isLocked 
-              ? "bg-gray-200 border-gray-300" 
-              : "bg-gradient-to-r from-purple-500 to-cyan-500 border-purple-300"
+              ? "bg-white border-gray-200" 
+              : "bg-white border-gray-100"
           )}>
             {isLocked ? (
               <img 
                 src={lockIconSrc} 
                 alt="Locked chapter"
-                className="w-8 h-8 object-contain opacity-60"
+                className="w-12 h-12 object-contain opacity-60"
               />
             ) : (
               <img 
                 src={chapterIconSrc} 
                 alt={`Chapter ${chapter.id} icon`}
-                className="w-10 h-10 object-contain rounded-lg"
+                className="w-16 h-16 object-contain rounded-lg"
               />
             )}
           </div>
