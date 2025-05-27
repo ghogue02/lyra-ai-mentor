@@ -1,9 +1,8 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Minimize2, Maximize2 } from 'lucide-react';
+import { Send, Minimize2, Maximize2, Sparkles } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { ProfileCompletionReminder } from '@/components/ProfileCompletionReminder';
 import { cn } from '@/lib/utils';
@@ -59,37 +58,59 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     }
   };
 
-  // Create context-aware quick actions with role-based customization
+  // Create enhanced context-aware quick actions with discovery focus
   const getQuickActions = () => {
     const actions = [];
+    
+    // Magic AI demo button as first action
+    actions.push({
+      text: "✨ AI Magic Demo",
+      value: "DUMMY_DATA_REQUEST",
+      special: true
+    });
     
     // Always include the suggested task if available (make it shorter for mobile)
     if (suggestedTask) {
       const shortTask = suggestedTask.length > 25 ? `${suggestedTask.substring(0, 25)}...` : suggestedTask;
-      actions.push(shortTask);
+      actions.push({ text: shortTask, value: shortTask });
     }
     
-    // Add role-specific actions based on user profile
+    // Add role-specific discovery questions based on user profile
     if (userProfile?.role) {
       const roleActions = {
-        'fundraising': ['Fundraising tips', 'Donor examples'],
-        'programs': ['Program examples', 'Service ideas'],
-        'operations': ['Workflow help', 'Efficiency tips'],
-        'marketing': ['Marketing ideas', 'Outreach help'],
-        'leadership': ['Strategy tips', 'Implementation']
+        'fundraising': [
+          { text: "My donor struggles", value: "What's your biggest challenge with donor engagement?" },
+          { text: "Fundraising goals", value: "Tell me about your fundraising goals and obstacles." }
+        ],
+        'programs': [
+          { text: "Program challenges", value: "What program outcomes would you most like to improve?" },
+          { text: "Participant success", value: "How do you currently measure participant success?" }
+        ],
+        'operations': [
+          { text: "Daily bottlenecks", value: "What operational tasks consume most of your time?" },
+          { text: "Automation dreams", value: "If you could automate one work process, what would it be?" }
+        ],
+        'marketing': [
+          { text: "Audience challenges", value: "What's your biggest struggle in reaching your audience?" },
+          { text: "Content creation", value: "How much time do you spend on content creation weekly?" }
+        ],
+        'leadership': [
+          { text: "Strategic priorities", value: "What are your top strategic priorities this year?" },
+          { text: "Organizational challenges", value: "What organizational challenges concern you most?" }
+        ]
       };
       
       const specificActions = roleActions[userProfile.role as keyof typeof roleActions];
       if (specificActions) {
-        actions.push(...specificActions.slice(0, 2)); // Limit to 2 for mobile
+        actions.push(...specificActions.slice(0, 1)); // Limit to 1 for mobile space
       }
     }
     
-    // Add general lesson-specific actions (shorter text)
+    // Add general discovery-focused lesson actions (shorter text)
     if (lessonContext) {
-      actions.push("Explain", "Key points");
+      actions.push({ text: "Real examples", value: "Can you share a real example of this?" });
     } else {
-      actions.push("Explain", "Examples");
+      actions.push({ text: "Getting started", value: "Where should I start with AI?" });
     }
     
     return actions.slice(0, 4); // Limit to 4 actions to avoid clutter
@@ -97,8 +118,8 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
 
   const quickActions = getQuickActions();
 
-  const handleQuickAction = (action: string) => {
-    sendMessage(action);
+  const handleQuickAction = (action: any) => {
+    sendMessage(action.value || action.text);
     
     // Hide quick actions after use on mobile
     if (window.innerWidth < 768) {
@@ -117,12 +138,12 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
               Chat with Lyra
               {userProfile?.first_name && (
                 <span className="text-xs sm:text-sm text-gray-500 ml-1">
-                  • Hi {userProfile.first_name}!
+                  • Hi {userProfile.first_name}! 👋
                 </span>
               )}
             </h4>
             <p className="text-xs text-gray-500">
-              {lessonContext ? `About: ${lessonContext.lessonTitle}` : 'Your AI Mentor'}
+              {lessonContext ? `About: ${lessonContext.lessonTitle}` : 'Your AI Learning Mentor'}
               {userProfile?.role && (
                 <span className="ml-1 hidden sm:inline">• {userProfile.role} focused</span>
               )}
@@ -151,17 +172,24 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
       {/* Quick Actions */}
       {showQuickActions && quickActions.length > 0 && (
         <div className="p-2 sm:p-3 border-b bg-gray-50/50">
-          <p className="text-xs text-gray-600 mb-2">Quick actions:</p>
+          <p className="text-xs text-gray-600 mb-2">
+            {userProfile?.first_name ? `Quick actions for ${userProfile.first_name}:` : 'Quick actions:'}
+          </p>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
-            {quickActions.map((action) => (
+            {quickActions.map((action, index) => (
               <Button
-                key={action}
+                key={action.value || action.text}
                 variant="outline"
                 size="sm"
                 onClick={() => handleQuickAction(action)}
-                className="flex-shrink-0 text-xs h-7 hover:bg-purple-50 hover:border-purple-300 whitespace-nowrap"
+                className={`flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap ${
+                  action.special
+                    ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600 shadow-md'
+                    : 'hover:bg-purple-50 hover:border-purple-300'
+                }`}
               >
-                {action}
+                {action.special && <Sparkles className="w-3 h-3 mr-1" />}
+                {action.text}
               </Button>
             ))}
           </div>
@@ -231,10 +259,10 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
             onKeyPress={handleKeyPress}
             placeholder={
               userProfile?.first_name 
-                ? `Ask me anything, ${userProfile.first_name}...`
+                ? `What's on your mind, ${userProfile.first_name}?`
                 : lessonContext 
                   ? "Ask about this lesson..."
-                  : "Ask me anything about AI..."
+                  : "What questions do you have?"
             }
             className="flex-1 text-sm"
             disabled={isTyping}
@@ -248,7 +276,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           </Button>
         </div>
         <p className="text-xs text-gray-500 mt-1 sm:mt-2">
-          Press Enter to send
+          Press Enter to send • Try the AI Magic Demo! ✨
         </p>
       </div>
     </div>

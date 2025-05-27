@@ -42,7 +42,8 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     inputValue,
     setInputValue,
     sendMessage,
-    clearChat
+    clearChat,
+    userProfile
   } = useLyraChat(lessonContext);
 
   const { engagement, incrementExchange, resetEngagement, setEngagementCount } = useChatEngagement(3, initialEngagementCount);
@@ -159,6 +160,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
                   lessonContext={lessonContext}
                   suggestedTask={suggestedTask}
                   onQuickAction={handleQuickAction}
+                  userProfile={userProfile}
                 />
               </div>
             )}

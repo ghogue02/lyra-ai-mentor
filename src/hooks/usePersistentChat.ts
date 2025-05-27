@@ -96,40 +96,40 @@ export const usePersistentChat = (
     
     if (!profile) {
       return lessonContext 
-        ? `Hi! 👋 I'm Lyra, your AI mentor. I can see you're working on "${lessonContext.lessonTitle}". What questions do you have about this lesson?`
-        : "Hi there! 👋 I'm Lyra, your AI mentor. I'm here to help you navigate your learning journey. What questions do you have about AI?";
+        ? `Hi! 👋 I'm Lyra, your AI mentor. I can see you're exploring "${lessonContext.lessonTitle}". But before I dive in... what's got you most curious about this topic? 🤔`
+        : "Hi there! 👋 I'm Lyra, your AI mentor. I'm genuinely curious - what brought you here today? What AI challenge or opportunity has been on your mind? 🤔";
     }
 
-    let greeting = `Hi${profile.first_name ? ` ${profile.first_name}` : ''}! 👋 I'm Lyra, your AI mentor.`;
+    let greeting = `Hi${profile.first_name ? ` ${profile.first_name}` : ''}! 👋 I'm Lyra, and I'm genuinely excited to be your AI mentor.`;
     
     if (lessonContext) {
-      greeting += ` I can see you're working on "${lessonContext.lessonTitle}".`;
+      greeting += ` I see you're diving into "${lessonContext.lessonTitle}" - that's fantastic!`;
     }
 
-    // Add role-specific context if available
+    // Add role-specific discovery questions instead of statements
     if (profile.role) {
-      const roleContext = {
-        'fundraising': 'As someone in fundraising, I can help you explore how AI can enhance donor engagement and optimize your fundraising strategies.',
-        'programs': 'As a programs professional, I can show you how AI can improve program delivery and impact measurement.',
-        'operations': 'As someone in operations, I can help you discover AI tools for workflow automation and operational efficiency.',
-        'marketing': 'As a marketing professional, I can guide you through AI applications for content creation and audience engagement.',
-        'leadership': 'As a leader, I can help you understand strategic AI implementation for your organization.'
+      const roleQuestions = {
+        'fundraising': 'Before we explore AI tools, I\'m curious - what\'s your biggest frustration with donor engagement right now? 🎯',
+        'programs': 'I\'d love to know - what program outcomes are you most passionate about improving? 📊',
+        'operations': 'Tell me, what operational task eats up most of your day? I bet there\'s a story there! ⚡',
+        'marketing': 'I\'m curious - when you think about reaching your audience, what feels like the biggest uphill battle? 🎨',
+        'leadership': 'As a leader, what organizational challenge keeps you thinking at night? Let\'s unpack that together! 🎖️'
       };
       
-      const context = roleContext[profile.role as keyof typeof roleContext];
-      if (context) {
-        greeting += ` ${context}`;
+      const question = roleQuestions[profile.role as keyof typeof roleQuestions];
+      if (question) {
+        greeting += `\n\n${question}`;
       }
     }
 
-    // Add profile completion reminder if needed
+    // Add profile completion hook if needed
     if (!profile.profile_completed) {
-      greeting += '\n\n💡 *Tip: Complete your profile to unlock even more personalized guidance tailored to your specific role and experience level!*';
+      greeting += '\n\n💡 *P.S. - Once you complete your profile, I can provide even more personalized insights tailored exactly to your role and experience!*';
     }
 
-    greeting += '\n\nWhat questions do you have?';
+    greeting += '\n\nWhat\'s on your mind? 🚀';
     
-    console.log('Generated greeting:', greeting);
+    console.log('Generated discovery-focused greeting:', greeting);
     return greeting;
   };
 
@@ -249,10 +249,13 @@ export const usePersistentChat = (
   const sendMessage = useCallback(async (messageContent: string) => {
     if (!messageContent.trim() || !conversationId || !user) return;
 
+    // Check if this is a dummy data request
+    const isDummyDataRequest = messageContent === "DUMMY_DATA_REQUEST";
+
     const currentMessageOrder = messages.length;
     const userMessage: Message = {
       id: Date.now().toString(),
-      content: messageContent,
+      content: isDummyDataRequest ? "✨ Show me AI magic with dummy data!" : messageContent,
       isUser: true,
       timestamp: new Date()
     };
@@ -262,7 +265,7 @@ export const usePersistentChat = (
     setIsTyping(true);
 
     // Save user message to database
-    await saveMessage(conversationId, messageContent, true, currentMessageOrder);
+    await saveMessage(conversationId, userMessage.content, true, currentMessageOrder);
 
     // Cancel any previous request
     if (abortControllerRef.current) {
@@ -286,7 +289,8 @@ export const usePersistentChat = (
           lessonContext,
           conversationId,
           userId: user.id,
-          lessonId
+          lessonId,
+          isDummyDataRequest
         }),
         signal: abortControllerRef.current.signal
       });
@@ -295,54 +299,74 @@ export const usePersistentChat = (
         throw new Error(`HTTP error! status: ${response.status}`);
       }
 
-      // Handle streaming response
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('No response body reader available');
-      }
+      // Handle both streaming and non-streaming responses
+      const contentType = response.headers.get('content-type');
+      
+      if (contentType?.includes('application/json')) {
+        // Non-streaming response (for dummy data)
+        const data = await response.json();
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: data.generatedText,
+          isUser: false,
+          timestamp: new Date()
+        };
 
-      const decoder = new TextDecoder();
-      let aiResponseContent = '';
+        setMessages(prev => [...prev, aiMessage]);
+        setIsTyping(false);
 
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        content: '',
-        isUser: false,
-        timestamp: new Date()
-      };
+        // Save AI response to database
+        await saveMessage(conversationId, data.generatedText, false, currentMessageOrder + 1);
+      } else {
+        // Streaming response
+        const reader = response.body?.getReader();
+        if (!reader) {
+          throw new Error('No response body reader available');
+        }
 
-      setMessages(prev => [...prev, aiMessage]);
-      setIsTyping(false);
+        const decoder = new TextDecoder();
+        let aiResponseContent = '';
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+        const aiMessage: Message = {
+          id: (Date.now() + 1).toString(),
+          content: '',
+          isUser: false,
+          timestamp: new Date()
+        };
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
+        setMessages(prev => [...prev, aiMessage]);
+        setIsTyping(false);
 
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              if (data.content) {
-                aiResponseContent += data.content;
-                setMessages(prev => prev.map(msg => 
-                  msg.id === aiMessage.id 
-                    ? { ...msg, content: aiResponseContent }
-                    : msg
-                ));
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+
+          const chunk = decoder.decode(value);
+          const lines = chunk.split('\n');
+
+          for (const line of lines) {
+            if (line.startsWith('data: ')) {
+              try {
+                const data = JSON.parse(line.slice(6));
+                if (data.content) {
+                  aiResponseContent += data.content;
+                  setMessages(prev => prev.map(msg => 
+                    msg.id === aiMessage.id 
+                      ? { ...msg, content: aiResponseContent }
+                      : msg
+                  ));
+                }
+              } catch (e) {
+                console.error('Error parsing streaming data:', e);
               }
-            } catch (e) {
-              console.error('Error parsing streaming data:', e);
             }
           }
         }
-      }
 
-      // Save AI response to database
-      if (aiResponseContent) {
-        await saveMessage(conversationId, aiResponseContent, false, currentMessageOrder + 1);
+        // Save AI response to database
+        if (aiResponseContent) {
+          await saveMessage(conversationId, aiResponseContent, false, currentMessageOrder + 1);
+        }
       }
     } catch (error: any) {
       if (error.name === 'AbortError') {
@@ -353,7 +377,7 @@ export const usePersistentChat = (
       console.error('Error sending message:', error);
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: "I'm sorry, I'm having trouble responding right now. Please try again.",
+        content: "I'm having trouble responding right now. But hey, that just means I'm human-ish! 😅 Try asking me again?",
         isUser: false,
         timestamp: new Date()
       };

@@ -28,6 +28,44 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({ content }) =
         );
       }
       
+      // Handle bullet lists with emoji or special characters
+      if (paragraph.includes('\n') && /^[•·▪▫‣⁃]\s/.test(paragraph.trim())) {
+        const lines = paragraph.split('\n').filter(line => line.trim());
+        return (
+          <ul key={index} className="space-y-2 mb-4">
+            {lines.map((line, lineIndex) => {
+              const cleanLine = line.replace(/^[•·▪▫‣⁃]\s*/, '').trim();
+              return (
+                <li key={lineIndex} className="leading-relaxed flex items-start">
+                  <span className="text-purple-500 mr-2">•</span>
+                  <span>{formatInlineText(cleanLine)}</span>
+                </li>
+              );
+            })}
+          </ul>
+        );
+      }
+      
+      // Handle data/code blocks (for dummy data display)
+      if (paragraph.includes('===') || paragraph.includes('CSV') || paragraph.includes('_EXPORT_')) {
+        return (
+          <div key={index} className="bg-gray-800 text-green-400 p-3 rounded-lg mb-4 font-mono text-xs overflow-x-auto border border-gray-600">
+            <pre className="whitespace-pre-wrap">{paragraph}</pre>
+          </div>
+        );
+      }
+      
+      // Handle section headers with emojis
+      if (/^[🎯🚀⚡📊💡🌟🎉✨🔍💫🎖️🎨]/.test(paragraph)) {
+        return (
+          <div key={index} className="mb-4">
+            <h4 className="font-semibold text-purple-600 text-base leading-relaxed">
+              {formatInlineText(paragraph)}
+            </h4>
+          </div>
+        );
+      }
+      
       // Regular paragraph
       return (
         <p key={index} className="mb-4 last:mb-0 leading-relaxed">
@@ -44,8 +82,14 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({ content }) =
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
         const boldText = part.slice(2, -2);
-        return <strong key={index} className="font-semibold">{boldText}</strong>;
+        return <strong key={index} className="font-semibold text-purple-700">{boldText}</strong>;
       }
+      
+      // Handle special highlighting for metrics and numbers
+      if (/\d+%|\$[\d,]+|[\d,]+\s*(hours|participants|donors)/.test(part)) {
+        return <span key={index} className="font-medium text-cyan-600">{part}</span>;
+      }
+      
       return part;
     });
   };
