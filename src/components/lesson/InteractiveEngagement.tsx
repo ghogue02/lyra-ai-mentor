@@ -1,8 +1,7 @@
 
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Heart, ThumbsUp, Lightbulb, CheckCircle, Star } from 'lucide-react';
+import { ThumbsUp, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface InteractiveEngagementProps {
@@ -17,7 +16,6 @@ export const InteractiveEngagement: React.FC<InteractiveEngagementProps> = ({
   isCompleted = false
 }) => {
   const [selectedReaction, setSelectedReaction] = useState<string | null>(null);
-  const [highlightedText, setHighlightedText] = useState<string>('');
 
   const handleReaction = (reaction: string) => {
     setSelectedReaction(reaction);
@@ -28,37 +26,24 @@ export const InteractiveEngagement: React.FC<InteractiveEngagementProps> = ({
     onInteract();
   };
 
-  const handleHighlight = () => {
-    const selection = window.getSelection();
-    if (selection && selection.toString().trim()) {
-      setHighlightedText(selection.toString());
-      onInteract();
-    }
-  };
-
   if (isCompleted) {
-    return (
-      <div className="flex items-center gap-2 text-green-600">
-        <CheckCircle className="w-4 h-4" />
-        <span className="text-sm font-medium">Completed</span>
-      </div>
-    );
+    return null;
   }
 
   switch (type) {
     case 'reaction':
       return (
-        <div className="flex items-center gap-2">
-          <span className="text-sm text-gray-600">How does this make you feel?</span>
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-gray-500">Quick reaction:</span>
           <div className="flex gap-1">
-            {['🤔', '💡', '👍', '❤️'].map((emoji) => (
+            {['🤔', '💡', '👍'].map((emoji) => (
               <Button
                 key={emoji}
                 variant="ghost"
                 size="sm"
                 className={cn(
-                  "text-lg hover:bg-gray-100 transition-all duration-200",
-                  selectedReaction === emoji && "bg-green-100 ring-2 ring-green-200"
+                  "text-base hover:bg-gray-100 transition-all duration-200 h-8 w-8 p-0",
+                  selectedReaction === emoji && "bg-green-100 ring-1 ring-green-200"
                 )}
                 onClick={() => handleReaction(emoji)}
               >
@@ -74,27 +59,13 @@ export const InteractiveEngagement: React.FC<InteractiveEngagementProps> = ({
         <div className="flex items-center gap-3">
           <Button
             onClick={handleUnderstanding}
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="flex items-center gap-2 hover:bg-green-50 hover:border-green-300 transition-all duration-200"
+            className="flex items-center gap-2 hover:bg-green-50 hover:text-green-700 transition-all duration-200 text-sm"
           >
-            <ThumbsUp className="w-4 h-4" />
-            I understand this
+            <ThumbsUp className="w-3 h-3" />
+            Got it
           </Button>
-        </div>
-      );
-
-    case 'highlight':
-      return (
-        <div className="space-y-2">
-          <p className="text-sm text-gray-600">
-            💡 Highlight important text to continue
-          </p>
-          {highlightedText && (
-            <Badge className="bg-yellow-100 text-yellow-800 border-yellow-300">
-              Highlighted: "{highlightedText.slice(0, 30)}..."
-            </Badge>
-          )}
         </div>
       );
 
@@ -103,12 +74,12 @@ export const InteractiveEngagement: React.FC<InteractiveEngagementProps> = ({
         <div className="flex items-center gap-3">
           <Button
             onClick={onInteract}
-            variant="outline"
+            variant="ghost"
             size="sm"
-            className="flex items-center gap-2 hover:bg-purple-50 hover:border-purple-300 transition-all duration-200"
+            className="flex items-center gap-2 hover:bg-purple-50 hover:text-purple-700 transition-all duration-200 text-sm"
           >
-            <Star className="w-4 h-4" />
-            Capture this insight
+            <Star className="w-3 h-3" />
+            Key insight
           </Button>
         </div>
       );
