@@ -365,6 +365,13 @@ export const Lesson = () => {
   const firstLyraChatIndex = findFirstLyraChatIndex();
   const hasContentBlocking = firstLyraChatIndex !== -1;
 
+  // Calculate completion status for the bottom button
+  const totalItems = contentBlocks.length + interactiveElements.length;
+  const completedItems = completedBlocks.size + completedInteractiveElements.size;
+  const contentComplete = completedItems === totalItems;
+  const chatComplete = chatEngagement?.hasReachedMinimum || false;
+  const isFullyComplete = contentComplete && chatComplete;
+
   console.log('Lesson.tsx: Rendering with chat engagement:', chatEngagement);
   console.log('Lesson.tsx: Content blocking enabled:', hasContentBlocking);
   console.log('Lesson.tsx: First Lyra chat index:', firstLyraChatIndex);
@@ -458,6 +465,28 @@ export const Lesson = () => {
             );
           })}
         </div>
+
+        {/* Chapter completion button at bottom */}
+        {user && isFullyComplete && !isChapterCompleted && (
+          <div className="mx-auto max-w-4xl mt-8 mb-6">
+            <div className="p-4 bg-green-50 border border-green-200 rounded-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h4 className="font-medium text-green-800">Chapter Complete!</h4>
+                  <p className="text-sm text-green-600 mt-1">
+                    You've finished all sections. Mark this chapter as complete to continue.
+                  </p>
+                </div>
+                <Button
+                  onClick={handleMarkChapterComplete}
+                  className="bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Mark Chapter Complete
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Navigation */}
         <div className="flex justify-between items-center mt-12 mx-auto max-w-4xl">
