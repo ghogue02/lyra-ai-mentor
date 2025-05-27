@@ -105,9 +105,10 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     <>
       <Dialog open={isOpen} onOpenChange={handleClose} modal>
         <DialogContent 
-          className="!fixed !inset-0 !z-[100] !border-0 !p-0 !gap-0 !rounded-none !bg-gray-900 !max-w-none !max-h-none !transform-none !left-0 !top-0 !translate-x-0 !translate-y-0 !w-screen !h-screen"
+          className="fixed inset-0 z-[100] w-screen h-screen max-w-none max-h-none p-0 m-0 border-0 rounded-none bg-gray-900 overflow-hidden"
+          style={{ width: '100vw', height: '100vh', transform: 'none', left: 0, top: 0 }}
         >
-          <div className="grid h-screen w-screen bg-gray-900" style={{ gridTemplateRows: showQuickActions ? 'auto auto minmax(0,1fr) auto' : 'auto minmax(0,1fr) auto' }}>
+          <div className="flex flex-col h-full w-full bg-gray-900 overflow-hidden">
             <ChatHeader
               lessonContext={lessonContext}
               engagement={engagement}
@@ -115,28 +116,34 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
             />
 
             {showQuickActions && (
-              <QuickActions
-                lessonContext={lessonContext}
-                suggestedTask={suggestedTask}
-                onQuickAction={handleQuickAction}
-              />
+              <div className="flex-shrink-0">
+                <QuickActions
+                  lessonContext={lessonContext}
+                  suggestedTask={suggestedTask}
+                  onQuickAction={handleQuickAction}
+                />
+              </div>
             )}
 
-            <ChatMessages
-              messages={messages}
-              isTyping={isTyping}
-              engagement={engagement}
-              messagesEndRef={messagesEndRef}
-              onForceClose={forceClose}
-            />
+            <div className="flex-1 min-h-0 overflow-hidden">
+              <ChatMessages
+                messages={messages}
+                isTyping={isTyping}
+                engagement={engagement}
+                messagesEndRef={messagesEndRef}
+                onForceClose={forceClose}
+              />
+            </div>
             
-            <ChatInput
-              inputValue={inputValue}
-              setInputValue={setInputValue}
-              onSendMessage={handleSendMessage}
-              isTyping={isTyping}
-              inputRef={inputRef}
-            />
+            <div className="flex-shrink-0">
+              <ChatInput
+                inputValue={inputValue}
+                setInputValue={setInputValue}
+                onSendMessage={handleSendMessage}
+                isTyping={isTyping}
+                inputRef={inputRef}
+              />
+            </div>
           </div>
         </DialogContent>
       </Dialog>

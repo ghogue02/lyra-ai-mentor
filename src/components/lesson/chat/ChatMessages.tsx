@@ -26,8 +26,8 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
   messagesEndRef
 }) => {
   return (
-    <div className="overflow-y-auto p-6 bg-gray-900 min-h-0">
-      <div className="space-y-4">
+    <div className="h-full overflow-y-auto overflow-x-hidden spacing-mobile bg-gray-900">
+      <div className="space-y-3 sm:space-y-4 pb-4">
         {messages.map((message) => (
           <div
             key={message.id}
@@ -37,15 +37,15 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
             )}
           >
             <div className={cn(
-              "flex items-start gap-3 max-w-[80%]",
+              "flex items-start gap-2 sm:gap-3 max-w-[85%] sm:max-w-[80%]",
               message.isUser && "flex-row-reverse"
             )}>
               {!message.isUser && (
-                <LyraAvatar size="sm" withWave={false} className="mt-1" />
+                <LyraAvatar size="sm" withWave={false} className="mt-1 flex-shrink-0" />
               )}
               <div
                 className={cn(
-                  "p-4 rounded-lg shadow-lg",
+                  "p-3 sm:p-4 rounded-lg shadow-lg break-words",
                   message.isUser
                     ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-br-none"
                     : "bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700"
@@ -63,9 +63,9 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
         
         {isTyping && (
           <div className="flex justify-start animate-fade-in">
-            <div className="flex items-start gap-3">
-              <LyraAvatar size="sm" withWave={false} className="mt-1" />
-              <div className="bg-gray-800 border border-gray-700 p-4 rounded-lg rounded-bl-none">
+            <div className="flex items-start gap-2 sm:gap-3">
+              <LyraAvatar size="sm" withWave={false} className="mt-1 flex-shrink-0" />
+              <div className="bg-gray-800 border border-gray-700 p-3 sm:p-4 rounded-lg rounded-bl-none">
                 <div className="flex space-x-1">
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>

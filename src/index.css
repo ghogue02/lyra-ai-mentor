@@ -82,12 +82,25 @@
 /* Mobile-specific spacing utilities */
 @layer utilities {
   .spacing-mobile {
-    @apply px-3 sm:px-4 md:px-6;
+    @apply px-2 sm:px-4 md:px-6;
   }
   .spacing-mobile-y {
-    @apply py-2 sm:py-3 md:py-4;
+    @apply py-1 sm:py-2 md:py-4;
   }
   .mobile-button {
     @apply text-xs sm:text-sm px-2 sm:px-3 py-1 sm:py-2;
+  }
+  .mobile-input {
+    @apply text-sm sm:text-base;
+  }
+}
+
+/* Chat-specific mobile optimizations */
+@layer utilities {
+  .chat-mobile-compact {
+    @apply px-2 py-1 sm:px-3 sm:py-2;
+  }
+  .safe-bottom {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
   }
 }
