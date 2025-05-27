@@ -45,8 +45,8 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   }
 
   return (
-    <div className="p-4 border-b border-gray-700 bg-gray-800/50">
-      <p className="text-xs text-gray-400 mb-3 font-medium">Try these prompts to get started:</p>
+    <div className="spacing-mobile spacing-mobile-y border-b border-gray-700 bg-gray-800/50">
+      <p className="text-xs text-gray-400 mb-2 sm:mb-3 font-medium">Try these prompts to get started:</p>
       <div className="flex flex-wrap gap-2">
         {quickActions.map((action) => (
           <Button
@@ -54,9 +54,9 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
             variant="outline"
             size="sm"
             onClick={() => onQuickAction(action)}
-            className="text-xs h-8 bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-colors"
+            className="mobile-button text-xs h-7 sm:h-8 bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600 hover:border-gray-500 transition-colors px-2 sm:px-3"
           >
-            {action}
+            <span className="truncate max-w-[120px] sm:max-w-none">{action}</span>
           </Button>
         ))}
       </div>

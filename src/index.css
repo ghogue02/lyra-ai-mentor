@@ -36,19 +36,12 @@
     --radius: 0.5rem;
 
     --sidebar-background: 0 0% 98%;
-
     --sidebar-foreground: 240 5.3% 26.1%;
-
     --sidebar-primary: 240 5.9% 10%;
-
     --sidebar-primary-foreground: 0 0% 98%;
-
     --sidebar-accent: 240 4.8% 95.9%;
-
     --sidebar-accent-foreground: 240 5.9% 10%;
-
     --sidebar-border: 220 13% 91%;
-
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
 
@@ -89,6 +82,20 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  /* Safari and iOS specific fixes */
+  html {
+    /* Prevents zoom on input focus in Safari iOS */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Fix for iOS Safari viewport units */
+  @supports (-webkit-touch-callout: none) {
+    .h-screen {
+      height: -webkit-fill-available;
+    }
+  }
 }
 
 @layer base {
@@ -98,6 +105,24 @@
 
   body {
     @apply bg-background text-foreground;
+    /* Prevent rubber band scrolling on iOS */
+    overscroll-behavior: none;
+    /* Smooth scrolling for all browsers */
+    scroll-behavior: smooth;
+    /* Optimize text rendering */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Improve touch targets for mobile */
+  button, [role="button"], input, select, textarea {
+    touch-action: manipulation;
+  }
+
+  /* Ensure proper scrolling on mobile */
+  .scroll-area {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
   }
 }
 
@@ -123,5 +148,191 @@
     content: "";
     display: table;
     clear: both;
+  }
+
+  /* Mobile-specific utilities */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Safari backdrop-filter fallback */
+  .backdrop-blur-md {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .backdrop-blur-sm {
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+
+  /* Mobile-friendly gradients for Safari */
+  .gradient-text {
+    background: linear-gradient(to right, #9333ea, #0891b2);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
+
+  /* iOS safe area support */
+  .safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .safe-left {
+    padding-left: env(safe-area-inset-left);
+  }
+
+  .safe-right {
+    padding-right: env(safe-area-inset-right);
+  }
+
+  /* Mobile keyboard handling */
+  .mobile-input {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Responsive text utilities */
+  .text-responsive-xl {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+    line-height: 1.2;
+  }
+
+  .text-responsive-lg {
+    font-size: clamp(1.25rem, 3vw, 2.25rem);
+    line-height: 1.3;
+  }
+
+  .text-responsive-md {
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: 1.4;
+  }
+
+  /* Mobile card improvements */
+  .mobile-card {
+    @apply rounded-lg shadow-sm border;
+    /* Prevent text selection on mobile cards */
+    -webkit-user-select: none;
+    user-select: none;
+    /* Better tap feedback */
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+
+  /* Mobile button improvements */
+  .mobile-button {
+    @apply touch-target;
+    /* Remove iOS button styling */
+    -webkit-appearance: none;
+    appearance: none;
+    /* Better tap feedback */
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Scrollable container improvements */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+  }
+
+  /* Animation performance improvements */
+  .will-change-transform {
+    will-change: transform;
+  }
+
+  .transform-gpu {
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
+  }
+
+  /* Mobile chat specific */
+  .chat-mobile {
+    /* Prevent zoom when focusing input */
+    font-size: 16px;
+    /* Better touch scrolling */
+    -webkit-overflow-scrolling: touch;
+    /* Prevent overscroll */
+    overscroll-behavior: none;
+  }
+
+  /* Responsive spacing */
+  .spacing-mobile {
+    @apply px-4 sm:px-6 lg:px-8;
+  }
+
+  .spacing-mobile-y {
+    @apply py-4 sm:py-6 lg:py-8;
+  }
+}
+
+/* Mobile-first breakpoint overrides */
+@media (max-width: 640px) {
+  /* Ensure proper touch targets */
+  button {
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+  }
+
+  /* Adjust modal padding for mobile */
+  .dialog-content {
+    margin: 1rem;
+    width: calc(100% - 2rem);
+  }
+
+  /* Better mobile typography */
+  h1 {
+    font-size: clamp(2rem, 8vw, 4rem);
+    line-height: 1.1;
+  }
+
+  h2 {
+    font-size: clamp(1.5rem, 6vw, 3rem);
+    line-height: 1.2;
+  }
+
+  h3 {
+    font-size: clamp(1.25rem, 5vw, 2rem);
+    line-height: 1.3;
+  }
+}
+
+/* Safari-specific fixes */
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+  /* Fix for Safari gradient rendering */
+  .bg-gradient-to-r {
+    background: -webkit-linear-gradient(left, var(--tw-gradient-stops));
+    background: linear-gradient(to right, var(--tw-gradient-stops));
+  }
+
+  .bg-gradient-to-br {
+    background: -webkit-linear-gradient(top left, var(--tw-gradient-stops));
+    background: linear-gradient(to bottom right, var(--tw-gradient-stops));
+  }
+
+  /* Fix for Safari backdrop-filter on white backgrounds */
+  .bg-white\/80 {
+    background-color: rgba(255, 255, 255, 0.8);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+
+  .bg-white\/95 {
+    background-color: rgba(255, 255, 255, 0.95);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+}
+
+/* High DPI display optimizations */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  /* Sharper borders on retina displays */
+  .border {
+    border-width: 0.5px;
   }
 }
