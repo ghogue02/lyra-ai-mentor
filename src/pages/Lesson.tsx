@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -126,7 +127,7 @@ export const Lesson = () => {
 
       // Fetch user progress if authenticated
       if (user) {
-        console.log('Fetching progress for user:', user.id, 'lesson:', lessonIdNum);
+        console.log('Lesson.tsx: Fetching progress for user:', user.id, 'lesson:', lessonIdNum);
         
         // Fetch content block progress
         const { data: progressData } = await supabase
@@ -138,7 +139,7 @@ export const Lesson = () => {
         const completedBlockIds = new Set(
           progressData?.filter(p => p.completed).map(p => p.content_block_id) || []
         );
-        console.log('Completed content blocks:', Array.from(completedBlockIds));
+        console.log('Lesson.tsx: Completed content blocks:', Array.from(completedBlockIds));
         setCompletedBlocks(completedBlockIds);
 
         // Fetch interactive element progress
@@ -151,7 +152,7 @@ export const Lesson = () => {
         const completedInteractiveIds = new Set(
           interactiveProgressData?.filter(p => p.completed).map(p => p.interactive_element_id) || []
         );
-        console.log('Completed interactive elements:', Array.from(completedInteractiveIds));
+        console.log('Lesson.tsx: Completed interactive elements:', Array.from(completedInteractiveIds));
         setCompletedInteractiveElements(completedInteractiveIds);
 
         // Check if chapter is completed
@@ -164,32 +165,27 @@ export const Lesson = () => {
 
         setIsChapterCompleted(chapterProgressData?.chapter_completed || false);
 
-        // Load chat engagement for the FIRST Lyra chat element specifically
-        const firstLyraChatElement = elementsData?.find(el => el.type === 'lyra_chat');
-        if (firstLyraChatElement) {
-          console.log('Loading chat engagement for first Lyra chat element:', firstLyraChatElement.id);
+        // Load chat engagement using conversation data (more reliable than user_interactions)
+        console.log('Lesson.tsx: Loading chat engagement data');
+        const { data: conversationData } = await supabase
+          .from('chat_conversations')
+          .select('id, message_count')
+          .eq('user_id', user.id)
+          .eq('lesson_id', lessonIdNum);
+
+        if (conversationData && conversationData.length > 0) {
+          // Count actual message exchanges (divide by 2 since each exchange has user + AI message)
+          const totalExchanges = Math.floor(conversationData.reduce((sum, conv) => sum + conv.message_count, 0) / 2);
+          const hasReachedMinimum = totalExchanges >= 3;
           
-          const { data: chatData } = await supabase
-            .from('user_interactions')
-            .select('interactive_element_id')
-            .eq('user_id', user.id)
-            .eq('lesson_id', lessonIdNum)
-            .eq('interactive_element_id', firstLyraChatElement.id)
-            .eq('interaction_type', 'chat_engagement');
-
-          console.log('Found chat engagement data:', chatData);
-
-          if (chatData && chatData.length > 0) {
-            const exchangeCount = chatData.length;
-            const hasReachedMinimum = exchangeCount >= 3;
-            
-            console.log(`Setting lesson-level chat engagement: ${exchangeCount} exchanges, minimum: ${hasReachedMinimum}`);
-            
-            setChatEngagement({
-              exchangeCount,
-              hasReachedMinimum
-            });
-          }
+          console.log(`Lesson.tsx: Found ${totalExchanges} chat exchanges, minimum reached: ${hasReachedMinimum}`);
+          
+          const initialEngagement = {
+            exchangeCount: totalExchanges,
+            hasReachedMinimum
+          };
+          
+          setChatEngagement(initialEngagement);
         }
       }
     } catch (error) {
@@ -205,7 +201,7 @@ export const Lesson = () => {
     if (isNaN(lessonIdNum)) return;
     
     try {
-      console.log(`Marking content block ${blockId} as completed`);
+      console.log(`Lesson.tsx: Marking content block ${blockId} as completed`);
       
       await supabase.from('lesson_progress_detailed').upsert({
         user_id: user.id,
@@ -218,7 +214,7 @@ export const Lesson = () => {
       const newCompleted = new Set([...completedBlocks, blockId]);
       setCompletedBlocks(newCompleted);
       
-      console.log(`Content block ${blockId} marked as completed successfully`);
+      console.log(`Lesson.tsx: Content block ${blockId} marked as completed successfully`);
     } catch (error) {
       console.error('Error updating content block progress:', error);
     }
@@ -227,7 +223,7 @@ export const Lesson = () => {
   const handleInteractiveElementComplete = (elementId: number) => {
     if (completedInteractiveElements.has(elementId)) return;
     
-    console.log(`Interactive element ${elementId} completed`);
+    console.log(`Lesson.tsx: Interactive element ${elementId} completed`);
     const newCompleted = new Set([...completedInteractiveElements, elementId]);
     setCompletedInteractiveElements(newCompleted);
   };
@@ -236,8 +232,13 @@ export const Lesson = () => {
     hasReachedMinimum: boolean;
     exchangeCount: number;
   }) => {
-    console.log('Lesson: Chat engagement changed:', engagement);
+    console.log('Lesson.tsx: Chat engagement changed:', engagement);
     setChatEngagement(engagement);
+    
+    // Force a re-render of content to update blocking state
+    if (engagement.hasReachedMinimum && !chatEngagement.hasReachedMinimum) {
+      console.log('Lesson.tsx: Chat engagement threshold reached, content should unlock');
+    }
   };
 
   const updateProgress = (blockIds: Set<number>, elementIds: Set<number>) => {
@@ -245,9 +246,9 @@ export const Lesson = () => {
     const completedItems = blockIds.size + elementIds.size;
     const newProgress = totalItems > 0 ? (completedItems / totalItems) * 100 : 0;
     
-    console.log(`Progress update: ${completedItems}/${totalItems} = ${newProgress}%`);
-    console.log('Completed blocks:', Array.from(blockIds));
-    console.log('Completed elements:', Array.from(elementIds));
+    console.log(`Lesson.tsx: Progress update: ${completedItems}/${totalItems} = ${newProgress}%`);
+    console.log('Lesson.tsx: Completed blocks:', Array.from(blockIds));
+    console.log('Lesson.tsx: Completed elements:', Array.from(elementIds));
     
     setProgress(newProgress);
   };
@@ -302,6 +303,7 @@ export const Lesson = () => {
     if (index <= firstLyraChatIndex) return false;
     
     // Block if chat engagement hasn't reached minimum
+    console.log(`Lesson.tsx: Checking if content at index ${index} should be blocked. Chat engagement:`, chatEngagement);
     return !chatEngagement.hasReachedMinimum;
   };
 
@@ -363,7 +365,9 @@ export const Lesson = () => {
   const firstLyraChatIndex = findFirstLyraChatIndex();
   const hasContentBlocking = firstLyraChatIndex !== -1;
 
-  console.log('Rendering Lesson with chat engagement:', chatEngagement);
+  console.log('Lesson.tsx: Rendering with chat engagement:', chatEngagement);
+  console.log('Lesson.tsx: Content blocking enabled:', hasContentBlocking);
+  console.log('Lesson.tsx: First Lyra chat index:', firstLyraChatIndex);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
@@ -419,6 +423,8 @@ export const Lesson = () => {
         <div className="mx-auto space-y-8 max-w-4xl">
           {regularContent.map((item, index) => {
             const isBlocked = shouldBlockContent(index);
+            
+            console.log(`Lesson.tsx: Rendering item at index ${index}, blocked: ${isBlocked}, type: ${item.type}`);
             
             if (isBlocked && index === firstLyraChatIndex + 1) {
               // Show the content blocker only once, right after the first Lyra chat

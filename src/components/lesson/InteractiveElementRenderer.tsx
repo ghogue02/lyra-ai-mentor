@@ -79,7 +79,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     if (!user) return;
 
     try {
-      console.log(`Loading completion status for element ${element.id}`);
+      console.log(`InteractiveElementRenderer: Loading completion status for element ${element.id}`);
       
       const { data, error } = await supabase
         .from('interactive_element_progress')
@@ -92,7 +92,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       if (error) throw error;
 
       if (data?.completed) {
-        console.log(`Element ${element.id} is already completed`);
+        console.log(`InteractiveElementRenderer: Element ${element.id} is already completed`);
         setIsElementCompleted(true);
       }
     } catch (error: any) {
@@ -130,33 +130,43 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     if (!user) return;
 
     try {
-      console.log(`Loading chat engagement for element ${element.id}, lesson ${lessonId}`);
+      console.log(`InteractiveElementRenderer: Loading chat engagement for element ${element.id}, lesson ${lessonId}`);
       
-      const { data, error } = await supabase
-        .from('user_interactions')
-        .select('content, metadata')
+      // Get unique chat conversations for this element to count actual exchanges
+      const { data: conversationData, error: convError } = await supabase
+        .from('chat_conversations')
+        .select('id, message_count')
         .eq('user_id', user.id)
-        .eq('interactive_element_id', element.id)
-        .eq('lesson_id', lessonId)
-        .eq('interaction_type', 'chat_engagement');
+        .eq('lesson_id', lessonId);
 
-      if (error) throw error;
+      if (convError) throw convError;
 
-      console.log(`Found ${data?.length || 0} chat engagement records for element ${element.id}`);
+      let totalExchanges = 0;
+      if (conversationData && conversationData.length > 0) {
+        // Count actual message exchanges (divide by 2 since each exchange has user + AI message)
+        totalExchanges = Math.floor(conversationData.reduce((sum, conv) => sum + conv.message_count, 0) / 2);
+      }
 
-      if (data && data.length > 0) {
-        const exchangeCount = data.length;
-        const hasReachedMinimum = exchangeCount >= 3;
-        
-        console.log(`Chat engagement for element ${element.id}: ${exchangeCount} exchanges, minimum reached: ${hasReachedMinimum}`);
-        
-        const newEngagement = {
-          exchangeCount,
-          hasReachedMinimum
-        };
+      console.log(`InteractiveElementRenderer: Found ${totalExchanges} chat exchanges for element ${element.id}`);
 
-        setChatEngagement(newEngagement);
-        onChatEngagementChange?.(newEngagement);
+      const hasReachedMinimum = totalExchanges >= 3;
+      
+      const newEngagement = {
+        exchangeCount: totalExchanges,
+        hasReachedMinimum
+      };
+
+      console.log(`InteractiveElementRenderer: Setting engagement for element ${element.id}:`, newEngagement);
+      
+      setChatEngagement(newEngagement);
+      
+      // Immediately notify parent with current engagement status
+      onChatEngagementChange?.(newEngagement);
+
+      // Mark as completed if minimum reached
+      if (hasReachedMinimum && !isElementCompleted) {
+        console.log(`InteractiveElementRenderer: Marking element ${element.id} as completed due to chat engagement`);
+        markElementComplete();
       }
     } catch (error: any) {
       console.error('Error loading chat engagement:', error);
@@ -167,7 +177,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     if (!user || isElementCompleted) return;
 
     try {
-      console.log(`Marking element ${element.id} as completed`);
+      console.log(`InteractiveElementRenderer: Marking element ${element.id} as completed`);
       
       const { error } = await supabase
         .from('interactive_element_progress')
@@ -181,7 +191,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
 
       if (error) throw error;
 
-      console.log(`Element ${element.id} marked as completed successfully`);
+      console.log(`InteractiveElementRenderer: Element ${element.id} marked as completed successfully`);
       setIsElementCompleted(true);
       onElementComplete?.(element.id);
     } catch (error: any) {
@@ -271,35 +281,13 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     hasReachedMinimum: boolean;
     exchangeCount: number;
   }) => {
-    console.log(`Chat engagement changed for element ${element.id}:`, engagement);
+    console.log(`InteractiveElementRenderer: Chat engagement changed for element ${element.id}:`, engagement);
     
     setChatEngagement(engagement);
     onChatEngagementChange?.(engagement);
-    
-    // Save chat engagement to database
-    if (user && engagement.exchangeCount > chatEngagement.exchangeCount) {
-      try {
-        console.log(`Saving new chat engagement for element ${element.id}, exchange ${engagement.exchangeCount}`);
-        
-        await supabase
-          .from('user_interactions')
-          .insert({
-            user_id: user.id,
-            lesson_id: lessonId,
-            interactive_element_id: element.id,
-            interaction_type: 'chat_engagement',
-            content: `Chat exchange ${engagement.exchangeCount}`,
-            metadata: {
-              exchange_count: engagement.exchangeCount,
-              has_reached_minimum: engagement.hasReachedMinimum
-            }
-          });
-      } catch (error: any) {
-        console.error('Error saving chat engagement:', error);
-      }
-    }
 
     if (engagement.hasReachedMinimum && !isElementCompleted) {
+      console.log(`InteractiveElementRenderer: Marking element ${element.id} as completed due to engagement threshold`);
       markElementComplete();
     }
   };

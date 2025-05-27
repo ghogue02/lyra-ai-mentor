@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -33,6 +34,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
+  const [hasIncrementedForCurrentMessage, setHasIncrementedForCurrentMessage] = useState(false);
 
   const {
     messages,
@@ -47,15 +49,40 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
 
   // Initialize engagement count with database value when component mounts
   useEffect(() => {
-    console.log('FullScreenChatOverlay: Setting initial engagement count to:', initialEngagementCount);
-    setEngagementCount(initialEngagementCount);
+    console.log('FullScreenChatOverlay: Initializing with engagement count:', initialEngagementCount);
+    if (initialEngagementCount > 0) {
+      setEngagementCount(initialEngagementCount);
+    }
   }, [initialEngagementCount, setEngagementCount]);
 
   // Notify parent component of engagement changes
   useEffect(() => {
-    console.log('FullScreenChatOverlay: Engagement changed:', engagement);
+    console.log('FullScreenChatOverlay: Notifying parent of engagement change:', engagement);
     onEngagementChange?.(engagement);
   }, [engagement, onEngagementChange]);
+
+  // Track when we should increment engagement based on actual message exchanges
+  useEffect(() => {
+    const userMessageCount = messages.filter(msg => msg.isUser).length;
+    const aiMessageCount = messages.filter(msg => !msg.isUser).length;
+    
+    // Only count as an exchange if we have both a user message and AI response
+    const actualExchanges = Math.min(userMessageCount, aiMessageCount);
+    
+    console.log('FullScreenChatOverlay: Message analysis:', {
+      userMessages: userMessageCount,
+      aiMessages: aiMessageCount,
+      actualExchanges,
+      currentEngagement: engagement.exchangeCount
+    });
+
+    // Update engagement count if we have more actual exchanges than recorded
+    if (actualExchanges > engagement.exchangeCount && !hasIncrementedForCurrentMessage) {
+      console.log('FullScreenChatOverlay: Updating engagement count to match actual exchanges');
+      setEngagementCount(actualExchanges);
+      setHasIncrementedForCurrentMessage(true);
+    }
+  }, [messages, engagement.exchangeCount, setEngagementCount, hasIncrementedForCurrentMessage]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -68,14 +95,17 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
+      setHasIncrementedForCurrentMessage(false);
     }
   }, [isOpen]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
     
+    console.log('FullScreenChatOverlay: Sending message and preparing to increment engagement');
+    setHasIncrementedForCurrentMessage(false);
+    
     await sendMessage(inputValue);
-    incrementExchange();
     inputRef.current?.focus();
     
     // Hide quick actions after first message on mobile to save space
@@ -88,20 +118,20 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     if (!engagement.hasReachedMinimum && engagement.exchangeCount > 0) {
       setShowCloseConfirmation(true);
     } else {
-      resetEngagement();
       onClose();
     }
   };
 
   const forceClose = () => {
-    resetEngagement();
     setShowCloseConfirmation(false);
     onClose();
   };
 
   const handleQuickAction = (action: string) => {
+    console.log('FullScreenChatOverlay: Quick action triggered, preparing to increment engagement');
+    setHasIncrementedForCurrentMessage(false);
+    
     sendMessage(action);
-    incrementExchange();
     
     // Hide quick actions after use on mobile
     if (window.innerWidth < 768) {
