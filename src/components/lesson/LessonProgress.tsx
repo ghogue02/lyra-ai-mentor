@@ -1,9 +1,7 @@
-
 import React from 'react';
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, Clock, MessageCircle } from 'lucide-react';
-
 interface LessonProgressProps {
   completedBlocks: number;
   totalBlocks: number;
@@ -14,7 +12,6 @@ interface LessonProgressProps {
     exchangeCount: number;
   };
 }
-
 export const LessonProgress: React.FC<LessonProgressProps> = ({
   completedBlocks,
   totalBlocks,
@@ -22,28 +19,19 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
   isCompleted = false,
   chatEngagement
 }) => {
-  const progressPercentage = totalBlocks > 0 ? (completedBlocks / totalBlocks) * 100 : 0;
-
-  return (
-    <div className="space-y-4">
+  const progressPercentage = totalBlocks > 0 ? completedBlocks / totalBlocks * 100 : 0;
+  return <div className="space-y-4">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Badge variant="secondary" className="flex items-center gap-2">
-            <Clock className="w-3 h-3" />
-            {estimatedDuration} min
-          </Badge>
-          {isCompleted && (
-            <Badge className="bg-green-100 text-green-700 flex items-center gap-2">
+          
+          {isCompleted && <Badge className="bg-green-100 text-green-700 flex items-center gap-2">
               <CheckCircle className="w-3 h-3" />
               Completed
-            </Badge>
-          )}
-          {chatEngagement?.hasReachedMinimum && (
-            <Badge className="bg-purple-100 text-purple-700 flex items-center gap-2 animate-fade-in">
+            </Badge>}
+          {chatEngagement?.hasReachedMinimum && <Badge className="bg-purple-100 text-purple-700 flex items-center gap-2 animate-fade-in">
               <MessageCircle className="w-3 h-3" />
               Chat Completed
-            </Badge>
-          )}
+            </Badge>}
         </div>
         <span className="text-sm text-gray-600">
           {completedBlocks} of {totalBlocks} sections
@@ -56,15 +44,10 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
           <span>{Math.round(progressPercentage)}%</span>
         </div>
         <Progress value={progressPercentage} className="w-full" />
-        {chatEngagement && chatEngagement.exchangeCount > 0 && (
-          <div className="flex justify-between text-xs text-gray-500">
+        {chatEngagement && chatEngagement.exchangeCount > 0 && <div className="flex justify-between text-xs text-gray-500">
             <span>Chat interactions: {chatEngagement.exchangeCount}/3</span>
-            {chatEngagement.hasReachedMinimum && (
-              <span className="text-purple-600 font-medium">✓ Learning goal achieved</span>
-            )}
-          </div>
-        )}
+            {chatEngagement.hasReachedMinimum && <span className="text-purple-600 font-medium">✓ Learning goal achieved</span>}
+          </div>}
       </div>
-    </div>
-  );
+    </div>;
 };
