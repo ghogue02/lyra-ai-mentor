@@ -105,7 +105,7 @@ export const usePersistentChat = (
     if (lessonContext) {
       greeting += ` I see you're diving into "${lessonContext.lessonTitle}" - that's great timing. What's got you most curious about this topic right now?`;
     } else {
-      greeting += ' What's got you most curious about AI right now?';
+      greeting += " What's got you most curious about AI right now?";
     }
 
     // Add profile completion note if needed (simplified)
