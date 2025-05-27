@@ -39,6 +39,7 @@ interface InteractiveElement {
   configuration: any;
   order_index: number;
 }
+
 export const Lesson = () => {
   const {
     chapterId,
@@ -64,9 +65,11 @@ export const Lesson = () => {
     hasReachedMinimum: false,
     exchangeCount: 0
   });
+
   useEffect(() => {
     fetchLessonData();
   }, [chapterId, lessonId, user]);
+
   const fetchLessonData = async () => {
     if (!chapterId || !lessonId) return;
 
@@ -129,7 +132,7 @@ export const Lesson = () => {
         );
         setCompletedBlocks(completedBlockIds);
 
-        // Fetch interactive element progress
+        // Fetch interactive element progress - now properly checking all elements
         const { data: interactiveProgressData } = await supabase
           .from('interactive_element_progress')
           .select('interactive_element_id, completed')
@@ -151,10 +154,27 @@ export const Lesson = () => {
 
         setIsChapterCompleted(chapterProgressData?.chapter_completed || false);
 
-        // Calculate progress
+        // Calculate progress properly
         const totalItems = (blocksData?.length || 0) + (elementsData?.length || 0);
         const completedItems = completedBlockIds.size + completedInteractiveIds.size;
         setProgress(totalItems > 0 ? (completedItems / totalItems) * 100 : 0);
+
+        // Load overall chat engagement for this lesson
+        const { data: chatData } = await supabase
+          .from('user_interactions')
+          .select('interactive_element_id')
+          .eq('user_id', user.id)
+          .eq('lesson_id', lessonIdNum)
+          .eq('interaction_type', 'chat_engagement');
+
+        if (chatData && chatData.length > 0) {
+          const exchangeCount = chatData.length;
+          const hasReachedMinimum = exchangeCount >= 3;
+          setChatEngagement({
+            exchangeCount,
+            hasReachedMinimum
+          });
+        }
       }
     } catch (error) {
       console.error('Error fetching lesson data:', error);
@@ -162,6 +182,7 @@ export const Lesson = () => {
       setLoading(false);
     }
   };
+
   const markBlockCompleted = async (blockId: number) => {
     if (!user || !lessonId || completedBlocks.has(blockId)) return;
     const lessonIdNum = parseInt(lessonId);
@@ -231,6 +252,7 @@ export const Lesson = () => {
     ...contentBlocks.map(block => ({ ...block, contentType: 'block' })),
     ...interactiveElements.map(element => ({ ...element, contentType: 'interactive' }))
   ].sort((a, b) => a.order_index - b.order_index);
+
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
         <div className="text-center">
@@ -255,6 +277,7 @@ export const Lesson = () => {
     lessonTitle: lesson.title,
     content: contentBlocks.map(block => `${block.title}: ${block.content}`).join('\n\n').substring(0, 1000)
   } : undefined;
+
   return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} />
       
@@ -330,4 +353,5 @@ export const Lesson = () => {
       </div>
     </div>;
 };
+
 export default Lesson;

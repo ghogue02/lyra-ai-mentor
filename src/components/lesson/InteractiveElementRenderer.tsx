@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +6,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import { LyraChatButton } from './LyraChatButton';
 import { FullScreenChatOverlay } from './FullScreenChatOverlay';
-import { MessageCircle, CheckSquare, PenTool } from 'lucide-react';
+import { MessageCircle, CheckSquare, PenTool, Eye } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
@@ -52,6 +52,107 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   const [isReflectionSaving, setIsReflectionSaving] = useState(false);
   const [reflectionSaved, setReflectionSaved] = useState(false);
   const [isElementCompleted, setIsElementCompleted] = useState(false);
+  const [chatEngagement, setChatEngagement] = useState<{
+    hasReachedMinimum: boolean;
+    exchangeCount: number;
+  }>({
+    hasReachedMinimum: false,
+    exchangeCount: 0
+  });
+
+  // Load completion status and existing data when component mounts
+  useEffect(() => {
+    if (user) {
+      loadCompletionStatus();
+      if (element.type === 'reflection') {
+        loadExistingReflection();
+      }
+      if (element.type === 'lyra_chat') {
+        loadChatEngagement();
+      }
+    }
+  }, [user, element.id, lessonId]);
+
+  const loadCompletionStatus = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('interactive_element_progress')
+        .select('completed')
+        .eq('user_id', user.id)
+        .eq('interactive_element_id', element.id)
+        .eq('lesson_id', lessonId)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data?.completed) {
+        setIsElementCompleted(true);
+      }
+    } catch (error: any) {
+      console.error('Error loading completion status:', error);
+    }
+  };
+
+  const loadExistingReflection = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_interactions')
+        .select('content')
+        .eq('user_id', user.id)
+        .eq('interactive_element_id', element.id)
+        .eq('lesson_id', lessonId)
+        .eq('interaction_type', 'reflection')
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data?.content) {
+        setReflectionText(data.content);
+        setReflectionSaved(true);
+      }
+    } catch (error: any) {
+      console.error('Error loading existing reflection:', error);
+    }
+  };
+
+  const loadChatEngagement = async () => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await supabase
+        .from('user_interactions')
+        .select('content, metadata')
+        .eq('user_id', user.id)
+        .eq('interactive_element_id', element.id)
+        .eq('lesson_id', lessonId)
+        .eq('interaction_type', 'chat_engagement');
+
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        const exchangeCount = data.length;
+        const hasReachedMinimum = exchangeCount >= 3;
+        
+        setChatEngagement({
+          exchangeCount,
+          hasReachedMinimum
+        });
+
+        onChatEngagementChange?.({
+          exchangeCount,
+          hasReachedMinimum
+        });
+      }
+    } catch (error: any) {
+      console.error('Error loading chat engagement:', error);
+    }
+  };
 
   const markElementComplete = async () => {
     if (!user || isElementCompleted) return;
@@ -84,6 +185,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         return <CheckSquare className="w-4 h-4" />;
       case 'reflection':
         return <PenTool className="w-4 h-4" />;
+      case 'callout_box':
+        return <Eye className="w-4 h-4" />;
       default:
         return <MessageCircle className="w-4 h-4" />;
     }
@@ -97,6 +200,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         return 'border border-blue-200 bg-blue-50/30';
       case 'reflection':
         return 'border border-orange-200 bg-orange-50/30';
+      case 'callout_box':
+        return 'border border-yellow-200 bg-yellow-50/30';
       default:
         return 'border border-gray-200 bg-gray-50/30';
     }
@@ -146,14 +251,41 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     }
   };
 
-  const handleChatEngagementChange = (engagement: {
+  const handleChatEngagementChange = async (engagement: {
     hasReachedMinimum: boolean;
     exchangeCount: number;
   }) => {
+    setChatEngagement(engagement);
     onChatEngagementChange?.(engagement);
+    
+    // Save chat engagement to database
+    if (user && engagement.exchangeCount > chatEngagement.exchangeCount) {
+      try {
+        await supabase
+          .from('user_interactions')
+          .insert({
+            user_id: user.id,
+            lesson_id: lessonId,
+            interactive_element_id: element.id,
+            interaction_type: 'chat_engagement',
+            content: `Chat exchange ${engagement.exchangeCount}`,
+            metadata: {
+              exchange_count: engagement.exchangeCount,
+              has_reached_minimum: engagement.hasReachedMinimum
+            }
+          });
+      } catch (error: any) {
+        console.error('Error saving chat engagement:', error);
+      }
+    }
+
     if (engagement.hasReachedMinimum && !isElementCompleted) {
       markElementComplete();
     }
+  };
+
+  const handleCalloutBoxRead = async () => {
+    await markElementComplete();
   };
 
   const renderKnowledgeCheck = () => {
@@ -252,9 +384,20 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     return <div className="p-4 border border-yellow-300 bg-yellow-50/50 rounded-md my-6">
         <div className="flex items-start gap-3">
           <span className="text-lg">{icon}</span>
-          <div>
+          <div className="flex-1">
             <h4 className="font-medium text-yellow-800 mb-1">{element.title}</h4>
-            <p className="text-yellow-700 text-sm leading-relaxed">{element.content}</p>
+            <p className="text-yellow-700 text-sm leading-relaxed mb-3">{element.content}</p>
+            {!isElementCompleted && (
+              <Button
+                onClick={handleCalloutBoxRead}
+                variant="outline"
+                size="sm"
+                className="text-xs hover:bg-yellow-100 hover:border-yellow-400"
+              >
+                <Eye className="w-3 h-3 mr-1" />
+                Mark as Read
+              </Button>
+            )}
           </div>
         </div>
       </div>;
@@ -293,6 +436,12 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
             <Badge className="bg-green-100 text-green-700 ml-auto">
               <CheckSquare className="w-3 h-3 mr-1" />
               Completed
+            </Badge>
+          )}
+          {element.type === 'lyra_chat' && chatEngagement.hasReachedMinimum && (
+            <Badge className="bg-purple-100 text-purple-700 ml-auto">
+              <MessageCircle className="w-3 h-3 mr-1" />
+              Chat Complete
             </Badge>
           )}
         </div>
