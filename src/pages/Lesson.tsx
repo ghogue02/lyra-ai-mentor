@@ -164,21 +164,32 @@ export const Lesson = () => {
 
         setIsChapterCompleted(chapterProgressData?.chapter_completed || false);
 
-        // Load overall chat engagement for this lesson
-        const { data: chatData } = await supabase
-          .from('user_interactions')
-          .select('interactive_element_id')
-          .eq('user_id', user.id)
-          .eq('lesson_id', lessonIdNum)
-          .eq('interaction_type', 'chat_engagement');
+        // Load chat engagement for the FIRST Lyra chat element specifically
+        const firstLyraChatElement = elementsData?.find(el => el.type === 'lyra_chat');
+        if (firstLyraChatElement) {
+          console.log('Loading chat engagement for first Lyra chat element:', firstLyraChatElement.id);
+          
+          const { data: chatData } = await supabase
+            .from('user_interactions')
+            .select('interactive_element_id')
+            .eq('user_id', user.id)
+            .eq('lesson_id', lessonIdNum)
+            .eq('interactive_element_id', firstLyraChatElement.id)
+            .eq('interaction_type', 'chat_engagement');
 
-        if (chatData && chatData.length > 0) {
-          const exchangeCount = chatData.length;
-          const hasReachedMinimum = exchangeCount >= 3;
-          setChatEngagement({
-            exchangeCount,
-            hasReachedMinimum
-          });
+          console.log('Found chat engagement data:', chatData);
+
+          if (chatData && chatData.length > 0) {
+            const exchangeCount = chatData.length;
+            const hasReachedMinimum = exchangeCount >= 3;
+            
+            console.log(`Setting lesson-level chat engagement: ${exchangeCount} exchanges, minimum: ${hasReachedMinimum}`);
+            
+            setChatEngagement({
+              exchangeCount,
+              hasReachedMinimum
+            });
+          }
         }
       }
     } catch (error) {
@@ -219,6 +230,14 @@ export const Lesson = () => {
     console.log(`Interactive element ${elementId} completed`);
     const newCompleted = new Set([...completedInteractiveElements, elementId]);
     setCompletedInteractiveElements(newCompleted);
+  };
+
+  const handleChatEngagementChange = (engagement: {
+    hasReachedMinimum: boolean;
+    exchangeCount: number;
+  }) => {
+    console.log('Lesson: Chat engagement changed:', engagement);
+    setChatEngagement(engagement);
   };
 
   const updateProgress = (blockIds: Set<number>, elementIds: Set<number>) => {
@@ -344,6 +363,8 @@ export const Lesson = () => {
   const firstLyraChatIndex = findFirstLyraChatIndex();
   const hasContentBlocking = firstLyraChatIndex !== -1;
 
+  console.log('Rendering Lesson with chat engagement:', chatEngagement);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} />
@@ -434,7 +455,7 @@ export const Lesson = () => {
                     element={item as InteractiveElement} 
                     lessonId={parseInt(lessonId!)} 
                     lessonContext={lessonContext} 
-                    onChatEngagementChange={setChatEngagement} 
+                    onChatEngagementChange={handleChatEngagementChange} 
                     onElementComplete={handleInteractiveElementComplete}
                     isBlockingContent={item.type === 'lyra_chat' && hasContentBlocking}
                   />

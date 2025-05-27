@@ -130,6 +130,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     if (!user) return;
 
     try {
+      console.log(`Loading chat engagement for element ${element.id}, lesson ${lessonId}`);
+      
       const { data, error } = await supabase
         .from('user_interactions')
         .select('content, metadata')
@@ -140,19 +142,21 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
 
       if (error) throw error;
 
+      console.log(`Found ${data?.length || 0} chat engagement records for element ${element.id}`);
+
       if (data && data.length > 0) {
         const exchangeCount = data.length;
         const hasReachedMinimum = exchangeCount >= 3;
         
-        setChatEngagement({
+        console.log(`Chat engagement for element ${element.id}: ${exchangeCount} exchanges, minimum reached: ${hasReachedMinimum}`);
+        
+        const newEngagement = {
           exchangeCount,
           hasReachedMinimum
-        });
+        };
 
-        onChatEngagementChange?.({
-          exchangeCount,
-          hasReachedMinimum
-        });
+        setChatEngagement(newEngagement);
+        onChatEngagementChange?.(newEngagement);
       }
     } catch (error: any) {
       console.error('Error loading chat engagement:', error);
@@ -267,12 +271,16 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     hasReachedMinimum: boolean;
     exchangeCount: number;
   }) => {
+    console.log(`Chat engagement changed for element ${element.id}:`, engagement);
+    
     setChatEngagement(engagement);
     onChatEngagementChange?.(engagement);
     
     // Save chat engagement to database
     if (user && engagement.exchangeCount > chatEngagement.exchangeCount) {
       try {
+        console.log(`Saving new chat engagement for element ${element.id}, exchange ${engagement.exchangeCount}`);
+        
         await supabase
           .from('user_interactions')
           .insert({
@@ -400,7 +408,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           onClose={() => setIsChatOpen(false)} 
           lessonContext={lessonContext} 
           suggestedTask={element.configuration?.suggested_task} 
-          onEngagementChange={handleChatEngagementChange} 
+          onEngagementChange={handleChatEngagementChange}
+          initialEngagementCount={chatEngagement.exchangeCount}
         />
       </div>
     );

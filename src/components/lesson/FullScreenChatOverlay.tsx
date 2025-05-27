@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -19,6 +18,7 @@ interface FullScreenChatOverlayProps {
   };
   suggestedTask?: string;
   onEngagementChange?: (engagement: { hasReachedMinimum: boolean; exchangeCount: number }) => void;
+  initialEngagementCount?: number;
 }
 
 export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
@@ -26,7 +26,8 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   onClose,
   lessonContext,
   suggestedTask,
-  onEngagementChange
+  onEngagementChange,
+  initialEngagementCount = 0
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -42,10 +43,17 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     clearChat
   } = useLyraChat(lessonContext);
 
-  const { engagement, incrementExchange, resetEngagement } = useChatEngagement(3);
+  const { engagement, incrementExchange, resetEngagement, setEngagementCount } = useChatEngagement(3, initialEngagementCount);
+
+  // Initialize engagement count with database value when component mounts
+  useEffect(() => {
+    console.log('FullScreenChatOverlay: Setting initial engagement count to:', initialEngagementCount);
+    setEngagementCount(initialEngagementCount);
+  }, [initialEngagementCount, setEngagementCount]);
 
   // Notify parent component of engagement changes
   useEffect(() => {
+    console.log('FullScreenChatOverlay: Engagement changed:', engagement);
     onEngagementChange?.(engagement);
   }, [engagement, onEngagementChange]);
 
