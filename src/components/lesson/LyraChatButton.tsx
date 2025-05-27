@@ -37,7 +37,7 @@ export const LyraChatButton: React.FC<LyraChatButtonProps> = ({
         {/* Text content */}
         <div className="flex-1 text-left min-w-0 overflow-hidden">
           <div className="flex items-start gap-2 mb-1 sm:mb-2">
-            <h3 className="text-sm sm:text-base md:text-lg font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent leading-tight flex-1 min-w-0">
+            <h3 className="text-sm sm:text-base md:text-lg font-bold text-purple-600 leading-tight flex-1 min-w-0">
               Try Chatting with Lyra!
             </h3>
             <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 animate-pulse flex-shrink-0 mt-0.5" />
