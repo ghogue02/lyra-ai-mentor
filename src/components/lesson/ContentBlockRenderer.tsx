@@ -40,7 +40,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
       (entries) => {
         const entry = entries[0];
         // Lower threshold - mark as read when 30% is visible
-        if (entry.isIntersectionRatio > 0.3) {
+        if (entry.intersectionRatio > 0.3) {
           // Much shorter delay - 1 second instead of 2
           setTimeout(() => {
             if (!hasTriggeredCompletion.current && !isCompleted) {
