@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -400,7 +399,7 @@ export const Lesson = () => {
             {lesson.title}
           </h1>
           
-          <p className="text-gray-500">Chapter: {lesson.chapter.title}</p>
+          <p className="text-gray-500 mb-6">Chapter: {lesson.chapter.title}</p>
           
           {user && (
             <div className="mt-6">
@@ -426,20 +425,8 @@ export const Lesson = () => {
             
             console.log(`Lesson.tsx: Rendering item at index ${index}, blocked: ${isBlocked}, type: ${item.type}`);
             
-            if (isBlocked && index === firstLyraChatIndex + 1) {
-              // Show the content blocker only once, right after the first Lyra chat
-              return (
-                <div key={`blocker-${index}`}>
-                  <ContentBlocker 
-                    chatEngagement={chatEngagement}
-                    blockedItemsCount={getBlockedItemsCount()}
-                  />
-                </div>
-              );
-            }
-            
+            // Remove the ContentBlocker visual element - just skip blocked content
             if (isBlocked) {
-              // Hide subsequent blocked content
               return null;
             }
 
@@ -463,7 +450,7 @@ export const Lesson = () => {
                     lessonContext={lessonContext} 
                     onChatEngagementChange={handleChatEngagementChange} 
                     onElementComplete={handleInteractiveElementComplete}
-                    isBlockingContent={item.type === 'lyra_chat' && hasContentBlocking}
+                    isBlockingContent={false}
                   />
                 )}
               </div>
