@@ -23,7 +23,7 @@ export const LyraChatButton: React.FC<LyraChatButtonProps> = ({
       <Button
         onClick={onClick}
         className={cn(
-          "relative w-full h-auto p-6 bg-white hover:bg-gray-50",
+          "relative w-full h-auto min-h-[120px] sm:min-h-[140px] p-4 sm:p-6 bg-white hover:bg-gray-50",
           "border-2 border-transparent hover:border-purple-200",
           "rounded-lg shadow-lg hover:shadow-xl",
           "transition-all duration-300 transform hover:scale-[1.02]",
@@ -31,27 +31,27 @@ export const LyraChatButton: React.FC<LyraChatButtonProps> = ({
         )}
         variant="outline"
       >
-        <div className="flex items-center gap-4 w-full">
+        <div className="flex items-start gap-3 sm:gap-4 w-full">
           {/* Avatar with animation */}
-          <div className="relative">
+          <div className="relative flex-shrink-0 mt-1">
             <LyraAvatar size="md" withWave={true} />
-            <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center animate-bounce">
-              <Sparkles className="w-3 h-3 text-white" />
+            <div className="absolute -top-1 -right-1 w-5 h-5 sm:w-6 sm:h-6 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full flex items-center justify-center animate-bounce">
+              <Sparkles className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-white" />
             </div>
           </div>
           
           {/* Text content */}
-          <div className="flex-1 text-left">
-            <div className="flex items-center gap-2 mb-1">
-              <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
+          <div className="flex-1 text-left min-w-0">
+            <div className="flex items-center gap-2 mb-2 flex-wrap">
+              <h3 className="text-base sm:text-lg font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent leading-tight">
                 Try Chatting with Lyra!
               </h3>
-              <MessageCircle className="w-5 h-5 text-purple-500 animate-pulse" />
+              <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 text-purple-500 animate-pulse flex-shrink-0" />
             </div>
-            <p className="text-sm text-gray-600">
+            <p className="text-xs sm:text-sm text-gray-600 leading-relaxed mb-2 sm:mb-3">
               Your friendly AI learning companion who explains AI concepts in simple terms with real nonprofit examples.
             </p>
-            <p className="text-xs text-purple-500 mt-1 font-medium">
+            <p className="text-xs text-purple-500 font-medium leading-tight">
               Click to start an interactive conversation →
             </p>
           </div>
