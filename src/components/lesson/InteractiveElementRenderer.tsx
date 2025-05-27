@@ -94,6 +94,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       if (data?.completed) {
         console.log(`InteractiveElementRenderer: Element ${element.id} is already completed`);
         setIsElementCompleted(true);
+        // Notify parent immediately when loading completed status
+        onElementComplete?.(element.id);
       }
     } catch (error: any) {
       console.error('Error loading completion status:', error);
@@ -104,6 +106,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     if (!user) return;
 
     try {
+      console.log(`InteractiveElementRenderer: Loading existing reflection for element ${element.id}`);
+      
       const { data, error } = await supabase
         .from('user_interactions')
         .select('content')
@@ -118,8 +122,15 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       if (error) throw error;
 
       if (data?.content) {
+        console.log(`InteractiveElementRenderer: Found existing reflection for element ${element.id}`);
         setReflectionText(data.content);
         setReflectionSaved(true);
+        
+        // If reflection exists, ensure element is marked as completed
+        if (!isElementCompleted) {
+          console.log(`InteractiveElementRenderer: Marking element ${element.id} as completed due to existing reflection`);
+          await markElementComplete();
+        }
       }
     } catch (error: any) {
       console.error('Error loading existing reflection:', error);
@@ -239,6 +250,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
 
     setIsReflectionSaving(true);
     try {
+      console.log(`InteractiveElementRenderer: Saving reflection for element ${element.id}`);
+      
       // Save the reflection
       const { error: reflectionError } = await supabase
         .from('user_interactions')
@@ -260,6 +273,8 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       
       // Mark the element as completed after saving reflection
       await markElementComplete();
+      
+      console.log(`InteractiveElementRenderer: Reflection saved and element ${element.id} marked complete`);
       
       toast({
         title: "Reflection saved!",
