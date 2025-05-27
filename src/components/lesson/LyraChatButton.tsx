@@ -44,15 +44,13 @@ export const LyraChatButton: React.FC<LyraChatButtonProps> = ({
           <div className="flex-1 text-left">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
-                Try with Lyra!
+                Try Chatting with Lyra!
               </h3>
               <MessageCircle className="w-5 h-5 text-purple-500 animate-pulse" />
             </div>
             <p className="text-sm text-gray-600">
-              {lessonTitle 
-                ? `Get personalized help with "${lessonTitle}"`
-                : "Chat with your AI mentor about this lesson"
-              }
+              Your friendly AI learning companion who explains AI concepts in simple terms, 
+              shares real nonprofit examples, and helps make AI less mysterious and more practical.
             </p>
             <p className="text-xs text-purple-500 mt-1 font-medium">
               Click to start an interactive conversation →
