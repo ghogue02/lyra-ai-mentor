@@ -131,6 +131,15 @@ export const Dashboard = () => {
     // Navigate to the first lesson of the chapter
     navigate(`/chapter/${chapterId}/lesson/1`);
   };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut();
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
+  };
+
   if (loading) {
     return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30 flex items-center justify-center">
         <div className="text-center">
@@ -155,6 +164,22 @@ export const Dashboard = () => {
             <p className="text-xl text-gray-600">
               {onboardingComplete ? "Continue your AI learning journey" : "Let's get you started on your AI learning journey"}
             </p>
+          </div>
+          
+          {/* Sign Out Button */}
+          <div className="flex items-center gap-4">
+            <div className="text-right">
+              <p className="text-sm text-gray-600">Signed in as</p>
+              <p className="text-sm font-medium text-gray-800">{userName}</p>
+            </div>
+            <Button
+              variant="outline"
+              onClick={handleSignOut}
+              className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </Button>
           </div>
         </div>
 
