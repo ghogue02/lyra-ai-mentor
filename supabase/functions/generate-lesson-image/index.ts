@@ -34,13 +34,12 @@ serve(async (req) => {
 
     console.log('Generating image with prompt:', prompt);
 
-    // Create the request payload for OpenAI - only using supported parameters
+    // Create the request payload for OpenAI - only using supported parameters for gpt-image-1
     const requestBody = {
       model: 'gpt-image-1',
       prompt,
       n: 1,
-      size,
-      response_format: 'url'
+      size
     };
 
     const response = await fetch('https://api.openai.com/v1/images/generations', {
