@@ -129,6 +129,15 @@ export const Dashboard = () => {
       
       {/* Header Section */}
       <section className="container mx-auto px-4 pt-20 pb-8">
+        {/* Hero Image */}
+        <div className="mb-8 flex justify-center">
+          <img 
+            src="/lovable-uploads/0b6ea1b6-cc3b-4ed4-8b66-5802bceab8ee.png" 
+            alt="AI Learning Meditation"
+            className="w-40 h-40 sm:w-48 sm:h-48 object-contain"
+          />
+        </div>
+
         <DashboardHeader 
           firstName={profile?.first_name}
           userName={userName || ''}

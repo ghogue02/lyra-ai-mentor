@@ -28,20 +28,14 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({
       </div>
       
       {/* Sign Out Button */}
-      <div className="flex items-center gap-4">
-        <div className="text-right">
-          <p className="text-sm text-gray-600">Signed in as</p>
-          <p className="text-sm font-medium text-gray-800">{userName}</p>
-        </div>
-        <Button
-          variant="outline"
-          onClick={onSignOut}
-          className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
-        >
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        onClick={onSignOut}
+        className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+      >
+        <LogOut className="w-4 h-4" />
+        Sign Out
+      </Button>
     </div>
   );
 };
