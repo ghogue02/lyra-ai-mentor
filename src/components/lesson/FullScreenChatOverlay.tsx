@@ -129,15 +129,15 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     <>
       <Dialog open={isOpen} onOpenChange={handleClose} modal>
         <DialogContent 
-          className="fixed inset-0 z-[100] border-0 p-0 gap-0 rounded-none bg-gray-900 max-w-none max-h-none"
+          className="!fixed !inset-0 !z-[100] !border-0 !p-0 !gap-0 !rounded-none !bg-gray-900 !max-w-none !max-h-none !transform-none !left-0 !top-0 !translate-x-0 !translate-y-0"
           style={{ 
-            width: '100vw', 
-            height: '100vh',
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0
+            width: '100vw !important', 
+            height: '100vh !important',
+            position: 'fixed !important',
+            top: '0 !important',
+            left: '0 !important',
+            right: '0 !important',
+            bottom: '0 !important'
           }}
         >
           {/* Use CSS Grid with minmax(0,1fr) to fix scrolling */}
