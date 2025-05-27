@@ -28,19 +28,124 @@ serve(async (req) => {
       lessonId 
     });
 
-    const systemMessage = {
-      role: 'system',
-      content: `You are Lyra, an AI mentor specializing in artificial intelligence education. You are helpful, encouraging, and provide clear explanations.
+    // Create Supabase client with service role key to fetch user profile
+    const supabase = createClient(supabaseUrl!, supabaseServiceKey!);
 
-${lessonContext ? `Current lesson context:
+    // Fetch user profile data
+    let userProfile = null;
+    try {
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', userId)
+        .single();
+
+      if (profileError) {
+        console.log('Profile fetch error:', profileError.message);
+      } else {
+        userProfile = profile;
+        console.log('Fetched user profile:', {
+          hasProfile: !!profile,
+          profileCompleted: profile?.profile_completed,
+          role: profile?.role,
+          techComfort: profile?.tech_comfort
+        });
+      }
+    } catch (error) {
+      console.log('Error fetching profile:', error);
+    }
+
+    // Build personalized system message
+    const buildPersonalizedSystemMessage = (profile: any, lessonContext: any) => {
+      let baseMessage = `You are Lyra, an AI mentor specializing in artificial intelligence education for nonprofit professionals. You are helpful, encouraging, and provide clear explanations.`;
+
+      // Add personal touch if name is available
+      if (profile?.first_name) {
+        baseMessage += ` You're speaking with ${profile.first_name}.`;
+      }
+
+      // Add role-specific guidance
+      if (profile?.role) {
+        const roleGuidance = {
+          'fundraising': 'Focus on AI applications for donor engagement, grant writing, fundraising optimization, and donor data analysis.',
+          'programs': 'Emphasize AI tools for program delivery, impact measurement, beneficiary tracking, and service optimization.',
+          'operations': 'Highlight AI solutions for workflow automation, volunteer management, resource optimization, and operational efficiency.',
+          'marketing': 'Concentrate on AI for social media, content creation, audience targeting, and communications strategy.',
+          'leadership': 'Focus on strategic AI implementation, organizational transformation, and high-level AI decision-making for nonprofits.'
+        };
+        
+        if (roleGuidance[profile.role as keyof typeof roleGuidance]) {
+          baseMessage += ` As someone in ${profile.role}, ${roleGuidance[profile.role as keyof typeof roleGuidance]}`;
+        }
+      }
+
+      // Adjust complexity based on tech comfort
+      if (profile?.tech_comfort) {
+        if (profile.tech_comfort === 'beginner') {
+          baseMessage += ' Use simple, non-technical language and provide step-by-step explanations. Avoid jargon and always explain technical terms.';
+        } else if (profile.tech_comfort === 'advanced') {
+          baseMessage += ' You can use more technical terminology and dive deeper into implementation details when appropriate.';
+        }
+      }
+
+      // Adjust based on AI experience
+      if (profile?.ai_experience) {
+        if (profile.ai_experience === 'none') {
+          baseMessage += ' This person is new to AI, so start with fundamental concepts and provide plenty of context.';
+        } else if (profile.ai_experience === 'expert') {
+          baseMessage += ' This person has AI experience, so you can reference advanced concepts and focus on practical applications.';
+        }
+      }
+
+      // Add learning style preferences
+      if (profile?.learning_style) {
+        if (profile.learning_style === 'visual') {
+          baseMessage += ' This person learns best with visual aids - suggest diagrams, charts, or visual examples when possible.';
+        } else if (profile.learning_style === 'hands-on') {
+          baseMessage += ' This person prefers hands-on learning - provide practical exercises, actionable steps, and real-world applications.';
+        }
+      }
+
+      // Add organization context
+      if (profile?.organization_type && profile?.organization_name) {
+        baseMessage += ` They work at ${profile.organization_name}, a ${profile.organization_type}.`;
+      }
+
+      // Add profile completion reminder if needed
+      if (!profile?.profile_completed) {
+        const hasBasicInfo = profile?.role || profile?.tech_comfort || profile?.ai_experience || profile?.learning_style;
+        if (!hasBasicInfo) {
+          baseMessage += ` Note: This user hasn't completed their profile yet. Occasionally suggest they complete it for a more personalized experience, but don't be pushy about it.`;
+        } else {
+          baseMessage += ` Note: This user has basic profile info but hasn't completed their full profile. You can occasionally mention that completing their profile would unlock even more personalized guidance.`;
+        }
+      }
+
+      // Add lesson context
+      if (lessonContext) {
+        baseMessage += `\n\nCurrent lesson context:
 - Chapter: ${lessonContext.chapterTitle}
 - Lesson: ${lessonContext.lessonTitle}
 - Content: ${lessonContext.content?.substring(0, 500)}...
 
-Use this context to provide relevant, personalized responses about the current lesson content.` : ''}
+Use this context to provide relevant, personalized responses about the current lesson content.`;
+      }
 
-Keep responses concise but informative. Use encouraging language and relate concepts to real-world examples when helpful.`
+      baseMessage += '\n\nKeep responses concise but informative. Use encouraging language and relate concepts to real-world nonprofit examples when helpful.';
+
+      return baseMessage;
     };
+
+    const systemMessage = {
+      role: 'system',
+      content: buildPersonalizedSystemMessage(userProfile, lessonContext)
+    };
+
+    console.log('Generated personalized system message for user:', {
+      hasProfile: !!userProfile,
+      role: userProfile?.role,
+      messageLength: systemMessage.content.length
+    });
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',

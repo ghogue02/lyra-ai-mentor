@@ -1,4 +1,3 @@
-
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
@@ -29,6 +28,17 @@ interface ChatConversation {
   message_count: number;
 }
 
+interface UserProfile {
+  profile_completed: boolean;
+  first_name?: string;
+  role?: string;
+  tech_comfort?: string;
+  ai_experience?: string;
+  learning_style?: string;
+  organization_name?: string;
+  organization_type?: string;
+}
+
 export const usePersistentChat = (
   lessonId: number, 
   chapterId: number, 
@@ -40,14 +50,71 @@ export const usePersistentChat = (
   const [inputValue, setInputValue] = useState('');
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   // Load existing conversation when component mounts
   useEffect(() => {
     if (user && lessonId && chapterId) {
+      loadUserProfile();
       loadOrCreateConversation();
     }
   }, [user, lessonId, chapterId]);
+
+  const loadUserProfile = async () => {
+    if (!user) return;
+
+    try {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('profile_completed, first_name, role, tech_comfort, ai_experience, learning_style, organization_name, organization_type')
+        .eq('user_id', user.id)
+        .single();
+
+      setUserProfile(profile);
+    } catch (error) {
+      console.error('Error loading user profile:', error);
+    }
+  };
+
+  const createPersonalizedInitialMessage = () => {
+    if (!userProfile) {
+      return lessonContext 
+        ? `Hi! 👋 I'm Lyra, your AI mentor. I can see you're working on "${lessonContext.lessonTitle}". What questions do you have about this lesson?`
+        : "Hi there! 👋 I'm Lyra, your AI mentor. I'm here to help you navigate your learning journey. What questions do you have about AI?";
+    }
+
+    let greeting = `Hi${userProfile.first_name ? ` ${userProfile.first_name}` : ''}! 👋 I'm Lyra, your AI mentor.`;
+    
+    if (lessonContext) {
+      greeting += ` I can see you're working on "${lessonContext.lessonTitle}".`;
+    }
+
+    // Add role-specific context if available
+    if (userProfile.role) {
+      const roleContext = {
+        'fundraising': 'As someone in fundraising, I can help you explore how AI can enhance donor engagement and optimize your fundraising strategies.',
+        'programs': 'As a programs professional, I can show you how AI can improve program delivery and impact measurement.',
+        'operations': 'As someone in operations, I can help you discover AI tools for workflow automation and operational efficiency.',
+        'marketing': 'As a marketing professional, I can guide you through AI applications for content creation and audience engagement.',
+        'leadership': 'As a leader, I can help you understand strategic AI implementation for your organization.'
+      };
+      
+      const context = roleContext[userProfile.role as keyof typeof roleContext];
+      if (context) {
+        greeting += ` ${context}`;
+      }
+    }
+
+    // Add profile completion reminder if needed
+    if (!userProfile.profile_completed) {
+      greeting += '\n\n💡 *Tip: Complete your profile to unlock even more personalized guidance tailored to your specific role and experience level!*';
+    }
+
+    greeting += '\n\nWhat questions do you have?';
+    
+    return greeting;
+  };
 
   const loadOrCreateConversation = async () => {
     if (!user) return;
@@ -85,11 +152,8 @@ export const usePersistentChat = (
         if (error) throw error;
         currentConversationId = newConversation.id;
 
-        // Add initial AI message
-        const initialMessage = lessonContext 
-          ? `Hi! 👋 I'm Lyra, your AI mentor. I can see you're working on "${lessonContext.lessonTitle}". What questions do you have about this lesson?`
-          : "Hi there! 👋 I'm Lyra, your AI mentor. I'm here to help you navigate your learning journey. What questions do you have about AI?";
-
+        // Add personalized initial AI message
+        const initialMessage = createPersonalizedInitialMessage();
         await saveMessage(currentConversationId, initialMessage, false, 0);
       }
 
@@ -104,9 +168,7 @@ export const usePersistentChat = (
       // Set default message if loading fails
       setMessages([{
         id: '1',
-        content: lessonContext 
-          ? `Hi! 👋 I'm Lyra, your AI mentor. I can see you're working on "${lessonContext.lessonTitle}". What questions do you have about this lesson?`
-          : "Hi there! 👋 I'm Lyra, your AI mentor. I'm here to help you navigate your learning journey. What questions do you have about AI?",
+        content: createPersonalizedInitialMessage(),
         isUser: false,
         timestamp: new Date()
       }]);
@@ -295,11 +357,8 @@ export const usePersistentChat = (
         .delete()
         .eq('conversation_id', conversationId);
 
-      // Create new initial message
-      const initialMessage = lessonContext 
-        ? `Chat cleared! I'm still here to help with "${lessonContext.lessonTitle}". What would you like to know?`
-        : "Chat cleared! I'm still here to help with your AI learning journey. What can I assist you with?";
-
+      // Create new personalized initial message
+      const initialMessage = createPersonalizedInitialMessage();
       await saveMessage(conversationId, initialMessage, false, 0);
 
       setMessages([{
@@ -311,7 +370,7 @@ export const usePersistentChat = (
     } catch (error) {
       console.error('Error clearing chat:', error);
     }
-  }, [conversationId, lessonContext]);
+  }, [conversationId, lessonContext, userProfile]);
 
   return {
     messages,
@@ -321,6 +380,7 @@ export const usePersistentChat = (
     sendMessage,
     clearChat,
     isLoading,
-    conversationId
+    conversationId,
+    userProfile
   };
 };

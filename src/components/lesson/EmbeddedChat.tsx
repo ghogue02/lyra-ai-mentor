@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Send, Minimize2, Maximize2 } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
+import { ProfileCompletionReminder } from '@/components/ProfileCompletionReminder';
 import { cn } from '@/lib/utils';
 import { useLyraChat } from '@/hooks/useLyraChat';
 
@@ -28,7 +29,8 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     inputValue,
     setInputValue,
     sendMessage,
-    clearChat
+    clearChat,
+    userProfile
   } = useLyraChat(lessonContext);
 
   const scrollToBottom = () => {
@@ -51,7 +53,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     }
   };
 
-  // Create context-aware quick actions
+  // Create context-aware quick actions with role-based customization
   const getQuickActions = () => {
     const actions = [];
     
@@ -60,19 +62,30 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
       actions.push(suggestedTask);
     }
     
-    // Add lesson-specific actions
-    if (lessonContext) {
-      actions.push("Explain this concept");
-      actions.push("Give me a nonprofit example");
-      actions.push("What's the key takeaway?");
-    } else {
-      actions.push("Explain this concept");
-      actions.push("Give me an example");
-      actions.push("What's the key takeaway?");
-      actions.push("How does this apply in practice?");
+    // Add role-specific actions based on user profile
+    if (userProfile?.role) {
+      const roleActions = {
+        'fundraising': ['Show me fundraising examples', 'How can this help with donors?'],
+        'programs': ['Give me a program example', 'How does this improve services?'],
+        'operations': ['Show workflow applications', 'How can this streamline operations?'],
+        'marketing': ['Give me marketing examples', 'How can this improve outreach?'],
+        'leadership': ['Show strategic applications', 'What are the implementation steps?']
+      };
+      
+      const specificActions = roleActions[userProfile.role as keyof typeof roleActions];
+      if (specificActions) {
+        actions.push(...specificActions);
+      }
     }
     
-    return actions;
+    // Add general lesson-specific actions
+    if (lessonContext) {
+      actions.push("Explain this concept", "What's the key takeaway?");
+    } else {
+      actions.push("Explain this concept", "Give me an example", "What's the key takeaway?", "How does this apply in practice?");
+    }
+    
+    return actions.slice(0, 4); // Limit to 4 actions to avoid clutter
   };
 
   const quickActions = getQuickActions();
@@ -88,9 +101,19 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
         <div className="flex items-center gap-3">
           <LyraAvatar size="sm" withWave={false} />
           <div>
-            <h4 className="font-semibold text-purple-600">Chat with Lyra</h4>
+            <h4 className="font-semibold text-purple-600">
+              Chat with Lyra
+              {userProfile?.first_name && (
+                <span className="text-sm text-gray-500 ml-1">
+                  • Hi {userProfile.first_name}!
+                </span>
+              )}
+            </h4>
             <p className="text-xs text-gray-500">
               {lessonContext ? `About: ${lessonContext.lessonTitle}` : 'Your AI Mentor'}
+              {userProfile?.role && (
+                <span className="ml-1">• {userProfile.role} focused</span>
+              )}
             </p>
           </div>
         </div>
@@ -105,6 +128,13 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           </Button>
         </div>
       </div>
+
+      {/* Profile Completion Reminder */}
+      {userProfile && !userProfile.profile_completed && (
+        <div className="p-3 border-b bg-gray-50/50">
+          <ProfileCompletionReminder userProfile={userProfile} compact />
+        </div>
+      )}
 
       {/* Quick Actions */}
       {quickActions.length > 0 && (
@@ -187,7 +217,13 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder=""
+            placeholder={
+              userProfile?.first_name 
+                ? `Ask me anything, ${userProfile.first_name}...`
+                : lessonContext 
+                  ? "Ask about this lesson..."
+                  : "Ask me anything about AI..."
+            }
             className="flex-1"
             disabled={isTyping}
           />

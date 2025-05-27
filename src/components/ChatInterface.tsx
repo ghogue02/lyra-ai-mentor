@@ -1,10 +1,10 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Send, X, MessageCircle, Trash2, Minimize2, GripVertical, Move } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
+import { ProfileCompletionReminder } from '@/components/ProfileCompletionReminder';
 import { cn } from '@/lib/utils';
 import { useLyraChat } from '@/hooks/useLyraChat';
 
@@ -38,7 +38,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
     inputValue,
     setInputValue,
     sendMessage,
-    clearChat
+    clearChat,
+    userProfile
   } = useLyraChat(lessonContext);
 
   const scrollToBottom = () => {
@@ -198,6 +199,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
           </div>
           
           <CardContent className="flex flex-col h-full p-0">
+            {/* Profile Completion Reminder */}
+            {userProfile && !userProfile.profile_completed && (
+              <div className="p-3 border-b">
+                <ProfileCompletionReminder userProfile={userProfile} compact />
+              </div>
+            )}
+
             {/* Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((message) => (
@@ -355,6 +363,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({
             "flex flex-col h-full p-0 transition-all duration-300",
             isMinimized && "hidden md:flex"
           )}>
+            {/* Profile Completion Reminder */}
+            {userProfile && !userProfile.profile_completed && !isMinimized && (
+              <div className="p-4 border-b">
+                <ProfileCompletionReminder userProfile={userProfile} compact />
+              </div>
+            )}
+
             {/* Quick Actions */}
             {lessonContext && !isMinimized && (
               <div className="p-4 border-b bg-gray-50/50">
