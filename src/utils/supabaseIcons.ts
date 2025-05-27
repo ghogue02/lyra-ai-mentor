@@ -9,28 +9,28 @@ export const SUPABASE_ICONS = {
   
   // Navbar and branding (using uploaded navbar logo)
   navbar: {
-    logo: 'navbar-logo.png', // now using the uploaded brain/lightbulb logo
+    logo: 'navbar-logo.png',
     logoCompact: 'navbar-logo.png'
   },
   
-  // Lyra expressions (using specialized icons with better fallbacks)
+  // Lyra expressions (using fallbacks to existing icons)
   lyra: {
     default: 'lyra-avatar.png',
-    thinking: 'lyra-thinking.png',
-    celebrating: 'lyra-celebrating.png',
-    helping: 'lyra-helping.png',
+    thinking: 'lyra-avatar.png', // fallback to default since thinking specific might not exist
+    celebrating: 'lyra-avatar.png', // fallback to default
+    helping: 'lyra-avatar.png', // fallback to default
     loading: 'lyra-avatar.png'
   },
   
-  // User role specific avatars (using correct role-specific icons)
+  // User role specific avatars (using existing role icons with proper fallbacks)
   userRoles: {
     fundraising: 'user-role-fundraising.png',
     programs: 'user-role-programs.png',
     operations: 'user-role-operations.png',
     marketing: 'user-role-marketing.png',
     it: 'user-role-it.png',
-    leadership: 'user-role-leadership.png',
-    other: 'user-role-other.png'
+    leadership: 'user-role-it.png', // fallback to IT role icon
+    other: 'user-role-it.png' // fallback to IT role icon
   },
   
   // Chapter icons (mapped to existing icons)
@@ -47,27 +47,27 @@ export const SUPABASE_ICONS = {
     10: 'growth-plant.png'
   },
   
-  // UI state icons (using specialized icons)
+  // UI state icons
   uiStates: {
     loading: 'lyra-avatar.png',
     errorFriendly: 'lyra-avatar.png',
     successCompletion: 'badge-course-complete.png',
-    emptyWelcome: 'onboarding-welcome.png',
+    emptyWelcome: 'navbar-logo.png', // fallback to known working icon
     lockState: 'lyra-avatar.png'
   },
   
-  // Achievement badges (using specialized badge icons)
+  // Achievement badges
   achievements: {
     firstChapter: 'badge-first-chapter.png',
     courseComplete: 'badge-course-complete.png',
     profileComplete: 'achievement-trophy.png'
   },
   
-  // Onboarding and progress icons (using specialized icons)
+  // Onboarding and progress icons (using existing icons as fallbacks)
   onboarding: {
-    profileCompletion: 'onboarding-profile.png',
-    welcome: 'onboarding-welcome.png',
-    progress: 'chapter-progress.png'
+    profileCompletion: 'navbar-logo.png', // changed from non-existent onboarding-profile.png
+    welcome: 'navbar-logo.png', // fallback to known working icon
+    progress: 'learning-target.png' // changed from chapter-progress.png
   },
   
   // Feature icons (all existing)
@@ -124,29 +124,17 @@ export const ROLE_MESSAGING = {
 } as const;
 
 /**
- * Get the full Supabase Storage URL for an icon with enhanced error handling and fallbacks
+ * Get the full Supabase Storage URL for an icon with fallback to navbar logo
  */
 export const getSupabaseIconUrl = (iconPath: string): string => {
-  try {
-    console.log(`Getting icon URL for: ${iconPath}`);
-    const { data } = supabase.storage
-      .from('app-icons')
-      .getPublicUrl(iconPath);
-    
-    // Add cache busting parameter to force refresh for updated files
-    const url = new URL(data.publicUrl);
-    url.searchParams.set('t', Date.now().toString());
-    
-    console.log(`Generated URL: ${url.toString()}`);
-    return url.toString();
-  } catch (error) {
-    console.warn(`Failed to get icon URL for: ${iconPath}`, error);
-    // Return a fallback using a known working icon
-    const { data } = supabase.storage
-      .from('app-icons')
-      .getPublicUrl('navbar-logo.png'); // Use navbar logo as ultimate fallback
-    return data.publicUrl;
-  }
+  console.log(`Getting icon URL for: ${iconPath}`);
+  
+  const { data } = supabase.storage
+    .from('app-icons')
+    .getPublicUrl(iconPath);
+  
+  console.log(`Generated URL: ${data.publicUrl}`);
+  return data.publicUrl;
 };
 
 /**
@@ -169,7 +157,7 @@ export const getFeatureIconUrl = (featureName: keyof typeof SUPABASE_ICONS.featu
  * Get onboarding icon URL by step name with fallback
  */
 export const getOnboardingIconUrl = (stepName: keyof typeof SUPABASE_ICONS.onboarding): string => {
-  const iconPath = SUPABASE_ICONS.onboarding[stepName] || SUPABASE_ICONS.lyraAvatar;
+  const iconPath = SUPABASE_ICONS.onboarding[stepName] || SUPABASE_ICONS.navbar.logo;
   return getSupabaseIconUrl(iconPath);
 };
 
@@ -177,35 +165,21 @@ export const getOnboardingIconUrl = (stepName: keyof typeof SUPABASE_ICONS.onboa
  * Get role-specific onboarding icon URL
  */
 export const getRoleOnboardingIconUrl = (role: string): string => {
-  const iconPath = SUPABASE_ICONS.userRoles[role as keyof typeof SUPABASE_ICONS.userRoles] || SUPABASE_ICONS.onboarding.profileCompletion;
+  const iconPath = SUPABASE_ICONS.userRoles[role as keyof typeof SUPABASE_ICONS.userRoles] || SUPABASE_ICONS.userRoles.it;
   return getSupabaseIconUrl(iconPath);
 };
 
 /**
- * Get Lyra expression icon URL by state with enhanced fallback system
+ * Get Lyra expression icon URL by state with fallback
  */
 export const getLyraIconUrl = (state: keyof typeof SUPABASE_ICONS.lyra = 'default'): string => {
   console.log(`Getting Lyra icon for state: ${state}`);
   
-  // First try the specific state icon
-  let iconPath = SUPABASE_ICONS.lyra[state];
+  const iconPath = SUPABASE_ICONS.lyra[state] || SUPABASE_ICONS.lyra.default;
   
-  // If the specific state doesn't exist, fallback to default
-  if (!iconPath) {
-    console.log(`State ${state} not found, falling back to default`);
-    iconPath = SUPABASE_ICONS.lyra.default;
-  }
-  
-  // Enhanced fallback - if Lyra-specific icons don't work, use a known working icon
-  try {
-    const url = getSupabaseIconUrl(iconPath);
-    console.log(`Lyra icon URL generated: ${url}`);
-    return url;
-  } catch (error) {
-    console.warn(`Failed to get Lyra icon, using ultimate fallback`, error);
-    // Use navbar logo as ultimate fallback since we know it exists
-    return getSupabaseIconUrl('navbar-logo.png');
-  }
+  const url = getSupabaseIconUrl(iconPath);
+  console.log(`Lyra icon URL generated: ${url}`);
+  return url;
 };
 
 /**
@@ -236,7 +210,7 @@ export const getAchievementIconUrl = (achievement: keyof typeof SUPABASE_ICONS.a
  * Get navbar icon URL by type with fallback
  */
 export const getNavbarIconUrl = (type: keyof typeof SUPABASE_ICONS.navbar): string => {
-  const iconPath = SUPABASE_ICONS.navbar[type] || SUPABASE_ICONS.lyraAvatar;
+  const iconPath = SUPABASE_ICONS.navbar[type] || SUPABASE_ICONS.navbar.logo;
   return getSupabaseIconUrl(iconPath);
 };
 
