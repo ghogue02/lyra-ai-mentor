@@ -45,6 +45,89 @@ export type Database = {
         }
         Relationships: []
       }
+      chat_conversations: {
+        Row: {
+          chapter_id: number
+          created_at: string
+          id: string
+          last_message_at: string
+          lesson_context: Json | null
+          lesson_id: number
+          message_count: number
+          started_at: string
+          title: string | null
+          user_id: string
+        }
+        Insert: {
+          chapter_id: number
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          lesson_context?: Json | null
+          lesson_id: number
+          message_count?: number
+          started_at?: string
+          title?: string | null
+          user_id: string
+        }
+        Update: {
+          chapter_id?: number
+          created_at?: string
+          id?: string
+          last_message_at?: string
+          lesson_context?: Json | null
+          lesson_id?: number
+          message_count?: number
+          started_at?: string
+          title?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      chat_messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          is_user_message: boolean
+          lesson_id: number
+          message_order: number
+          metadata: Json | null
+          user_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          is_user_message?: boolean
+          lesson_id: number
+          message_order?: number
+          metadata?: Json | null
+          user_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          is_user_message?: boolean
+          lesson_id?: number
+          message_order?: number
+          metadata?: Json | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "chat_conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       content_blocks: {
         Row: {
           content: string
