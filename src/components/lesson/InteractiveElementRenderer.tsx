@@ -62,6 +62,16 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     exchangeCount: 0
   });
 
+  // Function to get image URL from Supabase storage
+  const getImageUrl = (filename: string) => {
+    if (!filename) return null;
+    const { data } = supabase.storage
+      .from('lesson-images')
+      .getPublicUrl(filename);
+    console.log(`InteractiveElementRenderer: Getting image URL for ${filename}:`, data.publicUrl);
+    return data.publicUrl;
+  };
+
   // Load completion status and existing data when component mounts
   useEffect(() => {
     if (user) {
@@ -176,7 +186,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
 
       // Mark as completed if minimum reached
       if (hasReachedMinimum && !isElementCompleted) {
-        console.log(`InteractiveElementRenderer: Marking element ${element.id} as completed due to chat engagement`);
+        console.log(`InteractiveElementRenderer: Marking element ${element.id} as completed due to engagement threshold`);
         markElementComplete();
       }
     } catch (error: any) {
@@ -345,17 +355,29 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   const renderReflection = () => {
     const config = element.configuration || {};
     const suggestions = config.suggestions || [];
-    return <div className="space-y-4">
+    const imageFile = config.image_file;
+    const layout = config.layout;
+    const imageUrl = imageFile ? getImageUrl(imageFile) : null;
+
+    console.log(`InteractiveElementRenderer: Processing reflection with image. Image file: ${imageFile}, Layout: ${layout}, Image URL: ${imageUrl}`);
+
+    // Render content with image layout
+    const renderReflectionContent = () => (
+      <div className="space-y-4">
         <p className="text-gray-700 leading-relaxed">{element.content}</p>
         
-        {suggestions.length > 0 && <div className="mb-4">
+        {suggestions.length > 0 && (
+          <div className="mb-4">
             <p className="text-sm text-gray-600 mb-2">Consider these examples:</p>
             <ul className="text-sm text-gray-600 space-y-1 ml-4">
-              {suggestions.map((suggestion: string, index: number) => <li key={index} className="list-disc">
+              {suggestions.map((suggestion: string, index: number) => (
+                <li key={index} className="list-disc">
                   {suggestion}
-                </li>)}
+                </li>
+              ))}
             </ul>
-          </div>}
+          </div>
+        )}
         
         <Textarea
           placeholder="Share your thoughts..."
@@ -380,10 +402,36 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           </Button>
         )}
         
-        {config.follow_up && <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
+        {config.follow_up && (
+          <div className="mt-4 p-3 bg-gray-50 border border-gray-200 rounded-md">
             <p className="text-sm text-gray-700">{config.follow_up}</p>
-          </div>}
-      </div>;
+          </div>
+        )}
+      </div>
+    );
+
+    // Handle image layout
+    if (layout === 'image_top_text_bottom' && imageUrl) {
+      return (
+        <div className="space-y-6">
+          {/* Image at top */}
+          <div className="flex justify-center bg-gradient-to-br from-purple-50 to-orange-50 rounded-lg p-6">
+            <img 
+              src={imageUrl} 
+              alt={element.title}
+              className="w-full max-w-md h-auto object-contain rounded-lg shadow-sm"
+              onLoad={() => console.log(`InteractiveElementRenderer: Reflection image loaded successfully for ${element.title}`)}
+              onError={(e) => console.error(`InteractiveElementRenderer: Reflection image failed to load for ${element.title}:`, e)}
+            />
+          </div>
+          {/* Content below */}
+          {renderReflectionContent()}
+        </div>
+      );
+    }
+
+    // Fallback to content without image
+    return renderReflectionContent();
   };
 
   const renderLyraChat = () => {
