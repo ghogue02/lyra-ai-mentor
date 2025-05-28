@@ -1,10 +1,10 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, FileText, Image, Video, List, Sparkles } from 'lucide-react';
+import { CheckCircle, FileText, Image, Video, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
-import { AIGeneratedImage } from './AIGeneratedImage';
 
 interface ContentBlock {
   id: number;
@@ -19,14 +19,12 @@ interface ContentBlockRendererProps {
   block: ContentBlock;
   isCompleted: boolean;
   onComplete: () => void;
-  nextAIImage?: ContentBlock | null;
 }
 
 export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   block,
   isCompleted,
-  onComplete,
-  nextAIImage
+  onComplete
 }) => {
   const { user } = useAuth();
   const blockRef = useRef<HTMLDivElement>(null);
@@ -81,8 +79,6 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         return <FileText className="w-4 h-4" />;
       case 'image':
         return <Image className="w-4 h-4" />;
-      case 'ai_generated_image':
-        return <Sparkles className="w-4 h-4" />;
       case 'video':
         return <Video className="w-4 h-4" />;
       case 'list':
@@ -92,26 +88,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     }
   };
 
-  // Analyze content to determine if it's primarily lists or paragraphs
-  const analyzeContentType = (content: string) => {
-    const lines = content.split('\n').filter(line => line.trim());
-    const bulletLines = lines.filter(line => 
-      line.trim().startsWith('•') || 
-      line.trim().startsWith('-') || 
-      line.trim().startsWith('*')
-    );
-    
-    // If more than 60% of lines are bullet points, consider it a list-heavy content
-    const isListHeavy = bulletLines.length / lines.length > 0.6;
-    return {
-      isListHeavy,
-      totalLines: lines.length,
-      bulletLines: bulletLines.length
-    };
-  };
-
   const formatTextContent = (content: string) => {
-    const contentAnalysis = analyzeContentType(content);
     const sections = content.split('\n\n').filter(section => section.trim());
     
     return sections.map((section, index) => {
@@ -126,17 +103,8 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
       );
       
       if (isBulletList) {
-        // For bullet lists, place image above the list if it's the first section and content is list-heavy
         return (
           <div key={index} className="mb-6 last:mb-0">
-            {index === 0 && nextAIImage && contentAnalysis.isListHeavy && (
-              <div className="mb-4 flex justify-center">
-                <AIGeneratedImage 
-                  prompt={nextAIImage.content} 
-                  className="w-32 h-24"
-                />
-              </div>
-            )}
             <ul className="space-y-3 pl-1">
               {lines.map((line, lineIndex) => {
                 const cleanLine = line.trim().replace(/^[•\-\*]\s*/, '');
@@ -155,20 +123,9 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           </div>
         );
       } else {
-        // For paragraph text, use inline floating image if content is not list-heavy
         return (
           <div key={index} className="text-gray-700 text-base leading-relaxed mb-6 last:mb-0">
-            {index === 0 && nextAIImage && !contentAnalysis.isListHeavy && (
-              <AIGeneratedImage 
-                prompt={nextAIImage.content} 
-                className="float-left mr-4 mb-2 w-32 h-24"
-              />
-            )}
-            <p className="inline">
-              {formatInlineText(trimmedSection.replace(/\n/g, ' '))}
-            </p>
-            {/* Clear float after paragraph to prevent layout issues */}
-            <div className="clear-left"></div>
+            <p>{formatInlineText(trimmedSection.replace(/\n/g, ' '))}</p>
           </div>
         );
       }
@@ -206,14 +163,6 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         const listItems = block.content.split('\n').filter(item => item.trim());
         return (
           <div className="mb-6 last:mb-0">
-            {nextAIImage && (
-              <div className="mb-4 flex justify-center">
-                <AIGeneratedImage 
-                  prompt={nextAIImage.content} 
-                  className="w-32 h-24"
-                />
-              </div>
-            )}
             <ul className="space-y-3 pl-1">
               {listItems.map((item, index) => (
                 <li key={index} className="flex items-start gap-3 leading-relaxed">
@@ -256,11 +205,6 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         );
     }
   };
-
-  // Skip rendering AI-generated image blocks as standalone items
-  if (block.type === 'ai_generated_image') {
-    return null;
-  }
 
   return (
     <Card 

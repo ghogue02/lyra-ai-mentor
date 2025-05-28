@@ -73,19 +73,9 @@ export const LessonContent: React.FC<LessonContentProps> = ({
     return !chatEngagement.hasReachedMinimum;
   };
 
-  // Function to find the next AI image for a given text block
-  const getNextAIImage = (currentIndex: number) => {
-    const currentBlock = regularContent[currentIndex];
-    if (!currentBlock || currentBlock.contentType !== 'block') return null;
-
-    // Find the AI image that comes after this block in the original order
-    const nextAIImage = aiImages.find(img => img.order_index > currentBlock.order_index);
-    return nextAIImage || null;
-  };
-
-  // Merge and sort content blocks and interactive elements, but filter out AI images for separate processing
+  // Merge and sort all content blocks and interactive elements
   const regularContent = [
-    ...contentBlocks.filter(block => block.type !== 'ai_generated_image').map(block => ({
+    ...contentBlocks.map(block => ({
       ...block,
       contentType: 'block' as const
     })),
@@ -94,9 +84,6 @@ export const LessonContent: React.FC<LessonContentProps> = ({
       contentType: 'interactive' as const
     }))
   ].sort((a, b) => a.order_index - b.order_index);
-
-  // Get AI images for pairing with text blocks
-  const aiImages = contentBlocks.filter(block => block.type === 'ai_generated_image');
 
   const firstLyraChatIndex = findFirstLyraChatIndex();
 
@@ -121,7 +108,6 @@ export const LessonContent: React.FC<LessonContentProps> = ({
                 block={item as ContentBlock}
                 isCompleted={completedBlocks.has(item.id)}
                 onComplete={() => onMarkBlockCompleted(item.id)}
-                nextAIImage={getNextAIImage(index)}
               />
             ) : (
               <InteractiveElementRenderer 
