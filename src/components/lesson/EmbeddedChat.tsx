@@ -274,7 +274,8 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           <Button
             onClick={handleAiDemo}
             variant="outline"
-            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white border-purple-400 px-3"
+            size="sm"
+            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white border-none px-3 shrink-0"
             title="Try AI Magic Demo"
           >
             <Sparkles className="w-4 h-4" />
@@ -282,7 +283,8 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           <Button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isTyping}
-            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+            size="sm"
+            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 shrink-0"
           >
             <Send className="w-4 h-4" />
           </Button>
