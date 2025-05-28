@@ -76,7 +76,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
             {lines.map((line, lineIndex) => {
               const cleanLine = line.replace(/^\d+\.\s*/, '').trim();
               return (
-                <li key={lineIndex} className="leading-relaxed">
+                <li key={lineIndex} className="leading-relaxed text-white">
                   {formatInlineText(cleanLine)}
                 </li>
               );
@@ -94,8 +94,8 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
               const cleanLine = line.replace(/^[•·▪▫‣⁃]\s*/, '').trim();
               return (
                 <li key={lineIndex} className="leading-relaxed flex items-start">
-                  <span className="text-blue-600 mr-2">•</span>
-                  <span>{formatInlineText(cleanLine)}</span>
+                  <span className="text-blue-400 mr-2">•</span>
+                  <span className="text-white">{formatInlineText(cleanLine)}</span>
                 </li>
               );
             })}
@@ -107,7 +107,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       if (/^\*\*.*\*\*$/.test(paragraph.trim())) {
         return (
           <div key={index} className="mb-4">
-            <h4 className="font-semibold text-gray-800 text-base leading-relaxed">
+            <h4 className="font-semibold text-blue-300 text-base leading-relaxed">
               {formatInlineText(paragraph)}
             </h4>
           </div>
@@ -116,7 +116,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       
       // Regular paragraph
       return (
-        <p key={index} className="mb-4 last:mb-0 leading-relaxed text-gray-700">
+        <p key={index} className="mb-4 last:mb-0 leading-relaxed text-white">
           {formatInlineText(paragraph)}
         </p>
       );
@@ -130,12 +130,12 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
     return parts.map((part, index) => {
       if (part.startsWith('**') && part.endsWith('**')) {
         const boldText = part.slice(2, -2);
-        return <strong key={index} className="font-semibold text-gray-900">{boldText}</strong>;
+        return <strong key={index} className="font-semibold text-blue-200">{boldText}</strong>;
       }
       
       // Handle special highlighting for metrics and numbers
       if (/\d+%|\$[\d,]+|[\d,]+\s*(hours|participants|donors)/.test(part)) {
-        return <span key={index} className="font-medium text-blue-600">{part}</span>;
+        return <span key={index} className="font-medium text-cyan-300">{part}</span>;
       }
       
       return part;

@@ -48,7 +48,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
               }`}
             >
               {message.isUser ? (
-                <p className="text-sm leading-relaxed">{message.content}</p>
+                <p className="text-sm leading-relaxed text-white">{message.content}</p>
               ) : (
                 <FormattedMessage 
                   content={message.content} 
@@ -68,7 +68,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                   <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
-                <span className="text-xs text-gray-400">Lyra is thinking...</span>
+                <span className="text-xs text-gray-300">Lyra is thinking...</span>
               </div>
             </div>
           </div>

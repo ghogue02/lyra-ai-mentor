@@ -1,3 +1,4 @@
+
 import React, { useRef, useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -7,7 +8,6 @@ import { QuickActions } from './chat/QuickActions';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import { CloseConfirmationDialog } from './chat/CloseConfirmationDialog';
-import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
 
 interface FullScreenChatOverlayProps {
   isOpen: boolean;
@@ -34,8 +34,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
-  const [hasIncrementedForCurrentMessage, setHasIncrementedForCurrentMessage] = useState(false);
-  const [showInteractiveDemo, setShowInteractiveDemo] = useState(false);
 
   const {
     messages,
@@ -48,36 +46,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   } = useLyraChat(lessonContext);
 
   const { engagement, incrementExchange, resetEngagement, setEngagementCount } = useChatEngagement(3, initialEngagementCount);
-
-  // Check if we should show the interactive demo - improved detection
-  useEffect(() => {
-    const lastMessage = messages[messages.length - 1];
-    if (lastMessage && !lastMessage.isUser) {
-      const content = lastMessage.content.toLowerCase();
-      const showDemo = content.includes('ai magic demo') || 
-                      content.includes('show me how ai transforms') ||
-                      content.includes('ai data analysis demo') ||
-                      content.includes('ready to see how ai transforms') ||
-                      content.includes('transforms fundraising data');
-      console.log('Demo detection check:', { content: content.substring(0, 100), showDemo });
-      setShowInteractiveDemo(showDemo);
-    }
-  }, [messages]);
-
-  // Also check for demo trigger from quick actions
-  useEffect(() => {
-    const userMessages = messages.filter(msg => msg.isUser);
-    const lastUserMessage = userMessages[userMessages.length - 1];
-    if (lastUserMessage) {
-      const content = lastUserMessage.content.toLowerCase();
-      const isDemoRequest = content.includes('ai magic demo') || 
-                           content.includes('show me the ai magic demo');
-      console.log('User demo request check:', { content, isDemoRequest });
-      if (isDemoRequest) {
-        setShowInteractiveDemo(true);
-      }
-    }
-  }, [messages]);
 
   // Initialize engagement count with database value when component mounts
   useEffect(() => {
@@ -109,12 +77,11 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     });
 
     // Update engagement count if we have more actual exchanges than recorded
-    if (actualExchanges > engagement.exchangeCount && !hasIncrementedForCurrentMessage) {
+    if (actualExchanges > engagement.exchangeCount) {
       console.log('FullScreenChatOverlay: Updating engagement count to match actual exchanges');
       setEngagementCount(actualExchanges);
-      setHasIncrementedForCurrentMessage(true);
     }
-  }, [messages, engagement.exchangeCount, setEngagementCount, hasIncrementedForCurrentMessage]);
+  }, [messages, engagement.exchangeCount, setEngagementCount]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -127,15 +94,11 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   useEffect(() => {
     if (isOpen) {
       inputRef.current?.focus();
-      setHasIncrementedForCurrentMessage(false);
     }
   }, [isOpen]);
 
   const handleSendMessage = async () => {
     if (!inputValue.trim()) return;
-    
-    console.log('FullScreenChatOverlay: Sending message and preparing to increment engagement');
-    setHasIncrementedForCurrentMessage(false);
     
     await sendMessage(inputValue);
     inputRef.current?.focus();
@@ -148,8 +111,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
 
   const handleAiDemo = () => {
     console.log('FullScreenChatOverlay: Starting AI Magic Demo in chat');
-    setHasIncrementedForCurrentMessage(false);
-    setShowInteractiveDemo(true); // Immediately show demo
     sendMessage("Show me the AI magic demo - how AI transforms fundraising data!");
     setShowQuickActions(false);
   };
@@ -168,14 +129,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   };
 
   const handleQuickAction = (action: string) => {
-    console.log('FullScreenChatOverlay: Quick action triggered, preparing to increment engagement');
-    setHasIncrementedForCurrentMessage(false);
-    
-    // Check if this is an AI demo request
-    if (action.toLowerCase().includes('ai magic demo')) {
-      setShowInteractiveDemo(true);
-    }
-    
+    console.log('FullScreenChatOverlay: Quick action triggered');
     sendMessage(action);
     
     // Hide quick actions after use on mobile
@@ -188,7 +142,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     clearChat();
     resetEngagement();
     setShowQuickActions(true);
-    setShowInteractiveDemo(false);
   };
 
   return (
@@ -226,16 +179,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
                 onForceClose={forceClose}
                 onSendMessage={sendMessage}
               />
-              
-              {showInteractiveDemo && (
-                <div className="p-4">
-                  <InteractiveAiDemo
-                    onSendMessage={sendMessage}
-                    userProfile={userProfile}
-                    isVisible={showInteractiveDemo}
-                  />
-                </div>
-              )}
             </div>
             
             <ChatInput
