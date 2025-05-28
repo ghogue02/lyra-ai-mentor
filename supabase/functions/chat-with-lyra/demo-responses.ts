@@ -1,3 +1,4 @@
+
 import type { UserProfile } from './types.ts';
 
 export function generateStagedDemoResponse(userProfile: UserProfile | null, stage: string): string {
@@ -20,15 +21,18 @@ We'll use sample data so you can see the magic without any setup!
 
 ${greeting}let me load some realistic ${role} data that shows how AI handles messy, real-world information...
 
-\`\`\`
 DONOR_EXPORT_Q4_2024.csv
 ========================
 Name,Amount,Date,Method,Notes
 Sarah Johnson,$245,"11/15/24",Online,"Recurring donor, loves events"
 M. Chen,$89,"10/22/24",Check,"First time, met at fundraiser"
 Patricia W.,$520,"12/01/24",Online,"Major donor, board connection"
+John Smith,$156,"11/28/24",Online,"Monthly sustainer"
+Lisa Rodriguez,$89,"09/15/24",Cash,"Event attendee"
 ...incomplete_record,$,"09/18/24",,
-\`\`\`
+David Kim,$2100,"12/05/24",Check,"Board member referral"
+Anonymous,$45,"10/30/24",Online,"Prefers privacy"
+Maria Garcia,$320,"11/12/24",Online,"Program beneficiary parent"
 
 **🔍 This is exactly the kind of messy data AI excels at!**
 
@@ -148,19 +152,22 @@ export function generateDummyDataResponse(userProfile: UserProfile | null): stri
       data: `DONOR_DATA_EXPORT_2024.csv
 ===================================
 donor_id,name,total_donated,last_gift_date,gift_frequency,age_bracket,communication_pref
-D001,Sarah Johnson,$2,450,2024-11-15,quarterly,45-54,email
+D001,Sarah Johnson,$2450,2024-11-15,quarterly,45-54,email
 D002,Michael Chen,$890,2024-10-22,annual,35-44,phone
-D003,Patricia Williams,$5,200,2024-12-01,monthly,65+,mail
-D004,James Rodriguez,$1,100,2024-09-18,irregular,25-34,email
-D005,Lisa Thompson,$3,300,2024-11-28,biannual,55-64,email
+D003,Patricia Williams,$5200,2024-12-01,monthly,65+,mail
+D004,James Rodriguez,$1100,2024-09-18,irregular,25-34,email
+D005,Lisa Thompson,$3300,2024-11-28,biannual,55-64,email
+D006,Anonymous Donor,$450,2024-10-05,annual,unknown,email
+D007,Corporate Match Inc,$12000,2024-11-20,annual,corporate,email
 
 ENGAGEMENT_METRICS.csv
 =====================
 donor_id,email_open_rate,event_attendance,volunteer_hours,social_media_engagement
 D001,78%,3_events,12_hours,high
 D002,45%,1_event,0_hours,low
-D003,Patricia Williams,$5,200,2024-12-01,monthly,65+,mail
-...
+D003,92%,5_events,25_hours,high
+D004,23%,0_events,2_hours,medium
+D005,67%,2_events,8_hours,medium
 
 Let me analyze this donor data for patterns and insights!`,
       analysis: `**Key Insights Discovered:**
@@ -186,6 +193,9 @@ participant_id,program,enrollment_date,completion_status,pre_assessment,post_ass
 P001,Job_Training,2024-09-01,completed,45,82,95%
 P002,Digital_Literacy,2024-09-15,in_progress,32,65,78%
 P003,Financial_Wellness,2024-10-01,completed,28,71,88%
+P004,Job_Training,2024-09-10,completed,38,79,92%
+P005,Digital_Literacy,2024-09-20,dropped_out,29,35,45%
+P006,Financial_Wellness,2024-10-15,in_progress,41,68,85%
 
 Uncovering program effectiveness patterns!`,
       analysis: `**Program Performance Insights:**
@@ -206,6 +216,9 @@ What if we could predict which participants need extra support before they strug
 volunteer_id,registration_date,training_completion,hours_logged,no_show_rate,retention_months
 V001,2024-01-15,completed,45,5%,11
 V002,2024-02-20,pending,12,25%,4
+V003,2024-01-30,completed,78,2%,10
+V004,2024-03-05,not_started,0,50%,1
+V005,2024-02-10,completed,156,8%,9
 
 Analyzing operational bottlenecks and efficiency opportunities!`,
       analysis: `**Operational Excellence Insights:**
@@ -222,6 +235,9 @@ Imagine if mundane tasks handled themselves while your team focused purely on mi
 platform,post_date,content_type,reach,engagement_rate,click_through,conversion
 Instagram,2024-12-01,story_impact,2450,4.2%,145,8
 Facebook,2024-12-01,donor_spotlight,1890,6.1%,89,12
+Twitter,2024-12-01,quick_update,890,2.1%,23,2
+LinkedIn,2024-12-01,thought_leadership,1200,8.5%,156,18
+TikTok,2024-12-01,behind_scenes,3400,12.3%,234,15
 
 Uncovering digital engagement goldmines!`,
       analysis: `**Digital Storytelling Insights:**
@@ -236,8 +252,11 @@ What if every piece of content could be perfectly timed and personalized for max
       data: `ORGANIZATIONAL_METRICS_Q4.csv
 ===============================
 metric,current_value,previous_quarter,target,trend
-total_revenue,$287,450,$268,200,$320,000,positive
-program_participants,1,247,1,089,1,400,positive
+total_revenue,$287450,$268200,$320000,positive
+program_participants,1247,1089,1400,positive
+staff_productivity,87%,82%,90%,positive
+donor_retention,68%,71%,75%,negative
+volunteer_hours,2340,2156,2500,positive
 
 Revealing strategic positioning and growth opportunities!`,
       analysis: `**Strategic Leadership Insights:**

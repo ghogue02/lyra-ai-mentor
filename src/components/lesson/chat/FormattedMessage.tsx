@@ -1,7 +1,9 @@
+
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react';
+import { AnimatedDataDisplay } from './AnimatedDataDisplay';
 
 interface FormattedMessageProps {
   content: string;
@@ -270,16 +272,14 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
         );
       }
       
-      // Handle data/code blocks (for dummy data display)
+      // Handle data/code blocks with animated display
       if (paragraph.includes('===') || paragraph.includes('CSV') || paragraph.includes('_EXPORT_')) {
         return (
-          <div key={index} className="bg-gray-800 text-green-400 p-3 rounded-lg mb-4 font-mono text-xs overflow-x-auto border border-gray-600 relative">
-            <div className="absolute top-2 right-2 flex space-x-1">
-              <div className="w-1 h-1 bg-green-500 rounded-full animate-ping"></div>
-              <div className="w-1 h-1 bg-green-500 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
-            </div>
-            <pre className="whitespace-pre-wrap">{paragraph}</pre>
-          </div>
+          <AnimatedDataDisplay
+            key={index}
+            content={paragraph}
+            autoStart={true}
+          />
         );
       }
       
