@@ -63,18 +63,13 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     }
   };
 
+  const handleAiDemo = () => {
+    sendMessage("DUMMY_DATA_REQUEST");
+  };
+
   // Create enhanced context-aware quick actions with user-question phrasing
   const getQuickActions = () => {
     const actions = [];
-    
-    // Magic AI demo button if engagement threshold reached
-    if (engagement?.shouldShowAiDemo) {
-      actions.push({
-        text: "✨ AI Magic Demo",
-        value: "DUMMY_DATA_REQUEST",
-        special: true
-      });
-    }
     
     // Always include the suggested task if available (make it shorter for mobile)
     if (suggestedTask) {
@@ -188,9 +183,6 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
         <div className="p-2 sm:p-3 border-b bg-gray-50/50">
           <p className="text-xs text-gray-600 mb-2">
             {userProfile?.first_name ? `Quick actions for ${userProfile.first_name}:` : 'Quick actions:'}
-            {engagement?.shouldShowAiDemo && (
-              <span className="ml-2 text-purple-600 font-medium">• AI Demo Available!</span>
-            )}
           </p>
           <div className="flex gap-2 overflow-x-auto scrollbar-hide pb-1">
             {quickActions.map((action, index) => (
@@ -199,13 +191,8 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
                 variant="outline"
                 size="sm"
                 onClick={() => handleQuickAction(action)}
-                className={`flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap ${
-                  action.special
-                    ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600 shadow-md animate-pulse'
-                    : 'hover:bg-purple-50 hover:border-purple-300'
-                }`}
+                className="flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap hover:bg-purple-50 hover:border-purple-300"
               >
-                {action.special && <Sparkles className="w-3 h-3 mr-1" />}
                 {action.text}
               </Button>
             ))}
@@ -285,6 +272,14 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
             disabled={isTyping}
           />
           <Button
+            onClick={handleAiDemo}
+            variant="outline"
+            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white border-purple-400 px-3"
+            title="Try AI Magic Demo"
+          >
+            <Sparkles className="w-4 h-4" />
+          </Button>
+          <Button
             onClick={handleSendMessage}
             disabled={!inputValue.trim() || isTyping}
             className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
@@ -293,7 +288,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           </Button>
         </div>
         <p className="text-xs text-gray-500 mt-1 sm:mt-2">
-          Press Enter to send {engagement?.shouldShowAiDemo && "• Try the AI Magic Demo! ✨"}
+          Press Enter to send • Click ✨ for AI Magic Demo
         </p>
       </div>
     </div>
