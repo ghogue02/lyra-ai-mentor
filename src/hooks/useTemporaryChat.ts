@@ -23,6 +23,40 @@ export const useTemporaryChat = (lessonContext?: LessonContext) => {
   const [inputValue, setInputValue] = useState('');
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Calculate dynamic delay based on content progress and type
+  const calculateStreamingDelay = (content: string, totalLength: number, isDataInsights: boolean = false) => {
+    if (!isDataInsights) {
+      // Regular streaming - simple variable speed
+      const progress = content.length / Math.max(totalLength, content.length);
+      if (progress < 0.2) return 150; // Start slower
+      if (progress < 0.5) return 100; // Medium speed
+      return 50; // End faster
+    }
+
+    // Data Insights - sophisticated variable speed
+    const progress = content.length / Math.max(totalLength, content.length);
+    const lastChunk = content.slice(-20); // Last 20 characters
+    
+    // Very slow start for dramatic effect
+    if (progress < 0.1) return 300;
+    
+    // Slow for section headers
+    if (lastChunk.includes('Patterns Found') || 
+        lastChunk.includes('Action Items') || 
+        lastChunk.includes('Hidden Insights')) {
+      return 500; // Extra slow for headers
+    }
+    
+    // Gradual speed increase with content-aware pacing
+    if (progress < 0.2) return 200; // Still slow for absorption
+    if (progress < 0.4) return 150; // Building momentum
+    if (progress < 0.6) return 100; // Medium speed
+    if (progress < 0.8) return 75;  // Getting faster
+    
+    // Final burst of speed for conclusion
+    return 40;
+  };
+
   const sendMessage = useCallback(async (messageContent: string) => {
     if (!messageContent.trim() || !user) return;
 
@@ -43,6 +77,11 @@ export const useTemporaryChat = (lessonContext?: LessonContext) => {
     }
 
     abortControllerRef.current = new AbortController();
+
+    // Check if this is a data insights request
+    const isDataInsights = messageContent.includes('Analyze the donor records') || 
+                          messageContent.includes('CSV data') ||
+                          messageContent.includes('Patterns Found');
 
     try {
       const response = await fetch('https://hfkzwjnlxrwynactcmpe.supabase.co/functions/v1/chat-with-lyra', {
@@ -76,6 +115,7 @@ export const useTemporaryChat = (lessonContext?: LessonContext) => {
 
       const decoder = new TextDecoder();
       let aiResponseContent = '';
+      let estimatedTotalLength = isDataInsights ? 2000 : 1000; // Estimate for delay calculation
 
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
@@ -87,8 +127,9 @@ export const useTemporaryChat = (lessonContext?: LessonContext) => {
       setMessages(prev => [...prev, aiMessage]);
       setIsTyping(false);
 
-      // Add thinking delay before starting to type
-      await new Promise(resolve => setTimeout(resolve, 800));
+      // Add thinking delay before starting to type - longer for data insights
+      const thinkingDelay = isDataInsights ? 1200 : 800;
+      await new Promise(resolve => setTimeout(resolve, thinkingDelay));
 
       while (true) {
         const { done, value } = await reader.read();
@@ -103,21 +144,20 @@ export const useTemporaryChat = (lessonContext?: LessonContext) => {
               const data = JSON.parse(line.slice(6));
               if (data.content) {
                 aiResponseContent += data.content;
+                
+                // Update estimated total length as we receive more content
+                if (aiResponseContent.length > estimatedTotalLength) {
+                  estimatedTotalLength = aiResponseContent.length + 500;
+                }
+                
                 setMessages(prev => prev.map(msg => 
                   msg.id === aiMessage.id 
                     ? { ...msg, content: aiResponseContent }
                     : msg
                 ));
                 
-                // Natural pacing delays
-                let delay = 75; // Base delay
-                
-                // Longer pauses for punctuation
-                if (data.content.includes('.') || data.content.includes('!') || data.content.includes('?')) {
-                  delay = 200;
-                } else if (data.content.includes(',') || data.content.includes(';')) {
-                  delay = 100;
-                }
+                // Calculate dynamic delay based on content and progress
+                const delay = calculateStreamingDelay(aiResponseContent, estimatedTotalLength, isDataInsights);
                 
                 await new Promise(resolve => setTimeout(resolve, delay));
               }
