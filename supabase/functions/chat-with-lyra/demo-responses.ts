@@ -1,4 +1,3 @@
-
 import type { UserProfile } from './types.ts';
 
 export function generateStagedDemoResponse(userProfile: UserProfile | null, stage: string): string {

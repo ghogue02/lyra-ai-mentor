@@ -1,9 +1,11 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Play, ArrowRight, HelpCircle, RotateCcw } from 'lucide-react';
 import { AnimatedDataDisplay } from './AnimatedDataDisplay';
+import { AnimatedAnalysisDisplay } from './AnimatedAnalysisDisplay';
+import { AnimatedInsightsDisplay } from './AnimatedInsightsDisplay';
+import { AnimatedRecommendationsDisplay } from './AnimatedRecommendationsDisplay';
 
 interface FormattedMessageProps {
   content: string;
@@ -16,7 +18,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
   isProcessing = false, 
   onSendMessage 
 }) => {
-  // Check if this is a demo stage message with more flexible patterns
+  // Check if this is a demo stage message
   const isDemoMessage = content.includes('Demo Progress') || 
                         content.includes('AI Magic Demo') || 
                         content.includes('Step 1:') || 
@@ -32,6 +34,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
 
   const handleDemoAction = (action: string) => {
     if (onSendMessage) {
+      // ... keep existing code (demo action handlers)
       if (action === 'continue_loading') {
         onSendMessage('DEMO_STAGE_LOADING');
       } else if (action === 'continue_analysis') {
@@ -49,9 +52,9 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
   };
 
   const getDemoControls = () => {
+    // ... keep existing code (demo controls logic)
     if (!isDemoMessage || !onSendMessage) return null;
 
-    // Determine which stage we're in based on content - with more flexible matching
     if (content.includes('AI Magic Demo') || content.includes('ready to see AI transform')) {
       return (
         <div className="mt-4 p-3 bg-gray-700/50 rounded-lg border border-gray-600">
@@ -213,6 +216,53 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
     const paragraphs = text.split('\n\n').filter(p => p.trim());
     
     return paragraphs.map((paragraph, index) => {
+      // Handle data/code blocks with animated display
+      if (paragraph.includes('===') || paragraph.includes('CSV') || paragraph.includes('_EXPORT_')) {
+        return (
+          <AnimatedDataDisplay
+            key={index}
+            content={paragraph}
+            autoStart={true}
+          />
+        );
+      }
+      
+      // Handle AI analysis content
+      if (paragraph.includes('AI Analysis in Progress') || 
+          (paragraph.includes('Processing') && paragraph.includes('patterns'))) {
+        return (
+          <AnimatedAnalysisDisplay
+            key={index}
+            content={paragraph}
+            autoStart={true}
+          />
+        );
+      }
+      
+      // Handle insights content
+      if ((paragraph.includes('PATTERNS DISCOVERED') || paragraph.includes('Hidden Revenue')) &&
+          (paragraph.includes('🎯') || paragraph.includes('⚠️') || paragraph.includes('🚀'))) {
+        return (
+          <AnimatedInsightsDisplay
+            key={index}
+            content={paragraph}
+            autoStart={true}
+          />
+        );
+      }
+      
+      // Handle recommendations content
+      if ((paragraph.includes('Actionable Recommendations') || paragraph.includes('This Week')) &&
+          (paragraph.includes('🎯') || paragraph.includes('📧') || paragraph.includes('💰'))) {
+        return (
+          <AnimatedRecommendationsDisplay
+            key={index}
+            content={paragraph}
+            autoStart={true}
+          />
+        );
+      }
+      
       // Handle numbered lists
       if (paragraph.includes('\n') && /^\d+\./.test(paragraph.trim())) {
         const lines = paragraph.split('\n').filter(line => line.trim());
@@ -245,41 +295,6 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
               );
             })}
           </ul>
-        );
-      }
-      
-      // Handle AI processing indicators with enhanced animations
-      if (paragraph.includes('AI Analysis in Progress') || paragraph.includes('Processing patterns')) {
-        return (
-          <div key={index} className="bg-gradient-to-r from-purple-900/20 to-cyan-900/20 border border-purple-500/30 p-4 rounded-lg mb-4">
-            <div className="flex items-center space-x-2 mb-2">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-cyan-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-2 h-2 bg-purple-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              </div>
-              <span className="text-purple-400 font-medium animate-pulse">AI Processing...</span>
-            </div>
-            <div className="text-sm text-gray-300 space-y-1">
-              {paragraph.split('\n').map((line, lineIdx) => (
-                <div key={lineIdx} className="flex items-center space-x-2">
-                  <span className="text-cyan-400">⚡</span>
-                  <span className="animate-fade-in">{line}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-      }
-      
-      // Handle data/code blocks with animated display
-      if (paragraph.includes('===') || paragraph.includes('CSV') || paragraph.includes('_EXPORT_')) {
-        return (
-          <AnimatedDataDisplay
-            key={index}
-            content={paragraph}
-            autoStart={true}
-          />
         );
       }
       
