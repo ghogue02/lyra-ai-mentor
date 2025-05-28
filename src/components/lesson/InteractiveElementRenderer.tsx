@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -410,7 +411,31 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       </div>
     );
 
-    // Handle image layout
+    // Handle image layout - right side with smaller image
+    if (layout === 'image_right_text_left' && imageUrl) {
+      return (
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Content on the left */}
+          <div className="flex-1">
+            {renderReflectionContent()}
+          </div>
+          {/* Image on the right - smaller */}
+          <div className="lg:w-1/3 flex justify-center lg:justify-end">
+            <div className="bg-gradient-to-br from-purple-50 to-orange-50 rounded-lg p-4">
+              <img 
+                src={imageUrl} 
+                alt={element.title}
+                className="w-full max-w-xs h-auto object-contain rounded-lg shadow-sm"
+                onLoad={() => console.log(`InteractiveElementRenderer: Reflection image loaded successfully for ${element.title}`)}
+                onError={(e) => console.error(`InteractiveElementRenderer: Reflection image failed to load for ${element.title}:`, e)}
+              />
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // Handle image layout - top placement (existing)
     if (layout === 'image_top_text_bottom' && imageUrl) {
       return (
         <div className="space-y-6">
