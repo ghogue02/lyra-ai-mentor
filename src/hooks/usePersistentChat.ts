@@ -1,6 +1,8 @@
+
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
+import { useChatEngagement } from './useChatEngagement';
 
 interface Message {
   id: string;
@@ -58,12 +60,33 @@ export const usePersistentChat = (
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
+  // Integrate engagement tracking
+  const { engagement, incrementExchange, resetEngagement, setEngagementCount } = useChatEngagement(3, 0);
+
   // Load existing conversation when component mounts
   useEffect(() => {
     if (user && lessonId && chapterId) {
       initializeChat();
     }
   }, [user, lessonId, chapterId]);
+
+  // Update engagement count when messages change
+  useEffect(() => {
+    const userMessageCount = messages.filter(msg => msg.isUser).length;
+    const aiMessageCount = messages.filter(msg => !msg.isUser && !msg.content.includes('Hi') && !msg.content.includes('excited to be your AI mentor')).length; // Exclude initial greeting
+    const actualExchanges = Math.min(userMessageCount, aiMessageCount);
+    
+    console.log('usePersistentChat: Updating engagement based on messages:', {
+      userMessages: userMessageCount,
+      aiMessages: aiMessageCount,
+      actualExchanges,
+      currentEngagement: engagement.exchangeCount
+    });
+
+    if (actualExchanges !== engagement.exchangeCount) {
+      setEngagementCount(actualExchanges);
+    }
+  }, [messages, engagement.exchangeCount, setEngagementCount]);
 
   const initializeChat = async () => {
     setIsLoading(true);
@@ -231,6 +254,12 @@ export const usePersistentChat = (
         isUser: msg.is_user_message,
         timestamp: new Date(msg.created_at)
       }));
+
+      console.log('usePersistentChat: Loaded messages from database:', {
+        totalMessages: formattedMessages.length,
+        userMessages: formattedMessages.filter(msg => msg.isUser).length,
+        aiMessages: formattedMessages.filter(msg => !msg.isUser).length
+      });
 
       setMessages(formattedMessages);
     } catch (error) {
@@ -462,10 +491,13 @@ export const usePersistentChat = (
         isUser: false,
         timestamp: new Date()
       }]);
+
+      // Reset engagement tracking
+      resetEngagement();
     } catch (error) {
       console.error('Error clearing chat:', error);
     }
-  }, [conversationId, lessonContext, userProfile]);
+  }, [conversationId, lessonContext, userProfile, resetEngagement]);
 
   return {
     messages,
@@ -476,6 +508,7 @@ export const usePersistentChat = (
     clearChat,
     isLoading,
     conversationId,
-    userProfile
+    userProfile,
+    engagement
   };
 };

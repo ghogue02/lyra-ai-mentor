@@ -9,7 +9,6 @@ import { ProfileCompletionReminder } from '@/components/ProfileCompletionReminde
 import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
 import { cn } from '@/lib/utils';
 import { useLyraChat } from '@/hooks/useLyraChat';
-import { useChatEngagement } from '@/hooks/useChatEngagement';
 
 interface EmbeddedChatProps {
   lessonContext?: {
@@ -33,22 +32,11 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     setInputValue,
     sendMessage,
     clearChat,
-    userProfile
+    userProfile,
+    engagement
   } = useLyraChat(lessonContext);
 
-  // Track engagement for AI demo
-  const { engagement } = useChatEngagement(3, 0);
-
-  // Update engagement based on actual message exchanges
-  useEffect(() => {
-    const userMessageCount = messages.filter(msg => msg.isUser).length;
-    const aiMessageCount = messages.filter(msg => !msg.isUser).length;
-    const actualExchanges = Math.min(userMessageCount, aiMessageCount);
-    
-    if (actualExchanges !== engagement.exchangeCount) {
-      // This will be handled by the parent component's engagement logic
-    }
-  }, [messages, engagement.exchangeCount]);
+  console.log('EmbeddedChat: Using engagement from usePersistentChat:', engagement);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -80,7 +68,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     const actions = [];
     
     // Magic AI demo button if engagement threshold reached
-    if (engagement.shouldShowAiDemo) {
+    if (engagement?.shouldShowAiDemo) {
       actions.push({
         text: "✨ AI Magic Demo",
         value: "DUMMY_DATA_REQUEST",
@@ -192,7 +180,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
       <InteractiveAiDemo
         onSendMessage={sendMessage}
         userProfile={userProfile}
-        isVisible={engagement.shouldShowAiDemo}
+        isVisible={engagement?.shouldShowAiDemo || false}
       />
 
       {/* Quick Actions */}
@@ -200,7 +188,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
         <div className="p-2 sm:p-3 border-b bg-gray-50/50">
           <p className="text-xs text-gray-600 mb-2">
             {userProfile?.first_name ? `Quick actions for ${userProfile.first_name}:` : 'Quick actions:'}
-            {engagement.shouldShowAiDemo && (
+            {engagement?.shouldShowAiDemo && (
               <span className="ml-2 text-purple-600 font-medium">• AI Demo Available!</span>
             )}
           </p>
@@ -305,7 +293,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           </Button>
         </div>
         <p className="text-xs text-gray-500 mt-1 sm:mt-2">
-          Press Enter to send {engagement.shouldShowAiDemo && "• Try the AI Magic Demo! ✨"}
+          Press Enter to send {engagement?.shouldShowAiDemo && "• Try the AI Magic Demo! ✨"}
         </p>
       </div>
     </div>
