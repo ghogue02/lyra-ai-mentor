@@ -169,7 +169,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
               </div>
             )}
 
-            <div className="flex-1 min-h-0">
+            <div className="flex-1 min-h-0 overflow-hidden">
               <ChatMessages
                 messages={messages}
                 isTyping={isTyping}
