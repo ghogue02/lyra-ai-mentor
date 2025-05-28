@@ -21,8 +21,12 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
     const paragraphs = text.split('\n\n').filter(p => p.trim());
     
     return paragraphs.map((paragraph, index) => {
-      // Handle data/code blocks with animated display
-      if (paragraph.includes('===') || paragraph.includes('CSV') || paragraph.includes('_EXPORT_')) {
+      // Handle demo data visualization - unified detection
+      if (paragraph.includes('🎯 AI Data Analysis Demo') || 
+          paragraph.includes('===') || 
+          paragraph.includes('CSV') || 
+          paragraph.includes('FUNDRAISING_DATA') ||
+          paragraph.includes('_EXPORT_')) {
         return (
           <AnimatedDataDisplay
             key={index}
@@ -34,6 +38,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       
       // Handle AI analysis content
       if (paragraph.includes('AI Analysis in Progress') || 
+          paragraph.includes('🔍 Pattern Recognition') ||
           (paragraph.includes('Processing') && paragraph.includes('patterns'))) {
         return (
           <AnimatedAnalysisDisplay
@@ -45,8 +50,11 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       }
       
       // Handle insights content
-      if ((paragraph.includes('PATTERNS DISCOVERED') || paragraph.includes('Hidden Revenue')) &&
-          (paragraph.includes('Target quarterly') || paragraph.includes('Revenue Optimization'))) {
+      if ((paragraph.includes('PATTERNS DISCOVERED') || 
+           paragraph.includes('💡 Key Insights') ||
+           paragraph.includes('Hidden Revenue')) &&
+          (paragraph.includes('Target quarterly') || 
+           paragraph.includes('Revenue Optimization'))) {
         return (
           <AnimatedInsightsDisplay
             key={index}
@@ -57,8 +65,11 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       }
       
       // Handle recommendations content
-      if ((paragraph.includes('Actionable Recommendations') || paragraph.includes('This Week')) &&
-          (paragraph.includes('Call Patricia') || paragraph.includes('Send personalized'))) {
+      if ((paragraph.includes('Actionable Recommendations') || 
+           paragraph.includes('✅ Next Steps') ||
+           paragraph.includes('This Week')) &&
+          (paragraph.includes('Call Patricia') || 
+           paragraph.includes('Send personalized'))) {
         return (
           <AnimatedRecommendationsDisplay
             key={index}

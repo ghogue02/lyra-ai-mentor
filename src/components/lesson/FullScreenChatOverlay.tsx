@@ -110,8 +110,8 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   };
 
   const handleAiDemo = () => {
-    console.log('FullScreenChatOverlay: Starting AI Magic Demo in chat');
-    sendMessage("Show me the AI magic demo - how AI transforms fundraising data!");
+    console.log('Starting AI Magic Demo');
+    sendMessage("Show me how AI transforms fundraising data into actionable insights!");
     setShowQuickActions(false);
   };
 
@@ -129,7 +129,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   };
 
   const handleQuickAction = (action: string) => {
-    console.log('FullScreenChatOverlay: Quick action triggered');
+    console.log('Quick action triggered');
     sendMessage(action);
     
     // Hide quick actions after use on mobile
