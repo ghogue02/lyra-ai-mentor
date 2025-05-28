@@ -1,4 +1,5 @@
 
+
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -93,6 +94,8 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     switch (block.type) {
       case 'text':
       case 'text_with_image':
+      case 'section':
+      case 'example':
         return <FileText className="w-4 h-4" />;
       case 'image':
         return <Image className="w-4 h-4" />;
@@ -205,52 +208,75 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     );
   };
 
+  // Check if this block has image metadata regardless of type
+  const hasImageMetadata = () => {
+    return block.metadata?.image_file || block.metadata?.layout === 'success_stories';
+  };
+
+  // Render content with image if metadata exists
+  const renderContentWithImage = () => {
+    const imageFile = block.metadata?.image_file;
+    const layout = block.metadata?.layout;
+    const imageUrl = imageFile ? getImageUrl(imageFile) : null;
+    
+    console.log(`ContentBlockRenderer: Processing block with image for "${block.title}". Image file: ${imageFile}, Layout: ${layout}, Image URL: ${imageUrl}`);
+    
+    // Handle success stories layout
+    if (layout === 'success_stories') {
+      return renderSuccessStories();
+    }
+    
+    // Handle image left, text right layout
+    if (layout === 'image_left_text_right' && imageUrl) {
+      return (
+        <div className="flex flex-col lg:flex-row gap-6 min-h-[400px]">
+          {/* Image container - optimized for square images */}
+          <div className="lg:w-2/5 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-cyan-50 rounded-lg p-4">
+            <img 
+              src={imageUrl} 
+              alt={block.title}
+              className="w-full h-full object-contain rounded-lg shadow-sm max-h-[350px] lg:max-h-[400px]"
+              onLoad={() => console.log(`ContentBlockRenderer: Image loaded successfully for ${block.title}`)}
+              onError={(e) => console.error(`ContentBlockRenderer: Image failed to load for ${block.title}:`, e)}
+            />
+          </div>
+          {/* Text content on right */}
+          <div className="lg:w-3/5 flex flex-col justify-center">
+            <div className="prose prose-base max-w-none overflow-hidden">
+              {formatTextContent(block.content)}
+            </div>
+          </div>
+        </div>
+      );
+    }
+    
+    // Fallback to regular text if no special layout or missing image
+    console.log(`ContentBlockRenderer: Falling back to text-only for "${block.title}"`);
+    return (
+      <div className="prose prose-base max-w-none overflow-hidden">
+        {formatTextContent(block.content)}
+      </div>
+    );
+  };
+
   const renderContent = () => {
+    // First check if this block has image metadata, regardless of type
+    if (hasImageMetadata()) {
+      return renderContentWithImage();
+    }
+
+    // Handle specific block types without image metadata
     switch (block.type) {
       case 'text':
+      case 'section':
+      case 'example':
         return (
           <div className="prose prose-base max-w-none overflow-hidden">
             {formatTextContent(block.content)}
           </div>
         );
       case 'text_with_image':
-        const imageFile = block.metadata?.image_file;
-        const layout = block.metadata?.layout;
-        const imageUrl = imageFile ? getImageUrl(imageFile) : null;
-        
-        console.log(`ContentBlockRenderer: Processing text_with_image for "${block.title}". Image file: ${imageFile}, Layout: ${layout}, Image URL: ${imageUrl}`);
-        
-        // Handle success stories layout
-        if (layout === 'success_stories') {
-          return renderSuccessStories();
-        }
-        
-        // Handle image left, text right layout
-        if (layout === 'image_left_text_right' && imageUrl) {
-          return (
-            <div className="flex flex-col lg:flex-row gap-6 min-h-[400px]">
-              {/* Image container - optimized for square images */}
-              <div className="lg:w-2/5 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-cyan-50 rounded-lg p-4">
-                <img 
-                  src={imageUrl} 
-                  alt={block.title}
-                  className="w-full h-full object-contain rounded-lg shadow-sm max-h-[350px] lg:max-h-[400px]"
-                  onLoad={() => console.log(`ContentBlockRenderer: Image loaded successfully for ${block.title}`)}
-                  onError={(e) => console.error(`ContentBlockRenderer: Image failed to load for ${block.title}:`, e)}
-                />
-              </div>
-              {/* Text content on right */}
-              <div className="lg:w-3/5 flex flex-col justify-center">
-                <div className="prose prose-base max-w-none overflow-hidden">
-                  {formatTextContent(block.content)}
-                </div>
-              </div>
-            </div>
-          );
-        }
-        
-        // Fallback to regular text if no special layout or missing image
-        console.log(`ContentBlockRenderer: Falling back to text-only for "${block.title}"`);
+        // This should have been handled above, but fallback to text
         return (
           <div className="prose prose-base max-w-none overflow-hidden">
             {formatTextContent(block.content)}
