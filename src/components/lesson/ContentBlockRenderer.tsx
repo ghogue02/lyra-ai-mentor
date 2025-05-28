@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle, FileText, Image, Video, List } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { supabase } from '@/integrations/supabase/client';
 
 interface ContentBlock {
   id: number;
@@ -28,6 +29,15 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   const { user } = useAuth();
   const blockRef = useRef<HTMLDivElement>(null);
   const hasTriggeredCompletion = useRef(false);
+
+  // Function to get image URL from Supabase storage
+  const getImageUrl = (filename: string) => {
+    if (!filename) return null;
+    const { data } = supabase.storage
+      .from('lesson-images')
+      .getPublicUrl(filename);
+    return data.publicUrl;
+  };
 
   // Improved auto-complete logic with lower thresholds and better timing
   useEffect(() => {
@@ -151,6 +161,43 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     });
   };
 
+  // Render success stories with individual images
+  const renderSuccessStories = () => {
+    const storyImages = block.metadata?.story_images || [];
+    
+    // Split content into stories (assuming they're separated by double newlines)
+    const stories = block.content.split('\n\n').filter(story => story.trim());
+    
+    return (
+      <div className="space-y-8">
+        {stories.map((story, index) => {
+          const imageUrl = storyImages[index] ? getImageUrl(storyImages[index]) : null;
+          
+          return (
+            <div key={index} className="flex flex-col md:flex-row gap-6 p-6 bg-gray-50 rounded-lg">
+              {imageUrl && (
+                <div className="md:w-1/3 flex-shrink-0">
+                  <img 
+                    src={imageUrl} 
+                    alt={`Success Story ${index + 1}`}
+                    className="w-full h-48 object-cover rounded-lg shadow-sm"
+                  />
+                </div>
+              )}
+              <div className={imageUrl ? "md:w-2/3" : "w-full"}>
+                <div className="prose prose-base max-w-none">
+                  <p className="text-gray-700 leading-relaxed">
+                    {formatInlineText(story.trim())}
+                  </p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
   const renderContent = () => {
     switch (block.type) {
       case 'text':
@@ -160,9 +207,16 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           </div>
         );
       case 'text_with_image':
-        const imageUrl = block.metadata?.image_url;
+        const imageFile = block.metadata?.image_file;
         const layout = block.metadata?.layout;
+        const imageUrl = imageFile ? getImageUrl(imageFile) : null;
         
+        // Handle success stories layout
+        if (layout === 'success_stories') {
+          return renderSuccessStories();
+        }
+        
+        // Handle image left, text right layout
         if (layout === 'image_left_text_right' && imageUrl) {
           return (
             <div className="flex flex-col lg:flex-row gap-6 min-h-[400px]">
@@ -184,7 +238,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           );
         }
         
-        // Fallback to regular text if no special layout
+        // Fallback to regular text if no special layout or missing image
         return (
           <div className="prose prose-base max-w-none overflow-hidden">
             {formatTextContent(block.content)}
