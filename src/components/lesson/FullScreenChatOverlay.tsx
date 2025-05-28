@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -8,6 +7,7 @@ import { QuickActions } from './chat/QuickActions';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import { CloseConfirmationDialog } from './chat/CloseConfirmationDialog';
+import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
 
 interface FullScreenChatOverlayProps {
   isOpen: boolean;
@@ -35,6 +35,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [hasIncrementedForCurrentMessage, setHasIncrementedForCurrentMessage] = useState(false);
+  const [showInteractiveDemo, setShowInteractiveDemo] = useState(false);
 
   const {
     messages,
@@ -116,8 +117,15 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   };
 
   const handleAiDemo = () => {
-    console.log('FullScreenChatOverlay: AI Demo triggered');
-    sendMessage("DUMMY_DATA_REQUEST");
+    console.log('FullScreenChatOverlay: Starting Interactive AI Demo');
+    setShowInteractiveDemo(true);
+    setShowQuickActions(false);
+  };
+
+  const handleDemoMessage = (message: string) => {
+    console.log('FullScreenChatOverlay: Demo sending message:', message);
+    setHasIncrementedForCurrentMessage(false);
+    sendMessage(message);
   };
 
   const handleClose = () => {
@@ -149,6 +157,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     clearChat();
     resetEngagement();
     setShowQuickActions(true);
+    setShowInteractiveDemo(false);
   };
 
   return (
@@ -173,6 +182,16 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
                   onQuickAction={handleQuickAction}
                   onResetChat={handleResetChat}
                   userProfile={userProfile}
+                />
+              </div>
+            )}
+
+            {showInteractiveDemo && (
+              <div className="flex-shrink-0 spacing-mobile">
+                <InteractiveAiDemo
+                  onSendMessage={handleDemoMessage}
+                  userProfile={userProfile}
+                  isVisible={showInteractiveDemo}
                 />
               </div>
             )}

@@ -2,7 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Sparkles, Play, Pause, HelpCircle, ArrowRight, RotateCcw } from 'lucide-react';
+import { Progress } from "@/components/ui/progress";
+import { Sparkles, Play, Pause, HelpCircle, ArrowRight, RotateCcw, X } from 'lucide-react';
 
 interface InteractiveAiDemoProps {
   onSendMessage: (message: string) => void;
@@ -20,32 +21,32 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
   userProfile,
   isVisible
 }) => {
-  const [currentStage, setCurrentStage] = useState<DemoStage | null>(null);
+  const [currentStage, setCurrentStage] = useState<DemoStage>('intro');
   const [isPlaying, setIsPlaying] = useState(false);
+  const [progress, setProgress] = useState(0);
 
-  if (!isVisible && !currentStage) {
+  const stages: DemoStage[] = ['intro', 'loading', 'analysis', 'insights', 'recommendations', 'complete'];
+
+  useEffect(() => {
+    const currentIndex = stages.indexOf(currentStage);
+    setProgress((currentIndex / (stages.length - 1)) * 100);
+  }, [currentStage]);
+
+  if (!isVisible) {
     return null;
   }
 
-  const startDemo = () => {
-    setCurrentStage('intro');
-    setIsPlaying(true);
-  };
-
   const proceedToNextStage = () => {
-    const stages: DemoStage[] = ['intro', 'loading', 'analysis', 'insights', 'recommendations', 'complete'];
-    const currentIndex = stages.indexOf(currentStage!);
+    const currentIndex = stages.indexOf(currentStage);
     if (currentIndex < stages.length - 1) {
       setCurrentStage(stages[currentIndex + 1]);
     }
   };
 
-  const pauseDemo = () => {
+  const restartDemo = () => {
+    setCurrentStage('intro');
     setIsPlaying(false);
-  };
-
-  const resumeDemo = () => {
-    setIsPlaying(true);
+    setProgress(0);
   };
 
   const askQuestion = () => {
@@ -53,33 +54,42 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
     setIsPlaying(false);
   };
 
-  const restartDemo = () => {
-    setCurrentStage('intro');
+  const executeCurrentStage = () => {
     setIsPlaying(true);
-  };
-
-  const executeDemoStage = () => {
+    
     switch (currentStage) {
+      case 'intro':
+        onSendMessage("Show me how AI transforms messy data into actionable insights!");
+        setTimeout(() => proceedToNextStage(), 1000);
+        break;
       case 'loading':
         onSendMessage("DEMO_STAGE_LOADING");
+        setTimeout(() => {
+          if (isPlaying) proceedToNextStage();
+        }, 4000);
         break;
       case 'analysis':
         onSendMessage("DEMO_STAGE_ANALYSIS");
+        setTimeout(() => {
+          if (isPlaying) proceedToNextStage();
+        }, 5000);
         break;
       case 'insights':
         onSendMessage("DEMO_STAGE_INSIGHTS");
+        setTimeout(() => {
+          if (isPlaying) proceedToNextStage();
+        }, 4000);
         break;
       case 'recommendations':
         onSendMessage("DEMO_STAGE_RECOMMENDATIONS");
+        setTimeout(() => {
+          if (isPlaying) proceedToNextStage();
+        }, 4000);
         break;
-      default:
-        onSendMessage("DUMMY_DATA_REQUEST");
+      case 'complete':
+        setIsPlaying(false);
+        break;
     }
-  };
-
-  const closeDemo = () => {
-    setCurrentStage(null);
-    setIsPlaying(false);
   };
 
   const getDemoContent = () => {
@@ -93,39 +103,39 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
           content: `${firstName ? `${firstName}, ready` : 'Ready'} to see AI transform your ${role} data? This interactive demo will show you step-by-step how AI finds hidden patterns and creates actionable insights.`,
           subtext: "We'll use sample data so you can see the magic without any setup!",
           actionText: "Start Demo",
-          showControls: false
+          canProceed: true
         };
       case 'loading':
         return {
           title: "📊 Step 1: Loading Sample Data",
-          content: `I'm going to load realistic ${role} data that looks messy and overwhelming - just like your real data probably does.`,
-          subtext: "Watch how AI handles complex, unstructured information...",
-          actionText: "Load Data",
-          showControls: true
+          content: `Watch AI load realistic ${role} data that looks messy and overwhelming - just like your real data probably does.`,
+          subtext: "This is the kind of data that would take humans hours to process...",
+          actionText: isPlaying ? "Processing..." : "Load Data",
+          canProceed: true
         };
       case 'analysis':
         return {
           title: "🔍 Step 2: AI Analysis in Progress",
-          content: "Now I'll analyze the data, finding patterns that would take humans hours or days to discover.",
+          content: "Now AI analyzes the data, finding patterns that would take humans hours or days to discover.",
           subtext: "AI can process thousands of data points instantly!",
-          actionText: "Start Analysis",
-          showControls: true
+          actionText: isPlaying ? "Analyzing..." : "Start Analysis",
+          canProceed: true
         };
       case 'insights':
         return {
           title: "💡 Step 3: Key Insights Discovered",
           content: "Here's where the magic happens - AI reveals hidden insights and trends in your data.",
           subtext: "These are the 'aha!' moments that drive better decisions.",
-          actionText: "Show Insights",
-          showControls: true
+          actionText: isPlaying ? "Revealing..." : "Show Insights",
+          canProceed: true
         };
       case 'recommendations':
         return {
           title: "🚀 Step 4: Actionable Recommendations",
           content: "Finally, AI translates insights into specific actions you can take today.",
           subtext: "From data to decisions in minutes, not months.",
-          actionText: "Get Recommendations",
-          showControls: true
+          actionText: isPlaying ? "Generating..." : "Get Recommendations",
+          canProceed: true
         };
       case 'complete':
         return {
@@ -133,7 +143,7 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
           content: "You've just seen how AI transforms raw data into actionable insights. Imagine doing this with YOUR real data!",
           subtext: "Ready to explore how this applies to your specific challenges?",
           actionText: "Restart Demo",
-          showControls: false
+          canProceed: false
         };
       default:
         return null;
@@ -154,11 +164,20 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
           <Button
             variant="ghost"
             size="sm"
-            onClick={closeDemo}
-            className="text-gray-500 hover:text-gray-700"
+            onClick={() => setCurrentStage('intro')}
+            className="text-gray-500 hover:text-gray-700 p-1"
           >
-            ×
+            <X className="w-4 h-4" />
           </Button>
+        </div>
+
+        {/* Progress Bar */}
+        <div className="mb-4">
+          <div className="flex justify-between text-xs text-gray-600 mb-1">
+            <span>Demo Progress</span>
+            <span>{Math.round(progress)}%</span>
+          </div>
+          <Progress value={progress} className="h-2" />
         </div>
 
         <p className="text-sm text-gray-700 mb-2">{content.content}</p>
@@ -166,65 +185,53 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
 
         <div className="flex items-center gap-2 flex-wrap">
           <Button
-            onClick={currentStage === 'complete' ? restartDemo : () => {
-              executeDemoStage();
-              if (currentStage !== 'intro') {
-                setTimeout(() => proceedToNextStage(), 2000);
-              }
-            }}
+            onClick={currentStage === 'complete' ? restartDemo : executeCurrentStage}
+            disabled={isPlaying}
             className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white flex items-center gap-2"
             size="sm"
           >
-            {currentStage === 'complete' ? <RotateCcw className="w-4 h-4" /> : <Play className="w-4 h-4" />}
+            {currentStage === 'complete' ? (
+              <RotateCcw className="w-4 h-4" />
+            ) : isPlaying ? (
+              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+            ) : (
+              <Play className="w-4 h-4" />
+            )}
             {content.actionText}
           </Button>
 
-          {content.showControls && (
-            <>
-              {isPlaying ? (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={pauseDemo}
-                  className="flex items-center gap-2"
-                >
-                  <Pause className="w-4 h-4" />
-                  Pause
-                </Button>
-              ) : (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={resumeDemo}
-                  className="flex items-center gap-2"
-                >
-                  <Play className="w-4 h-4" />
-                  Resume
-                </Button>
-              )}
+          {isPlaying && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setIsPlaying(false)}
+              className="flex items-center gap-2"
+            >
+              <Pause className="w-4 h-4" />
+              Pause
+            </Button>
+          )}
 
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={askQuestion}
-                className="flex items-center gap-2"
-              >
-                <HelpCircle className="w-4 h-4" />
-                Ask Question
-              </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={askQuestion}
+            className="flex items-center gap-2"
+          >
+            <HelpCircle className="w-4 h-4" />
+            Ask Question
+          </Button>
 
-              {currentStage !== 'intro' && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={proceedToNextStage}
-                  className="flex items-center gap-2"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                  Skip to Next
-                </Button>
-              )}
-            </>
+          {currentStage !== 'intro' && currentStage !== 'complete' && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={proceedToNextStage}
+              className="flex items-center gap-2"
+            >
+              <ArrowRight className="w-4 h-4" />
+              Skip to Next
+            </Button>
           )}
         </div>
 

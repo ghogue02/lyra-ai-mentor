@@ -37,9 +37,24 @@ serve(async (req) => {
     // Fetch user profile data
     const userProfile = await fetchUserProfile(userId);
 
-    // Handle staged demo requests
-    if (isDummyDataRequest || demoStage) {
-      const stageName = demoStage || 'complete';
+    // Handle staged demo requests - check for specific demo stage messages
+    const lastMessage = messages[messages.length - 1]?.content || '';
+    
+    if (isDummyDataRequest || demoStage || lastMessage.includes('DEMO_STAGE_')) {
+      let stageName = 'complete';
+      
+      if (lastMessage.includes('DEMO_STAGE_LOADING')) {
+        stageName = 'loading';
+      } else if (lastMessage.includes('DEMO_STAGE_ANALYSIS')) {
+        stageName = 'analysis';
+      } else if (lastMessage.includes('DEMO_STAGE_INSIGHTS')) {
+        stageName = 'insights';
+      } else if (lastMessage.includes('DEMO_STAGE_RECOMMENDATIONS')) {
+        stageName = 'recommendations';
+      } else if (demoStage) {
+        stageName = demoStage;
+      }
+      
       const demoResponse = generateStagedDemoResponse(userProfile, stageName);
       return new Response(JSON.stringify({ generatedText: demoResponse }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
