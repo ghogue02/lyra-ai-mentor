@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -175,12 +173,46 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   const renderSuccessStories = () => {
     const storyImages = block.metadata?.story_images || [];
     
-    // Split content into stories (assuming they're separated by double newlines)
-    const stories = block.content.split('\n\n').filter(story => story.trim());
+    // Split content by looking for story titles (text between ** markers)
+    const content = block.content;
+    
+    // Find all sections that start with **Title** pattern
+    const storyPattern = /\*\*([^*]+)\*\*/g;
+    const matches = [...content.matchAll(storyPattern)];
+    
+    // Split content into sections based on the story titles
+    const stories = [];
+    let lastIndex = 0;
+    
+    matches.forEach((match, index) => {
+      if (index > 0) {
+        // Get content from previous match to current match
+        const storyContent = content.substring(lastIndex, match.index).trim();
+        if (storyContent) {
+          stories.push(storyContent);
+        }
+      }
+      lastIndex = match.index;
+    });
+    
+    // Add the last story (from last match to end, but exclude "What These Stories Share")
+    const finalContent = content.substring(lastIndex).trim();
+    if (finalContent && !finalContent.includes('What These Stories Share')) {
+      stories.push(finalContent);
+    } else if (finalContent.includes('What These Stories Share')) {
+      // Split at "What These Stories Share" and only take the story part
+      const storyPart = finalContent.split('What These Stories Share')[0].trim();
+      if (storyPart) {
+        stories.push(storyPart);
+      }
+    }
+    
+    // Filter out any empty stories and limit to first 3 (matching number of images)
+    const validStories = stories.filter(story => story.length > 10).slice(0, 3);
     
     return (
       <div className="space-y-8">
-        {stories.map((story, index) => {
+        {validStories.map((story, index) => {
           const imageUrl = storyImages[index] ? getImageUrl(storyImages[index]) : null;
           
           return (
@@ -196,14 +228,25 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
               )}
               <div className={imageUrl ? "md:w-2/3" : "w-full"}>
                 <div className="prose prose-base max-w-none">
-                  <p className="text-gray-700 leading-relaxed">
-                    {formatInlineText(story.trim())}
-                  </p>
+                  <div className="text-gray-700 leading-relaxed">
+                    {formatTextContent(story.trim())}
+                  </div>
                 </div>
               </div>
             </div>
           );
         })}
+        
+        {/* Render the concluding section separately without an image */}
+        {content.includes('What These Stories Share') && (
+          <div className="mt-8 p-6 bg-purple-50 rounded-lg border border-purple-200">
+            <div className="prose prose-base max-w-none">
+              <div className="text-gray-700 leading-relaxed">
+                {formatTextContent(content.split('What These Stories Share')[1]?.trim() || '')}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   };
