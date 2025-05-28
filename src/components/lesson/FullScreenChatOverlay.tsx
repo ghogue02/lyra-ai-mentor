@@ -115,6 +115,11 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     }
   };
 
+  const handleAiDemo = () => {
+    console.log('FullScreenChatOverlay: AI Demo triggered');
+    sendMessage("DUMMY_DATA_REQUEST");
+  };
+
   const handleClose = () => {
     if (!engagement.hasReachedMinimum && engagement.exchangeCount > 0) {
       setShowCloseConfirmation(true);
@@ -186,6 +191,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
               inputValue={inputValue}
               setInputValue={setInputValue}
               onSendMessage={handleSendMessage}
+              onAiDemo={handleAiDemo}
               isTyping={isTyping}
               inputRef={inputRef}
               engagement={engagement}
