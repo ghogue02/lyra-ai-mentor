@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, X, ArrowDown } from 'lucide-react';
+import { Send, X, Brain } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import { useTemporaryChat } from '@/hooks/useTemporaryChat';
@@ -19,12 +19,7 @@ interface DataInsightsOverlayProps {
 
 const JORDAN_STORY = `Jordan is the newest—​and least spreadsheet-savvy—​development coordinator on the team, but she's driven by a simple dream: raise enough in the 2025 campaign to reopen the nonprofit's shuttered after-school robotics lab. When she opens the donor file, it looks like a glitchy hallway of fun-house mirrors: names doubled, numbers garbled, and emails half-typed. Refusing to let the chaos kill her momentum, Jordan enlists a quick-witted AI sidekick that riffs on pop playlists while sorting columns, betting that a little tech risk can spark a big turnaround. As mismatched rows snap into place and totals finally make sense, the staff swaps anxious jokes for whoops of relief—​and Jordan discovers that cleaning data isn't busywork; it's the moment the mission comes into focus. By the time the final figures light up the screen, everyone sees the same bright possibility Jordan has chased from the start: a robotics lab buzzing with kids who now have the tools—and the funding—to build their own future.`;
 
-const CSV_ANALYSIS_PROMPT = `Analyze the donor records below to  
- • spot duplicate donors using name + email,  
- • flag rows with missing or malformed emails, and  
- • detect donations whose Amount field is blank, non-numeric, or in a non-USD format;  
-then deliver three immediate action items for the user and three hidden insights they may not realize, **formatted as three bold-headed bullet lists in this exact order:**  
- **Patterns Found**, **Action Items**, **Hidden Insights** — nothing else.
+const CSV_ANALYSIS_PROMPT = `Analyze the donor records below to spot duplicate donors using name + email, flag rows with missing or malformed emails, and detect donations whose Amount field is blank, non-numeric, or in a non-USD format. Deliver three immediate action items for the user and three hidden insights they may not realize, formatted as three bold-headed bullet lists in this exact order: Patterns Found, Action Items, Hidden Insights.
 
 Donor,Donation Date,Amount,Campaign,Email
 Grace  Brown, 28-06-2025, 6975, Gala Night, g.brown@
@@ -133,7 +128,7 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showArrow, setShowArrow] = useState(false);
+  const [showBrainIcon, setShowBrainIcon] = useState(false);
   const [analysisStarted, setAnalysisStarted] = useState(false);
 
   const {
@@ -153,9 +148,9 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
       clearChat();
       // Initialize with Jordan's story
       initializeWithMessage(JORDAN_STORY);
-      // Show arrow after story is loaded
+      // Show brain icon after story is loaded
       setTimeout(() => {
-        setShowArrow(true);
+        setShowBrainIcon(true);
       }, 2000);
       // Reset analysis state
       setAnalysisStarted(false);
@@ -170,8 +165,8 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
     scrollToBottom();
   }, [messages]);
 
-  const handleArrowClick = () => {
-    setShowArrow(false);
+  const handleBrainClick = () => {
+    setShowBrainIcon(false);
     setAnalysisStarted(true);
     sendMessage(CSV_ANALYSIS_PROMPT);
   };
@@ -248,15 +243,15 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
                 </div>
               </div>
               
-              {/* Floating arrow for the first message (Jordan's story) */}
-              {index === 0 && !message.isUser && showArrow && !analysisStarted && (
-                <div className="absolute -bottom-2 left-16 z-10">
+              {/* Floating brain icon for the first message (Jordan's story) */}
+              {index === 0 && !message.isUser && showBrainIcon && !analysisStarted && (
+                <div className="absolute -bottom-2 right-4 z-10">
                   <Button
-                    onClick={handleArrowClick}
+                    onClick={handleBrainClick}
                     className="w-12 h-12 rounded-full bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 shadow-xl animate-bounce"
                     title="Start Data Analysis"
                   >
-                    <ArrowDown className="w-5 h-5 text-white" />
+                    <Brain className="w-5 h-5 text-white" />
                   </Button>
                 </div>
               )}

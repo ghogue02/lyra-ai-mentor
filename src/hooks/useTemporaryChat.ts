@@ -58,7 +58,8 @@ export const useTemporaryChat = (lessonContext?: LessonContext) => {
           })),
           lessonContext,
           userId: user.id,
-          isDataInsights: true
+          isDataInsights: true,
+          useCleanFormatting: true
         }),
         signal: abortControllerRef.current.signal
       });
