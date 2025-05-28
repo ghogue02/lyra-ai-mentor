@@ -18,22 +18,75 @@ export function buildNaturalSystemMessage(profile: UserProfile | null, lessonCon
 - Offer practical insights and examples when appropriate
 - Let the conversation flow naturally based on user interest`;
 
-  // Add personal touch if name is available
+  // Add personal touch with name
   if (profile?.first_name) {
     baseMessage += ` You're mentoring ${profile.first_name}.`;
   }
 
-  // Add optional role context (background only, not directive)
+  // Add comprehensive organizational context
+  if (profile?.organization_name) {
+    baseMessage += ` They work at ${profile.organization_name}`;
+    
+    if (profile.organization_type) {
+      baseMessage += `, which is a ${profile.organization_type}`;
+    }
+    
+    if (profile.organization_size) {
+      baseMessage += ` (${profile.organization_size} organization)`;
+    }
+    
+    baseMessage += `. When discussing AI applications, you can reference their specific organization and provide examples relevant to their organizational context.`;
+  }
+
+  // Add role and experience context
   if (profile?.role) {
-    baseMessage += ` Note that they work in ${profile.role} at a nonprofit, which can inform your responses when relevant to their questions.`;
+    baseMessage += ` Their role is in ${profile.role}`;
+    
+    if (profile.years_experience) {
+      baseMessage += ` with ${profile.years_experience} of experience`;
+    }
+    
+    baseMessage += `, so tailor your responses to be relevant to their specific responsibilities.`;
+  }
+
+  // Add tech comfort level context
+  if (profile?.tech_comfort) {
+    baseMessage += ` Their tech comfort level is ${profile.tech_comfort}, so adjust your explanations accordingly.`;
+  }
+
+  // Add AI experience context
+  if (profile?.ai_experience) {
+    baseMessage += ` They have ${profile.ai_experience} experience with AI.`;
+  }
+
+  // Add location context if available
+  if (profile?.location) {
+    baseMessage += ` They're located in ${profile.location}.`;
+  }
+
+  // Add profile completion guidance
+  if (profile && !profile.profile_completed) {
+    const missingFields = [];
+    if (!profile.organization_name) missingFields.push('organization');
+    if (!profile.role) missingFields.push('role');
+    if (!profile.tech_comfort) missingFields.push('tech comfort level');
+    
+    if (missingFields.length > 0) {
+      baseMessage += `\n\n**Profile Completion Note**: Their profile is missing some key information (${missingFields.join(', ')}). When appropriate, gently suggest completing their profile for even more personalized guidance, but don't be pushy about it.`;
+    }
   }
 
   // Add lesson context if available
   if (lessonContext) {
-    baseMessage += `\n\nCurrent lesson context: The user is exploring "${lessonContext.lessonTitle}" from "${lessonContext.chapterTitle}". You can reference this material if it's relevant to their questions, but don't force the conversation toward lesson content unless they ask about it.`;
+    baseMessage += `\n\nCurrent lesson context: They're exploring "${lessonContext.lessonTitle}" from "${lessonContext.chapterTitle}". You can reference this material if it's relevant to their questions, but don't force the conversation toward lesson content unless they ask about it.`;
   }
 
-  baseMessage += '\n\nRemember: Respond naturally to what the user actually wants to discuss. Be helpful, knowledgeable, and let them guide the conversation direction.';
+  // Add fallback behavior for missing organizational context
+  if (!profile?.organization_name) {
+    baseMessage += `\n\n**Organization Context**: Since you don't have their organization information, when they ask about applying AI to their work, ask follow-up questions about their organization type, size, and mission to provide more targeted advice.`;
+  }
+
+  baseMessage += '\n\nRemember: Respond naturally to what the user actually wants to discuss. Use their profile information to provide personalized, relevant guidance, but let them guide the conversation direction.';
 
   return baseMessage;
 }

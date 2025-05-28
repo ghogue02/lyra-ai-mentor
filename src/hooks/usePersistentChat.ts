@@ -13,7 +13,7 @@ interface LessonContext {
   chapterTitle?: string;
   lessonTitle?: string;
   content?: string;
-  [key: string]: any; // Add index signature to make it compatible with Json type
+  [key: string]: any;
 }
 
 interface ChatConversation {
@@ -31,12 +31,17 @@ interface ChatConversation {
 interface UserProfile {
   profile_completed: boolean;
   first_name?: string;
+  last_name?: string;
   role?: string;
   tech_comfort?: string;
   ai_experience?: string;
   learning_style?: string;
   organization_name?: string;
   organization_type?: string;
+  organization_size?: string;
+  job_title?: string;
+  years_experience?: string;
+  location?: string;
 }
 
 export const usePersistentChat = (
@@ -44,7 +49,7 @@ export const usePersistentChat = (
   chapterId: number, 
   lessonContext?: LessonContext
 ) => {
-  const { user, session } = useAuth(); // Get session from auth context
+  const { user, session } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isTyping, setIsTyping] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -77,14 +82,32 @@ export const usePersistentChat = (
     if (!user) return;
 
     try {
-      console.log('Loading user profile...');
+      console.log('Loading complete user profile...');
       const { data: profile } = await supabase
         .from('profiles')
-        .select('profile_completed, first_name, role, tech_comfort, ai_experience, learning_style, organization_name, organization_type')
+        .select(`
+          profile_completed,
+          first_name,
+          last_name,
+          role,
+          tech_comfort,
+          ai_experience,
+          learning_style,
+          organization_name,
+          organization_type,
+          organization_size,
+          job_title,
+          years_experience,
+          location
+        `)
         .eq('user_id', user.id)
         .single();
 
-      console.log('User profile loaded:', profile);
+      console.log('Complete user profile loaded:', {
+        profileCompleted: profile?.profile_completed,
+        organizationName: profile?.organization_name,
+        role: profile?.role
+      });
       setUserProfile(profile);
     } catch (error) {
       console.error('Error loading user profile:', error);
@@ -92,28 +115,44 @@ export const usePersistentChat = (
   };
 
   const createPersonalizedInitialMessage = (profile: UserProfile | null) => {
-    console.log('Creating personalized initial message with profile:', profile);
+    console.log('Creating personalized initial message with complete profile:', profile);
     
-    if (!profile) {
-      return lessonContext 
-        ? `Hi! I'm Lyra, your AI mentor. I can see you're exploring "${lessonContext.lessonTitle}". What's got you most curious about this topic right now?`
-        : "Hi there! I'm Lyra, your AI mentor. What's got you most curious about AI right now?";
+    // Build greeting with available context
+    let greeting = `Hi${profile?.first_name ? ` ${profile.first_name}` : ''}! I'm Lyra, and I'm excited to be your AI mentor.`;
+    
+    // Add organizational context if available
+    if (profile?.organization_name) {
+      greeting += ` I see you're working at ${profile.organization_name}`;
+      
+      if (profile.organization_type) {
+        greeting += ` (${profile.organization_type})`;
+      }
+      
+      greeting += ` - that's fantastic!`;
     }
-
-    let greeting = `Hi${profile.first_name ? ` ${profile.first_name}` : ''}! I'm Lyra, and I'm excited to be your AI mentor.`;
     
+    // Add lesson context
     if (lessonContext) {
-      greeting += ` I see you're diving into "${lessonContext.lessonTitle}" - that's great timing. What's got you most curious about this topic right now?`;
+      greeting += ` I notice you're diving into "${lessonContext.lessonTitle}"`;
+      
+      if (profile?.organization_name) {
+        greeting += ` - I'd love to help you explore how this could apply specifically to your work at ${profile.organization_name}.`;
+      } else {
+        greeting += ` - what's got you most curious about this topic right now?`;
+      }
     } else {
       greeting += " What's got you most curious about AI right now?";
     }
 
-    // Add profile completion note if needed (simplified)
-    if (!profile.profile_completed) {
-      greeting += '\n\nP.S. - Once you complete your profile, I can provide even more personalized insights tailored to your specific role and experience.';
+    // Add profile completion reminder if needed
+    if (profile && !profile.profile_completed) {
+      const missingKey = !profile.organization_name || !profile.role || !profile.tech_comfort;
+      if (missingKey) {
+        greeting += '\n\nP.S. - I notice your profile could use a few more details. Completing it would help me provide even more personalized insights tailored to your specific role and organization.';
+      }
     }
     
-    console.log('Generated welcoming greeting:', greeting);
+    console.log('Generated organization-aware greeting:', greeting);
     return greeting;
   };
 
@@ -138,7 +177,6 @@ export const usePersistentChat = (
 
       if (!existingConversation) {
         console.log('Creating new conversation...');
-        // Create new conversation - cast lessonContext to Json type
         const { data: newConversation, error } = await supabase
           .from('chat_conversations')
           .insert({
@@ -146,7 +184,7 @@ export const usePersistentChat = (
             lesson_id: lessonId,
             chapter_id: chapterId,
             title: lessonContext?.lessonTitle || `Lesson ${lessonId} Chat`,
-            lesson_context: lessonContext as any // Cast to satisfy Json type
+            lesson_context: lessonContext as any
           })
           .select()
           .single();
@@ -233,7 +271,6 @@ export const usePersistentChat = (
   const sendMessage = useCallback(async (messageContent: string) => {
     if (!messageContent.trim() || !conversationId || !user) return;
 
-    // Check if this is a dummy data request
     const isDummyDataRequest = messageContent === "DUMMY_DATA_REQUEST";
 
     const currentMessageOrder = messages.length;

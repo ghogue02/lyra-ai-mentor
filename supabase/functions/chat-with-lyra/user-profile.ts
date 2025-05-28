@@ -11,7 +11,22 @@ export async function fetchUserProfile(userId: string): Promise<UserProfile | nu
     
     const { data: profile, error: profileError } = await supabase
       .from('profiles')
-      .select('*')
+      .select(`
+        user_id,
+        first_name,
+        last_name,
+        role,
+        tech_comfort,
+        ai_experience,
+        learning_style,
+        organization_name,
+        organization_type,
+        organization_size,
+        job_title,
+        years_experience,
+        location,
+        profile_completed
+      `)
       .eq('user_id', userId)
       .single();
 
@@ -20,10 +35,12 @@ export async function fetchUserProfile(userId: string): Promise<UserProfile | nu
       return null;
     }
 
-    console.log('Fetched user profile:', {
+    console.log('Fetched complete user profile:', {
       hasProfile: !!profile,
       profileCompleted: profile?.profile_completed,
       role: profile?.role,
+      organizationName: profile?.organization_name,
+      organizationType: profile?.organization_type,
       techComfort: profile?.tech_comfort
     });
 
