@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -186,7 +187,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
                   <img 
                     src={imageUrl} 
                     alt={`Success Story ${index + 1}`}
-                    className="w-full h-48 object-cover rounded-lg shadow-sm"
+                    className="w-full h-48 object-contain rounded-lg shadow-sm bg-white"
                   />
                 </div>
               )}
@@ -228,12 +229,12 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         if (layout === 'image_left_text_right' && imageUrl) {
           return (
             <div className="flex flex-col lg:flex-row gap-6 min-h-[400px]">
-              {/* Image container - full height on left */}
-              <div className="lg:w-2/5 flex-shrink-0">
+              {/* Image container - optimized for square images */}
+              <div className="lg:w-2/5 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-cyan-50 rounded-lg p-4">
                 <img 
                   src={imageUrl} 
                   alt={block.title}
-                  className="w-full h-full object-cover rounded-lg shadow-sm min-h-[300px] lg:min-h-[400px]"
+                  className="w-full h-full object-contain rounded-lg shadow-sm max-h-[350px] lg:max-h-[400px]"
                   onLoad={() => console.log(`ContentBlockRenderer: Image loaded successfully for ${block.title}`)}
                   onError={(e) => console.error(`ContentBlockRenderer: Image failed to load for ${block.title}:`, e)}
                 />
