@@ -4,6 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Sparkles, Play, Pause, HelpCircle, ArrowRight, RotateCcw, X } from 'lucide-react';
+import { AnimatedDataTable } from './AnimatedDataTable';
+import { AnimatedProgressChart } from './AnimatedProgressChart';
+import { StreamingText } from './StreamingText';
+import { AIProcessingStage } from './AIProcessingStage';
 
 interface InteractiveAiDemoProps {
   onSendMessage: (message: string) => void;
@@ -24,6 +28,9 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
   const [currentStage, setCurrentStage] = useState<DemoStage>('intro');
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [showVisualData, setShowVisualData] = useState(false);
+  const [showProcessing, setShowProcessing] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
 
   const stages: DemoStage[] = ['intro', 'loading', 'analysis', 'insights', 'recommendations', 'complete'];
 
@@ -47,12 +54,38 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
     setCurrentStage('intro');
     setIsPlaying(false);
     setProgress(0);
+    setShowVisualData(false);
+    setShowProcessing(false);
+    setShowInsights(false);
   };
 
   const askQuestion = () => {
     onSendMessage("Can you explain what's happening in this AI demo step by step?");
     setIsPlaying(false);
   };
+
+  // Sample data for visualizations
+  const sampleDonorData = [
+    { name: "Sarah Johnson", amount: "$245", date: "11/15/24", method: "Online", notes: "Recurring donor" },
+    { name: "M. Chen", amount: "$89", date: "10/22/24", method: "Check", notes: "First time" },
+    { name: "Patricia W.", amount: "$520", date: "12/01/24", method: "Online", notes: "Major donor" },
+    { name: "John Smith", amount: "$156", date: "11/28/24", method: "Online", notes: "Monthly" },
+    { name: "Lisa Rodriguez", amount: "$89", date: "09/15/24", method: "Cash", notes: "Event attendee" }
+  ];
+
+  const analysisSteps = [
+    { name: "Data Ingestion", description: "Processing 1,247 donor records", duration: 2000 },
+    { name: "Pattern Recognition", description: "Identifying behavioral patterns", duration: 1800 },
+    { name: "Predictive Modeling", description: "Calculating likelihood scores", duration: 2200 },
+    { name: "Insight Generation", description: "Creating actionable recommendations", duration: 1500 }
+  ];
+
+  const insightMetrics = [
+    { label: "Monthly Sustainers Impact", value: 67, color: "blue", detail: "67% of total revenue from 23% of donors" },
+    { label: "Email Optimization Potential", value: 34, color: "green", detail: "34% higher open rates on Thursdays" },
+    { label: "At-Risk Donor Detection", value: 47, color: "red", detail: "47 donors showing lapse patterns" },
+    { label: "Major Gift Opportunity", value: 23, color: "purple", detail: "23 donors with $1M+ potential" }
+  ];
 
   const executeCurrentStage = () => {
     setIsPlaying(true);
@@ -64,21 +97,24 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
         break;
       case 'loading':
         onSendMessage("DEMO_STAGE_LOADING");
+        setShowVisualData(true);
         setTimeout(() => {
           if (isPlaying) proceedToNextStage();
-        }, 4000);
+        }, 6000);
         break;
       case 'analysis':
         onSendMessage("DEMO_STAGE_ANALYSIS");
+        setShowProcessing(true);
         setTimeout(() => {
           if (isPlaying) proceedToNextStage();
-        }, 5000);
+        }, 8000);
         break;
       case 'insights':
         onSendMessage("DEMO_STAGE_INSIGHTS");
+        setShowInsights(true);
         setTimeout(() => {
           if (isPlaying) proceedToNextStage();
-        }, 4000);
+        }, 6000);
         break;
       case 'recommendations':
         onSendMessage("DEMO_STAGE_RECOMMENDATIONS");
@@ -154,95 +190,132 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
   if (!content) return null;
 
   return (
-    <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50 shadow-lg">
-      <CardContent className="p-4">
-        <div className="flex items-center justify-between mb-3">
-          <h3 className="font-semibold text-purple-800 flex items-center gap-2">
-            <Sparkles className="w-5 h-5" />
-            {content.title}
-          </h3>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => setCurrentStage('intro')}
-            className="text-gray-500 hover:text-gray-700 p-1"
-          >
-            <X className="w-4 h-4" />
-          </Button>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="mb-4">
-          <div className="flex justify-between text-xs text-gray-600 mb-1">
-            <span>Demo Progress</span>
-            <span>{Math.round(progress)}%</span>
+    <div className="space-y-4">
+      <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50 shadow-lg">
+        <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-purple-800 flex items-center gap-2">
+              <Sparkles className="w-5 h-5" />
+              {content.title}
+            </h3>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setCurrentStage('intro')}
+              className="text-gray-500 hover:text-gray-700 p-1"
+            >
+              <X className="w-4 h-4" />
+            </Button>
           </div>
-          <Progress value={progress} className="h-2" />
-        </div>
 
-        <p className="text-sm text-gray-700 mb-2">{content.content}</p>
-        <p className="text-xs text-gray-500 mb-4">{content.subtext}</p>
+          {/* Progress Bar */}
+          <div className="mb-4">
+            <div className="flex justify-between text-xs text-gray-600 mb-1">
+              <span>Demo Progress</span>
+              <span>{Math.round(progress)}%</span>
+            </div>
+            <Progress value={progress} className="h-2" />
+          </div>
 
-        <div className="flex items-center gap-2 flex-wrap">
-          <Button
-            onClick={currentStage === 'complete' ? restartDemo : executeCurrentStage}
-            disabled={isPlaying}
-            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white flex items-center gap-2"
-            size="sm"
-          >
-            {currentStage === 'complete' ? (
-              <RotateCcw className="w-4 h-4" />
-            ) : isPlaying ? (
-              <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-            ) : (
-              <Play className="w-4 h-4" />
+          <div className="space-y-4">
+            <div>
+              <StreamingText 
+                text={content.content}
+                isVisible={true}
+                speed={20}
+                className="text-sm text-gray-700"
+              />
+            </div>
+            
+            <p className="text-xs text-gray-500">{content.subtext}</p>
+
+            {/* Visual Data Components */}
+            {currentStage === 'loading' && (
+              <AnimatedDataTable
+                title="DONOR_EXPORT_Q4_2024.csv"
+                data={sampleDonorData}
+                isVisible={showVisualData}
+              />
             )}
-            {content.actionText}
-          </Button>
 
-          {isPlaying && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setIsPlaying(false)}
-              className="flex items-center gap-2"
-            >
-              <Pause className="w-4 h-4" />
-              Pause
-            </Button>
-          )}
+            {currentStage === 'analysis' && (
+              <AIProcessingStage
+                title="AI Analysis Engine"
+                steps={analysisSteps}
+                isVisible={showProcessing}
+              />
+            )}
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={askQuestion}
-            className="flex items-center gap-2"
-          >
-            <HelpCircle className="w-4 h-4" />
-            Ask Question
-          </Button>
+            {currentStage === 'insights' && (
+              <AnimatedProgressChart
+                title="Key Performance Insights"
+                items={insightMetrics}
+                isVisible={showInsights}
+              />
+            )}
 
-          {currentStage !== 'intro' && currentStage !== 'complete' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={proceedToNextStage}
-              className="flex items-center gap-2"
-            >
-              <ArrowRight className="w-4 h-4" />
-              Skip to Next
-            </Button>
-          )}
-        </div>
+            <div className="flex items-center gap-2 flex-wrap">
+              <Button
+                onClick={currentStage === 'complete' ? restartDemo : executeCurrentStage}
+                disabled={isPlaying}
+                className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white flex items-center gap-2"
+                size="sm"
+              >
+                {currentStage === 'complete' ? (
+                  <RotateCcw className="w-4 h-4" />
+                ) : isPlaying ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                ) : (
+                  <Play className="w-4 h-4" />
+                )}
+                {content.actionText}
+              </Button>
 
-        {currentStage === 'complete' && (
-          <div className="mt-3 p-3 bg-white/50 rounded-lg">
-            <p className="text-xs text-gray-600">
-              💡 <strong>Pro tip:</strong> This demo used sample data. With your real data, these insights become powerful tools for growth and impact.
-            </p>
+              {isPlaying && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setIsPlaying(false)}
+                  className="flex items-center gap-2"
+                >
+                  <Pause className="w-4 h-4" />
+                  Pause
+                </Button>
+              )}
+
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={askQuestion}
+                className="flex items-center gap-2"
+              >
+                <HelpCircle className="w-4 h-4" />
+                Ask Question
+              </Button>
+
+              {currentStage !== 'intro' && currentStage !== 'complete' && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={proceedToNextStage}
+                  className="flex items-center gap-2"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  Skip to Next
+                </Button>
+              )}
+            </div>
+
+            {currentStage === 'complete' && (
+              <div className="mt-3 p-3 bg-white/50 rounded-lg">
+                <p className="text-xs text-gray-600">
+                  💡 <strong>Pro tip:</strong> This demo used sample data. With your real data, these insights become powerful tools for growth and impact.
+                </p>
+              </div>
+            )}
           </div>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   );
 };
