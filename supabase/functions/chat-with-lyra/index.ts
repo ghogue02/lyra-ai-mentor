@@ -37,11 +37,32 @@ serve(async (req) => {
     // Fetch user profile data
     const userProfile = await fetchUserProfile(userId);
 
-    // Handle staged demo requests - check for specific demo stage messages
+    // Handle staged demo requests - check for various demo trigger patterns
     const lastMessage = messages[messages.length - 1]?.content || '';
     
-    if (isDummyDataRequest || demoStage || lastMessage.includes('DEMO_STAGE_') || 
-        lastMessage.includes('Show me how AI transforms messy data into actionable insights')) {
+    // Natural language demo triggers
+    const demoTriggers = [
+      'DEMO_STAGE_',
+      'DUMMY_DATA_REQUEST',
+      'Show me how AI transforms',
+      'start the demo',
+      'start demo',
+      'ai demo',
+      'show me the demo',
+      'ai magic demo',
+      'try the demo',
+      'demo please',
+      'can you show me ai',
+      'show ai magic',
+      'ai magic',
+      'dummy data',
+      'sample data'
+    ];
+    
+    const isDemoRequest = isDummyDataRequest || demoStage || 
+      demoTriggers.some(trigger => lastMessage.toLowerCase().includes(trigger.toLowerCase()));
+    
+    if (isDemoRequest) {
       let stageName = 'intro';
       
       if (lastMessage.includes('DEMO_STAGE_LOADING')) {
@@ -52,8 +73,6 @@ serve(async (req) => {
         stageName = 'insights';
       } else if (lastMessage.includes('DEMO_STAGE_RECOMMENDATIONS')) {
         stageName = 'recommendations';
-      } else if (lastMessage.includes('Show me how AI transforms messy data into actionable insights')) {
-        stageName = 'intro';
       } else if (demoStage) {
         stageName = demoStage;
       }

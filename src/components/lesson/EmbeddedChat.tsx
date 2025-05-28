@@ -7,6 +7,7 @@ import { Send, Minimize2, Maximize2, Sparkles } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { ProfileCompletionReminder } from '@/components/ProfileCompletionReminder';
 import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
+import { FormattedMessage } from './chat/FormattedMessage';
 import { cn } from '@/lib/utils';
 import { useLyraChat } from '@/hooks/useLyraChat';
 
@@ -64,12 +65,19 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
   };
 
   const handleAiDemo = () => {
-    sendMessage("DUMMY_DATA_REQUEST");
+    sendMessage("Show me the AI magic demo");
   };
 
   // Create enhanced context-aware quick actions with user-question phrasing
   const getQuickActions = () => {
     const actions = [];
+    
+    // Always include AI Magic Demo as first option
+    actions.push({ 
+      text: "✨ AI Magic Demo", 
+      value: "Show me the AI magic demo",
+      special: true 
+    });
     
     // Always include the suggested task if available (make it shorter for mobile)
     if (suggestedTask) {
@@ -81,24 +89,19 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     if (userProfile?.role) {
       const roleActions = {
         'fundraising': [
-          { text: "How can AI help my donors?", value: "How can AI help me better engage with my donors?" },
-          { text: "What AI fundraising tools exist?", value: "What AI tools are available for fundraising work?" }
+          { text: "AI for donors?", value: "How can AI help me with my donors?" }
         ],
         'programs': [
-          { text: "How would AI improve programs?", value: "How would AI help me improve my program outcomes?" },
-          { text: "Can AI track participants?", value: "Can AI help me track participant success better?" }
+          { text: "AI for programs?", value: "How would AI help improve my programs?" }
         ],
         'operations': [
-          { text: "What AI reduces my workload?", value: "What AI tools could reduce my daily workload?" },
-          { text: "How do I automate tasks?", value: "How can I use AI to automate repetitive tasks?" }
+          { text: "AI for efficiency?", value: "What AI tools could reduce my workload?" }
         ],
         'marketing': [
-          { text: "How does AI help outreach?", value: "How does AI help with audience outreach?" },
-          { text: "Can AI create content?", value: "Can AI help me create content more efficiently?" }
+          { text: "AI for content?", value: "Can AI help me create content?" }
         ],
         'leadership': [
-          { text: "How do I implement AI?", value: "How should I implement AI across my organization?" },
-          { text: "What AI challenges exist?", value: "What challenges should I expect when adopting AI?" }
+          { text: "AI strategy?", value: "How do I implement AI in my organization?" }
         ]
       };
       
@@ -110,9 +113,9 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     
     // Add general discovery-focused lesson actions (shorter text)
     if (lessonContext) {
-      actions.push({ text: "Can you share examples?", value: "Can you share real examples of this?" });
+      actions.push({ text: "Examples?", value: "Can you share real examples?" });
     } else {
-      actions.push({ text: "Where should I start?", value: "Where should I start with AI?" });
+      actions.push({ text: "Getting started?", value: "Where should I start with AI?" });
     }
     
     return actions.slice(0, 4); // Limit to 4 actions to avoid clutter
@@ -191,7 +194,11 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
                 variant="outline"
                 size="sm"
                 onClick={() => handleQuickAction(action)}
-                className="flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap hover:bg-purple-50 hover:border-purple-300"
+                className={`flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap ${
+                  action.special 
+                    ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600'
+                    : 'hover:bg-purple-50 hover:border-purple-300'
+                }`}
               >
                 {action.text}
               </Button>
@@ -229,7 +236,14 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
                       : "bg-gray-100 text-gray-800 rounded-bl-none shadow-sm"
                   )}
                 >
-                  {message.content}
+                  {message.isUser ? (
+                    message.content
+                  ) : (
+                    <FormattedMessage 
+                      content={message.content} 
+                      onSendMessage={sendMessage} 
+                    />
+                  )}
                 </div>
               </div>
             </div>
@@ -263,10 +277,8 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
             onKeyPress={handleKeyPress}
             placeholder={
               userProfile?.first_name 
-                ? `What's on your mind, ${userProfile.first_name}?`
-                : lessonContext 
-                  ? "Ask about this lesson..."
-                  : "What questions do you have?"
+                ? `Try "show me AI demo" or ask anything, ${userProfile.first_name}!`
+                : "Try 'show me AI demo' or ask anything!"
             }
             className="flex-1 text-sm"
             disabled={isTyping}
@@ -290,7 +302,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           </Button>
         </div>
         <p className="text-xs text-gray-500 mt-1 sm:mt-2">
-          Press Enter to send • Click ✨ for AI Magic Demo
+          Press Enter to send • Click ✨ for AI Magic Demo • Try: "show me AI demo"
         </p>
       </div>
     </div>

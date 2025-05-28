@@ -33,15 +33,13 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   const getQuickActions = () => {
     const actions = [];
     
-    // Add AI Magic Demo button if user has engaged enough
-    if (chatEngagement?.shouldShowAiDemo) {
-      actions.push({
-        text: "✨ See AI Magic Demo",
-        value: "DUMMY_DATA_MAGIC",
-        icon: <Sparkles className="w-3 h-3" />,
-        special: true
-      });
-    }
+    // Always show AI Magic Demo as first option
+    actions.push({
+      text: "✨ Try AI Magic Demo",
+      value: "Show me the AI magic demo",
+      icon: <Sparkles className="w-3 h-3" />,
+      special: true
+    });
     
     if (suggestedTask) {
       // Make suggested task more concise for mobile
@@ -53,47 +51,36 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
     if (userProfile?.role) {
       const roleActions = {
         'fundraising': [
-          { text: "How can AI help with my donor challenges?", value: "How can AI help me navigate my donor engagement challenges?" },
-          { text: "What AI tools exist for fundraising?", value: "What AI tools could help me achieve my fundraising goals?" }
+          { text: "AI for donor engagement?", value: "How can AI help me with donor engagement?" }
         ],
         'programs': [
-          { text: "How would AI improve my programs?", value: "How would AI help me improve my program outcomes?" },
-          { text: "Can AI help track participants?", value: "Can AI help me better track participant progress and success?" }
+          { text: "AI for program outcomes?", value: "How would AI help me improve my program outcomes?" }
         ],
         'operations': [
-          { text: "What AI tools reduce my workload?", value: "What AI tools could help reduce my daily operational workload?" },
-          { text: "How can I automate repetitive tasks?", value: "How can I use AI to automate my most time-consuming tasks?" }
+          { text: "AI to reduce workload?", value: "What AI tools could help reduce my daily workload?" }
         ],
         'marketing': [
-          { text: "How does AI help reach audiences?", value: "How does AI help nonprofits reach their target audience better?" },
-          { text: "Can AI speed up content creation?", value: "Can AI help me create content more efficiently?" }
+          { text: "AI for content creation?", value: "Can AI help me create content more efficiently?" }
         ],
         'leadership': [
-          { text: "How do I implement AI strategically?", value: "How do I implement AI strategically across my organization?" },
-          { text: "What AI challenges should I expect?", value: "What organizational challenges should I expect when adopting AI?" }
+          { text: "Implementing AI strategically?", value: "How do I implement AI strategically across my organization?" }
         ]
       };
       
       const specificActions = roleActions[userProfile.role as keyof typeof roleActions];
       if (specificActions) {
-        actions.push(...specificActions.slice(0, 2)); // Limit to 2 for mobile
+        actions.push(...specificActions.slice(0, 1)); // Limit to 1 for mobile
       }
     }
     
     // Add general discovery prompts phrased as user questions
     if (lessonContext) {
-      actions.push(
-        { text: "Can you share real examples?", value: "Can you share a real-world example of this concept in action?" },
-        { text: "How does this apply to me?", value: "How would this specifically apply to my organization?" }
-      );
+      actions.push({ text: "Real examples?", value: "Can you share a real-world example of this?" });
     } else {
-      actions.push(
-        { text: "Where should I start with AI?", value: "Where should someone like me start with AI implementation?" },
-        { text: "What are the quickest AI wins?", value: "What are the fastest ways to see AI benefits in my work?" }
-      );
+      actions.push({ text: "Where to start with AI?", value: "Where should I start with AI?" });
     }
     
-    return actions.slice(0, 5); // Limit to 5 actions to avoid clutter
+    return actions.slice(0, 4); // Limit to 4 actions to avoid clutter
   };
 
   const quickActions = getQuickActions();
@@ -103,12 +90,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
   }
 
   const handleActionClick = (action: any) => {
-    if (action.value === "DUMMY_DATA_MAGIC") {
-      // Special handling for dummy data magic button
-      onQuickAction("DUMMY_DATA_REQUEST");
-    } else {
-      onQuickAction(action.value || action.text);
-    }
+    onQuickAction(action.value || action.text);
   };
 
   return (
@@ -116,9 +98,6 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       <div className="flex items-center justify-between mb-2">
         <p className="text-xs text-gray-400 font-medium">
           {userProfile?.first_name ? `Quick prompts for ${userProfile.first_name}:` : 'Quick prompts:'}
-          {chatEngagement?.shouldShowAiDemo && (
-            <span className="ml-2 text-purple-300">• AI Demo Available!</span>
-          )}
         </p>
         {onResetChat && (
           <Button
@@ -142,7 +121,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
             onClick={() => handleActionClick(action)}
             className={`flex-shrink-0 text-xs h-7 transition-all duration-200 px-3 whitespace-nowrap ${
               action.special
-                ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600 hover:border-purple-300 shadow-lg hover:shadow-xl animate-pulse'
+                ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600 hover:border-purple-300 shadow-lg hover:shadow-xl'
                 : 'bg-gray-700 border-gray-600 text-gray-200 hover:bg-gray-600 hover:border-gray-500'
             }`}
           >

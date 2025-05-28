@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -15,8 +14,19 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
   isProcessing = false, 
   onSendMessage 
 }) => {
-  // Check if this is a demo stage message
-  const isDemoMessage = content.includes('Demo Progress') || content.includes('AI Magic Demo') || content.includes('Step 1:') || content.includes('Step 2:') || content.includes('Step 3:') || content.includes('Step 4:') || content.includes('Demo Complete');
+  // Check if this is a demo stage message with more flexible patterns
+  const isDemoMessage = content.includes('Demo Progress') || 
+                        content.includes('AI Magic Demo') || 
+                        content.includes('Step 1:') || 
+                        content.includes('Step 2:') || 
+                        content.includes('Step 3:') || 
+                        content.includes('Step 4:') || 
+                        content.includes('Demo Complete') ||
+                        content.includes('ready to see AI transform') ||
+                        content.includes('Start Demo') ||
+                        content.includes('Continue to') ||
+                        content.includes('Show Insights') ||
+                        content.includes('Get Recommendations');
 
   const handleDemoAction = (action: string) => {
     if (onSendMessage) {
@@ -29,7 +39,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       } else if (action === 'continue_recommendations') {
         onSendMessage('DEMO_STAGE_RECOMMENDATIONS');
       } else if (action === 'restart_demo') {
-        onSendMessage('Show me how AI transforms messy data into actionable insights! Start the demo.');
+        onSendMessage('Start the AI demo');
       } else if (action === 'ask_question') {
         onSendMessage('Can you explain what\'s happening in this AI demo step by step?');
       }
@@ -39,8 +49,8 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
   const getDemoControls = () => {
     if (!isDemoMessage || !onSendMessage) return null;
 
-    // Determine which stage we're in based on content
-    if (content.includes('AI Magic Demo') && content.includes('Ready to see AI transform')) {
+    // Determine which stage we're in based on content - with more flexible matching
+    if (content.includes('AI Magic Demo') || content.includes('ready to see AI transform')) {
       return (
         <div className="mt-4 p-3 bg-gray-700/50 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
@@ -70,7 +80,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       );
     }
 
-    if (content.includes('Step 1: Loading Sample Data')) {
+    if (content.includes('Step 1:') || content.includes('Loading Sample Data')) {
       return (
         <div className="mt-4 p-3 bg-gray-700/50 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
@@ -100,7 +110,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       );
     }
 
-    if (content.includes('Step 2: AI Analysis in Progress')) {
+    if (content.includes('Step 2:') || content.includes('AI Analysis in Progress')) {
       return (
         <div className="mt-4 p-3 bg-gray-700/50 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
@@ -130,7 +140,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       );
     }
 
-    if (content.includes('Step 3: Key Insights Discovered')) {
+    if (content.includes('Step 3:') || content.includes('Key Insights Discovered')) {
       return (
         <div className="mt-4 p-3 bg-gray-700/50 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
@@ -160,7 +170,7 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
       );
     }
 
-    if (content.includes('Step 4: Actionable Recommendations') || content.includes('Demo Complete')) {
+    if (content.includes('Step 4:') || content.includes('Actionable Recommendations') || content.includes('Demo Complete')) {
       return (
         <div className="mt-4 p-3 bg-gray-700/50 rounded-lg border border-gray-600">
           <div className="flex items-center gap-2 mb-2">
