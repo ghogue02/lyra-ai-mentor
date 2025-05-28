@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -73,11 +72,76 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
 
   // Sample data for visualizations
   const sampleDonorData = [
-    { name: "Sarah Johnson", amount: "$245", date: "11/15/24", method: "Online", notes: "Recurring donor" },
-    { name: "Michael Chen", amount: "$89", date: "10/22/24", method: "Check", notes: "First time" },
-    { name: "Patricia Williams", amount: "$520", date: "12/01/24", method: "Online", notes: "Major donor" },
-    { name: "James Rodriguez", amount: "$156", date: "11/28/24", method: "Online", notes: "Monthly" },
-    { name: "Lisa Thompson", amount: "$89", date: "09/15/24", method: "Cash", notes: "Event attendee" }
+    {
+      name: "Sarah Johnson",
+      amount: "$245",
+      date: "11/15/24",
+      method: "Online",
+      notes: "Recurring donor",
+      donorType: "Regular" as const,
+      engagementScore: 75,
+      yearsActive: 2,
+      lifetimeGiving: "$1,470",
+      lastContact: "11/12/24",
+      status: "Active" as const,
+      trend: "up" as const
+    },
+    {
+      name: "Michael Chen",
+      amount: "$89",
+      date: "10/22/24",
+      method: "Check",
+      notes: "First time",
+      donorType: "Regular" as const,
+      engagementScore: 42,
+      yearsActive: 0.1,
+      lifetimeGiving: "$89",
+      lastContact: "10/22/24",
+      status: "New" as const,
+      trend: "up" as const
+    },
+    {
+      name: "Patricia Williams",
+      amount: "$520",
+      date: "12/01/24",
+      method: "Online",
+      notes: "Major donor",
+      donorType: "Mid-level" as const,
+      engagementScore: 89,
+      yearsActive: 5,
+      lifetimeGiving: "$8,500",
+      lastContact: "11/28/24",
+      status: "VIP" as const,
+      trend: "stable" as const
+    },
+    {
+      name: "James Rodriguez",
+      amount: "$156",
+      date: "11/28/24",
+      method: "Online",
+      notes: "Monthly",
+      donorType: "Regular" as const,
+      engagementScore: 68,
+      yearsActive: 1.5,
+      lifetimeGiving: "$2,340",
+      lastContact: "11/25/24",
+      status: "Active" as const,
+      trend: "up" as const
+    },
+    {
+      name: "Lisa Thompson",
+      amount: "$89",
+      date: "09/15/24",
+      method: "Cash",
+      notes: "Event attendee",
+      donorType: "Regular" as const,
+      engagementScore: 35,
+      yearsActive: 3,
+      lifetimeGiving: "$445",
+      lastContact: "07/20/24",
+      status: "At-Risk" as const,
+      trend: "down" as const
+    }
   ];
 
   const analysisSteps = [
