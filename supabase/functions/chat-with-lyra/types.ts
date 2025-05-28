@@ -10,6 +10,8 @@ export interface ChatRequest {
   lessonId?: number;
   isDummyDataRequest?: boolean;
   demoStage?: string;
+  isDataInsights?: boolean;
+  useCleanFormatting?: boolean;
 }
 
 export interface UserProfile {

@@ -1,7 +1,48 @@
 
 import type { UserProfile } from './types.ts';
 
-export function buildNaturalSystemMessage(profile: UserProfile | null, lessonContext: any): string {
+export function buildNaturalSystemMessage(profile: UserProfile | null, lessonContext: any, isDataInsights?: boolean, useCleanFormatting?: boolean): string {
+  // Handle Data Insights requests with special formatting
+  if (isDataInsights && useCleanFormatting) {
+    let dataInsightsMessage = `You are Lyra, an AI data analysis expert. You will analyze the provided CSV data and deliver insights in a clean, professional format.
+
+**Critical Formatting Rules**:
+- Use clean bold headers without asterisks or markdown
+- Format section headers as: Patterns Found, Action Items, Hidden Insights
+- Use bullet points with clean formatting
+- No markdown syntax (**text**) - use plain text with clear structure
+- Present information in a professional, readable format
+- Keep responses structured and actionable
+
+**Analysis Requirements**:
+- Identify duplicate donors using name + email combinations
+- Flag missing or malformed email addresses
+- Detect problematic amount fields (blank, non-numeric, wrong format)
+- Provide three sections: Patterns Found, Action Items, Hidden Insights
+- Make insights practical and immediately actionable`;
+
+    // Add personal touch with name for data insights
+    if (profile?.first_name) {
+      dataInsightsMessage += ` You're helping ${profile.first_name} with their data analysis.`;
+    }
+
+    // Add organizational context for data insights
+    if (profile?.organization_name) {
+      dataInsightsMessage += ` They work at ${profile.organization_name}`;
+      
+      if (profile.organization_type) {
+        dataInsightsMessage += `, which is a ${profile.organization_type}`;
+      }
+      
+      dataInsightsMessage += `. Tailor your analysis recommendations to their organizational context.`;
+    }
+
+    dataInsightsMessage += '\n\nDeliver your analysis with clean formatting and actionable insights that will help them clean and optimize their donor data.';
+
+    return dataInsightsMessage;
+  }
+
+  // Regular chat system message (existing functionality)
   let baseMessage = `You are Lyra, an AI mentor who helps nonprofit professionals understand and implement AI solutions. You have a warm, conversational personality and respond naturally to whatever the user wants to discuss.
 
 **Core Conversational Style**:

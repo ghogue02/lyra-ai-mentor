@@ -19,7 +19,9 @@ serve(async (req) => {
       conversationId,
       userId,
       lessonId,
-      isDummyDataRequest
+      isDummyDataRequest,
+      isDataInsights,
+      useCleanFormatting
     }: ChatRequest = await req.json();
 
     console.log('Received chat request:', { 
@@ -28,21 +30,25 @@ serve(async (req) => {
       conversationId,
       userId,
       lessonId,
-      isDummyDataRequest
+      isDummyDataRequest,
+      isDataInsights,
+      useCleanFormatting
     });
 
     // Fetch user profile data
     const userProfile = await fetchUserProfile(userId);
 
-    // Build system message and create OpenAI request for regular chat
+    // Build system message with Data Insights formatting if needed
     const systemMessage = {
       role: 'system',
-      content: buildNaturalSystemMessage(userProfile, lessonContext)
+      content: buildNaturalSystemMessage(userProfile, lessonContext, isDataInsights, useCleanFormatting)
     };
 
-    console.log('Generated natural system message for user:', {
+    console.log('Generated system message for user:', {
       hasProfile: !!userProfile,
       role: userProfile?.role,
+      isDataInsights,
+      useCleanFormatting,
       messageLength: systemMessage.content.length
     });
 
