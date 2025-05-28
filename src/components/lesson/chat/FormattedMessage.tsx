@@ -13,8 +13,8 @@ export const FormattedMessage: React.FC<FormattedMessageProps> = ({
 }) => {
   const [showDataInsights, setShowDataInsights] = useState(false);
 
-  // Check if this is a data insights trigger message
-  const isDataInsightsMessage = content.includes('DATA_INSIGHTS_TRIGGER');
+  // Check if this is a data insights story display message
+  const isDataInsightsMessage = content.includes('DATA_INSIGHTS_STORY_DISPLAY');
 
   React.useEffect(() => {
     if (isDataInsightsMessage) {
@@ -135,11 +135,19 @@ Anonymous , , , ,
   };
 
   if (isDataInsightsMessage) {
+    // Extract just the story part without the trigger
+    const storyContent = content.replace('DATA_INSIGHTS_STORY_DISPLAY', '').trim();
+    
     return (
-      <DataInsightsStory 
-        onAnalyzeData={handleAnalyzeData}
-        isVisible={showDataInsights}
-      />
+      <div>
+        <div className="mb-4 text-gray-800 leading-relaxed text-sm">
+          {storyContent}
+        </div>
+        <DataInsightsStory 
+          onAnalyzeData={handleAnalyzeData}
+          isVisible={showDataInsights}
+        />
+      </div>
     );
   }
 

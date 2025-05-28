@@ -34,21 +34,6 @@ serve(async (req) => {
     // Fetch user profile data
     const userProfile = await fetchUserProfile(userId);
 
-    // Handle Data Insights trigger requests
-    const lastMessage = messages[messages.length - 1]?.content || '';
-    
-    const isDataInsightsTrigger = lastMessage.includes('DATA_INSIGHTS_TRIGGER');
-    
-    if (isDataInsightsTrigger) {
-      console.log('Processing data insights trigger');
-      
-      const dataInsightsResponse = `DATA_INSIGHTS_TRIGGER`;
-
-      return new Response(JSON.stringify({ generatedText: dataInsightsResponse }), {
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
-      });
-    }
-
     // Build system message and create OpenAI request for regular chat
     const systemMessage = {
       role: 'system',

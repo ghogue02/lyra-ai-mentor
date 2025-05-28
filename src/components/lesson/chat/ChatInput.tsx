@@ -46,6 +46,13 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             className="mobile-input flex-1 h-10 sm:h-12 bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 text-sm sm:text-base"
             disabled={isTyping}
           />
+          <Button
+            onClick={onSendMessage}
+            disabled={!inputValue.trim() || isTyping}
+            className="mobile-button h-10 sm:h-12 w-10 sm:w-12 p-0 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 flex-shrink-0"
+          >
+            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
+          </Button>
           {onDataInsights && (
             <Button
               onClick={onDataInsights}
@@ -58,13 +65,6 @@ export const ChatInput: React.FC<ChatInputProps> = ({
               <span className="hidden sm:inline text-xs">Data Insights</span>
             </Button>
           )}
-          <Button
-            onClick={onSendMessage}
-            disabled={!inputValue.trim() || isTyping}
-            className="mobile-button h-10 sm:h-12 w-10 sm:w-12 p-0 bg-gradient-to-r from-purple-600 to-cyan-600 hover:from-purple-700 hover:to-cyan-700 flex-shrink-0"
-          >
-            <Send className="w-4 h-4 sm:w-5 sm:h-5" />
-          </Button>
         </div>
         <p className="text-xs text-gray-400 mt-2 text-center leading-relaxed">
           Press Enter to send • Click 📊 for Data Insights

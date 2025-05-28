@@ -109,7 +109,12 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
 
   const handleDataInsights = () => {
     console.log('Starting Data Insights');
-    sendMessage("DATA_INSIGHTS_TRIGGER");
+    // Instead of sending a trigger message, directly add the story to the chat
+    const storyMessage = `Picture a bustling nonprofit city where spreadsheets roam like unruly dragons: every day these data-beasts cough up half-chewed numbers, mismatched names, and gold coins scattered across campaigns—until our unlikely hero, a bright-eyed Programs Manager named Lyra, volunteers to tame them. Armed only with curiosity and a chat-bot sidekick that thinks in punch lines, Lyra discovers that each messy row hides a donor's heartfelt story waiting to be told. When a looming Year-End Gala threatens to flop without clear totals, Lyra and the bot embark on a comedic quest—dodging duplicate donors, rescuing lost emails, and piecing together amounts that sparkle like treasure. In the end, the once-chaotic ledger transforms into a triumphant tapestry of generosity, proving to the staff (and to every future user) that cracking messy data isn't about crunching numbers—it's about unleashing the epic narrative of impact that's already there. Click the check mark to see how it works.
+
+DATA_INSIGHTS_STORY_DISPLAY`;
+    
+    sendMessage(storyMessage);
     setShowQuickActions(false);
   };
 
