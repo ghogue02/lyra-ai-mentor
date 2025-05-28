@@ -45,7 +45,6 @@ export const AIProcessingStage: React.FC<AIProcessingStageProps> = ({
         const progressSteps = 20;
         const progressIncrement = 100 / progressSteps;
         
-        // Animate progress for this step
         for (let i = 0; i <= progressSteps; i++) {
           const stepProgress = (stepIndex * 100 + i * progressIncrement) / steps.length;
           setProgress(stepProgress);
@@ -63,55 +62,55 @@ export const AIProcessingStage: React.FC<AIProcessingStageProps> = ({
   if (!isVisible) return null;
 
   return (
-    <Card className="p-4 bg-gradient-to-r from-purple-900/50 to-blue-900/50 border-purple-500/30">
+    <Card className="p-4 bg-white border border-gray-200">
       <div className="space-y-4">
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 bg-purple-400 rounded-full animate-spin"></div>
-          <h3 className="text-purple-300 font-semibold">{title}</h3>
+          <div className="w-3 h-3 bg-blue-500 rounded-full animate-spin"></div>
+          <h3 className="text-gray-700 font-medium">{title}</h3>
         </div>
         
-        <Progress value={progress} className="h-2" />
+        <Progress value={progress} className="h-2 bg-gray-200" />
         
-        <div className="space-y-2">
+        <div className="space-y-3">
           {steps.map((step, index) => (
             <div 
               key={index}
               className={`flex items-center gap-3 text-sm transition-all duration-500 ${
                 index === currentStep && isProcessing
-                  ? 'text-white scale-105' 
+                  ? 'text-gray-900 scale-105' 
                   : index < currentStep 
-                  ? 'text-green-400' 
-                  : 'text-gray-500'
+                  ? 'text-green-600' 
+                  : 'text-gray-400'
               }`}
             >
               <div className={`w-2 h-2 rounded-full ${
                 index === currentStep && isProcessing
-                  ? 'bg-purple-400 animate-pulse' 
+                  ? 'bg-blue-500 animate-pulse' 
                   : index < currentStep 
-                  ? 'bg-green-400' 
-                  : 'bg-gray-600'
+                  ? 'bg-green-500' 
+                  : 'bg-gray-300'
               }`}></div>
               
               <div className="flex-1">
                 <div className="font-medium">{step.name}</div>
-                <div className="text-xs opacity-70">{step.description}</div>
+                <div className="text-xs opacity-75">{step.description}</div>
               </div>
               
               {index < currentStep && (
-                <div className="text-green-400">✓</div>
+                <div className="text-green-500 text-sm">✓</div>
               )}
               {index === currentStep && isProcessing && (
                 <div className="flex gap-1">
-                  <div className="w-1 h-1 bg-purple-400 rounded-full animate-bounce"></div>
-                  <div className="w-1 h-1 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                  <div className="w-1 h-1 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                  <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce"></div>
+                  <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                  <div className="w-1 h-1 bg-blue-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
                 </div>
               )}
             </div>
           ))}
         </div>
         
-        <div className="text-xs text-purple-300/70">
+        <div className="text-xs text-gray-500">
           Processing {Math.round(progress)}% complete
         </div>
       </div>

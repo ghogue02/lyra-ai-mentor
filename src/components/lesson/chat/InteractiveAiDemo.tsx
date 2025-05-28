@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Sparkles, Play, Pause, HelpCircle, ArrowRight, RotateCcw, X } from 'lucide-react';
+import { Play, RotateCcw, X } from 'lucide-react';
 import { AnimatedDataTable } from './AnimatedDataTable';
 import { AnimatedProgressChart } from './AnimatedProgressChart';
 import { StreamingText } from './StreamingText';
@@ -28,7 +28,7 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
   const [currentStage, setCurrentStage] = useState<DemoStage>('intro');
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [showVisualData, setShowVisualData] = useState(false);
+  const [showDataTable, setShowDataTable] = useState(false);
   const [showProcessing, setShowProcessing] = useState(false);
   const [showInsights, setShowInsights] = useState(false);
 
@@ -54,37 +54,32 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
     setCurrentStage('intro');
     setIsPlaying(false);
     setProgress(0);
-    setShowVisualData(false);
+    setShowDataTable(false);
     setShowProcessing(false);
     setShowInsights(false);
-  };
-
-  const askQuestion = () => {
-    onSendMessage("Can you explain what's happening in this AI demo step by step?");
-    setIsPlaying(false);
   };
 
   // Sample data for visualizations
   const sampleDonorData = [
     { name: "Sarah Johnson", amount: "$245", date: "11/15/24", method: "Online", notes: "Recurring donor" },
-    { name: "M. Chen", amount: "$89", date: "10/22/24", method: "Check", notes: "First time" },
-    { name: "Patricia W.", amount: "$520", date: "12/01/24", method: "Online", notes: "Major donor" },
-    { name: "John Smith", amount: "$156", date: "11/28/24", method: "Online", notes: "Monthly" },
-    { name: "Lisa Rodriguez", amount: "$89", date: "09/15/24", method: "Cash", notes: "Event attendee" }
+    { name: "Michael Chen", amount: "$89", date: "10/22/24", method: "Check", notes: "First time" },
+    { name: "Patricia Williams", amount: "$520", date: "12/01/24", method: "Online", notes: "Major donor" },
+    { name: "James Rodriguez", amount: "$156", date: "11/28/24", method: "Online", notes: "Monthly" },
+    { name: "Lisa Thompson", amount: "$89", date: "09/15/24", method: "Cash", notes: "Event attendee" }
   ];
 
   const analysisSteps = [
-    { name: "Data Ingestion", description: "Processing 1,247 donor records", duration: 2000 },
-    { name: "Pattern Recognition", description: "Identifying behavioral patterns", duration: 1800 },
-    { name: "Predictive Modeling", description: "Calculating likelihood scores", duration: 2200 },
-    { name: "Insight Generation", description: "Creating actionable recommendations", duration: 1500 }
+    { name: "Data Processing", description: "Loading and cleaning donor records", duration: 2000 },
+    { name: "Pattern Analysis", description: "Identifying donation patterns", duration: 1800 },
+    { name: "Predictive Modeling", description: "Calculating donor scores", duration: 2200 },
+    { name: "Insight Generation", description: "Creating recommendations", duration: 1500 }
   ];
 
   const insightMetrics = [
-    { label: "Monthly Sustainers Impact", value: 67, color: "blue", detail: "67% of total revenue from 23% of donors" },
-    { label: "Email Optimization Potential", value: 34, color: "green", detail: "34% higher open rates on Thursdays" },
-    { label: "At-Risk Donor Detection", value: 47, color: "red", detail: "47 donors showing lapse patterns" },
-    { label: "Major Gift Opportunity", value: 23, color: "purple", detail: "23 donors with $1M+ potential" }
+    { label: "Monthly Donor Impact", value: 67, color: "blue", detail: "67% of revenue from monthly donors" },
+    { label: "Email Engagement", value: 34, color: "green", detail: "34% higher response on Thursdays" },
+    { label: "At-Risk Donors", value: 47, color: "red", detail: "47 donors showing decline patterns" },
+    { label: "Major Gift Potential", value: 23, color: "purple", detail: "23 prospects identified for cultivation" }
   ];
 
   const executeCurrentStage = () => {
@@ -92,35 +87,37 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
     
     switch (currentStage) {
       case 'intro':
-        onSendMessage("Show me how AI transforms messy data into actionable insights!");
-        setTimeout(() => proceedToNextStage(), 1000);
+        onSendMessage("Show me how AI analyzes fundraising data step by step!");
+        setTimeout(() => {
+          if (isPlaying) proceedToNextStage();
+        }, 1000);
         break;
       case 'loading':
         onSendMessage("DEMO_STAGE_LOADING");
-        setShowVisualData(true);
+        setShowDataTable(true);
         setTimeout(() => {
           if (isPlaying) proceedToNextStage();
-        }, 6000);
+        }, 4000);
         break;
       case 'analysis':
         onSendMessage("DEMO_STAGE_ANALYSIS");
         setShowProcessing(true);
         setTimeout(() => {
           if (isPlaying) proceedToNextStage();
-        }, 8000);
+        }, 6000);
         break;
       case 'insights':
         onSendMessage("DEMO_STAGE_INSIGHTS");
         setShowInsights(true);
         setTimeout(() => {
           if (isPlaying) proceedToNextStage();
-        }, 6000);
+        }, 5000);
         break;
       case 'recommendations':
         onSendMessage("DEMO_STAGE_RECOMMENDATIONS");
         setTimeout(() => {
           if (isPlaying) proceedToNextStage();
-        }, 4000);
+        }, 3000);
         break;
       case 'complete':
         setIsPlaying(false);
@@ -135,51 +132,45 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
     switch (currentStage) {
       case 'intro':
         return {
-          title: "🎯 AI Magic Demo",
-          content: `${firstName ? `${firstName}, ready` : 'Ready'} to see AI transform your ${role} data? This interactive demo will show you step-by-step how AI finds hidden patterns and creates actionable insights.`,
-          subtext: "We'll use sample data so you can see the magic without any setup!",
-          actionText: "Start Demo",
-          canProceed: true
+          title: "AI Data Analysis Demo",
+          content: `${firstName ? `${firstName}, ready` : 'Ready'} to see how AI transforms your ${role} data? This demo shows you step-by-step how AI finds patterns and creates insights from messy data.`,
+          subtext: "Using sample data to protect your privacy",
+          actionText: "Start Demo"
         };
       case 'loading':
         return {
-          title: "📊 Step 1: Loading Sample Data",
-          content: `Watch AI load realistic ${role} data that looks messy and overwhelming - just like your real data probably does.`,
-          subtext: "This is the kind of data that would take humans hours to process...",
-          actionText: isPlaying ? "Processing..." : "Load Data",
-          canProceed: true
+          title: "Step 1: Data Processing",
+          content: `AI loads your ${role} data and handles the messy formatting that would take humans hours to clean.`,
+          subtext: "Processing donor records and standardizing formats",
+          actionText: isPlaying ? "Processing..." : "Load Data"
         };
       case 'analysis':
         return {
-          title: "🔍 Step 2: AI Analysis in Progress",
-          content: "Now AI analyzes the data, finding patterns that would take humans hours or days to discover.",
-          subtext: "AI can process thousands of data points instantly!",
-          actionText: isPlaying ? "Analyzing..." : "Start Analysis",
-          canProceed: true
+          title: "Step 2: Pattern Recognition",
+          content: "AI analyzes thousands of data points to find patterns humans would miss.",
+          subtext: "Running advanced algorithms to identify trends",
+          actionText: isPlaying ? "Analyzing..." : "Start Analysis"
         };
       case 'insights':
         return {
-          title: "💡 Step 3: Key Insights Discovered",
-          content: "Here's where the magic happens - AI reveals hidden insights and trends in your data.",
-          subtext: "These are the 'aha!' moments that drive better decisions.",
-          actionText: isPlaying ? "Revealing..." : "Show Insights",
-          canProceed: true
+          title: "Step 3: Key Insights",
+          content: "AI reveals actionable insights about your donor behavior and opportunities.",
+          subtext: "Discovering revenue patterns and donor preferences",
+          actionText: isPlaying ? "Generating..." : "Show Insights"
         };
       case 'recommendations':
         return {
-          title: "🚀 Step 4: Actionable Recommendations",
-          content: "Finally, AI translates insights into specific actions you can take today.",
-          subtext: "From data to decisions in minutes, not months.",
-          actionText: isPlaying ? "Generating..." : "Get Recommendations",
-          canProceed: true
+          title: "Step 4: Action Plan",
+          content: "AI creates specific recommendations you can implement immediately.",
+          subtext: "Converting insights into concrete next steps",
+          actionText: isPlaying ? "Creating..." : "Get Recommendations"
         };
       case 'complete':
         return {
-          title: "✨ Demo Complete!",
-          content: "You've just seen how AI transforms raw data into actionable insights. Imagine doing this with YOUR real data!",
-          subtext: "Ready to explore how this applies to your specific challenges?",
-          actionText: "Restart Demo",
-          canProceed: false
+          title: "Demo Complete",
+          content: "You've seen how AI transforms data into actionable insights. Imagine this with your actual data!",
+          subtext: "Ready to explore AI for your organization?",
+          actionText: "Restart Demo"
         };
       default:
         return null;
@@ -191,11 +182,10 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
 
   return (
     <div className="space-y-4">
-      <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50 shadow-lg">
-        <CardContent className="p-4">
-          <div className="flex items-center justify-between mb-3">
-            <h3 className="font-semibold text-purple-800 flex items-center gap-2">
-              <Sparkles className="w-5 h-5" />
+      <Card className="border-2 border-blue-200 bg-white shadow-lg">
+        <CardContent className="p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="font-semibold text-blue-900 text-lg">
               {content.title}
             </h3>
             <Button
@@ -208,33 +198,32 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
             </Button>
           </div>
 
-          {/* Progress Bar */}
           <div className="mb-4">
-            <div className="flex justify-between text-xs text-gray-600 mb-1">
-              <span>Demo Progress</span>
+            <div className="flex justify-between text-xs text-gray-600 mb-2">
+              <span>Progress</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <Progress value={progress} className="h-2" />
+            <Progress value={progress} className="h-2 bg-gray-200" />
           </div>
 
           <div className="space-y-4">
-            <div>
+            <div className="min-h-[60px]">
               <StreamingText 
                 text={content.content}
                 isVisible={true}
-                speed={20}
-                className="text-sm text-gray-700"
+                speed={25}
+                className="text-gray-700 leading-relaxed"
               />
             </div>
             
-            <p className="text-xs text-gray-500">{content.subtext}</p>
+            <p className="text-sm text-gray-500">{content.subtext}</p>
 
-            {/* Visual Data Components */}
             {currentStage === 'loading' && (
               <AnimatedDataTable
-                title="DONOR_EXPORT_Q4_2024.csv"
+                title="Donor Database Sample"
                 data={sampleDonorData}
-                isVisible={showVisualData}
+                isVisible={showDataTable}
+                onComplete={() => console.log('Data table complete')}
               />
             )}
 
@@ -243,22 +232,24 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
                 title="AI Analysis Engine"
                 steps={analysisSteps}
                 isVisible={showProcessing}
+                onComplete={() => console.log('Processing complete')}
               />
             )}
 
             {currentStage === 'insights' && (
               <AnimatedProgressChart
-                title="Key Performance Insights"
+                title="Donor Insights Dashboard"
                 items={insightMetrics}
                 isVisible={showInsights}
+                onComplete={() => console.log('Insights complete')}
               />
             )}
 
-            <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-3">
               <Button
                 onClick={currentStage === 'complete' ? restartDemo : executeCurrentStage}
                 disabled={isPlaying}
-                className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white flex items-center gap-2"
+                className="bg-blue-600 hover:bg-blue-700 text-white flex items-center gap-2"
                 size="sm"
               >
                 {currentStage === 'complete' ? (
@@ -270,46 +261,12 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
                 )}
                 {content.actionText}
               </Button>
-
-              {isPlaying && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsPlaying(false)}
-                  className="flex items-center gap-2"
-                >
-                  <Pause className="w-4 h-4" />
-                  Pause
-                </Button>
-              )}
-
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={askQuestion}
-                className="flex items-center gap-2"
-              >
-                <HelpCircle className="w-4 h-4" />
-                Ask Question
-              </Button>
-
-              {currentStage !== 'intro' && currentStage !== 'complete' && (
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={proceedToNextStage}
-                  className="flex items-center gap-2"
-                >
-                  <ArrowRight className="w-4 h-4" />
-                  Skip to Next
-                </Button>
-              )}
             </div>
 
             {currentStage === 'complete' && (
-              <div className="mt-3 p-3 bg-white/50 rounded-lg">
-                <p className="text-xs text-gray-600">
-                  💡 <strong>Pro tip:</strong> This demo used sample data. With your real data, these insights become powerful tools for growth and impact.
+              <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-800">
+                  <strong>Next steps:</strong> This demo used sample data. With your real data, these insights become powerful tools for growing your impact and revenue.
                 </p>
               </div>
             )}

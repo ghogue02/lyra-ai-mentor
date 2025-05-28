@@ -34,11 +34,9 @@ export const AnimatedProgressChart: React.FC<AnimatedProgressChartProps> = ({
     }
 
     const animateChart = async () => {
-      // Show items one by one
       for (let i = 0; i < items.length; i++) {
         setVisibleItems(i + 1);
         
-        // Animate progress bar fill
         const targetValue = items[i].value;
         const steps = 20;
         const increment = targetValue / steps;
@@ -53,7 +51,7 @@ export const AnimatedProgressChart: React.FC<AnimatedProgressChartProps> = ({
           await new Promise(resolve => setTimeout(resolve, 50));
         }
         
-        await new Promise(resolve => setTimeout(resolve, 300));
+        await new Promise(resolve => setTimeout(resolve, 400));
       }
       
       onComplete?.();
@@ -65,10 +63,10 @@ export const AnimatedProgressChart: React.FC<AnimatedProgressChartProps> = ({
   if (!isVisible) return null;
 
   return (
-    <Card className="p-4 bg-slate-900 border-blue-500/30">
+    <Card className="p-4 bg-white border border-gray-200">
       <div className="flex items-center gap-2 mb-4">
-        <div className="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
-        <span className="text-blue-300 font-semibold">{title}</span>
+        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
+        <span className="text-gray-700 font-medium">{title}</span>
       </div>
       
       <div className="space-y-4">
@@ -82,19 +80,16 @@ export const AnimatedProgressChart: React.FC<AnimatedProgressChartProps> = ({
             }}
           >
             <div className="flex justify-between items-center">
-              <span className="text-white text-sm font-medium">{item.label}</span>
-              <span className="text-blue-300 text-sm font-mono">
+              <span className="text-gray-700 text-sm font-medium">{item.label}</span>
+              <span className="text-blue-600 text-sm font-mono font-medium">
                 {Math.round(currentValues[index] || 0)}%
               </span>
             </div>
             <Progress 
               value={currentValues[index] || 0} 
-              className="h-2"
-              style={{
-                background: 'rgba(59, 130, 246, 0.1)'
-              }}
+              className="h-2 bg-gray-200"
             />
-            <p className="text-gray-400 text-xs">{item.detail}</p>
+            <p className="text-gray-500 text-xs leading-relaxed">{item.detail}</p>
           </div>
         ))}
       </div>

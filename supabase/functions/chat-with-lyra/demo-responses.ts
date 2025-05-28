@@ -7,150 +7,168 @@ export function generateStagedDemoResponse(userProfile: UserProfile | null, stag
   
   switch (stage) {
     case 'intro':
-      return `🎯 **AI Magic Demo**
+      return `**AI Data Analysis Demo**
 
-${greeting}ready to see AI transform your ${role} data? This interactive demo will show you step-by-step how AI finds hidden patterns and creates actionable insights.
+${greeting}ready to see how AI transforms your ${role} data?
 
-We'll use sample data so you can see the magic without any setup!
+This interactive demo shows you step-by-step how AI finds hidden patterns and creates actionable insights from messy data.
 
-*Click "Start Demo" below to begin your journey into AI-powered insights!*`;
+We'll use sample data so you can see the magic without any setup.
+
+*Click "Start Demo" below to begin your journey into AI-powered insights.*`;
 
     case 'loading':
-      return `📊 **Step 1: Data Ingestion & Preprocessing**
+      return `**Step 1: Data Processing**
 
-${greeting}watch as our AI system loads and processes realistic ${role} data. Notice how it handles the messy, real-world data that would typically overwhelm traditional analysis tools.
+${greeting}watch as our AI system loads and processes realistic ${role} data.
 
-**🔄 Real-time Data Processing:**
+Notice how it handles the messy, real-world data that would typically overwhelm traditional analysis tools.
+
+**Real-time Data Processing:**
 - Parsing 1,247 donor records across multiple formats
 - Standardizing inconsistent data entries
 - Cross-referencing engagement metrics
 - Validating data integrity and completeness
 
-**🧹 Data Cleaning Operations:**
+**Data Cleaning Operations:**
 - Normalizing name variations (M. Chen → Michael Chen)
 - Converting currency formats ($245.00, $89, etc.)
 - Standardizing date formats across systems
 - Flagging incomplete or suspicious records
 
-**⚡ Processing Speed:** What would take a human analyst 4-6 hours to clean and organize, AI completes in under 30 seconds.
+**Processing Speed:** What would take a human analyst 4-6 hours to clean and organize, AI completes in under 30 seconds.
 
-*This is just the beginning - the real magic happens in the analysis phase!*`;
+This is just the beginning. The real magic happens in the analysis phase.`;
 
     case 'analysis':
-      return `🧠 **Step 2: Advanced AI Analysis Engine**
+      return `**Step 2: Advanced AI Analysis**
 
-${greeting}now witness our multi-layered AI analysis system at work. This isn't just data processing - it's intelligent pattern recognition that discovers insights humans would miss.
+${greeting}now witness our multi-layered AI analysis system at work.
 
-**🔍 Neural Network Analysis:**
+This isn't just data processing. It's intelligent pattern recognition that discovers insights humans would miss.
+
+**Neural Network Analysis:**
 - Donor behavior clustering using machine learning
 - Predictive lifetime value calculations
 - Retention risk assessment algorithms
 - Engagement pattern recognition
 
-**📊 Real-time Discoveries:**
+**Real-time Discoveries:**
 
 **Donor Segmentation Insights:**
-• **Monthly Sustainers:** 23% of donors generating 67% of revenue
-• **Event-Driven Donors:** 3.2x higher lifetime value when properly stewarded
-• **Digital Natives:** 89% prefer email, respond 45% faster to mobile-optimized content
+• Monthly Sustainers: 23% of donors generating 67% of revenue
+• Event-Driven Donors: 3.2x higher lifetime value when properly stewarded
+• Digital Natives: 89% prefer email, respond 45% faster to mobile-optimized content
 
 **Behavioral Pattern Analysis:**
-• **Optimal Contact Timing:** Thursday 10-11 AM shows 34% higher response rates
-• **Content Preferences:** Personal impact stories convert 2.8x better than statistics
-• **Donation Triggers:** 72-hour follow-up window critical for second gifts
+• Optimal Contact Timing: Thursday 10-11 AM shows 34% higher response rates
+• Content Preferences: Personal impact stories convert 2.8x better than statistics
+• Donation Triggers: 72-hour follow-up window critical for second gifts
 
-**🚨 Predictive Risk Alerts:**
-• **47 donors** showing early lapse indicators (confidence: 87%)
-• **$18,400** in revenue at risk without intervention in next 60 days
-• **3 major donors** haven't been contacted in 90+ days (relationship deterioration risk)
+**Predictive Risk Alerts:**
+• 47 donors showing early lapse indicators (confidence: 87%)
+• $18,400 in revenue at risk without intervention in next 60 days
+• 3 major donors haven't been contacted in 90+ days
 
-**💰 Hidden Revenue Opportunities:**
-• **Quarterly → Monthly conversion potential:** +$127,000 annually
-• **Untapped corporate matching:** $34,000 sitting unclaimed
-• **Peer-to-peer potential:** 340% ROI based on network analysis
+**Hidden Revenue Opportunities:**
+• Quarterly to Monthly conversion potential: +$127,000 annually
+• Untapped corporate matching: $34,000 sitting unclaimed
+• Peer-to-peer potential: 340% ROI based on network analysis
 
-*This level of insight would require a team of analysts weeks to uncover manually!*`;
+This level of insight would require a team of analysts weeks to uncover manually.`;
 
     case 'insights':
-      return `💡 **Step 3: Strategic Insights & Opportunity Mapping**
+      return `**Step 3: Strategic Insights & Opportunity Mapping**
 
-${greeting}here's where AI transforms raw data into strategic intelligence. These insights represent the difference between guesswork and data-driven growth.
+${greeting}here's where AI transforms raw data into strategic intelligence.
 
-**🎯 Mission-Critical Discoveries:**
+These insights represent the difference between guesswork and data-driven growth.
+
+**Mission-Critical Discoveries:**
 
 **Revenue Optimization Matrix:**
-• **High-Impact, Low-Effort:** Convert 67 quarterly donors to monthly (+$89K annually)
-• **Medium-Impact, Quick Win:** Optimize email timing for 23% engagement boost
-• **High-Impact, Strategic:** Launch major gift program targeting 23 qualified prospects
+• High-Impact, Low-Effort: Convert 67 quarterly donors to monthly (+$89K annually)
+• Medium-Impact, Quick Win: Optimize email timing for 23% engagement boost
+• High-Impact, Strategic: Launch major gift program targeting 23 qualified prospects
 
-**🔮 Predictive Intelligence:**
-• **Donor Lifecycle Optimization:** AI identified optimal touchpoint sequences
-• **Seasonal Giving Patterns:** November campaigns 2.3x more effective than October
-• **Channel Performance:** Direct mail + email sequences outperform single-channel by 156%
+**Predictive Intelligence:**
+• Donor Lifecycle Optimization: AI identified optimal touchpoint sequences
+• Seasonal Giving Patterns: November campaigns 2.3x more effective than October
+• Channel Performance: Direct mail + email sequences outperform single-channel by 156%
 
-**⚠️ Risk Mitigation Priorities:**
-1. **Immediate Action Required (Next 7 days):**
-   - Contact 3 major donors at risk of lapsing
-   - Send retention campaign to 47 at-risk donors
-   
-2. **Strategic Prevention (Next 30 days):**
-   - Implement automated lapse prevention workflows
-   - Launch re-engagement campaign for dormant supporters
+**Risk Mitigation Priorities:**
 
-**🚀 Growth Acceleration Opportunities:**
-• **Board Network Leverage:** 12 warm introductions to potential major donors identified
-• **Corporate Partnership Expansion:** 8 companies with matching programs, employees in your donor base
-• **Event ROI Enhancement:** VIP cultivation tracks show 67% higher post-event retention
+Immediate Action Required (Next 7 days):
+- Contact 3 major donors at risk of lapsing
+- Send retention campaign to 47 at-risk donors
 
-**📈 Expected Impact Timeline:**
-- **Week 1:** +$5,200 from immediate actions
-- **Month 1:** +$18,900 from retention campaigns  
-- **Quarter 1:** +$47,300 from new acquisition strategies
-- **Year 1:** +$127,000 from systematic optimization
+Strategic Prevention (Next 30 days):
+- Implement automated lapse prevention workflows
+- Launch re-engagement campaign for dormant supporters
 
-*These aren't just numbers - they're strategic insights that transform your entire approach to donor development.*`;
+**Growth Acceleration Opportunities:**
+• Board Network Leverage: 12 warm introductions to potential major donors identified
+• Corporate Partnership Expansion: 8 companies with matching programs, employees in your donor base
+• Event ROI Enhancement: VIP cultivation tracks show 67% higher post-event retention
+
+**Expected Impact Timeline:**
+- Week 1: +$5,200 from immediate actions
+- Month 1: +$18,900 from retention campaigns  
+- Quarter 1: +$47,300 from new acquisition strategies
+- Year 1: +$127,000 from systematic optimization
+
+These aren't just numbers. They're strategic insights that transform your entire approach to donor development.`;
 
     case 'recommendations':
-      return `🚀 **Step 4: AI-Powered Action Plan**
+      return `**Step 4: AI-Powered Action Plan**
 
-${greeting}now for the transformation moment - AI converts insights into a precise, prioritized action plan that you can implement starting today.
+${greeting}now for the transformation moment.
 
-**⚡ IMMEDIATE ACTIONS (This Week - High ROI, Low Effort):**
+AI converts insights into a precise, prioritized action plan that you can implement starting today.
+
+**IMMEDIATE ACTIONS (This Week)**
 
 **Critical Interventions (Complete by Friday):**
-1. **Call Patricia Williams** - Major donor, no contact in 94 days, historical $5,200 annual giving
-   📞 *Suggested approach: "Patricia, your impact on our literacy program has been transformational..."*
 
-2. **Send personalized email to 47 at-risk donors** - AI generated subject lines and content
-   📧 *Template: "We miss you, [Name] - here's how your past support changed lives..."*
+1. **Call Patricia Williams**
+   Major donor, no contact in 94 days, historical $5,200 annual giving
+   
+   Suggested approach: "Patricia, your impact on our literacy program has been transformational..."
 
-3. **Schedule coffee with board member Sarah Chen** - She has 3 warm major donor connections
-   ☕ *Talking points: Her network analysis suggests $15K+ potential*
+2. **Send personalized email to 47 at-risk donors**
+   AI generated subject lines and content
+   
+   Template: "We miss you, [Name] - here's how your past support changed lives..."
 
-**📧 30-DAY ENGAGEMENT OPTIMIZATION:**
+3. **Schedule coffee with board member Sarah Chen**
+   She has 3 warm major donor connections
+   
+   Talking points: Her network analysis suggests $15K+ potential
+
+**30-DAY ENGAGEMENT OPTIMIZATION**
 
 **Email Campaign Transformation:**
-• **New Send Time:** Thursdays 10:15 AM (34% higher open rates)
-• **Subject Line AI:** Personalized based on donor history and preferences  
-• **Content Strategy:** 70% impact stories, 30% organizational updates
-• **Mobile Optimization:** 89% of your donors check email on mobile first
+• New Send Time: Thursdays 10:15 AM (34% higher open rates)
+• Subject Line AI: Personalized based on donor history and preferences  
+• Content Strategy: 70% impact stories, 30% organizational updates
+• Mobile Optimization: 89% of your donors check email on mobile first
 
-**🎯 QUARTERLY STRATEGIC INITIATIVES:**
+**QUARTERLY STRATEGIC INITIATIVES**
 
 **Major Gift Pipeline Development:**
-1. **Prospect Research:** AI identified 23 donors with $25K+ capacity
-2. **Cultivation Sequences:** Personalized 6-touch stewardship tracks
-3. **Corporate Matching Outreach:** Target 8 companies with employee donors
+1. Prospect Research: AI identified 23 donors with $25K+ capacity
+2. Cultivation Sequences: Personalized 6-touch stewardship tracks
+3. Corporate Matching Outreach: Target 8 companies with employee donors
 
-**🤖 AUTOMATION IMPLEMENTATIONS:**
+**AUTOMATION IMPLEMENTATIONS**
 
 **Smart Donor Journey Workflows:**
-• **New Donor Series:** 7-touch welcome sequence (increases retention by 67%)
-• **Lapse Prevention:** Automatic alerts when engagement drops below threshold
-• **Birthday/Anniversary Recognition:** Personalized milestone celebrations
-• **Thank You Optimization:** Send timing based on donor's preferred communication windows
+• New Donor Series: 7-touch welcome sequence (increases retention by 67%)
+• Lapse Prevention: Automatic alerts when engagement drops below threshold
+• Birthday/Anniversary Recognition: Personalized milestone celebrations
+• Thank You Optimization: Send timing based on donor's preferred communication windows
 
-**📊 MEASUREMENT & OPTIMIZATION:**
+**MEASUREMENT & OPTIMIZATION**
 
 **AI Dashboard Setup:**
 • Real-time donor health scores
@@ -158,28 +176,28 @@ ${greeting}now for the transformation moment - AI converts insights into a preci
 • Campaign performance optimization
 • Automated A/B testing for subject lines and content
 
-**🎯 EXPECTED TRANSFORMATION:**
+**EXPECTED TRANSFORMATION**
 
 **Financial Impact (12-month projection):**
-- **Retention Improvement:** 71% → 83% (+$42,000)
-- **Average Gift Increase:** $156 → $203 (+$58,000)  
-- **New Major Gifts:** 5 gifts averaging $15,000 (+$75,000)
-- **Corporate Matching Activation:** (+$34,000)
-- **Total Revenue Impact:** +$209,000 (127% increase)
+- Retention Improvement: 71% → 83% (+$42,000)
+- Average Gift Increase: $156 → $203 (+$58,000)  
+- New Major Gifts: 5 gifts averaging $15,000 (+$75,000)
+- Corporate Matching Activation: (+$34,000)
+- Total Revenue Impact: +$209,000 (127% increase)
 
 **Operational Efficiency Gains:**
-- **Analysis Time:** 8 hours/week → 30 minutes/week
-- **Campaign Planning:** 2 days → 2 hours  
-- **Donor Research:** 4 hours/prospect → 15 minutes/prospect
-- **Report Generation:** Manual → Automated
+- Analysis Time: 8 hours/week → 30 minutes/week
+- Campaign Planning: 2 days → 2 hours  
+- Donor Research: 4 hours/prospect → 15 minutes/prospect
+- Report Generation: Manual → Automated
 
-**🎉 The Bottom Line:**
+**The Bottom Line:**
 
 ${firstName ? firstName + ', you' : 'You'} just witnessed how AI transforms ${role} from reactive to predictive, from manual to automated, from guesswork to precision.
 
 With your actual data, these insights become even more powerful and specific to your unique donor base and mission.
 
-**Ready to implement AI in your organization? Let's discuss how to get started with your real data!**`;
+Ready to implement AI in your organization? Let's discuss how to get started with your real data.`;
 
     default:
       return generateDummyDataResponse(userProfile);
