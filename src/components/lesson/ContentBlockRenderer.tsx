@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -76,6 +75,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   const getBlockIcon = () => {
     switch (block.type) {
       case 'text':
+      case 'text_with_image':
         return <FileText className="w-4 h-4" />;
       case 'image':
         return <Image className="w-4 h-4" />;
@@ -154,6 +154,37 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   const renderContent = () => {
     switch (block.type) {
       case 'text':
+        return (
+          <div className="prose prose-base max-w-none overflow-hidden">
+            {formatTextContent(block.content)}
+          </div>
+        );
+      case 'text_with_image':
+        const imageUrl = block.metadata?.image_url;
+        const layout = block.metadata?.layout;
+        
+        if (layout === 'image_left_text_right' && imageUrl) {
+          return (
+            <div className="flex flex-col lg:flex-row gap-6 min-h-[400px]">
+              {/* Image container - full height on left */}
+              <div className="lg:w-2/5 flex-shrink-0">
+                <img 
+                  src={imageUrl} 
+                  alt={block.title}
+                  className="w-full h-full object-cover rounded-lg shadow-sm min-h-[300px] lg:min-h-[400px]"
+                />
+              </div>
+              {/* Text content on right */}
+              <div className="lg:w-3/5 flex flex-col justify-center">
+                <div className="prose prose-base max-w-none overflow-hidden">
+                  {formatTextContent(block.content)}
+                </div>
+              </div>
+            </div>
+          );
+        }
+        
+        // Fallback to regular text if no special layout
         return (
           <div className="prose prose-base max-w-none overflow-hidden">
             {formatTextContent(block.content)}
