@@ -38,7 +38,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       const shortTask = suggestedTask.length > 30 ? `${suggestedTask.substring(0, 30)}...` : suggestedTask;
       actions.push({
         text: shortTask,
-        value: shortTask
+        value: suggestedTask
       });
     }
 
