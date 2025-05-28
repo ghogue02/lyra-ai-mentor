@@ -7,7 +7,6 @@ import { QuickActions } from './chat/QuickActions';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import { CloseConfirmationDialog } from './chat/CloseConfirmationDialog';
-import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
 
 interface FullScreenChatOverlayProps {
   isOpen: boolean;
@@ -35,7 +34,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [hasIncrementedForCurrentMessage, setHasIncrementedForCurrentMessage] = useState(false);
-  const [showInteractiveDemo, setShowInteractiveDemo] = useState(false);
 
   const {
     messages,
@@ -117,15 +115,10 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   };
 
   const handleAiDemo = () => {
-    console.log('FullScreenChatOverlay: Starting Interactive AI Demo');
-    setShowInteractiveDemo(true);
-    setShowQuickActions(false);
-  };
-
-  const handleDemoMessage = (message: string) => {
-    console.log('FullScreenChatOverlay: Demo sending message:', message);
+    console.log('FullScreenChatOverlay: Starting AI Magic Demo in chat');
     setHasIncrementedForCurrentMessage(false);
-    sendMessage(message);
+    sendMessage("Show me how AI transforms messy data into actionable insights! Start the demo.");
+    setShowQuickActions(false);
   };
 
   const handleClose = () => {
@@ -157,7 +150,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     clearChat();
     resetEngagement();
     setShowQuickActions(true);
-    setShowInteractiveDemo(false);
   };
 
   return (
@@ -186,16 +178,6 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
               </div>
             )}
 
-            {showInteractiveDemo && (
-              <div className="flex-shrink-0 spacing-mobile">
-                <InteractiveAiDemo
-                  onSendMessage={handleDemoMessage}
-                  userProfile={userProfile}
-                  isVisible={showInteractiveDemo}
-                />
-              </div>
-            )}
-
             <div className="flex-1 min-h-0 overflow-hidden">
               <ChatMessages
                 messages={messages}
@@ -203,6 +185,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
                 engagement={engagement}
                 messagesEndRef={messagesEndRef}
                 onForceClose={forceClose}
+                onSendMessage={sendMessage}
               />
             </div>
             

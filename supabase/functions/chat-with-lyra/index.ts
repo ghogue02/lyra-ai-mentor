@@ -40,8 +40,9 @@ serve(async (req) => {
     // Handle staged demo requests - check for specific demo stage messages
     const lastMessage = messages[messages.length - 1]?.content || '';
     
-    if (isDummyDataRequest || demoStage || lastMessage.includes('DEMO_STAGE_')) {
-      let stageName = 'complete';
+    if (isDummyDataRequest || demoStage || lastMessage.includes('DEMO_STAGE_') || 
+        lastMessage.includes('Show me how AI transforms messy data into actionable insights')) {
+      let stageName = 'intro';
       
       if (lastMessage.includes('DEMO_STAGE_LOADING')) {
         stageName = 'loading';
@@ -51,6 +52,8 @@ serve(async (req) => {
         stageName = 'insights';
       } else if (lastMessage.includes('DEMO_STAGE_RECOMMENDATIONS')) {
         stageName = 'recommendations';
+      } else if (lastMessage.includes('Show me how AI transforms messy data into actionable insights')) {
+        stageName = 'intro';
       } else if (demoStage) {
         stageName = demoStage;
       }

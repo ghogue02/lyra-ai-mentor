@@ -18,12 +18,14 @@ interface ChatMessagesProps {
   };
   messagesEndRef: React.RefObject<HTMLDivElement>;
   onForceClose: () => void;
+  onSendMessage: (message: string) => void;
 }
 
 export const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   isTyping,
-  messagesEndRef
+  messagesEndRef,
+  onSendMessage
 }) => {
   return (
     <div className="h-full overflow-y-auto overflow-x-hidden spacing-mobile bg-gray-900">
@@ -54,7 +56,7 @@ export const ChatMessages: React.FC<ChatMessagesProps> = ({
                 {message.isUser ? (
                   <div className="text-sm leading-relaxed">{message.content}</div>
                 ) : (
-                  <FormattedMessage content={message.content} />
+                  <FormattedMessage content={message.content} onSendMessage={onSendMessage} />
                 )}
               </div>
             </div>

@@ -1,4 +1,3 @@
-
 import type { UserProfile } from './types.ts';
 
 export function generateStagedDemoResponse(userProfile: UserProfile | null, stage: string): string {
@@ -7,12 +6,19 @@ export function generateStagedDemoResponse(userProfile: UserProfile | null, stag
   const greeting = firstName ? `${firstName}, ` : '';
   
   switch (stage) {
+    case 'intro':
+      return `🎯 **AI Magic Demo**
+
+${greeting}ready to see AI transform your ${role} data? This interactive demo will show you step-by-step how AI finds hidden patterns and creates actionable insights.
+
+We'll use sample data so you can see the magic without any setup!
+
+*Click "Start Demo" below to begin your journey into AI-powered insights!*`;
+
     case 'loading':
-      return `${greeting}let me load some realistic ${role} data that shows how AI handles messy, real-world information...
+      return `📊 **Step 1: Loading Sample Data**
 
-📊 **SAMPLE DATA LOADING...**
-
-Here's what messy ${role} data typically looks like:
+${greeting}let me load some realistic ${role} data that shows how AI handles messy, real-world information...
 
 \`\`\`
 DONOR_EXPORT_Q4_2024.csv
@@ -28,72 +34,73 @@ Patricia W.,$520,"12/01/24",Online,"Major donor, board connection"
 
 Notice the inconsistencies? Different name formats, missing data, various payment methods? This would take hours to clean manually.
 
-*Ready for the next step? Click "Continue" to see how AI analyzes this chaos!*`;
+*Ready for the next step? Click "Continue to Analysis" to see how AI analyzes this chaos!*`;
 
     case 'analysis':
-      return `${greeting}now watch AI work its magic on that messy data...
+      return `🧠 **Step 2: AI Analysis in Progress**
 
-🧠 **AI ANALYSIS IN PROGRESS...**
+${greeting}now watch AI work its magic on that messy data...
 
-*Processing 1,247 donor records...*
-*Identifying patterns...*
-*Cross-referencing engagement data...*
-*Calculating predictive metrics...*
+AI Analysis in Progress...
+Processing 1,247 donor records...
+Identifying patterns...
+Cross-referencing engagement data...
+Calculating predictive metrics...
 
 **✨ PATTERNS DISCOVERED:**
 
 🎯 **Donor Segmentation:**
-- Monthly sustainers: 23% of donors, 67% of revenue
-- Event-driven donors: 45% higher lifetime value
-- Online vs. offline preference patterns identified
+• Monthly sustainers: 23% of donors, 67% of revenue
+• Event-driven donors: 45% higher lifetime value
+• Online vs. offline preference patterns identified
 
 📈 **Behavioral Insights:**
-- Thursday emails: 34% higher open rates
-- Personal stories: 2.8x better conversion
-- Follow-up timing: 48-72 hours optimal
+• Thursday emails: 34% higher open rates
+• Personal stories: 2.8x better conversion
+• Follow-up timing: 48-72 hours optimal
 
 🔮 **Predictive Analysis:**
-- 47 donors likely to lapse next month
-- 23 donors showing major gift potential
-- $18,400 revenue at risk without intervention
+• 47 donors likely to lapse next month
+• 23 donors showing major gift potential
+• $18,400 revenue at risk without intervention
 
 *This analysis would take a human analyst 2-3 days. AI did it in seconds!*
 
-*Ready to see the actionable insights? Click "Continue"!*`;
+*Ready to see the actionable insights? Click "Show Insights"!*`;
 
     case 'insights':
-      return `${greeting}here are the game-changing insights AI discovered in your data...
+      return `💡 **Step 3: Key Insights Discovered**
 
-💡 **KEY INSIGHTS REVEALED**
+${greeting}here are the game-changing insights AI discovered in your data...
 
 **🎯 Hidden Revenue Opportunities:**
-- Convert quarterly donors to monthly = +$127,000 annually
-- Optimize email timing = +23% open rates
-- Target 'almost major' donors = +$89,000 potential
+• Convert quarterly donors to monthly = +$127,000 annually
+• Optimize email timing = +23% open rates
+• Target 'almost major' donors = +$89,000 potential
 
 **⚠️ Risk Alerts:**
-- 47 donors showing lapse patterns (prevention needed)
-- $18,400 revenue at risk in next 60 days
-- 3 major donors haven't been contacted in 90+ days
+• 47 donors showing lapse patterns (prevention needed)
+• $18,400 revenue at risk in next 60 days
+• 3 major donors haven't been contacted in 90+ days
 
 **🚀 Growth Accelerators:**
-- Peer-to-peer campaigns: 340% ROI potential
-- Corporate matching untapped: $34,000 sitting there
-- Board connections: 12 warm introductions available
+• Peer-to-peer campaigns: 340% ROI potential
+• Corporate matching untapped: $34,000 sitting there
+• Board connections: 12 warm introductions available
 
 **🎪 Event Strategy Gold:**
-- VIP attendees give 3.2x more within 30 days
-- Silent auctions outperform live by 23%
-- Follow-up parties increase retention by 67%
+• VIP attendees give 3.2x more within 30 days
+• Silent auctions outperform live by 23%
+• Follow-up parties increase retention by 67%
 
 *These insights transform guesswork into strategy!*
 
-*Ready for specific action steps? Click "Continue" for recommendations!*`;
+*Ready for specific action steps? Click "Get Recommendations"!*`;
 
     case 'recommendations':
-      return `${greeting}now for the best part - here's exactly what to do with these insights...
+      return `🚀 **Step 4: Actionable Recommendations**
 
-🚀 **YOUR AI-POWERED ACTION PLAN**
+${greeting}now for the best part - here's exactly what to do with these insights...
 
 **🎯 This Week (High Impact, Quick Wins):**
 1. **Call these 3 major donors** who haven't been contacted in 90+ days
@@ -111,20 +118,22 @@ Notice the inconsistencies? Different name formats, missing data, various paymen
 3. **VIP stewardship program** for high-value event attendees
 
 **🤖 Automation Opportunities:**
-- Set up automatic lapse prevention alerts
-- Create smart donor journey workflows
-- Implement predictive engagement scoring
+• Set up automatic lapse prevention alerts
+• Create smart donor journey workflows
+• Implement predictive engagement scoring
 
 **Expected Results:**
-- 📈 +$127,000 annual revenue increase
-- 🎯 +23% donor retention improvement
-- ⚡ 75% reduction in manual analysis time
+• 📈 +$127,000 annual revenue increase
+• 🎯 +23% donor retention improvement
+• ⚡ 75% reduction in manual analysis time
 
 *This is what AI does - transforms data into dollars and impact!*
 
+✨ **Demo Complete!**
+
 ${firstName ? firstName + ', imagine' : 'Imagine'} having insights like this for YOUR actual data. Ready to explore how AI could revolutionize your ${role} work?`;
 
-    default: // complete demo
+    default:
       return generateDummyDataResponse(userProfile);
   }
 }
@@ -150,7 +159,7 @@ ENGAGEMENT_METRICS.csv
 donor_id,email_open_rate,event_attendance,volunteer_hours,social_media_engagement
 D001,78%,3_events,12_hours,high
 D002,45%,1_event,0_hours,low
-D003,92%,5_events,24_hours,medium
+D003,Patricia Williams,$5,200,2024-12-01,monthly,65+,mail
 ...
 
 Let me analyze this donor data for patterns and insights!`,
