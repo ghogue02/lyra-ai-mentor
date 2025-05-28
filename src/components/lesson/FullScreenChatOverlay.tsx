@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -148,10 +147,10 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     <>
       <Dialog open={isOpen} onOpenChange={handleClose} modal>
         <DialogContent 
-          className="fixed inset-0 z-[100] w-screen h-screen max-w-none max-h-none p-0 m-0 border-0 rounded-none bg-gray-900 overflow-hidden"
+          className="fixed inset-0 z-[100] w-screen h-screen max-w-none max-h-none p-0 m-0 border-0 rounded-none bg-gray-900"
           style={{ width: '100vw', height: '100vh', transform: 'none', left: 0, top: 0 }}
         >
-          <div className="flex flex-col h-full w-full bg-gray-900 overflow-hidden">
+          <div className="flex flex-col h-full w-full bg-gray-900">
             <ChatHeader
               lessonContext={lessonContext}
               engagement={engagement}
@@ -170,7 +169,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
               </div>
             )}
 
-            <div className="flex-1 min-h-0 overflow-hidden">
+            <div className="flex-1 min-h-0">
               <ChatMessages
                 messages={messages}
                 isTyping={isTyping}
