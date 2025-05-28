@@ -9,7 +9,7 @@ export function generateStagedDemoResponse(userProfile: UserProfile | null, stag
     case 'intro':
       return `**AI Data Analysis Demo**
 
-${greeting}ready to see how AI transforms your ${role} data?
+${greeting}ready to see how AI transforms fundraising data?
 
 This interactive demo shows you step-by-step how AI finds hidden patterns and creates actionable insights from messy data.
 
@@ -20,7 +20,7 @@ We'll use sample data so you can see the magic without any setup.
     case 'loading':
       return `**Step 1: Data Processing**
 
-${greeting}watch as our AI system loads and processes realistic ${role} data.
+${greeting}watch as our AI system loads and processes realistic fundraising data.
 
 Notice how it handles the messy, real-world data that would typically overwhelm traditional analysis tools.
 
@@ -108,7 +108,7 @@ Strategic Prevention (Next 30 days):
 
 **Growth Acceleration Opportunities:**
 • Board Network Leverage: 12 warm introductions to potential major donors identified
-• Corporate Partnership Expansion: 8 companies with matching programs, employees in your donor base
+• Corporate Partnership Expansion: 8 companies with matching programs, employees in donor base
 • Event ROI Enhancement: VIP cultivation tracks show 67% higher post-event retention
 
 **Expected Impact Timeline:**
@@ -117,7 +117,7 @@ Strategic Prevention (Next 30 days):
 - Quarter 1: +$47,300 from new acquisition strategies
 - Year 1: +$127,000 from systematic optimization
 
-These aren't just numbers. They're strategic insights that transform your entire approach to donor development.`;
+These aren't just numbers. They're strategic insights that transform the entire approach to donor development.`;
 
     case 'recommendations':
       return `**Step 4: AI-Powered Action Plan**
@@ -133,12 +133,12 @@ AI converts insights into a precise, prioritized action plan that you can implem
 1. **Call Patricia Williams**
    Major donor, no contact in 94 days, historical $5,200 annual giving
    
-   Suggested approach: "Patricia, your impact on our literacy program has been transformational..."
+   Suggested approach: "Patricia, the impact on our literacy program has been transformational..."
 
 2. **Send personalized email to 47 at-risk donors**
    AI generated subject lines and content
    
-   Template: "We miss you, [Name] - here's how your past support changed lives..."
+   Template: "We miss you, [Name] - here's how past support changed lives..."
 
 3. **Schedule coffee with board member Sarah Chen**
    She has 3 warm major donor connections
@@ -151,7 +151,7 @@ AI converts insights into a precise, prioritized action plan that you can implem
 • New Send Time: Thursdays 10:15 AM (34% higher open rates)
 • Subject Line AI: Personalized based on donor history and preferences  
 • Content Strategy: 70% impact stories, 30% organizational updates
-• Mobile Optimization: 89% of your donors check email on mobile first
+• Mobile Optimization: 89% of donors check email on mobile first
 
 **QUARTERLY STRATEGIC INITIATIVES**
 
@@ -193,11 +193,11 @@ AI converts insights into a precise, prioritized action plan that you can implem
 
 **The Bottom Line:**
 
-${firstName ? firstName + ', you' : 'You'} just witnessed how AI transforms ${role} from reactive to predictive, from manual to automated, from guesswork to precision.
+${firstName ? firstName + ', you' : 'You'} just witnessed how AI transforms nonprofit work from reactive to predictive, from manual to automated, from guesswork to precision.
 
-With your actual data, these insights become even more powerful and specific to your unique donor base and mission.
+With actual fundraising data, these insights become even more powerful and specific to the unique donor base and mission.
 
-Ready to implement AI in your organization? Let's discuss how to get started with your real data.`;
+Ready to implement AI in nonprofit work? Let's discuss how to get started with real data.`;
 
     default:
       return generateDummyDataResponse(userProfile);
@@ -245,7 +245,7 @@ Let me analyze this donor data for patterns and insights!`,
 • Develop event-to-major-gift pipeline for 45+ attendees
 • Launch social volunteer recruitment campaigns
 
-What if we could predict which donors are most likely to become monthly sustainers? I can show you how AI scoring models work with your actual data.`
+What if we could predict which donors are most likely to become monthly sustainers? I can show you how AI scoring models work with actual data.`
     },
     programs: {
       title: "Program Outcomes Analysis",
@@ -350,7 +350,7 @@ Generating insights...
 
 ${dataSet.analysis}
 
-${firstName ? firstName + ', this' : 'This'} is just a tiny glimpse of what AI can do with YOUR real data!
+${firstName ? firstName + ', this' : 'This'} is just a tiny glimpse of what AI can do with real data!
 
-Ready to see how we can transform your actual ${role} work with AI? What part of this analysis surprised you most?`;
+Ready to see how we can transform actual ${role} work with AI? What part of this analysis surprised you most?`;
 }

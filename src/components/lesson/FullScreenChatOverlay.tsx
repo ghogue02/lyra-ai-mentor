@@ -7,6 +7,7 @@ import { QuickActions } from './chat/QuickActions';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import { CloseConfirmationDialog } from './chat/CloseConfirmationDialog';
+import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
 
 interface FullScreenChatOverlayProps {
   isOpen: boolean;
@@ -34,6 +35,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
   const [hasIncrementedForCurrentMessage, setHasIncrementedForCurrentMessage] = useState(false);
+  const [showInteractiveDemo, setShowInteractiveDemo] = useState(false);
 
   const {
     messages,
@@ -46,6 +48,19 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   } = useLyraChat(lessonContext);
 
   const { engagement, incrementExchange, resetEngagement, setEngagementCount } = useChatEngagement(3, initialEngagementCount);
+
+  // Check if we should show the interactive demo
+  useEffect(() => {
+    const lastMessage = messages[messages.length - 1];
+    if (lastMessage && !lastMessage.isUser) {
+      const content = lastMessage.content.toLowerCase();
+      const showDemo = content.includes('ai magic demo') || 
+                      content.includes('show me how ai transforms') ||
+                      content.includes('ai data analysis demo') ||
+                      content.includes('ready to see how ai transforms');
+      setShowInteractiveDemo(showDemo);
+    }
+  }, [messages]);
 
   // Initialize engagement count with database value when component mounts
   useEffect(() => {
@@ -117,7 +132,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const handleAiDemo = () => {
     console.log('FullScreenChatOverlay: Starting AI Magic Demo in chat');
     setHasIncrementedForCurrentMessage(false);
-    sendMessage("Show me how AI transforms messy data into actionable insights! Start the demo.");
+    sendMessage("Show me the AI magic demo - how AI transforms fundraising data!");
     setShowQuickActions(false);
   };
 
@@ -187,6 +202,16 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
                 onForceClose={forceClose}
                 onSendMessage={sendMessage}
               />
+              
+              {showInteractiveDemo && (
+                <div className="p-4">
+                  <InteractiveAiDemo
+                    onSendMessage={sendMessage}
+                    userProfile={userProfile}
+                    isVisible={showInteractiveDemo}
+                  />
+                </div>
+              )}
             </div>
             
             <ChatInput

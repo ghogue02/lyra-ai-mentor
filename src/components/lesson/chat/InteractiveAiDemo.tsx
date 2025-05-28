@@ -87,36 +87,32 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
     
     switch (currentStage) {
       case 'intro':
-        onSendMessage("Show me how AI analyzes fundraising data step by step!");
         setTimeout(() => {
-          if (isPlaying) proceedToNextStage();
+          setCurrentStage('loading');
+          setShowDataTable(true);
         }, 1000);
         break;
       case 'loading':
-        onSendMessage("DEMO_STAGE_LOADING");
-        setShowDataTable(true);
         setTimeout(() => {
-          if (isPlaying) proceedToNextStage();
+          setCurrentStage('analysis');
+          setShowProcessing(true);
         }, 4000);
         break;
       case 'analysis':
-        onSendMessage("DEMO_STAGE_ANALYSIS");
-        setShowProcessing(true);
         setTimeout(() => {
-          if (isPlaying) proceedToNextStage();
+          setCurrentStage('insights');
+          setShowInsights(true);
         }, 6000);
         break;
       case 'insights':
-        onSendMessage("DEMO_STAGE_INSIGHTS");
-        setShowInsights(true);
         setTimeout(() => {
-          if (isPlaying) proceedToNextStage();
+          setCurrentStage('recommendations');
         }, 5000);
         break;
       case 'recommendations':
-        onSendMessage("DEMO_STAGE_RECOMMENDATIONS");
         setTimeout(() => {
-          if (isPlaying) proceedToNextStage();
+          setCurrentStage('complete');
+          setIsPlaying(false);
         }, 3000);
         break;
       case 'complete':
@@ -133,14 +129,14 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
       case 'intro':
         return {
           title: "AI Data Analysis Demo",
-          content: `${firstName ? `${firstName}, ready` : 'Ready'} to see how AI transforms your ${role} data? This demo shows you step-by-step how AI finds patterns and creates insights from messy data.`,
-          subtext: "Using sample data to protect your privacy",
+          content: `${firstName ? `${firstName}, ready` : 'Ready'} to see how AI transforms fundraising data? This demo shows you step-by-step how AI finds patterns and creates insights from messy data.`,
+          subtext: "Using sample data to protect privacy",
           actionText: "Start Demo"
         };
       case 'loading':
         return {
           title: "Step 1: Data Processing",
-          content: `AI loads your ${role} data and handles the messy formatting that would take humans hours to clean.`,
+          content: `AI loads fundraising data and handles the messy formatting that would take humans hours to clean.`,
           subtext: "Processing donor records and standardizing formats",
           actionText: isPlaying ? "Processing..." : "Load Data"
         };
@@ -154,7 +150,7 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
       case 'insights':
         return {
           title: "Step 3: Key Insights",
-          content: "AI reveals actionable insights about your donor behavior and opportunities.",
+          content: "AI reveals actionable insights about donor behavior and opportunities.",
           subtext: "Discovering revenue patterns and donor preferences",
           actionText: isPlaying ? "Generating..." : "Show Insights"
         };
@@ -168,8 +164,8 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
       case 'complete':
         return {
           title: "Demo Complete",
-          content: "You've seen how AI transforms data into actionable insights. Imagine this with your actual data!",
-          subtext: "Ready to explore AI for your organization?",
+          content: "You've seen how AI transforms data into actionable insights. Imagine this with actual fundraising data!",
+          subtext: "Ready to explore AI for nonprofit work?",
           actionText: "Restart Demo"
         };
       default:
@@ -266,7 +262,7 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
             {currentStage === 'complete' && (
               <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
                 <p className="text-sm text-blue-800">
-                  <strong>Next steps:</strong> This demo used sample data. With your real data, these insights become powerful tools for growing your impact and revenue.
+                  <strong>Next steps:</strong> This demo used sample data. With real fundraising data, these insights become powerful tools for growing impact and revenue.
                 </p>
               </div>
             )}
