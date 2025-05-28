@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Send, X, ArrowDown } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
-import { useLyraChat } from '@/hooks/useLyraChat';
+import { useTemporaryChat } from '@/hooks/useTemporaryChat';
 
 interface DataInsightsOverlayProps {
   isOpen: boolean;
@@ -142,24 +142,25 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
     inputValue,
     setInputValue,
     sendMessage,
-    clearChat
-  } = useLyraChat(lessonContext);
+    clearChat,
+    initializeWithMessage
+  } = useTemporaryChat(lessonContext);
 
-  // Initialize with Jordan's story
+  // Initialize with Jordan's story when overlay opens
   useEffect(() => {
-    if (isOpen && messages.length === 0) {
+    if (isOpen) {
       // Clear any existing chat and start fresh
       clearChat();
-      // Small delay to ensure clearChat completes
+      // Initialize with Jordan's story
+      initializeWithMessage(JORDAN_STORY);
+      // Show arrow after story is loaded
       setTimeout(() => {
-        sendMessage(JORDAN_STORY);
-        // Show arrow after story is sent
-        setTimeout(() => {
-          setShowArrow(true);
-        }, 2000);
-      }, 100);
+        setShowArrow(true);
+      }, 2000);
+      // Reset analysis state
+      setAnalysisStarted(false);
     }
-  }, [isOpen]);
+  }, [isOpen, clearChat, initializeWithMessage]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
