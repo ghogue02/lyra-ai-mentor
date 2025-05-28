@@ -36,8 +36,14 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     const { data } = supabase.storage
       .from('lesson-images')
       .getPublicUrl(filename);
+    console.log(`ContentBlockRenderer: Getting image URL for ${filename}:`, data.publicUrl);
     return data.publicUrl;
   };
+
+  // Debug logging for content blocks
+  useEffect(() => {
+    console.log(`ContentBlockRenderer: Rendering block "${block.title}" with type "${block.type}" and metadata:`, block.metadata);
+  }, [block]);
 
   // Improved auto-complete logic with lower thresholds and better timing
   useEffect(() => {
@@ -211,6 +217,8 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         const layout = block.metadata?.layout;
         const imageUrl = imageFile ? getImageUrl(imageFile) : null;
         
+        console.log(`ContentBlockRenderer: Processing text_with_image for "${block.title}". Image file: ${imageFile}, Layout: ${layout}, Image URL: ${imageUrl}`);
+        
         // Handle success stories layout
         if (layout === 'success_stories') {
           return renderSuccessStories();
@@ -226,6 +234,8 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
                   src={imageUrl} 
                   alt={block.title}
                   className="w-full h-full object-cover rounded-lg shadow-sm min-h-[300px] lg:min-h-[400px]"
+                  onLoad={() => console.log(`ContentBlockRenderer: Image loaded successfully for ${block.title}`)}
+                  onError={(e) => console.error(`ContentBlockRenderer: Image failed to load for ${block.title}:`, e)}
                 />
               </div>
               {/* Text content on right */}
@@ -239,6 +249,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         }
         
         // Fallback to regular text if no special layout or missing image
+        console.log(`ContentBlockRenderer: Falling back to text-only for "${block.title}"`);
         return (
           <div className="prose prose-base max-w-none overflow-hidden">
             {formatTextContent(block.content)}
