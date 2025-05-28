@@ -20,6 +20,17 @@ interface DataInsightsOverlayProps {
 
 const JORDAN_STORY = `Jordan is the newest—​and least spreadsheet-savvy—​development coordinator on the team, but she's driven by a simple dream: raise enough in the 2025 campaign to reopen the nonprofit's shuttered after-school robotics lab. When she opens the donor file, it looks like a glitchy hallway of fun-house mirrors: names doubled, numbers garbled, and emails half-typed. Refusing to let the chaos kill her momentum, Jordan enlists a quick-witted AI sidekick that riffs on pop playlists while sorting columns, betting that a little tech risk can spark a big turnaround. As mismatched rows snap into place and totals finally make sense, the staff swaps anxious jokes for whoops of relief—​and Jordan discovers that cleaning data isn't busywork; it's the moment the mission comes into focus. By the time the final figures light up the screen, everyone sees the same bright possibility Jordan has chased from the start: a robotics lab buzzing with kids who now have the tools—and the funding—to build their own future.`;
 
+const ANALYSIS_INSTRUCTIONS = `Perfect! Let me analyze this donor database for you. I'll be looking for:
+
+🔍 **What I'm scanning for:**
+• Duplicate donors (same name + email combinations)
+• Missing or malformed email addresses  
+• Blank, non-numeric, or non-USD donation amounts
+
+I'll deliver my findings in three sections: **Patterns Found**, **Action Items**, and **Hidden Insights** you might not have noticed.
+
+Let's dive into the data...`;
+
 const CSV_DATA = `===== DONOR DATABASE EXPORT =====
 CSV File: donor_records_2025.csv
 Status: MESSY - Needs Analysis
@@ -136,6 +147,7 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showBrainIcon, setShowBrainIcon] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(false);
   const [showCsvData, setShowCsvData] = useState(false);
   const [csvDataComplete, setCsvDataComplete] = useState(false);
   const [analysisStarted, setAnalysisStarted] = useState(false);
@@ -156,6 +168,7 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
       clearChat();
       initializeWithMessage(JORDAN_STORY);
       setShowBrainIcon(false);
+      setShowInstructions(false);
       setShowCsvData(false);
       setCsvDataComplete(false);
       setAnalysisStarted(false);
@@ -173,11 +186,16 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages, showCsvData]);
+  }, [messages, showCsvData, showInstructions]);
 
   const handleBrainClick = () => {
     setShowBrainIcon(false);
-    setShowCsvData(true);
+    setShowInstructions(true);
+    
+    // Add the instructions message
+    setTimeout(() => {
+      setShowCsvData(true);
+    }, 2000);
   };
 
   const handleCsvDataComplete = () => {
@@ -209,7 +227,7 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
       {/* Backdrop with higher z-index */}
       <div className="fixed inset-0 z-[102] bg-black/60 backdrop-blur-sm" onClick={onClose} />
       
-      {/* Data Insights Chat Container */}
+      {/* Data Insights Chat Container - Fixed scrollability */}
       <div className="fixed inset-0 z-[103] grid grid-rows-[auto_1fr_auto] w-screen h-screen bg-gray-900">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-700 bg-gradient-to-r from-blue-600 to-green-500">
@@ -231,8 +249,8 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
           </Button>
         </div>
 
-        {/* Messages */}
-        <div className="overflow-y-auto p-4 space-y-4 bg-gray-800">
+        {/* Messages - Enhanced scrollability */}
+        <div className="overflow-y-auto p-4 space-y-4 bg-gray-800 scroll-smooth">
           {messages.map((message, index) => (
             <div key={message.id} className="relative">
               <div
@@ -262,7 +280,7 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
               </div>
               
               {/* Floating brain icon for the first message (Jordan's story) */}
-              {index === 0 && !message.isUser && showBrainIcon && !showCsvData && (
+              {index === 0 && !message.isUser && showBrainIcon && !showInstructions && (
                 <div className="absolute -bottom-2 right-4 z-10">
                   <Button
                     onClick={handleBrainClick}
@@ -276,7 +294,19 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
             </div>
           ))}
 
-          {/* CSV Data Display */}
+          {/* Analysis Instructions */}
+          {showInstructions && (
+            <div className="flex justify-start">
+              <div className="flex items-start gap-3 max-w-[85%]">
+                <LyraAvatar size="sm" withWave={false} className="mt-1 flex-shrink-0" />
+                <div className="bg-gray-700 text-gray-100 rounded-lg rounded-bl-none shadow-sm p-4">
+                  <div className="whitespace-pre-wrap text-sm leading-relaxed">{ANALYSIS_INSTRUCTIONS}</div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* CSV Data Display with enhanced scrollability */}
           {showCsvData && !csvDataComplete && (
             <div className="my-4">
               <AnimatedDataDisplay

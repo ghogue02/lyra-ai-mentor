@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Button } from "@/components/ui/button";
 import { Play, Pause, SkipForward } from 'lucide-react';
 
@@ -18,6 +18,8 @@ export const AnimatedDataDisplay: React.FC<AnimatedDataDisplayProps> = ({
   const [isPlaying, setIsPlaying] = useState(autoStart);
   const [currentLineIndex, setCurrentLineIndex] = useState(0);
   const [isComplete, setIsComplete] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const scrollTargetRef = useRef<HTMLDivElement>(null);
 
   const lines = content.split('\n');
 
@@ -28,6 +30,15 @@ export const AnimatedDataDisplay: React.FC<AnimatedDataDisplayProps> = ({
       const currentLine = lines[currentLineIndex];
       setDisplayedLines(prev => [...prev, currentLine]);
       setCurrentLineIndex(prev => prev + 1);
+
+      // Auto-scroll to follow the animation
+      setTimeout(() => {
+        scrollTargetRef.current?.scrollIntoView({ 
+          behavior: 'smooth', 
+          block: 'end',
+          inline: 'nearest'
+        });
+      }, 50);
 
       if (currentLineIndex + 1 >= lines.length) {
         setIsComplete(true);
@@ -84,15 +95,23 @@ export const AnimatedDataDisplay: React.FC<AnimatedDataDisplayProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 text-green-400 p-3 rounded-lg mb-4 font-mono text-xs overflow-x-auto border border-gray-600 relative">
+    <div 
+      ref={containerRef}
+      className="bg-gray-800 text-green-400 p-3 rounded-lg mb-4 font-mono text-xs border border-gray-600 relative max-h-96 overflow-y-auto"
+    >
       {/* Status indicator and controls */}
-      <div className="absolute top-2 right-2 flex items-center space-x-2">
-        {!isComplete && (
-          <div className="flex space-x-1">
-            <div className="w-1 h-1 bg-green-500 rounded-full animate-ping"></div>
-            <div className="w-1 h-1 bg-green-500 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
-          </div>
-        )}
+      <div className="sticky top-0 bg-gray-800 pb-2 mb-2 border-b border-gray-600 flex items-center justify-between z-10">
+        <div className="flex items-center space-x-2">
+          {!isComplete && (
+            <div className="flex space-x-1">
+              <div className="w-1 h-1 bg-green-500 rounded-full animate-ping"></div>
+              <div className="w-1 h-1 bg-green-500 rounded-full animate-ping" style={{ animationDelay: '0.5s' }}></div>
+            </div>
+          )}
+          <span className="text-xs text-gray-400">
+            {isComplete ? 'Data loaded - Ready for analysis' : `Loading data... ${displayedLines.length}/${lines.length} rows`}
+          </span>
+        </div>
         
         <div className="flex space-x-1">
           {!isComplete && (
@@ -140,34 +159,35 @@ export const AnimatedDataDisplay: React.FC<AnimatedDataDisplayProps> = ({
         </div>
       </div>
 
-      <pre className="whitespace-pre-wrap pr-20">
-        {displayedLines.map((line, index) => (
-          <div
-            key={index}
-            className="animate-fade-in"
-            style={{ animationDelay: `${index * 0.05}s` }}
-          >
-            {line}
-          </div>
-        ))}
-        {!isComplete && isPlaying && (
-          <span className="animate-pulse">▎</span>
-        )}
-      </pre>
+      <div className="overflow-x-auto">
+        <pre className="whitespace-pre-wrap">
+          {displayedLines.map((line, index) => (
+            <div
+              key={index}
+              className="animate-fade-in"
+              style={{ animationDelay: `${index * 0.05}s` }}
+            >
+              {line}
+            </div>
+          ))}
+          {!isComplete && isPlaying && (
+            <span className="animate-pulse">▎</span>
+          )}
+          {/* Scroll target element */}
+          <div ref={scrollTargetRef} className="h-0" />
+        </pre>
+      </div>
 
-      {/* Progress indicator */}
-      <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
-        <span>
-          {isComplete ? 'Data loaded - Ready for analysis' : `Loading data... ${displayedLines.length}/${lines.length} rows`}
-        </span>
-        {!isComplete && (
+      {/* Progress indicator at bottom */}
+      {!isComplete && (
+        <div className="sticky bottom-0 bg-gray-800 pt-2 mt-2 border-t border-gray-600 flex items-center justify-center">
           <div className="flex space-x-1">
             <span className="animate-bounce">●</span>
             <span className="animate-bounce" style={{ animationDelay: '0.1s' }}>●</span>
             <span className="animate-bounce" style={{ animationDelay: '0.2s' }}>●</span>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };
