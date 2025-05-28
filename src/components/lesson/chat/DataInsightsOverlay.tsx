@@ -6,6 +6,7 @@ import { Send, X, Brain } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import { useTemporaryChat } from '@/hooks/useTemporaryChat';
+import { AnimatedDataDisplay } from './AnimatedDataDisplay';
 
 interface DataInsightsOverlayProps {
   isOpen: boolean;
@@ -19,7 +20,9 @@ interface DataInsightsOverlayProps {
 
 const JORDAN_STORY = `Jordan is the newest—​and least spreadsheet-savvy—​development coordinator on the team, but she's driven by a simple dream: raise enough in the 2025 campaign to reopen the nonprofit's shuttered after-school robotics lab. When she opens the donor file, it looks like a glitchy hallway of fun-house mirrors: names doubled, numbers garbled, and emails half-typed. Refusing to let the chaos kill her momentum, Jordan enlists a quick-witted AI sidekick that riffs on pop playlists while sorting columns, betting that a little tech risk can spark a big turnaround. As mismatched rows snap into place and totals finally make sense, the staff swaps anxious jokes for whoops of relief—​and Jordan discovers that cleaning data isn't busywork; it's the moment the mission comes into focus. By the time the final figures light up the screen, everyone sees the same bright possibility Jordan has chased from the start: a robotics lab buzzing with kids who now have the tools—and the funding—to build their own future.`;
 
-const CSV_ANALYSIS_PROMPT = `Analyze the donor records below to spot duplicate donors using name + email, flag rows with missing or malformed emails, and detect donations whose Amount field is blank, non-numeric, or in a non-USD format. Deliver three immediate action items for the user and three hidden insights they may not realize, formatted as three bold-headed bullet lists in this exact order: Patterns Found, Action Items, Hidden Insights.
+const CSV_DATA = `===== DONOR DATABASE EXPORT =====
+CSV File: donor_records_2025.csv
+Status: MESSY - Needs Analysis
 
 Donor,Donation Date,Amount,Campaign,Email
 Grace  Brown, 28-06-2025, 6975, Gala Night, g.brown@
@@ -38,7 +41,7 @@ MILA WILLIAMS, 04/14/25, , Summer Drive, mila.williams@example.com
 Isabella Earhart; 07/11/25; 5975.90; Veterans Campaign; isabella77.earhart@mailinator.com
 O'Neal, Daniel, 05/22/25, $7,275, Year-End Appeal, daniel.oneal@outlook.com
 Mila O'Brien, 2025/10/30, , Annual Luncheon, m.obrien@
-Nico Rodriguez, 13/10/25, , Independence Appeal, nico.rodriguez@example.com  # duplicate?
+Nico Rodriguez, 13/10/25, , Independence Appeal, nico.rodriguez@example.com
 Grace Smith; 11/19/25; USD 4557; Fashion Forward; grace.smith@mailinator.com
 Sarah Martinez, October 29 2025, $8,306, Halloween Fund, sarah96.martinez@example.com
 "Chang Khan", 08.25.2025, USD 6556, Music Marathon, 
@@ -47,7 +50,7 @@ Olivia Jones, 29/01/25, 8929, New Year's Push, o16.jones@example.com
 "Logan Miller", January 06 2025, USD 9381, Fashion Forward, l5.miller@mailinator.com
 "MILA DAVIS", 06/03/25, $1,881, Annual Luncheon, m3.davis@example.com
 Emma Diaz; 06-09-2025; $2611; New Year's Push; emma.diaz@
-Aisha  O'Brien; 10/07/25; $3,545; Online Giving Day; a11.obrien@example.org  # duplicate?
+Aisha  O'Brien; 10/07/25; $3,545; Online Giving Day; a11.obrien@example.org
 JOHN THOMAS; 16/09/25; USD 8140; New Year's Push; j81.thomas@
 Jean  Wilson , 2025-02-13 , 6 775 , Music Marathon , jean_wilson@example.org
 SOPHIA GARCIA, Feb 28 2025, $5,302.00, Spring Gala, s.garcia@
@@ -121,6 +124,10 @@ Lucy  Lee,2025-08-31,800,Annual Luncheon,lucy_lee@example
 Anonymous , , , , 
  , 2025-06-01 , 400 , Summer Drive , anon@example.com`;
 
+const CSV_ANALYSIS_PROMPT = `Analyze the donor records below to spot duplicate donors using name + email, flag rows with missing or malformed emails, and detect donations whose Amount field is blank, non-numeric, or in a non-USD format. Deliver three immediate action items for the user and three hidden insights they may not realize, formatted as three bold-headed bullet lists in this exact order: Patterns Found, Action Items, Hidden Insights.
+
+${CSV_DATA}`;
+
 export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
   isOpen,
   onClose,
@@ -129,6 +136,8 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [showBrainIcon, setShowBrainIcon] = useState(false);
+  const [showCsvData, setShowCsvData] = useState(false);
+  const [csvDataComplete, setCsvDataComplete] = useState(false);
   const [analysisStarted, setAnalysisStarted] = useState(false);
 
   const {
@@ -144,16 +153,17 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
   // Initialize with Jordan's story when overlay opens
   useEffect(() => {
     if (isOpen) {
-      // Clear any existing chat and start fresh
       clearChat();
-      // Initialize with Jordan's story
       initializeWithMessage(JORDAN_STORY);
+      setShowBrainIcon(false);
+      setShowCsvData(false);
+      setCsvDataComplete(false);
+      setAnalysisStarted(false);
+      
       // Show brain icon after story is loaded
       setTimeout(() => {
         setShowBrainIcon(true);
       }, 2000);
-      // Reset analysis state
-      setAnalysisStarted(false);
     }
   }, [isOpen, clearChat, initializeWithMessage]);
 
@@ -163,12 +173,20 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, showCsvData]);
 
   const handleBrainClick = () => {
     setShowBrainIcon(false);
-    setAnalysisStarted(true);
-    sendMessage(CSV_ANALYSIS_PROMPT);
+    setShowCsvData(true);
+  };
+
+  const handleCsvDataComplete = () => {
+    setCsvDataComplete(true);
+    // Add a brief delay then start analysis
+    setTimeout(() => {
+      setAnalysisStarted(true);
+      sendMessage(CSV_ANALYSIS_PROMPT);
+    }, 1000);
   };
 
   const handleSendMessage = async () => {
@@ -244,7 +262,7 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
               </div>
               
               {/* Floating brain icon for the first message (Jordan's story) */}
-              {index === 0 && !message.isUser && showBrainIcon && !analysisStarted && (
+              {index === 0 && !message.isUser && showBrainIcon && !showCsvData && (
                 <div className="absolute -bottom-2 right-4 z-10">
                   <Button
                     onClick={handleBrainClick}
@@ -257,8 +275,38 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
               )}
             </div>
           ))}
+
+          {/* CSV Data Display */}
+          {showCsvData && !csvDataComplete && (
+            <div className="my-4">
+              <AnimatedDataDisplay
+                content={CSV_DATA}
+                onComplete={handleCsvDataComplete}
+                autoStart={true}
+              />
+            </div>
+          )}
+
+          {/* Analysis starting message */}
+          {csvDataComplete && !analysisStarted && (
+            <div className="flex justify-start">
+              <div className="flex items-start gap-3">
+                <LyraAvatar size="sm" withWave={false} className="mt-1" />
+                <div className="bg-gray-700 p-4 rounded-lg rounded-bl-none">
+                  <div className="flex items-center space-x-2">
+                    <div className="flex space-x-1">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                      <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                    </div>
+                    <span className="text-sm text-gray-200">Starting analysis...</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           
-          {isTyping && (
+          {isTyping && analysisStarted && (
             <div className="flex justify-start">
               <div className="flex items-start gap-3">
                 <LyraAvatar size="sm" withWave={false} className="mt-1" />
@@ -275,30 +323,32 @@ export const DataInsightsOverlay: React.FC<DataInsightsOverlayProps> = ({
           <div ref={messagesEndRef} />
         </div>
         
-        {/* Input */}
-        <div className="flex-shrink-0 bg-gray-800 border-t border-gray-700 p-4">
-          <div className="flex gap-2">
-            <Input
-              ref={inputRef}
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-              onKeyPress={handleKeyPress}
-              placeholder="Ask follow-up questions about the data analysis..."
-              className="flex-1 h-12 bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
-              disabled={isTyping}
-            />
-            <Button
-              onClick={handleSendMessage}
-              disabled={!inputValue.trim() || isTyping}
-              className="h-12 w-12 p-0 bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 flex-shrink-0"
-            >
-              <Send className="w-5 h-5" />
-            </Button>
+        {/* Input - only show after analysis starts */}
+        {analysisStarted && (
+          <div className="flex-shrink-0 bg-gray-800 border-t border-gray-700 p-4">
+            <div className="flex gap-2">
+              <Input
+                ref={inputRef}
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Ask follow-up questions about the data analysis..."
+                className="flex-1 h-12 bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                disabled={isTyping}
+              />
+              <Button
+                onClick={handleSendMessage}
+                disabled={!inputValue.trim() || isTyping}
+                className="h-12 w-12 p-0 bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 flex-shrink-0"
+              >
+                <Send className="w-5 h-5" />
+              </Button>
+            </div>
+            <p className="text-xs text-gray-400 mt-2 text-center">
+              Press Enter to send • Click ✕ to return to main chat
+            </p>
           </div>
-          <p className="text-xs text-gray-400 mt-2 text-center">
-            Press Enter to send • Click ✕ to return to main chat
-          </p>
-        </div>
+        )}
       </div>
     </>
   );

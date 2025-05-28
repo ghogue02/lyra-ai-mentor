@@ -34,17 +34,35 @@ export const AnimatedDataDisplay: React.FC<AnimatedDataDisplayProps> = ({
         setIsPlaying(false);
         onComplete?.();
       }
-    }, getLineDelay(lines[currentLineIndex]));
+    }, getVariableLineDelay(lines[currentLineIndex], currentLineIndex, lines.length));
 
     return () => clearTimeout(timer);
   }, [currentLineIndex, isPlaying, isComplete, lines, onComplete]);
 
-  const getLineDelay = (line: string): number => {
+  const getVariableLineDelay = (line: string, index: number, totalLines: number): number => {
     if (!line || line.trim() === '') return 200;
-    if (line.includes('===') || line.includes('CSV')) return 800; // Headers need more time
-    if (line.includes('Name,') || line.includes('donor_id,')) return 600; // Column headers
-    if (line.length > 60) return 400; // Long lines
-    return 300; // Regular lines
+    
+    const progress = index / totalLines;
+    
+    // Very slow start for dramatic effect and headers
+    if (line.includes('===') || line.includes('CSV')) return 1000;
+    if (line.includes('Donor,') || line.includes('donor_id,')) return 800; // Column headers
+    
+    // Variable speed based on progress - start slow, speed up
+    if (progress < 0.1) return 600; // Very slow start
+    if (progress < 0.2) return 400; // Still slow for absorption
+    if (progress < 0.4) return 300; // Building momentum
+    if (progress < 0.6) return 200; // Medium speed
+    if (progress < 0.8) return 150; // Getting faster
+    
+    // Check for problematic data (add pauses for messy rows)
+    if (line.includes('@@') || line.includes('$USD') || line.includes(';;') || 
+        line.includes('  ') || line.includes('$ ') || !line.includes('@')) {
+      return Math.max(250, 100); // Pause on problematic data
+    }
+    
+    // Final burst of speed
+    return 100;
   };
 
   const handlePlay = () => setIsPlaying(true);
@@ -127,7 +145,7 @@ export const AnimatedDataDisplay: React.FC<AnimatedDataDisplayProps> = ({
           <div
             key={index}
             className="animate-fade-in"
-            style={{ animationDelay: `${index * 0.1}s` }}
+            style={{ animationDelay: `${index * 0.05}s` }}
           >
             {line}
           </div>
@@ -140,7 +158,7 @@ export const AnimatedDataDisplay: React.FC<AnimatedDataDisplayProps> = ({
       {/* Progress indicator */}
       <div className="mt-2 flex items-center justify-between text-xs text-gray-500">
         <span>
-          {isComplete ? 'Data loaded' : `Loading... ${displayedLines.length}/${lines.length} lines`}
+          {isComplete ? 'Data loaded - Ready for analysis' : `Loading data... ${displayedLines.length}/${lines.length} rows`}
         </span>
         {!isComplete && (
           <div className="flex space-x-1">
