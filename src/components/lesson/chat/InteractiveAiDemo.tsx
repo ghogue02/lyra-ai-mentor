@@ -39,6 +39,18 @@ export const InteractiveAiDemo: React.FC<InteractiveAiDemoProps> = ({
     setProgress((currentIndex / (stages.length - 1)) * 100);
   }, [currentStage]);
 
+  // Reset to intro when component becomes visible
+  useEffect(() => {
+    if (isVisible) {
+      setCurrentStage('intro');
+      setIsPlaying(false);
+      setProgress(0);
+      setShowDataTable(false);
+      setShowProcessing(false);
+      setShowInsights(false);
+    }
+  }, [isVisible]);
+
   if (!isVisible) {
     return null;
   }

@@ -49,7 +49,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
 
   const { engagement, incrementExchange, resetEngagement, setEngagementCount } = useChatEngagement(3, initialEngagementCount);
 
-  // Check if we should show the interactive demo
+  // Check if we should show the interactive demo - improved detection
   useEffect(() => {
     const lastMessage = messages[messages.length - 1];
     if (lastMessage && !lastMessage.isUser) {
@@ -57,8 +57,25 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
       const showDemo = content.includes('ai magic demo') || 
                       content.includes('show me how ai transforms') ||
                       content.includes('ai data analysis demo') ||
-                      content.includes('ready to see how ai transforms');
+                      content.includes('ready to see how ai transforms') ||
+                      content.includes('transforms fundraising data');
+      console.log('Demo detection check:', { content: content.substring(0, 100), showDemo });
       setShowInteractiveDemo(showDemo);
+    }
+  }, [messages]);
+
+  // Also check for demo trigger from quick actions
+  useEffect(() => {
+    const userMessages = messages.filter(msg => msg.isUser);
+    const lastUserMessage = userMessages[userMessages.length - 1];
+    if (lastUserMessage) {
+      const content = lastUserMessage.content.toLowerCase();
+      const isDemoRequest = content.includes('ai magic demo') || 
+                           content.includes('show me the ai magic demo');
+      console.log('User demo request check:', { content, isDemoRequest });
+      if (isDemoRequest) {
+        setShowInteractiveDemo(true);
+      }
     }
   }, [messages]);
 
@@ -132,6 +149,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const handleAiDemo = () => {
     console.log('FullScreenChatOverlay: Starting AI Magic Demo in chat');
     setHasIncrementedForCurrentMessage(false);
+    setShowInteractiveDemo(true); // Immediately show demo
     sendMessage("Show me the AI magic demo - how AI transforms fundraising data!");
     setShowQuickActions(false);
   };
@@ -153,6 +171,11 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     console.log('FullScreenChatOverlay: Quick action triggered, preparing to increment engagement');
     setHasIncrementedForCurrentMessage(false);
     
+    // Check if this is an AI demo request
+    if (action.toLowerCase().includes('ai magic demo')) {
+      setShowInteractiveDemo(true);
+    }
+    
     sendMessage(action);
     
     // Hide quick actions after use on mobile
@@ -165,6 +188,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     clearChat();
     resetEngagement();
     setShowQuickActions(true);
+    setShowInteractiveDemo(false);
   };
 
   return (

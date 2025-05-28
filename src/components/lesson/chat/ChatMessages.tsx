@@ -1,13 +1,15 @@
 
 import React from 'react';
-import { LyraAvatar } from '@/components/LyraAvatar';
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
+import { X } from 'lucide-react';
 import { FormattedMessage } from './FormattedMessage';
-import { cn } from '@/lib/utils';
 
 interface Message {
   id: string;
   content: string;
   isUser: boolean;
+  timestamp: Date;
 }
 
 interface ChatMessagesProps {
@@ -15,71 +17,92 @@ interface ChatMessagesProps {
   isTyping: boolean;
   engagement: {
     hasReachedMinimum: boolean;
+    exchangeCount: number;
   };
   messagesEndRef: React.RefObject<HTMLDivElement>;
-  onForceClose: () => void;
-  onSendMessage: (message: string) => void;
+  onForceClose?: () => void;
+  onSendMessage?: (message: string) => void;
 }
 
 export const ChatMessages: React.FC<ChatMessagesProps> = ({
   messages,
   isTyping,
+  engagement,
   messagesEndRef,
+  onForceClose,
   onSendMessage
 }) => {
   return (
-    <div className="h-full overflow-y-auto overflow-x-hidden spacing-mobile bg-gray-900">
-      <div className="space-y-3 sm:space-y-4 pb-4">
+    <ScrollArea className="flex-1 px-3 sm:px-4">
+      <div className="space-y-4 py-4">
         {messages.map((message) => (
           <div
             key={message.id}
-            className={cn(
-              "flex animate-fade-in",
-              message.isUser ? "justify-end" : "justify-start"
-            )}
+            className={`flex ${message.isUser ? 'justify-end' : 'justify-start'}`}
           >
-            <div className={cn(
-              "flex items-start gap-2 sm:gap-3 max-w-[85%] sm:max-w-[80%]",
-              message.isUser && "flex-row-reverse"
-            )}>
-              {!message.isUser && (
-                <LyraAvatar size="sm" withWave={false} className="mt-1 flex-shrink-0" />
+            <div
+              className={`max-w-[85%] sm:max-w-[80%] rounded-lg px-3 sm:px-4 py-2 sm:py-3 ${
+                message.isUser
+                  ? 'bg-blue-600 text-white ml-4'
+                  : 'bg-gray-700 text-white mr-4'
+              }`}
+            >
+              {message.isUser ? (
+                <p className="text-sm leading-relaxed">{message.content}</p>
+              ) : (
+                <FormattedMessage 
+                  content={message.content} 
+                  onSendMessage={onSendMessage}
+                />
               )}
-              <div
-                className={cn(
-                  "p-3 sm:p-4 rounded-lg shadow-lg break-words",
-                  message.isUser
-                    ? "bg-gradient-to-r from-purple-600 to-cyan-600 text-white rounded-br-none"
-                    : "bg-gray-800 text-gray-100 rounded-bl-none border border-gray-700"
-                )}
-              >
-                {message.isUser ? (
-                  <div className="text-sm leading-relaxed">{message.content}</div>
-                ) : (
-                  <FormattedMessage content={message.content} onSendMessage={onSendMessage} />
-                )}
-              </div>
             </div>
           </div>
         ))}
-        
+
         {isTyping && (
-          <div className="flex justify-start animate-fade-in">
-            <div className="flex items-start gap-2 sm:gap-3">
-              <LyraAvatar size="sm" withWave={false} className="mt-1 flex-shrink-0" />
-              <div className="bg-gray-800 border border-gray-700 p-3 sm:p-4 rounded-lg rounded-bl-none">
+          <div className="flex justify-start">
+            <div className="bg-gray-700 text-white rounded-lg px-3 sm:px-4 py-2 sm:py-3 mr-4 max-w-[85%] sm:max-w-[80%]">
+              <div className="flex items-center space-x-2">
                 <div className="flex space-x-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                 </div>
+                <span className="text-xs text-gray-400">Lyra is thinking...</span>
               </div>
             </div>
           </div>
         )}
-        
+
+        {!engagement.hasReachedMinimum && (
+          <div className="bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border border-purple-400/30 rounded-lg p-3 sm:p-4 mx-2">
+            <div className="text-center">
+              <p className="text-white text-sm mb-2">
+                Keep chatting! {engagement.exchangeCount}/3 exchanges completed
+              </p>
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div 
+                  className="bg-gradient-to-r from-purple-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${(engagement.exchangeCount / 3) * 100}%` }}
+                ></div>
+              </div>
+              {onForceClose && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={onForceClose}
+                  className="mt-2 text-gray-400 hover:text-white"
+                >
+                  <X className="w-4 h-4 mr-1" />
+                  Skip for now
+                </Button>
+              )}
+            </div>
+          </div>
+        )}
+
         <div ref={messagesEndRef} />
       </div>
-    </div>
+    </ScrollArea>
   );
 };
