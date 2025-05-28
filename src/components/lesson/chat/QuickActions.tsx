@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { Button } from "@/components/ui/button";
-import { Sparkles, Zap, RotateCcw } from 'lucide-react';
+import { RotateCcw } from 'lucide-react';
 
 interface QuickActionsProps {
   lessonContext?: {
@@ -32,14 +32,6 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
 }) => {
   const getQuickActions = () => {
     const actions = [];
-
-    // Always show AI Magic Demo as first option
-    actions.push({
-      text: "✨ Try AI Magic Demo",
-      value: "Show me the AI magic demo",
-      icon: <Sparkles className="w-3 h-3" />,
-      special: true
-    });
     
     if (suggestedTask) {
       // Make suggested task more concise for mobile
@@ -132,13 +124,8 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
             variant="outline"
             size="sm"
             onClick={() => handleActionClick(action)}
-            className={`flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap ${
-              action.special 
-                ? 'bg-gradient-to-r from-blue-600 to-green-500 border-blue-400 text-white hover:from-blue-700 hover:to-green-600'
-                : 'text-gray-300 border-gray-600 hover:bg-gray-700 hover:border-gray-500'
-            }`}
+            className="flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap text-gray-300 border-gray-600 hover:bg-gray-700 hover:border-gray-500 hover:text-white"
           >
-            {action.icon && <span className="mr-1">{action.icon}</span>}
             {action.text}
           </Button>
         ))}
