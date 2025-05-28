@@ -1,4 +1,3 @@
-
 import React, { useRef, useEffect, useState } from 'react';
 import { useLyraChat } from '@/hooks/useLyraChat';
 import { useChatEngagement } from '@/hooks/useChatEngagement';
@@ -108,9 +107,9 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
     }
   };
 
-  const handleAiDemo = () => {
-    console.log('Starting AI Magic Demo');
-    sendMessage("Show me how AI transforms fundraising data into actionable insights!");
+  const handleDataInsights = () => {
+    console.log('Starting Data Insights');
+    sendMessage("DATA_INSIGHTS_TRIGGER");
     setShowQuickActions(false);
   };
 
@@ -183,7 +182,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
           inputValue={inputValue}
           setInputValue={setInputValue}
           onSendMessage={handleSendMessage}
-          onAiDemo={handleAiDemo}
+          onDataInsights={handleDataInsights}
           isTyping={isTyping}
           inputRef={inputRef}
           engagement={engagement}

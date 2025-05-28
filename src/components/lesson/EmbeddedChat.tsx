@@ -3,10 +3,9 @@ import React, { useRef, useEffect, useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Send, Minimize2, Maximize2, Sparkles } from 'lucide-react';
+import { Send, Minimize2, Maximize2, BarChart3 } from 'lucide-react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { ProfileCompletionReminder } from '@/components/ProfileCompletionReminder';
-import { InteractiveAiDemo } from './chat/InteractiveAiDemo';
 import { FormattedMessage } from './chat/FormattedMessage';
 import { cn } from '@/lib/utils';
 import { useLyraChat } from '@/hooks/useLyraChat';
@@ -64,18 +63,18 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
     }
   };
 
-  const handleAiDemo = () => {
-    sendMessage("Show me the AI magic demo");
+  const handleDataInsights = () => {
+    sendMessage("DATA_INSIGHTS_TRIGGER");
   };
 
   // Create enhanced context-aware quick actions with user-question phrasing
   const getQuickActions = () => {
     const actions = [];
     
-    // Always include AI Magic Demo as first option
+    // Always include Data Insights as first option
     actions.push({ 
-      text: "✨ AI Magic Demo", 
-      value: "Show me the AI magic demo",
+      text: "📊 Data Insights", 
+      value: "DATA_INSIGHTS_TRIGGER",
       special: true 
     });
     
@@ -174,13 +173,6 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
         </div>
       )}
 
-      {/* Interactive AI Demo */}
-      <InteractiveAiDemo
-        onSendMessage={sendMessage}
-        userProfile={userProfile}
-        isVisible={engagement?.shouldShowAiDemo || false}
-      />
-
       {/* Quick Actions */}
       {showQuickActions && quickActions.length > 0 && (
         <div className="p-2 sm:p-3 border-b bg-gray-50/50">
@@ -196,7 +188,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
                 onClick={() => handleQuickAction(action)}
                 className={`flex-shrink-0 text-xs h-7 transition-all duration-200 whitespace-nowrap ${
                   action.special 
-                    ? 'bg-gradient-to-r from-purple-600 to-cyan-500 border-purple-400 text-white hover:from-purple-700 hover:to-cyan-600'
+                    ? 'bg-gradient-to-r from-blue-600 to-green-500 border-blue-400 text-white hover:from-blue-700 hover:to-green-600'
                     : 'hover:bg-purple-50 hover:border-purple-300'
                 }`}
               >
@@ -277,20 +269,20 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
             onKeyPress={handleKeyPress}
             placeholder={
               userProfile?.first_name 
-                ? `Try "show me AI demo" or ask anything, ${userProfile.first_name}!`
-                : "Try 'show me AI demo' or ask anything!"
+                ? `Try "data insights" or ask anything, ${userProfile.first_name}!`
+                : "Try 'data insights' or ask anything!"
             }
             className="flex-1 text-sm"
             disabled={isTyping}
           />
           <Button
-            onClick={handleAiDemo}
+            onClick={handleDataInsights}
             variant="outline"
             size="sm"
-            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white border-none px-3 shrink-0"
-            title="Try AI Magic Demo"
+            className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white border-none px-3 shrink-0"
+            title="Get Data Insights"
           >
-            <Sparkles className="w-4 h-4" />
+            <BarChart3 className="w-4 h-4" />
           </Button>
           <Button
             onClick={handleSendMessage}
@@ -302,7 +294,7 @@ export const EmbeddedChat: React.FC<EmbeddedChatProps> = ({ lessonContext, sugge
           </Button>
         </div>
         <p className="text-xs text-gray-500 mt-1 sm:mt-2">
-          Press Enter to send • Click ✨ for AI Magic Demo • Try: "show me AI demo"
+          Press Enter to send • Click 📊 for Data Insights • Try: "data insights"
         </p>
       </div>
     </div>

@@ -2,13 +2,13 @@
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Send, MessageCircle, Sparkles } from 'lucide-react';
+import { Send, MessageCircle, BarChart3 } from 'lucide-react';
 
 interface ChatInputProps {
   inputValue: string;
   setInputValue: (value: string) => void;
   onSendMessage: () => void;
-  onAiDemo?: () => void;
+  onDataInsights?: () => void;
   isTyping: boolean;
   inputRef: React.RefObject<HTMLInputElement>;
   engagement?: {
@@ -21,7 +21,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
   inputValue,
   setInputValue,
   onSendMessage,
-  onAiDemo,
+  onDataInsights,
   isTyping,
   inputRef
 }) => {
@@ -46,15 +46,16 @@ export const ChatInput: React.FC<ChatInputProps> = ({
             className="mobile-input flex-1 h-10 sm:h-12 bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-purple-500 text-sm sm:text-base"
             disabled={isTyping}
           />
-          {onAiDemo && (
+          {onDataInsights && (
             <Button
-              onClick={onAiDemo}
+              onClick={onDataInsights}
               variant="outline"
               size="sm"
-              className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white border-none h-10 sm:h-12 w-10 sm:w-12 p-0 flex-shrink-0"
-              title="Try AI Magic Demo"
+              className="bg-gradient-to-r from-blue-600 to-green-500 hover:from-blue-700 hover:to-green-600 text-white border-none h-10 sm:h-12 w-auto px-3 flex-shrink-0"
+              title="Get Data Insights"
             >
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5" />
+              <BarChart3 className="w-4 h-4 sm:w-5 sm:h-5 mr-1" />
+              <span className="hidden sm:inline text-xs">Data Insights</span>
             </Button>
           )}
           <Button
@@ -66,7 +67,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({
           </Button>
         </div>
         <p className="text-xs text-gray-400 mt-2 text-center leading-relaxed">
-          Press Enter to send • Click ✨ for AI Magic Demo
+          Press Enter to send • Click 📊 for Data Insights
         </p>
       </div>
     </div>
