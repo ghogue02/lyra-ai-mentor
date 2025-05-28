@@ -6,6 +6,7 @@ import { QuickActions } from './chat/QuickActions';
 import { ChatMessages } from './chat/ChatMessages';
 import { ChatInput } from './chat/ChatInput';
 import { CloseConfirmationDialog } from './chat/CloseConfirmationDialog';
+import { DataInsightsOverlay } from './chat/DataInsightsOverlay';
 
 interface FullScreenChatOverlayProps {
   isOpen: boolean;
@@ -32,6 +33,7 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [showCloseConfirmation, setShowCloseConfirmation] = useState(false);
   const [showQuickActions, setShowQuickActions] = useState(true);
+  const [showDataInsights, setShowDataInsights] = useState(false);
 
   const {
     messages,
@@ -108,14 +110,12 @@ export const FullScreenChatOverlay: React.FC<FullScreenChatOverlayProps> = ({
   };
 
   const handleDataInsights = () => {
-    console.log('Starting Data Insights');
-    // Instead of sending a trigger message, directly add the story to the chat
-    const storyMessage = `Picture a bustling nonprofit city where spreadsheets roam like unruly dragons: every day these data-beasts cough up half-chewed numbers, mismatched names, and gold coins scattered across campaigns—until our unlikely hero, a bright-eyed Programs Manager named Lyra, volunteers to tame them. Armed only with curiosity and a chat-bot sidekick that thinks in punch lines, Lyra discovers that each messy row hides a donor's heartfelt story waiting to be told. When a looming Year-End Gala threatens to flop without clear totals, Lyra and the bot embark on a comedic quest—dodging duplicate donors, rescuing lost emails, and piecing together amounts that sparkle like treasure. In the end, the once-chaotic ledger transforms into a triumphant tapestry of generosity, proving to the staff (and to every future user) that cracking messy data isn't about crunching numbers—it's about unleashing the epic narrative of impact that's already there. Click the check mark to see how it works.
+    console.log('Opening Data Insights overlay');
+    setShowDataInsights(true);
+  };
 
-DATA_INSIGHTS_STORY_DISPLAY`;
-    
-    sendMessage(storyMessage);
-    setShowQuickActions(false);
+  const handleCloseDataInsights = () => {
+    setShowDataInsights(false);
   };
 
   const handleClose = () => {
@@ -151,10 +151,10 @@ DATA_INSIGHTS_STORY_DISPLAY`;
 
   return (
     <>
-      {/* Backdrop */}
+      {/* Main Chat Backdrop */}
       <div className="fixed inset-0 z-[100] bg-black/80" onClick={handleClose} />
       
-      {/* Chat Container */}
+      {/* Main Chat Container */}
       <div className="fixed inset-0 z-[101] grid grid-rows-[auto_auto_1fr_auto] w-screen h-screen bg-gray-900">
         <ChatHeader
           lessonContext={lessonContext}
@@ -193,6 +193,13 @@ DATA_INSIGHTS_STORY_DISPLAY`;
           engagement={engagement}
         />
       </div>
+
+      {/* Data Insights Overlay */}
+      <DataInsightsOverlay
+        isOpen={showDataInsights}
+        onClose={handleCloseDataInsights}
+        lessonContext={lessonContext}
+      />
 
       <CloseConfirmationDialog
         isOpen={showCloseConfirmation}
