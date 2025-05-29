@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { ChapterCard } from '@/components/ChapterCard';
 import { useChapters } from '@/hooks/useChapters';
@@ -15,11 +16,39 @@ interface ChapterGridProps {
   onChapterClick: (chapterId: number) => void;
 }
 
+// Placeholder chapters for future content
+const placeholderChapters: Chapter[] = [
+  {
+    id: 3,
+    title: "Machine Learning Fundamentals",
+    description: "Learn the basics of machine learning algorithms and applications.",
+    duration: "20 min"
+  },
+  {
+    id: 4,
+    title: "Natural Language Processing",
+    description: "Discover how AI understands and processes human language.",
+    duration: "25 min"
+  },
+  {
+    id: 5,
+    title: "Computer Vision",
+    description: "Explore how AI can see and interpret visual information.",
+    duration: "22 min"
+  },
+  {
+    id: 6,
+    title: "AI Ethics & Future",
+    description: "Understand the ethical implications and future of AI technology.",
+    duration: "18 min"
+  }
+];
+
 export const ChapterGrid: React.FC<ChapterGridProps> = ({
   onboardingComplete,
   onChapterClick
 }) => {
-  const { chapters, loading: chaptersLoading, error } = useChapters();
+  const { chapters: dbChapters, loading: chaptersLoading, error } = useChapters();
   const { chapterProgress, loading: progressLoading } = useChapterProgress();
 
   if (chaptersLoading || progressLoading) {
@@ -39,7 +68,10 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
     );
   }
 
-  if (chapters.length === 0) {
+  // Combine database chapters with placeholders
+  const allChapters = [...dbChapters, ...placeholderChapters].sort((a, b) => a.id - b.id);
+
+  if (allChapters.length === 0) {
     return (
       <div className="text-center py-12">
         <p className="text-gray-600">No chapters available yet.</p>
@@ -49,25 +81,38 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
 
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-      {chapters.map((chapter, index) => {
+      {allChapters.map((chapter, index) => {
         const progress = chapterProgress[chapter.id];
         const isCompleted = progress?.isCompleted || false;
         const progressPercentage = progress?.progress || 0;
         
-        // Chapter 1 is always unlocked if onboarding is complete
-        // Other chapters are unlocked if the previous chapter is completed
+        // Check if this is a database chapter or placeholder
+        const isPlaceholder = chapter.id > 2;
+        
+        // Determine if chapter is locked
         let isLocked = false;
-        if (!onboardingComplete && chapter.id > 1) {
+        
+        if (isPlaceholder) {
+          // Placeholder chapters (3-6) are always locked
+          isLocked = true;
+        } else if (!onboardingComplete && chapter.id > 1) {
+          // If onboarding not complete, only chapter 1 is unlocked
           isLocked = true;
         } else if (chapter.id > 1) {
-          // Check if previous chapter is completed
-          const previousChapterId = chapters[index - 1]?.id;
+          // For chapter 2+, check if previous chapter is completed
+          const previousChapterId = chapter.id - 1;
           const previousChapterProgress = chapterProgress[previousChapterId];
           isLocked = !previousChapterProgress?.isCompleted;
         }
 
+        const handleChapterClick = () => {
+          if (!isLocked && !isPlaceholder) {
+            onChapterClick(chapter.id);
+          }
+        };
+
         return (
-          <div key={chapter.id} onClick={() => onChapterClick(chapter.id)}>
+          <div key={chapter.id} onClick={handleChapterClick}>
             <ChapterCard 
               chapter={{
                 id: chapter.id,
@@ -78,6 +123,7 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
               isLocked={isLocked}
               isCompleted={isCompleted}
               progress={progressPercentage}
+              isPlaceholder={isPlaceholder}
             />
           </div>
         );

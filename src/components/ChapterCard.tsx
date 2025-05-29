@@ -3,7 +3,7 @@ import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Play } from 'lucide-react';
+import { Play, Lock } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { getChapterIconUrl, getUIStateIconUrl } from '@/utils/supabaseIcons';
 
@@ -19,31 +19,59 @@ interface ChapterCardProps {
   isLocked?: boolean;
   isCompleted?: boolean;
   progress?: number;
+  isPlaceholder?: boolean;
 }
 
 export const ChapterCard: React.FC<ChapterCardProps> = ({ 
   chapter, 
   isLocked = false, 
   isCompleted = false,
-  progress = 0
+  progress = 0,
+  isPlaceholder = false
 }) => {
   const chapterIconSrc = getChapterIconUrl(chapter.id);
   const lockIconSrc = getUIStateIconUrl('lockState');
 
+  const getButtonText = () => {
+    if (isPlaceholder) {
+      return "Coming Soon";
+    }
+    if (isLocked) {
+      return "Complete Previous Chapter";
+    }
+    if (isCompleted) {
+      return "Review Chapter";
+    }
+    if (progress > 0) {
+      return "Continue";
+    }
+    return "Start Chapter";
+  };
+
+  const getButtonIcon = () => {
+    if (isPlaceholder) {
+      return <Lock className="w-4 h-4 mr-2" />;
+    }
+    if (!isLocked) {
+      return <Play className="w-4 h-4 mr-2" />;
+    }
+    return null;
+  };
+
   return (
     <Card className={cn(
-      "border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 transform hover:scale-105",
-      isLocked && "opacity-60"
+      "border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300",
+      (isLocked || isPlaceholder) ? "opacity-60" : "transform hover:scale-105"
     )}>
       <CardHeader className="pb-4">
         <div className="flex items-start justify-between">
           <div className={cn(
             "w-20 h-20 rounded-xl flex items-center justify-center shadow-md border",
-            isLocked 
+            (isLocked || isPlaceholder)
               ? "bg-white border-gray-200" 
               : "bg-white border-gray-100"
           )}>
-            {isLocked ? (
+            {(isLocked || isPlaceholder) ? (
               <img 
                 src={lockIconSrc} 
                 alt="Locked chapter"
@@ -67,6 +95,11 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
                 Completed
               </Badge>
             )}
+            {isPlaceholder && (
+              <Badge variant="outline" className="text-xs">
+                Preview
+              </Badge>
+            )}
           </div>
         </div>
         
@@ -79,7 +112,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
       </CardHeader>
       
       <CardContent className="pt-0">
-        {!isLocked && progress > 0 && (
+        {!isLocked && !isPlaceholder && progress > 0 && (
           <div className="mb-4">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>Progress</span>
@@ -95,23 +128,15 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
         )}
         
         <Button 
-          variant={isLocked ? "secondary" : "default"}
+          variant={isLocked || isPlaceholder ? "secondary" : "default"}
           className={cn(
             "w-full",
-            !isLocked && "bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+            !isLocked && !isPlaceholder && "bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
           )}
-          disabled={isLocked}
+          disabled={isLocked || isPlaceholder}
         >
-          {isLocked ? (
-            "Complete Previous Chapter"
-          ) : isCompleted ? (
-            "Review Chapter"
-          ) : (
-            <>
-              <Play className="w-4 h-4 mr-2" />
-              {progress > 0 ? "Continue" : "Start Chapter"}
-            </>
-          )}
+          {getButtonIcon()}
+          {getButtonText()}
         </Button>
       </CardContent>
     </Card>
