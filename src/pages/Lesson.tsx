@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -89,10 +88,13 @@ export const Lesson = () => {
   };
 
   const handleMarkChapterComplete = async () => {
-    if (!user || !lessonId) return;
+    if (!user || !lessonId || !chapterId) return;
     const lessonIdNum = parseInt(lessonId);
-    if (isNaN(lessonIdNum)) return;
+    const chapterIdNum = parseInt(chapterId);
+    if (isNaN(lessonIdNum) || isNaN(chapterIdNum)) return;
+    
     try {
+      // Update lesson progress
       await supabase.from('lesson_progress').upsert({
         user_id: user.id,
         lesson_id: lessonIdNum,
@@ -102,6 +104,21 @@ export const Lesson = () => {
         chapter_completed_at: new Date().toISOString(),
         last_accessed: new Date().toISOString()
       });
+
+      // If this is Chapter 1, also update the profile to unlock Chapter 2
+      if (chapterIdNum === 1) {
+        console.log('Lesson.tsx: Updating profile for Chapter 1 completion');
+        await supabase
+          .from('profiles')
+          .update({
+            first_chapter_completed: true,
+            updated_at: new Date().toISOString()
+          })
+          .eq('user_id', user.id);
+        
+        console.log('Lesson.tsx: Profile updated - Chapter 2 should now be unlocked');
+      }
+
       setIsChapterCompleted(true);
       toast({
         title: "Chapter Complete!",
