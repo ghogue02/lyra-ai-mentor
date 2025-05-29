@@ -79,6 +79,13 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
     );
   }
 
+  // Add debug logging
+  console.log('Dashboard Debug:', {
+    onboardingComplete,
+    chapterProgress,
+    allChapters: allChapters.map(c => ({ id: c.id, title: c.title }))
+  });
+
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
       {allChapters.map((chapter, index) => {
@@ -89,20 +96,41 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
         // Check if this is a database chapter or placeholder
         const isPlaceholder = chapter.id > 2;
         
-        // Determine if chapter is locked
+        // Determine if chapter is locked - FIXED LOGIC
         let isLocked = false;
         
         if (isPlaceholder) {
           // Placeholder chapters (3-6) are always locked
           isLocked = true;
-        } else if (!onboardingComplete && chapter.id > 1) {
-          // If onboarding not complete, only chapter 1 is unlocked
-          isLocked = true;
-        } else if (chapter.id > 1) {
-          // For chapter 2+, check if previous chapter is completed
+        } else if (chapter.id === 1) {
+          // Chapter 1 is always unlocked (unless onboarding not complete, but that shouldn't happen)
+          isLocked = !onboardingComplete;
+        } else if (chapter.id === 2) {
+          // Chapter 2: If onboarding is complete, it should be unlocked
+          // Only check previous chapter completion if onboarding is NOT complete
+          if (onboardingComplete) {
+            isLocked = false;
+          } else {
+            // If onboarding not complete, check if previous chapter is completed
+            const previousChapterId = chapter.id - 1;
+            const previousChapterProgress = chapterProgress[previousChapterId];
+            isLocked = !previousChapterProgress?.isCompleted;
+          }
+        } else {
+          // For chapters beyond 2, check if previous chapter is completed
           const previousChapterId = chapter.id - 1;
           const previousChapterProgress = chapterProgress[previousChapterId];
           isLocked = !previousChapterProgress?.isCompleted;
+        }
+
+        // Additional debug for Chapter 2
+        if (chapter.id === 2) {
+          console.log('Chapter 2 Debug:', {
+            chapterId: chapter.id,
+            onboardingComplete,
+            isLocked,
+            previousChapterProgress: chapterProgress[1]
+          });
         }
 
         const handleChapterClick = () => {
