@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
@@ -11,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { GraduationCap, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getSupabaseIconUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
+import { useToast } from '@/hooks/use-toast';
 
 interface UserProfile {
   role: string;
@@ -28,6 +28,7 @@ interface UserProfile {
 export const Dashboard = () => {
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState('journey');
@@ -77,29 +78,66 @@ export const Dashboard = () => {
       return; // Chapter is locked
     }
 
-    // Mark first chapter as started if clicking on Chapter 1
-    if (chapterId === 1 && !profile.first_chapter_started) {
-      try {
-        await supabase
-          .from('profiles')
-          .update({
+    // Check if the chapter has lessons
+    try {
+      const { data: lessons, error } = await supabase
+        .from('lessons')
+        .select('id')
+        .eq('chapter_id', chapterId)
+        .eq('is_published', true)
+        .order('order_index')
+        .limit(1);
+
+      if (error) {
+        console.error('Error checking lessons:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load chapter content.",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!lessons || lessons.length === 0) {
+        toast({
+          title: "Chapter Not Ready",
+          description: "This chapter is still being prepared. Check back soon!",
+          variant: "default"
+        });
+        return;
+      }
+
+      // Mark first chapter as started if clicking on Chapter 1
+      if (chapterId === 1 && !profile.first_chapter_started) {
+        try {
+          await supabase
+            .from('profiles')
+            .update({
+              first_chapter_started: true,
+              onboarding_step: 3
+            })
+            .eq('user_id', user.id);
+          
+          setProfile(prev => prev ? {
+            ...prev,
             first_chapter_started: true,
             onboarding_step: 3
-          })
-          .eq('user_id', user.id);
-        
-        setProfile(prev => prev ? {
-          ...prev,
-          first_chapter_started: true,
-          onboarding_step: 3
-        } : null);
-      } catch (error) {
-        console.error('Error updating chapter progress:', error);
+          } : null);
+        } catch (error) {
+          console.error('Error updating chapter progress:', error);
+        }
       }
-    }
 
-    // Navigate to the first lesson of the chapter
-    navigate(`/chapter/${chapterId}/lesson/1`);
+      // Navigate to the first lesson of the chapter
+      navigate(`/chapter/${chapterId}/lesson/${lessons[0].id}`);
+    } catch (error) {
+      console.error('Error:', error);
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        variant: "destructive"
+      });
+    }
   };
 
   const handleSignOut = async () => {
