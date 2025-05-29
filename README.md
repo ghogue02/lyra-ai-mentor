@@ -4,6 +4,25 @@
 
 **URL**: https://lovable.dev/projects/25f468f6-152e-4a13-80bf-3188fe56a4f7
 
+## AI Learning Hub - Documentation
+
+This project includes comprehensive documentation for creating consistent, engaging educational content:
+
+### 📚 Content Creation Guides
+- **[Chapter Framework](docs/chapter-framework.md)** - Complete guide for content architecture, UI patterns, and technical implementation
+- **[Quick Start Guide](docs/quick-start-new-chapter.md)** - Step-by-step process for creating new chapters
+
+### 🏗️ Architecture Overview
+The AI Learning Hub uses a 3-layer content system:
+1. **Content Blocks** - Educational content (text, images, videos)  
+2. **Interactive Elements** - Engagement tools (chat, quizzes, reflections)
+3. **Progress Tracking** - User completion and engagement metrics
+
+### 🤖 AI Integration
+- **Lyra Chat** - Personalized AI mentor with content blocking
+- **Smart Progress** - Engagement-based content unlocking
+- **Adaptive Learning** - Responses tailored to user profiles
+
 ## How can I edit this code?
 
 There are several ways of editing your application.
