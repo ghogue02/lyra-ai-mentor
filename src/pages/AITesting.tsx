@@ -8,7 +8,6 @@ import { Link } from 'react-router-dom';
 
 // Import all implemented interactive components
 import { DonorBehaviorPredictor } from '@/components/testing/DonorBehaviorPredictor';
-import { EmailResponseClassifier } from '@/components/testing/EmailResponseClassifier';
 import { RestaurantSurplusPredictor } from '@/components/testing/RestaurantSurplusPredictor';
 import { VolunteerSkillsMatcher } from '@/components/testing/VolunteerSkillsMatcher';
 import { AIDefinitionBuilder } from '@/components/testing/AIDefinitionBuilder';
@@ -46,9 +45,8 @@ const AITesting = () => {
       color: "bg-blue-100 text-blue-700",
       elements: [
         { id: 2, component: AIContentGenerator, title: "AI Content Generator", implemented: true, aiPowered: true },
-        { id: 3, component: EmailResponseClassifier, title: "Email Response Classifier", implemented: true },
         { id: 4, component: AIImpactStoryCreator, title: "AI Impact Story Creator", implemented: true, aiPowered: true },
-        { id: 5, component: VolunteerSkillsMatcher, title: "Volunteer Skills Matcher", implemented: true }
+        { id: 5, component: VolunteerSkillsMatcher, title: "AI Volunteer Skills Matcher", implemented: true, aiPowered: true }
       ]
     },
     {
@@ -122,13 +120,13 @@ const AITesting = () => {
                   AI Interactive Testing Lab
                 </h1>
                 <p className="text-gray-600 text-sm">
-                  {totalImplemented}/24 elements implemented • {totalAIPowered} AI-powered
+                  {totalImplemented}/23 elements implemented • {totalAIPowered} AI-powered
                 </p>
               </div>
             </div>
             <div className="flex gap-2">
               <Badge className="bg-gradient-to-r from-purple-600 to-cyan-500 text-white">
-                24 Elements
+                23 Elements
               </Badge>
               <Badge className="bg-green-100 text-green-700">
                 {totalAIPowered} AI-Powered
@@ -200,7 +198,7 @@ const AITesting = () => {
       <div className="bg-white/80 backdrop-blur-sm border-t mt-16">
         <div className="container mx-auto px-4 py-6 text-center">
           <p className="text-gray-600 text-sm">
-            Testing Lab • {totalImplemented}/24 Interactive Elements • {totalAIPowered} AI-Powered • Chapter 1: AI Fundamentals for Nonprofits
+            Testing Lab • {totalImplemented}/23 Interactive Elements • {totalAIPowered} AI-Powered • Chapter 1: AI Fundamentals for Nonprofits
           </p>
           <p className="text-gray-500 text-xs mt-1">
             OpenAI API required for AI-powered elements

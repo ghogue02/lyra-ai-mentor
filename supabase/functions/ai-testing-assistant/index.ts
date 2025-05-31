@@ -30,7 +30,7 @@ serve(async (req) => {
         systemMessage = 'You are a nonprofit communications expert. Generate professional, appropriate email responses that match the urgency and tone of the classification. Keep responses concise but helpful and actionable.';
         break;
       case 'tool_recommendation':
-        systemMessage = 'You are an AI consultant for nonprofits. Based on the organization details provided, recommend 3 specific AI tools that would be most beneficial. Explain why each tool fits their needs.';
+        systemMessage = 'You are an AI consultant for nonprofits. Based on the organization details provided, provide specific, practical recommendations. Be realistic and actionable in your suggestions. Return responses in the exact format requested by the user.';
         break;
       case 'success_story':
         systemMessage = 'You are a nonprofit communications expert. Help create compelling success stories that highlight AI impact. Provide specific suggestions to make the story more engaging and measurable.';
@@ -39,7 +39,7 @@ serve(async (req) => {
         systemMessage = 'You are an AI ethics expert for nonprofits. Provide thoughtful guidance on ethical considerations for AI implementation. Be practical and actionable.';
         break;
       case 'readiness_assessment':
-        systemMessage = 'You are an AI readiness consultant. Analyze the nonprofit\'s responses and provide a detailed readiness score with specific next steps for AI adoption.';
+        systemMessage = 'You are an AI readiness consultant. Analyze the nonprofit scenarios and provide detailed, practical assessments with specific insights and actionable recommendations. Be thorough and constructive in your analysis.';
         break;
       case 'myth_buster':
         systemMessage = 'You are an AI educator. Explain why the given statement is a myth and provide the accurate information in simple, nonprofit-friendly terms.';
@@ -69,7 +69,7 @@ serve(async (req) => {
           { role: 'system', content: systemMessage },
           { role: 'user', content: `${context ? 'Context: ' + context + '\n\n' : ''}${prompt}` }
         ],
-        max_tokens: 400,
+        max_tokens: 800,
         temperature: 0.7,
       }),
     });
