@@ -2,24 +2,24 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { CheckCircle, XCircle, Shuffle } from 'lucide-react';
+import { CheckCircle, XCircle, Shuffle, ArrowRight } from 'lucide-react';
 
-const matches = [
-  { ai: "Machine Learning", subway: "Route Planning System", correct: true },
-  { ai: "Pattern Recognition", subway: "MetroCard Usage Analysis", correct: true },
-  { ai: "Predictive Analytics", subway: "Rush Hour Forecasting", correct: true },
-  { ai: "Natural Language Processing", subway: "Station Announcements", correct: false },
-  { ai: "Computer Vision", subway: "Security Camera Analysis", correct: true },
-  { ai: "Data Mining", subway: "Passenger Flow Optimization", correct: false }
+const correctMatches = [
+  { ai: "Machine Learning", subway: "Route Planning System" },
+  { ai: "Pattern Recognition", subway: "MetroCard Usage Analysis" },
+  { ai: "Predictive Analytics", subway: "Rush Hour Forecasting" },
+  { ai: "Computer Vision", subway: "Security Camera Analysis" },
+  { ai: "Data Mining", subway: "Passenger Flow Optimization" },
+  { ai: "Natural Language Processing", subway: "Station Announcements" }
 ];
 
 export const SubwayPatternMatcher = () => {
-  const [selectedMatches, setSelectedMatches] = useState<{[key: string]: string}>({});
+  const [matches, setMatches] = useState<{[key: string]: string}>({});
   const [showResults, setShowResults] = useState(false);
   const [score, setScore] = useState(0);
 
   const handleMatch = (aiConcept: string, subwayAnalogy: string) => {
-    setSelectedMatches(prev => ({
+    setMatches(prev => ({
       ...prev,
       [aiConcept]: subwayAnalogy
     }));
@@ -27,8 +27,8 @@ export const SubwayPatternMatcher = () => {
 
   const checkAnswers = () => {
     let correctCount = 0;
-    matches.forEach(match => {
-      if (match.correct && selectedMatches[match.ai] === match.subway) {
+    correctMatches.forEach(match => {
+      if (matches[match.ai] === match.subway) {
         correctCount++;
       }
     });
@@ -37,43 +37,79 @@ export const SubwayPatternMatcher = () => {
   };
 
   const reset = () => {
-    setSelectedMatches({});
+    setMatches({});
     setShowResults(false);
     setScore(0);
   };
 
-  const aiConcepts = matches.map(m => m.ai);
-  const subwayAnalogies = matches.map(m => m.subway);
+  const getMatchColor = (aiConcept: string, subwayAnalogy: string) => {
+    if (!showResults) return '';
+    const correctMatch = correctMatches.find(m => m.ai === aiConcept);
+    if (matches[aiConcept] === subwayAnalogy) {
+      return correctMatch?.subway === subwayAnalogy ? 'bg-green-100 border-green-300' : 'bg-red-100 border-red-300';
+    }
+    return '';
+  };
+
+  const aiConcepts = correctMatches.map(m => m.ai);
+  const subwayAnalogies = correctMatches.map(m => m.subway);
 
   return (
     <div className="space-y-4">
       <div className="text-center">
         <h3 className="font-medium text-gray-800 mb-2">Match AI concepts to NYC subway analogies</h3>
-        <p className="text-sm text-gray-600">Drag and drop or click to match</p>
+        <p className="text-sm text-gray-600">Click an AI concept, then click its subway analogy</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-blue-600">AI Concepts</h4>
-          {aiConcepts.map(concept => (
+      <div className="space-y-3">
+        {aiConcepts.map(concept => (
+          <div key={concept} className="flex items-center gap-2">
             <Badge 
-              key={concept}
               variant="outline" 
-              className="w-full p-2 cursor-pointer hover:bg-blue-50 text-xs"
-              onClick={() => console.log('Selected:', concept)}
+              className="w-48 p-2 text-xs justify-start cursor-pointer hover:bg-blue-50"
             >
               {concept}
             </Badge>
-          ))}
-        </div>
-        
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium text-orange-600">Subway Systems</h4>
+            
+            {matches[concept] ? (
+              <>
+                <ArrowRight className="w-4 h-4 text-gray-400" />
+                <Badge 
+                  variant="outline" 
+                  className={`w-48 p-2 text-xs justify-start ${getMatchColor(concept, matches[concept])}`}
+                >
+                  {matches[concept]}
+                </Badge>
+              </>
+            ) : (
+              <>
+                <ArrowRight className="w-4 h-4 text-gray-200" />
+                <div className="w-48 h-8 border-2 border-dashed border-gray-200 rounded flex items-center justify-center">
+                  <span className="text-xs text-gray-400">Select analogy</span>
+                </div>
+              </>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div className="space-y-2">
+        <h4 className="text-sm font-medium text-orange-600">Available Subway Analogies:</h4>
+        <div className="flex flex-wrap gap-2">
           {subwayAnalogies.map(analogy => (
             <Badge 
               key={analogy}
               variant="outline" 
-              className="w-full p-2 cursor-pointer hover:bg-orange-50 text-xs"
+              className={`p-2 cursor-pointer hover:bg-orange-50 text-xs ${
+                Object.values(matches).includes(analogy) ? 'opacity-50' : ''
+              }`}
+              onClick={() => {
+                // Find which AI concept is currently selected (last one without a match)
+                const unmatched = aiConcepts.find(concept => !matches[concept]);
+                if (unmatched && !Object.values(matches).includes(analogy)) {
+                  handleMatch(unmatched, analogy);
+                }
+              }}
             >
               {analogy}
             </Badge>
@@ -82,7 +118,7 @@ export const SubwayPatternMatcher = () => {
       </div>
 
       <div className="flex gap-2">
-        <Button onClick={checkAnswers} size="sm" disabled={Object.keys(selectedMatches).length < 3}>
+        <Button onClick={checkAnswers} size="sm" disabled={Object.keys(matches).length < 3 || showResults}>
           Check Matches
         </Button>
         <Button onClick={reset} variant="outline" size="sm">
@@ -100,7 +136,7 @@ export const SubwayPatternMatcher = () => {
               <XCircle className="w-4 h-4 text-red-600" />
             )}
             <span className="text-sm font-medium">
-              Score: {score}/3 correct matches
+              Score: {score}/{correctMatches.length} correct matches
             </span>
           </div>
           <p className="text-xs text-gray-600">
