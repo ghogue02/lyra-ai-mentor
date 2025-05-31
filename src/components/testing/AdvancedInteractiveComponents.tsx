@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -846,11 +847,11 @@ export const NonprofitAIBingo = () => {
   const [hasBingo, setHasBingo] = useState(false);
 
   const bingoSquares = [
-    "Email Automation", "Donor Prediction", "Volunteer Matching", "Route Optimization", "Data Analysis",
-    "Chatbot Support", "Image Recognition", "Sentiment Analysis", "Fraud Detection", "Content Creation",
-    "Translation Services", "Scheduling AI", "Budget Forecasting", "Impact Measurement", "Social Media AI",
-    "Voice Recognition", "Document Processing", "Grant Writing AI", "Inventory Management", "Recruitment AI",
-    "Event Planning AI", "Survey Analysis", "Compliance Checking", "Performance Tracking", "Communication AI"
+    "Email Auto", "Donor Predict", "Volunteer Match", "Route Optimize", "Data Analysis",
+    "Chatbot", "Image Recog", "Sentiment", "Fraud Detect", "Content AI",
+    "Translation", "Schedule AI", "Budget Forecast", "Impact Measure", "Social Media AI",
+    "Voice Recog", "Doc Process", "Grant Writing", "Inventory AI", "Recruit AI",
+    "Event Planning", "Survey Analysis", "Compliance", "Performance", "Comm AI"
   ];
 
   const boards = [
@@ -916,16 +917,16 @@ export const NonprofitAIBingo = () => {
         <p className="text-sm text-gray-600">Mark AI tools your organization could use</p>
       </div>
 
-      <div className="grid grid-cols-5 gap-1">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
         {currentBoardSquares.map((square, index) => (
           <Button
             key={`${currentBoard}-${index}`}
             onClick={() => toggleSquare(square)}
             variant={markedSquares.has(square) ? "default" : "outline"}
-            className="h-12 text-xs p-1 flex items-center justify-center"
+            className="h-16 sm:h-18 md:h-20 text-xs sm:text-sm p-2 flex items-center justify-center leading-tight"
             size="sm"
           >
-            <span className="text-center leading-tight">{square}</span>
+            <span className="text-center break-words hyphens-auto">{square}</span>
           </Button>
         ))}
       </div>
