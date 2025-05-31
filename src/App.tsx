@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -12,6 +11,7 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Lesson from "./pages/Lesson";
+import AITesting from "./pages/AITesting";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +39,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <Lesson />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/ai-testing" 
+                element={
+                  <ProtectedRoute>
+                    <AITesting />
                   </ProtectedRoute>
                 } 
               />
