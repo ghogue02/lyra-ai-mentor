@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,8 +5,9 @@ import { Card, CardContent } from "@/components/ui/card";
 import { 
   Users, Target, MapPin, Heart, BarChart, Gamepad2, 
   Timer, CheckCircle, ArrowRight, Shuffle, Star,
-  DollarSign, Clock, TrendingUp, Award, RefreshCw, Trophy
+  DollarSign, Clock, TrendingUp, Award, RefreshCw, Trophy, Loader2
 } from 'lucide-react';
+import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
 
 // Element 12 - Donor Segmentation Simulator
 export const DonorSegmentationSimulator = () => {
@@ -845,6 +845,11 @@ export const NonprofitAIBingo = () => {
   const [markedSquares, setMarkedSquares] = useState<Set<string>>(new Set());
   const [currentBoard, setCurrentBoard] = useState(0);
   const [hasBingo, setHasBingo] = useState(false);
+  const [winningLine, setWinningLine] = useState<string[]>([]);
+  const [aiSummary, setAiSummary] = useState<string>('');
+  const [loadingSummary, setLoadingSummary] = useState(false);
+  
+  const { callAI } = useAITestingAssistant();
 
   const bingoSquares = [
     "Email Auto", "Donor Predict", "Volunteer Match", "Route Optimize", "Data Analysis",
@@ -876,16 +881,22 @@ export const NonprofitAIBingo = () => {
     
     // Check rows
     for (let row = 0; row < 5; row++) {
-      if (board.slice(row * 5, (row + 1) * 5).every(square => marked.has(square))) {
+      const rowSquares = board.slice(row * 5, (row + 1) * 5);
+      if (rowSquares.every(square => marked.has(square))) {
         setHasBingo(true);
+        setWinningLine(rowSquares);
+        generateAISummary(rowSquares);
         return;
       }
     }
     
     // Check columns
     for (let col = 0; col < 5; col++) {
-      if (board.filter((_, index) => index % 5 === col).every(square => marked.has(square))) {
+      const colSquares = board.filter((_, index) => index % 5 === col);
+      if (colSquares.every(square => marked.has(square))) {
         setHasBingo(true);
+        setWinningLine(colSquares);
+        generateAISummary(colSquares);
         return;
       }
     }
@@ -894,18 +905,47 @@ export const NonprofitAIBingo = () => {
     const diagonal1 = [0, 6, 12, 18, 24].map(i => board[i]);
     const diagonal2 = [4, 8, 12, 16, 20].map(i => board[i]);
     
-    if (diagonal1.every(square => marked.has(square)) || diagonal2.every(square => marked.has(square))) {
+    if (diagonal1.every(square => marked.has(square))) {
       setHasBingo(true);
+      setWinningLine(diagonal1);
+      generateAISummary(diagonal1);
+      return;
+    }
+    
+    if (diagonal2.every(square => marked.has(square))) {
+      setHasBingo(true);
+      setWinningLine(diagonal2);
+      generateAISummary(diagonal2);
       return;
     }
     
     setHasBingo(false);
+    setWinningLine([]);
+    setAiSummary('');
+  };
+
+  const generateAISummary = async (winningSquares: string[]) => {
+    setLoadingSummary(true);
+    try {
+      const prompt = `The user achieved bingo with these AI tools: ${winningSquares.join(', ')}. Provide a single paragraph explaining how these specific AI tools could work together at a nonprofit organization and give practical first steps for implementation. Focus on synergies between these tools and realistic implementation advice.`;
+      
+      const summary = await callAI('tool_recommendation', prompt, 'Nonprofit AI Bingo winner analysis');
+      setAiSummary(summary);
+    } catch (error) {
+      console.error('Error generating AI summary:', error);
+      setAiSummary('Congratulations on your bingo! These AI tools represent a great starting point for digital transformation at your nonprofit.');
+    } finally {
+      setLoadingSummary(false);
+    }
   };
 
   const newGame = () => {
     setMarkedSquares(new Set());
     setCurrentBoard((prev) => (prev + 1) % boards.length);
     setHasBingo(false);
+    setWinningLine([]);
+    setAiSummary('');
+    setLoadingSummary(false);
   };
 
   const currentBoardSquares = boards[currentBoard];
@@ -917,16 +957,18 @@ export const NonprofitAIBingo = () => {
         <p className="text-sm text-gray-600">Mark AI tools your organization could use</p>
       </div>
 
-      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2">
+      <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
         {currentBoardSquares.map((square, index) => (
           <Button
             key={`${currentBoard}-${index}`}
             onClick={() => toggleSquare(square)}
             variant={markedSquares.has(square) ? "default" : "outline"}
-            className="h-16 sm:h-18 md:h-20 text-xs sm:text-sm p-2 flex items-center justify-center leading-tight"
+            className="h-20 sm:h-22 md:h-24 text-xs sm:text-sm p-3 flex items-center justify-center leading-relaxed whitespace-normal"
             size="sm"
           >
-            <span className="text-center break-words hyphens-auto">{square}</span>
+            <span className="text-center break-words hyphens-auto overflow-hidden text-ellipsis">
+              {square}
+            </span>
           </Button>
         ))}
       </div>
@@ -945,11 +987,28 @@ export const NonprofitAIBingo = () => {
         <Card className="border border-yellow-200">
           <CardContent className="p-4 text-center">
             <Trophy className="w-8 h-8 text-yellow-600 mx-auto mb-2" />
-            <h4 className="font-bold text-yellow-800">BINGO!</h4>
-            <p className="text-sm text-yellow-700">
-              Great job exploring AI tools for nonprofits!
+            <h4 className="font-bold text-yellow-800 mb-2">BINGO!</h4>
+            <p className="text-sm text-yellow-700 mb-3">
+              Winning combination: {winningLine.join(', ')}
             </p>
-            <Button onClick={newGame} size="sm" className="mt-2">
+            
+            {loadingSummary ? (
+              <div className="flex items-center justify-center gap-2 mb-3">
+                <Loader2 className="w-4 h-4 animate-spin text-blue-600" />
+                <span className="text-sm text-blue-600">Generating AI implementation guide...</span>
+              </div>
+            ) : aiSummary && (
+              <Card className="border border-blue-200 mb-3">
+                <CardContent className="p-3">
+                  <h5 className="font-medium text-blue-800 mb-2">AI Implementation Guide</h5>
+                  <p className="text-sm text-blue-700 text-left leading-relaxed">
+                    {aiSummary}
+                  </p>
+                </CardContent>
+              </Card>
+            )}
+            
+            <Button onClick={newGame} size="sm">
               Play Again
             </Button>
           </CardContent>
@@ -960,7 +1019,7 @@ export const NonprofitAIBingo = () => {
         <CardContent className="p-3">
           <p className="text-xs text-blue-700">
             <strong>Game Tip:</strong> Click on AI tools that could benefit your nonprofit. 
-            Get 5 in a row (horizontal, vertical, or diagonal) to win!
+            Get 5 in a row (horizontal, vertical, or diagonal) to win and receive personalized implementation advice!
           </p>
         </CardContent>
       </Card>
