@@ -7,7 +7,6 @@ import { ArrowLeft, Trophy, Target, Zap } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 // Import all implemented interactive components
-import { SubwayPatternMatcher } from '@/components/testing/SubwayPatternMatcher';
 import { DonorBehaviorPredictor } from '@/components/testing/DonorBehaviorPredictor';
 import { EmailResponseClassifier } from '@/components/testing/EmailResponseClassifier';
 import { RestaurantSurplusPredictor } from '@/components/testing/RestaurantSurplusPredictor';
@@ -15,6 +14,8 @@ import { VolunteerSkillsMatcher } from '@/components/testing/VolunteerSkillsMatc
 import { AIDefinitionBuilder } from '@/components/testing/AIDefinitionBuilder';
 import { AIMythsSwiper } from '@/components/testing/AIMythsSwiper';
 import { GrantWritingAssistant } from '@/components/testing/GrantWritingAssistant';
+import { AIContentGenerator } from '@/components/testing/AIContentGenerator';
+import { AIImpactStoryCreator } from '@/components/testing/AIImpactStoryCreator';
 
 // Import from PlaceholderComponents and InteractiveComponents
 import { 
@@ -44,10 +45,9 @@ const AITesting = () => {
       icon: Target,
       color: "bg-blue-100 text-blue-700",
       elements: [
-        { id: 1, component: SubwayPatternMatcher, title: "Subway Pattern Matcher", implemented: true },
-        { id: 2, component: DonorBehaviorPredictor, title: "Donor Behavior Predictor", implemented: true },
+        { id: 2, component: AIContentGenerator, title: "AI Content Generator", implemented: true, aiPowered: true },
         { id: 3, component: EmailResponseClassifier, title: "Email Response Classifier", implemented: true },
-        { id: 4, component: RestaurantSurplusPredictor, title: "Restaurant Surplus Predictor", implemented: true },
+        { id: 4, component: AIImpactStoryCreator, title: "AI Impact Story Creator", implemented: true, aiPowered: true },
         { id: 5, component: VolunteerSkillsMatcher, title: "Volunteer Skills Matcher", implemented: true }
       ]
     },
@@ -122,13 +122,13 @@ const AITesting = () => {
                   AI Interactive Testing Lab
                 </h1>
                 <p className="text-gray-600 text-sm">
-                  {totalImplemented}/25 elements implemented • {totalAIPowered} AI-powered
+                  {totalImplemented}/24 elements implemented • {totalAIPowered} AI-powered
                 </p>
               </div>
             </div>
             <div className="flex gap-2">
               <Badge className="bg-gradient-to-r from-purple-600 to-cyan-500 text-white">
-                25 Elements
+                24 Elements
               </Badge>
               <Badge className="bg-green-100 text-green-700">
                 {totalAIPowered} AI-Powered
@@ -200,7 +200,7 @@ const AITesting = () => {
       <div className="bg-white/80 backdrop-blur-sm border-t mt-16">
         <div className="container mx-auto px-4 py-6 text-center">
           <p className="text-gray-600 text-sm">
-            Testing Lab • {totalImplemented}/25 Interactive Elements • {totalAIPowered} AI-Powered • Chapter 1: AI Fundamentals for Nonprofits
+            Testing Lab • {totalImplemented}/24 Interactive Elements • {totalAIPowered} AI-Powered • Chapter 1: AI Fundamentals for Nonprofits
           </p>
           <p className="text-gray-500 text-xs mt-1">
             OpenAI API required for AI-powered elements
