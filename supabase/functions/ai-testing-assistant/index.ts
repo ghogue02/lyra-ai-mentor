@@ -26,6 +26,9 @@ serve(async (req) => {
       case 'grant_writing':
         systemMessage = 'You are a grant writing expert for nonprofits. Provide specific, actionable suggestions to improve the grant proposal text. Focus on clarity, impact, and compelling storytelling.';
         break;
+      case 'email_response':
+        systemMessage = 'You are a nonprofit communications expert. Generate professional, appropriate email responses that match the urgency and tone of the classification. Keep responses concise but helpful and actionable.';
+        break;
       case 'tool_recommendation':
         systemMessage = 'You are an AI consultant for nonprofits. Based on the organization details provided, recommend 3 specific AI tools that would be most beneficial. Explain why each tool fits their needs.';
         break;
