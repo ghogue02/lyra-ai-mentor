@@ -4,13 +4,17 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
-import { Loader2, Target } from 'lucide-react';
+import { Loader2, Target, Info } from 'lucide-react';
 
 const wordBlocks = [
   "computer", "systems", "learn", "data", "patterns", "without", "explicit", 
   "programming", "mimic", "human", "intelligence", "automate", "tasks", 
   "make", "decisions", "analyze", "predict", "optimize", "process", "information"
 ];
+
+const connectingWords = ["is", "are", "that", "can", "to", "by", "and", "or", "from", "with"];
+
+const MAX_WORDS = 5;
 
 export const AIDefinitionBuilder = () => {
   const [selectedWords, setSelectedWords] = useState<string[]>([]);
@@ -19,7 +23,7 @@ export const AIDefinitionBuilder = () => {
   const { callAI, loading } = useAITestingAssistant();
 
   const addWord = (word: string) => {
-    if (!selectedWords.includes(word)) {
+    if (!selectedWords.includes(word) && selectedWords.length < MAX_WORDS) {
       setSelectedWords([...selectedWords, word]);
     }
   };
@@ -33,8 +37,16 @@ export const AIDefinitionBuilder = () => {
     try {
       const result = await callAI(
         'definition_builder',
-        `Please evaluate this AI definition: "${definition}". Provide a score out of 10 and specific feedback.`,
-        'This is for nonprofit staff learning about AI basics.'
+        `Please evaluate this attempt at defining AI using only these selected words: "${definition}". 
+        
+        The user selected ${selectedWords.length} words to try to build a definition. Please provide:
+        1. A score out of 10 based on how well these words could form a coherent AI definition
+        2. Specific suggestions on how to arrange these words into a proper sentence
+        3. What connecting words (like "is", "that", "can", etc.) they might need to add
+        4. Feedback on their word choices and any key concepts missing
+        
+        Remember this is a learning exercise to help them understand how to construct definitions, not just evaluate a finished definition.`,
+        'This is for nonprofit staff learning about AI basics through a word-building exercise.'
       );
       
       // Extract score from result
@@ -44,7 +56,7 @@ export const AIDefinitionBuilder = () => {
       }
       setFeedback(result);
     } catch (error) {
-      setFeedback('Sorry, there was an error evaluating your definition. Try again!');
+      setFeedback('Sorry, there was an error evaluating your word selection. Try again!');
     }
   };
 
@@ -54,15 +66,24 @@ export const AIDefinitionBuilder = () => {
     setScore(null);
   };
 
+  const remainingWords = MAX_WORDS - selectedWords.length;
+
   return (
     <div className="space-y-4">
       <div className="text-center">
         <h3 className="font-medium text-gray-800 mb-2">Build Your AI Definition</h3>
-        <p className="text-sm text-gray-600">Select words to create a definition of AI</p>
+        <p className="text-sm text-gray-600">Select up to {MAX_WORDS} words to build a definition of AI</p>
       </div>
 
       <Card className="border border-blue-200">
         <CardContent className="p-4">
+          <div className="flex items-center justify-between mb-3">
+            <span className="text-sm font-medium text-gray-700">Your selected words:</span>
+            <Badge variant="outline" className={remainingWords === 0 ? "bg-orange-50 text-orange-700" : ""}>
+              {selectedWords.length}/{MAX_WORDS} words
+            </Badge>
+          </div>
+          
           <div className="min-h-[60px] border-2 border-dashed border-gray-300 rounded p-3 mb-3">
             {selectedWords.length > 0 ? (
               <div className="flex flex-wrap gap-2">
@@ -77,7 +98,7 @@ export const AIDefinitionBuilder = () => {
                 ))}
               </div>
             ) : (
-              <p className="text-gray-400 text-sm">Your definition will appear here...</p>
+              <p className="text-gray-400 text-sm">Select words to build your definition...</p>
             )}
           </div>
           
@@ -86,8 +107,12 @@ export const AIDefinitionBuilder = () => {
               <Badge 
                 key={word}
                 variant="outline" 
-                className={`cursor-pointer hover:bg-gray-100 text-xs ${
-                  selectedWords.includes(word) ? 'opacity-50' : ''
+                className={`cursor-pointer text-xs transition-all ${
+                  selectedWords.includes(word) 
+                    ? 'opacity-50 cursor-not-allowed' 
+                    : remainingWords === 0 
+                      ? 'opacity-50 cursor-not-allowed' 
+                      : 'hover:bg-gray-100'
                 }`}
                 onClick={() => addWord(word)}
               >
@@ -98,6 +123,17 @@ export const AIDefinitionBuilder = () => {
         </CardContent>
       </Card>
 
+      <div className="bg-blue-50 p-3 rounded-lg border border-blue-200">
+        <div className="flex items-start gap-2">
+          <Info className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+          <div className="text-sm text-blue-800">
+            <p className="font-medium mb-1">Building a definition:</p>
+            <p>Try to form a complete sentence! You may need connecting words like: {connectingWords.slice(0, 6).join(', ')}, etc.</p>
+            <p className="mt-1 text-xs">Example: "AI <em>is</em> computer systems <em>that</em> learn <em>from</em> data"</p>
+          </div>
+        </div>
+      </div>
+
       <div className="flex gap-2">
         <Button 
           onClick={evaluateDefinition} 
@@ -105,7 +141,7 @@ export const AIDefinitionBuilder = () => {
           disabled={selectedWords.length < 3 || loading}
         >
           {loading ? <Loader2 className="w-3 h-3 mr-1 animate-spin" /> : <Target className="w-3 h-3 mr-1" />}
-          Get AI Evaluation
+          Get AI Feedback
         </Button>
         <Button onClick={reset} variant="outline" size="sm">
           Clear
@@ -121,7 +157,7 @@ export const AIDefinitionBuilder = () => {
               </Badge>
             </div>
           )}
-          <p className="text-sm text-green-800">{feedback}</p>
+          <p className="text-sm text-green-800 whitespace-pre-wrap">{feedback}</p>
         </div>
       )}
     </div>
