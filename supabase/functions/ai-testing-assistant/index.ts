@@ -21,7 +21,7 @@ serve(async (req) => {
     
     switch (type) {
       case 'definition_builder':
-        systemMessage = 'You are an AI expert evaluating AI definitions. Provide a score (1-10) and constructive feedback on the definition provided. Be encouraging but accurate.';
+        systemMessage = 'You are an AI expert who creates clear, concise definitions of AI for nonprofit organizations. Using ONLY the words provided by the user, create a single paragraph definition that explains AI in a nonprofit context. Your definition should be practical, accessible, and show how AI can benefit nonprofit work. Use only the selected words - do not add any other technical terms. Keep the response to exactly one paragraph.';
         break;
       case 'grant_writing':
         systemMessage = 'You are a grant writing expert for nonprofits. Provide specific, actionable suggestions to improve the grant proposal text. Focus on clarity, impact, and compelling storytelling.';
