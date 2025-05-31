@@ -18,6 +18,16 @@ export {
   TimeSavingsCalculator
 } from './InteractiveComponents';
 
+// Export the new advanced interactive components
+export {
+  DonorSegmentationSimulator,
+  VolunteerCoordinationGame,
+  FoodRescueRouteOptimizer,
+  MentorMatchingSimulator,
+  AIBeforeAfterSlider,
+  NonprofitAIBingo
+} from './AdvancedInteractiveComponents';
+
 // AI-Powered Components (remaining 5 of 10)
 export const SuccessStoryBuilder = () => {
   const [storyData, setStoryData] = useState({
@@ -510,90 +520,3 @@ export const CommunityImpactMultiplier = () => {
     </div>
   );
 };
-
-// Advanced Interactive Components (remaining non-AI powered)
-const PlaceholderInteractive = ({ title, description, icon: Icon = Zap }: { 
-  title: string; 
-  description: string; 
-  icon?: React.ComponentType<any>;
-}) => {
-  const [completed, setCompleted] = useState(false);
-
-  return (
-    <div className="space-y-4">
-      <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">{title}</h3>
-        <p className="text-sm text-gray-600">{description}</p>
-      </div>
-
-      <div className="p-6 border-2 border-dashed border-gray-200 rounded-lg text-center">
-        <Icon className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-        <p className="text-sm text-gray-500 mb-3">Advanced interaction coming soon</p>
-        <Button 
-          onClick={() => setCompleted(!completed)}
-          size="sm"
-          variant={completed ? "default" : "outline"}
-        >
-          {completed ? "Completed!" : "Try It Out"}
-        </Button>
-      </div>
-
-      {completed && (
-        <div className="p-3 bg-green-50 rounded-lg border border-green-200">
-          <Badge className="bg-green-100 text-green-700">
-            Great job exploring this interaction!
-          </Badge>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Remaining placeholder components (will be enhanced in future iterations)
-export const DonorSegmentationSimulator = () => (
-  <PlaceholderInteractive 
-    title="Donor Segmentation Simulator"
-    description="Categorize donors like Sarah's story"
-    icon={Target}
-  />
-);
-
-export const VolunteerCoordinationGame = () => (
-  <PlaceholderInteractive 
-    title="Volunteer Coordination Game"
-    description="Manage 200+ volunteers like Maria with time pressure"
-    icon={Users}
-  />
-);
-
-export const FoodRescueRouteOptimizer = () => (
-  <PlaceholderInteractive 
-    title="Food Rescue Route Optimizer"
-    description="Plan Carmen's optimal pickup routes interactively"
-    icon={Target}
-  />
-);
-
-export const MentorMatchingSimulator = () => (
-  <PlaceholderInteractive 
-    title="Mentor Matching Simulator"
-    description="Pair teens with mentors like DeShawn's program"
-    icon={Users}
-  />
-);
-
-export const AIBeforeAfterSlider = () => (
-  <PlaceholderInteractive 
-    title="AI Before/After Slider"
-    description="Interactive comparison of nonprofit efficiency"
-    icon={BarChart}
-  />
-);
-
-export const NonprofitAIBingo = () => (
-  <PlaceholderInteractive 
-    title="Nonprofit AI Bingo"
-    description="Dynamic bingo with real nonprofit AI tools"
-    icon={Gamepad2}
-  />
-);

@@ -69,10 +69,10 @@ const AITesting = () => {
       color: "bg-purple-100 text-purple-700",
       elements: [
         { id: 11, component: GrantWritingAssistant, title: "Grant Writing Assistant", implemented: true, aiPowered: true },
-        { id: 12, component: DonorSegmentationSimulator, title: "Donor Segmentation Simulator", implemented: false },
-        { id: 13, component: VolunteerCoordinationGame, title: "Volunteer Coordination Game", implemented: false },
-        { id: 14, component: FoodRescueRouteOptimizer, title: "Food Rescue Route Optimizer", implemented: false },
-        { id: 15, component: MentorMatchingSimulator, title: "Mentor Matching Simulator", implemented: false }
+        { id: 12, component: DonorSegmentationSimulator, title: "Donor Segmentation Simulator", implemented: true },
+        { id: 13, component: VolunteerCoordinationGame, title: "Volunteer Coordination Game", implemented: true },
+        { id: 14, component: FoodRescueRouteOptimizer, title: "Food Rescue Route Optimizer", implemented: true },
+        { id: 15, component: MentorMatchingSimulator, title: "Mentor Matching Simulator", implemented: true }
       ]
     },
     {
@@ -80,8 +80,8 @@ const AITesting = () => {
       icon: Target,
       color: "bg-orange-100 text-orange-700",
       elements: [
-        { id: 16, component: AIBeforeAfterSlider, title: "AI Before/After Slider", implemented: false },
-        { id: 17, component: NonprofitAIBingo, title: "Nonprofit AI Bingo", implemented: false },
+        { id: 16, component: AIBeforeAfterSlider, title: "AI Before/After Slider", implemented: true },
+        { id: 17, component: NonprofitAIBingo, title: "Nonprofit AI Bingo", implemented: true },
         { id: 18, component: TimeSavingsCalculator, title: "Time Savings Calculator", implemented: true, aiPowered: true },
         { id: 19, component: AIMythBusterSpinner, title: "AI Myth Buster Spinner", implemented: true, aiPowered: true },
         { id: 20, component: SuccessStoryBuilder, title: "Success Story Builder", implemented: true, aiPowered: true }
