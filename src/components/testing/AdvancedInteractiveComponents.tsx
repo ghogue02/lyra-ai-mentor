@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -6,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { 
   Users, Target, MapPin, Heart, BarChart, Gamepad2, 
   Timer, CheckCircle, ArrowRight, Shuffle, Star,
-  DollarSign, Clock, TrendingUp, Award, RefreshCw
+  DollarSign, Clock, TrendingUp, Award, RefreshCw, Trophy
 } from 'lucide-react';
 
 // Element 12 - Donor Segmentation Simulator
