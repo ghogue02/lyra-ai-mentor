@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useToast } from "@/hooks/use-toast";
+
 export const SequenceSorter = () => {
   const [items, setItems] = useState([{
     id: 1,
@@ -32,38 +34,165 @@ export const SequenceSorter = () => {
         </div>)}
     </div>;
 };
+
 export const NonprofitAIBingo = () => {
-  const bingoSquares = ["Chatbot", "Email Writer", "Donor Analytics", "Grant Finder", "FREE SPACE", "Impact Tracker", "Route Planner", "Photo Sorter", "Security Monitor", "Calendar Bot", "Budget Planner", "Social Scheduler", "Voice Assistant", "Document Reader", "Supply Tracker", "Talent Finder", "Feedback Analyzer", "Performance Dashboard", "Communication Hub", "Event Planner", "Translation Tool", "Newsletter Bot", "Volunteer Matcher", "Report Generator", "Data Visualizer"];
-  const [clickedSquares, setClickedSquares] = useState<{
-    [key: number]: boolean;
-  }>({});
-  const toggleSquare = (index: number) => {
-    setClickedSquares(prev => ({
-      ...prev,
-      [index]: !prev[index]
-    }));
+  const { toast } = useToast();
+  const bingoSquares = [
+    "Chatbot", "Email Writer", "Donor Analytics", "Grant Finder", "FREE SPACE",
+    "Impact Tracker", "Route Planner", "Photo Sorter", "Security Monitor", "Calendar Bot",
+    "Budget Planner", "Social Scheduler", "Voice Assistant", "Document Reader", "Supply Tracker",
+    "Talent Finder", "Feedback Analyzer", "Performance Dashboard", "Communication Hub", "Event Planner",
+    "Translation Tool", "Newsletter Bot", "Volunteer Matcher", "Report Generator", "Data Visualizer"
+  ];
+  
+  const [clickedSquares, setClickedSquares] = useState<{[key: number]: boolean}>({});
+  const [completedBingos, setCompletedBingos] = useState<number[]>([]);
+  const [showCelebration, setShowCelebration] = useState(false);
+  const [winningLines, setWinningLines] = useState<number[][]>([]);
+
+  // Check for bingo patterns
+  const checkForBingo = (squares: {[key: number]: boolean}) => {
+    const patterns: number[][] = [];
+    
+    // Horizontal lines (rows)
+    for (let row = 0; row < 5; row++) {
+      const line = [];
+      for (let col = 0; col < 5; col++) {
+        const index = row * 5 + col;
+        line.push(index);
+      }
+      if (line.every(index => squares[index] || index === 12)) { // 12 is FREE SPACE
+        patterns.push(line);
+      }
+    }
+    
+    // Vertical lines (columns)
+    for (let col = 0; col < 5; col++) {
+      const line = [];
+      for (let row = 0; row < 5; row++) {
+        const index = row * 5 + col;
+        line.push(index);
+      }
+      if (line.every(index => squares[index] || index === 12)) {
+        patterns.push(line);
+      }
+    }
+    
+    // Diagonal lines
+    const diagonal1 = [0, 6, 12, 18, 24]; // Top-left to bottom-right
+    const diagonal2 = [4, 8, 12, 16, 20]; // Top-right to bottom-left
+    
+    if (diagonal1.every(index => squares[index] || index === 12)) {
+      patterns.push(diagonal1);
+    }
+    if (diagonal2.every(index => squares[index] || index === 12)) {
+      patterns.push(diagonal2);
+    }
+    
+    return patterns;
   };
-  return <div className="space-y-4">
+
+  const toggleSquare = (index: number) => {
+    if (index === 12) return; // FREE SPACE can't be toggled
+    
+    const newClickedSquares = {
+      ...clickedSquares,
+      [index]: !clickedSquares[index]
+    };
+    
+    setClickedSquares(newClickedSquares);
+    
+    // Check for new bingos
+    const newBingos = checkForBingo(newClickedSquares);
+    const newBingoCount = newBingos.length;
+    
+    if (newBingoCount > completedBingos.length) {
+      setCompletedBingos(prev => [...prev, ...Array(newBingoCount - prev.length).fill(0).map((_, i) => prev.length + i + 1)]);
+      setWinningLines(newBingos);
+      setShowCelebration(true);
+      
+      toast({
+        title: "🎉 BINGO!",
+        description: `Congratulations! You've completed ${newBingoCount === 1 ? 'your first' : newBingoCount} bingo pattern${newBingoCount > 1 ? 's' : ''}!`,
+      });
+      
+      setTimeout(() => setShowCelebration(false), 3000);
+    }
+  };
+
+  const resetGame = () => {
+    setClickedSquares({});
+    setCompletedBingos([]);
+    setWinningLines([]);
+    setShowCelebration(false);
+  };
+
+  const isInWinningLine = (index: number) => {
+    return winningLines.some(line => line.includes(index));
+  };
+
+  return (
+    <div className="space-y-4">
       <div className="text-center">
-        
+        <h3 className="text-lg font-semibold text-gray-800 mb-1">Nonprofit AI Bingo</h3>
         <p className="text-sm text-gray-600">Click on AI tools your organization uses or could benefit from!</p>
+        <p className="text-xs text-gray-500 mt-1">Get 5 in a row (horizontal, vertical, or diagonal) to win BINGO!</p>
       </div>
+      
+      {showCelebration && (
+        <div className="text-center animate-bounce">
+          <div className="text-2xl font-bold text-yellow-600 bg-yellow-100 rounded-lg p-3 border-2 border-yellow-400">
+            🎉 BINGO! 🎉
+          </div>
+        </div>
+      )}
       
       <div className="grid grid-cols-5 gap-2 max-w-md mx-auto">
-        {bingoSquares.map((square, index) => <div key={index} onClick={() => square !== "FREE SPACE" && toggleSquare(index)} className={`
+        {bingoSquares.map((square, index) => (
+          <div
+            key={index}
+            onClick={() => toggleSquare(index)}
+            className={`
               aspect-square border-2 rounded-lg flex items-center justify-center text-center p-1
               text-xs font-medium leading-tight cursor-pointer transition-all duration-200
-              ${square === "FREE SPACE" ? "bg-yellow-200 border-yellow-400 text-yellow-800" : clickedSquares[index] ? "bg-green-200 border-green-400 text-green-800" : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"}
-            `}>
+              ${square === "FREE SPACE" 
+                ? "bg-yellow-200 border-yellow-400 text-yellow-800" 
+                : clickedSquares[index] 
+                  ? isInWinningLine(index)
+                    ? "bg-purple-200 border-purple-400 text-purple-800 ring-2 ring-purple-300 shadow-lg"
+                    : "bg-green-200 border-green-400 text-green-800"
+                  : "bg-white border-gray-300 text-gray-700 hover:bg-gray-50"
+              }
+              ${isInWinningLine(index) && clickedSquares[index] ? 'animate-pulse' : ''}
+            `}
+          >
             {square}
-          </div>)}
+          </div>
+        ))}
       </div>
       
-      <div className="text-center text-sm text-gray-600">
-        <p>Clicked: {Object.keys(clickedSquares).length}/24 tools</p>
+      <div className="text-center space-y-2">
+        <p className="text-sm text-gray-600">
+          Clicked: {Object.keys(clickedSquares).length}/24 tools
+        </p>
+        {completedBingos.length > 0 && (
+          <div className="text-sm font-semibold text-purple-700">
+            🎯 Bingo Patterns Completed: {completedBingos.length}
+          </div>
+        )}
+        {completedBingos.length > 0 && (
+          <button
+            onClick={resetGame}
+            className="px-3 py-1 text-sm bg-gray-500 text-white rounded hover:bg-gray-600 transition-colors"
+          >
+            Play Again
+          </button>
+        )}
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export const MultipleChoiceScenarios = () => {
   const scenarios = [{
     id: 1,
