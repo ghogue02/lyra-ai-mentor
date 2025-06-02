@@ -80,8 +80,8 @@ const AIRefine = () => {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
-        {/* Elements Grid */}
-        <div className="grid lg:grid-cols-2 gap-8">
+        {/* Elements Grid - Changed to single column */}
+        <div className="grid grid-cols-1 gap-8 max-w-4xl mx-auto">
           {elementsToRefine.map((element) => {
             const ElementComponent = element.component;
             
