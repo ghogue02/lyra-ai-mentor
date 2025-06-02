@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { getSupabaseIconUrl } from '@/utils/supabaseIcons';
+import { LyraAvatar } from '@/components/LyraAvatar';
 
 // Import the 5 selected components
 import { AIContentGenerator } from '@/components/testing/AIContentGenerator';
@@ -22,35 +23,40 @@ const AIRefine = () => {
       component: SequenceSorter, 
       title: "Sequence Sorter", 
       aiPowered: false,
-      icon: getSupabaseIconUrl('workflow-process.png')
+      icon: getSupabaseIconUrl('workflow-process.png'),
+      avatarIcon: 'lyra-avatar.png'
     },
     { 
       id: 2, 
       component: AIContentGenerator, 
       title: "AI Content Generator", 
       aiPowered: true,
-      icon: getSupabaseIconUrl('data-analytics.png')
+      icon: getSupabaseIconUrl('data-analytics.png'),
+      avatarIcon: 'lyra-thinking.png'
     },
     { 
       id: 8, 
       component: MultipleChoiceScenarios, 
       title: "Multiple Choice Scenarios", 
       aiPowered: false,
-      icon: getSupabaseIconUrl('learning-target.png')
+      icon: getSupabaseIconUrl('learning-target.png'),
+      avatarIcon: 'communication.png'
     },
     { 
       id: 17, 
       component: NonprofitAIBingo, 
       title: "Nonprofit AI Bingo", 
       aiPowered: false,
-      icon: getSupabaseIconUrl('achievement-trophy.png')
+      icon: getSupabaseIconUrl('achievement-trophy.png'),
+      avatarIcon: 'empty-state-welcome.png'
     },
     { 
       id: 4, 
       component: AIImpactStoryCreator, 
       title: "AI Impact Story Creator", 
       aiPowered: true,
-      icon: getSupabaseIconUrl('communication.png')
+      icon: getSupabaseIconUrl('communication.png'),
+      avatarIcon: 'hero-main.png'
     }
   ];
 
@@ -87,8 +93,22 @@ const AIRefine = () => {
             
             return (
               <Card key={element.id} className="shadow-lg hover:shadow-xl transition-shadow">
-                <CardHeader className="pb-4">
-                  <div className="flex items-center gap-3">
+                {/* Lyra Avatar centered above the heading */}
+                <div className="flex justify-center pt-6 pb-2">
+                  <img 
+                    src={getSupabaseIconUrl(element.avatarIcon)} 
+                    alt={`Lyra avatar for ${element.title}`}
+                    className="w-16 h-16 object-contain"
+                    onError={(e) => {
+                      // Fallback to a default icon if image fails to load
+                      const target = e.target as HTMLImageElement;
+                      target.style.display = 'none';
+                    }}
+                  />
+                </div>
+                
+                <CardHeader className="pb-4 pt-2">
+                  <div className="flex items-center justify-center gap-3">
                     <img 
                       src={element.icon} 
                       alt={`${element.title} icon`}
@@ -99,7 +119,7 @@ const AIRefine = () => {
                         target.style.display = 'none';
                       }}
                     />
-                    <CardTitle className="text-lg font-semibold">
+                    <CardTitle className="text-lg font-semibold text-center">
                       {element.title}
                     </CardTitle>
                   </div>
