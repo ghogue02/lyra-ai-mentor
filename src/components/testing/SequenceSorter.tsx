@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { GripVertical, Shuffle, CheckCircle, Info } from 'lucide-react';
+import { GripVertical, Shuffle, CheckCircle, Info, Check, X } from 'lucide-react';
 
 export const SequenceSorter = () => {
   const initialSteps = [
@@ -53,6 +53,7 @@ export const SequenceSorter = () => {
   const [steps, setSteps] = useState(() => createRandomizedOrder());
   const [isCorrect, setIsCorrect] = useState(false);
   const [showResult, setShowResult] = useState(false);
+  const [stepCorrectness, setStepCorrectness] = useState<boolean[]>([]);
   const [draggedItem, setDraggedItem] = useState<number | null>(null);
   const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
@@ -62,6 +63,11 @@ export const SequenceSorter = () => {
     setDraggedItem(index);
     e.dataTransfer.effectAllowed = 'move';
     e.dataTransfer.setData('text/html', '');
+    // Clear feedback when user starts dragging
+    if (showResult) {
+      setShowResult(false);
+      setStepCorrectness([]);
+    }
   };
 
   const handleDragOver = (e: React.DragEvent, index: number) => {
@@ -96,7 +102,6 @@ export const SequenceSorter = () => {
     setSteps(newSteps);
     setDraggedItem(null);
     setDragOverIndex(null);
-    setShowResult(false);
   };
 
   const handleDragEnd = () => {
@@ -107,14 +112,24 @@ export const SequenceSorter = () => {
   const checkOrder = () => {
     const currentOrder = steps.map(step => step.id);
     const correct = JSON.stringify(currentOrder) === JSON.stringify(correctOrder);
+    
+    // Check each step's correctness
+    const correctnessArray = steps.map((step, index) => {
+      return step.id === correctOrder[index];
+    });
+    
     setIsCorrect(correct);
+    setStepCorrectness(correctnessArray);
     setShowResult(true);
   };
 
   const shuffleSteps = () => {
     setSteps(createRandomizedOrder());
     setShowResult(false);
+    setStepCorrectness([]);
   };
+
+  const correctCount = stepCorrectness.filter(Boolean).length;
 
   return (
     <div className="space-y-4">
@@ -124,55 +139,73 @@ export const SequenceSorter = () => {
       </div>
 
       <div className="space-y-2">
-        {steps.map((step, index) => (
-          <Card 
-            key={step.id} 
-            className={`border transition-all duration-200 ${
-              draggedItem === index 
-                ? 'opacity-50 transform rotate-2 shadow-lg border-blue-300' 
-                : dragOverIndex === index 
-                ? 'border-blue-400 bg-blue-50 shadow-md' 
-                : 'border-gray-200 hover:border-gray-300'
-            }`}
-            draggable
-            onDragStart={(e) => handleDragStart(e, index)}
-            onDragOver={(e) => handleDragOver(e, index)}
-            onDragLeave={handleDragLeave}
-            onDrop={(e) => handleDrop(e, index)}
-            onDragEnd={handleDragEnd}
-          >
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3 flex-1">
-                  <div className="flex items-center gap-2">
-                    <GripVertical 
-                      className="h-4 w-4 text-gray-400 cursor-grab active:cursor-grabbing" 
-                      aria-label="Drag handle"
-                    />
-                    <Badge variant="outline" className="text-xs">
-                      {index + 1}
-                    </Badge>
+        {steps.map((step, index) => {
+          const isStepCorrect = showResult && stepCorrectness[index];
+          const isStepIncorrect = showResult && !stepCorrectness[index];
+          
+          return (
+            <Card 
+              key={step.id} 
+              className={`border transition-all duration-200 ${
+                draggedItem === index 
+                  ? 'opacity-50 transform rotate-2 shadow-lg border-blue-300' 
+                  : dragOverIndex === index 
+                  ? 'border-blue-400 bg-blue-50 shadow-md' 
+                  : isStepCorrect
+                  ? 'border-green-400 bg-green-50'
+                  : isStepIncorrect
+                  ? 'border-red-400 bg-red-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              draggable
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDragLeave={handleDragLeave}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+            >
+              <CardContent className="p-3">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="flex items-center gap-2">
+                      <GripVertical 
+                        className="h-4 w-4 text-gray-400 cursor-grab active:cursor-grabbing" 
+                        aria-label="Drag handle"
+                      />
+                      <Badge variant="outline" className="text-xs">
+                        {index + 1}
+                      </Badge>
+                      {showResult && (
+                        <div className="flex items-center">
+                          {isStepCorrect ? (
+                            <Check className="h-4 w-4 text-green-600" />
+                          ) : (
+                            <X className="h-4 w-4 text-red-600" />
+                          )}
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-sm font-medium flex-1">{step.text}</span>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          className="h-6 w-6 p-0 hover:bg-gray-100"
+                        >
+                          <Info className="h-3 w-3 text-gray-500" />
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-80 p-3 bg-white border shadow-lg">
+                        <p className="text-sm text-gray-700 leading-relaxed">{step.description}</p>
+                      </PopoverContent>
+                    </Popover>
                   </div>
-                  <span className="text-sm font-medium flex-1">{step.text}</span>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-6 w-6 p-0 hover:bg-gray-100"
-                      >
-                        <Info className="h-3 w-3 text-gray-500" />
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-80 p-3 bg-white border shadow-lg">
-                      <p className="text-sm text-gray-700 leading-relaxed">{step.description}</p>
-                    </PopoverContent>
-                  </Popover>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
 
       <div className="flex gap-2 justify-center">
@@ -187,14 +220,19 @@ export const SequenceSorter = () => {
       </div>
 
       {showResult && (
-        <Card className={`border ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+        <Card className={`border ${isCorrect ? 'border-green-500 bg-green-50' : 'border-orange-500 bg-orange-50'}`}>
           <CardContent className="p-3 text-center">
-            <p className={`text-sm font-medium ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+            <p className={`text-sm font-medium ${isCorrect ? 'text-green-700' : 'text-orange-700'}`}>
               {isCorrect ? 
                 "Perfect! You've mastered the AI implementation sequence." : 
-                "Not quite right. Try rearranging the steps - think about what should come first!"
+                `${correctCount} out of 6 steps are in the correct position. Keep adjusting the order!`
               }
             </p>
+            {!isCorrect && (
+              <p className="text-xs text-gray-600 mt-1">
+                Steps with ✓ are correctly positioned, steps with ✗ need to be moved.
+              </p>
+            )}
           </CardContent>
         </Card>
       )}
