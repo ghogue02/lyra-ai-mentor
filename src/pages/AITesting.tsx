@@ -120,13 +120,19 @@ const AITesting = () => {
                   AI Interactive Testing Lab
                 </h1>
                 <p className="text-gray-600 text-sm">
-                  {totalImplemented}/23 elements implemented • {totalAIPowered} AI-powered
+                  {totalImplemented}/22 elements implemented • {totalAIPowered} AI-powered
                 </p>
               </div>
             </div>
             <div className="flex gap-2">
+              <Button variant="outline" size="sm" asChild>
+                <Link to="/ai-refine">
+                  <Target className="w-4 h-4 mr-2" />
+                  Refinement Lab
+                </Link>
+              </Button>
               <Badge className="bg-gradient-to-r from-purple-600 to-cyan-500 text-white">
-                23 Elements
+                22 Elements
               </Badge>
               <Badge className="bg-green-100 text-green-700">
                 {totalAIPowered} AI-Powered
@@ -198,10 +204,10 @@ const AITesting = () => {
       <div className="bg-white/80 backdrop-blur-sm border-t mt-16">
         <div className="container mx-auto px-4 py-6 text-center">
           <p className="text-gray-600 text-sm">
-            Testing Lab • {totalImplemented}/23 Interactive Elements • {totalAIPowered} AI-Powered • Chapter 1: AI Fundamentals for Nonprofits
+            Testing Lab • {totalImplemented}/22 Interactive Elements • {totalAIPowered} AI-Powered • Chapter 1: AI Fundamentals for Nonprofits
           </p>
           <p className="text-gray-500 text-xs mt-1">
-            OpenAI API required for AI-powered elements
+            OpenAI API required for AI-powered elements • <Link to="/ai-refine" className="text-orange-600 hover:underline">Visit Refinement Lab</Link>
           </p>
         </div>
       </div>

@@ -1,3 +1,4 @@
+
 import { useState } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -12,6 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import Lesson from "./pages/Lesson";
 import AITesting from "./pages/AITesting";
+import AIRefine from "./pages/AIRefine";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <AITesting />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/ai-refine" 
+                element={
+                  <ProtectedRoute>
+                    <AIRefine />
                   </ProtectedRoute>
                 } 
               />
