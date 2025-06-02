@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { ArrowUp, ArrowDown, Shuffle, CheckCircle } from 'lucide-react';
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { ArrowUp, ArrowDown, Shuffle, CheckCircle, Info } from 'lucide-react';
 
 export const SequenceSorter = () => {
   const [steps, setSteps] = useState([
@@ -70,81 +70,86 @@ export const SequenceSorter = () => {
   };
 
   return (
-    <TooltipProvider>
-      <div className="space-y-4">
-        <div className="text-center">
-          <h3 className="font-medium text-gray-800 mb-2">AI Implementation Sequence</h3>
-          <p className="text-sm text-gray-600">Put these steps in the correct order (hover for details)</p>
-        </div>
+    <div className="space-y-4">
+      <div className="text-center">
+        <h3 className="font-medium text-gray-800 mb-2">AI Implementation Sequence</h3>
+        <p className="text-sm text-gray-600">Put these steps in the correct order (click info for details)</p>
+      </div>
 
-        <div className="space-y-2">
-          {steps.map((step, index) => (
-            <Tooltip key={step.id}>
-              <TooltipTrigger asChild>
-                <Card className="border border-gray-200 cursor-help hover:border-gray-300 transition-colors">
-                  <CardContent className="p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <Badge variant="outline" className="text-xs">
-                          {index + 1}
-                        </Badge>
-                        <span className="text-sm font-medium">{step.text}</span>
-                      </div>
-                      <div className="flex gap-1">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => moveStep(index, 'up')}
-                          disabled={index === 0}
-                          className="h-8 w-8 p-0"
-                        >
-                          <ArrowUp className="h-3 w-3" />
-                        </Button>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => moveStep(index, 'down')}
-                          disabled={index === steps.length - 1}
-                          className="h-8 w-8 p-0"
-                        >
-                          <ArrowDown className="h-3 w-3" />
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </TooltipTrigger>
-              <TooltipContent className="max-w-80 p-3">
-                <p className="text-sm">{step.description}</p>
-              </TooltipContent>
-            </Tooltip>
-          ))}
-        </div>
-
-        <div className="flex gap-2 justify-center">
-          <Button onClick={checkOrder} size="sm">
-            <CheckCircle className="w-3 h-3 mr-1" />
-            Check Order
-          </Button>
-          <Button onClick={shuffleSteps} variant="outline" size="sm">
-            <Shuffle className="w-3 h-3 mr-1" />
-            Shuffle
-          </Button>
-        </div>
-
-        {showResult && (
-          <Card className={`border ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
-            <CardContent className="p-3 text-center">
-              <p className={`text-sm font-medium ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
-                {isCorrect ? 
-                  "Perfect! You've mastered the AI implementation sequence." : 
-                  "Not quite right. Try rearranging the steps - think about what should come first!"
-                }
-              </p>
+      <div className="space-y-2">
+        {steps.map((step, index) => (
+          <Card key={step.id} className="border border-gray-200 hover:border-gray-300 transition-colors">
+            <CardContent className="p-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Badge variant="outline" className="text-xs">
+                    {index + 1}
+                  </Badge>
+                  <span className="text-sm font-medium">{step.text}</span>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button 
+                        variant="ghost" 
+                        size="sm" 
+                        className="h-6 w-6 p-0 hover:bg-gray-100"
+                      >
+                        <Info className="h-3 w-3 text-gray-500" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-80 p-3 bg-white border shadow-lg">
+                      <p className="text-sm text-gray-700 leading-relaxed">{step.description}</p>
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="flex gap-1">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => moveStep(index, 'up')}
+                    disabled={index === 0}
+                    className="h-8 w-8 p-0"
+                  >
+                    <ArrowUp className="h-3 w-3" />
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => moveStep(index, 'down')}
+                    disabled={index === steps.length - 1}
+                    className="h-8 w-8 p-0"
+                  >
+                    <ArrowDown className="h-3 w-3" />
+                  </Button>
+                </div>
+              </div>
             </CardContent>
           </Card>
-        )}
+        ))}
       </div>
-    </TooltipProvider>
+
+      <div className="flex gap-2 justify-center">
+        <Button onClick={checkOrder} size="sm">
+          <CheckCircle className="w-3 h-3 mr-1" />
+          Check Order
+        </Button>
+        <Button onClick={shuffleSteps} variant="outline" size="sm">
+          <Shuffle className="w-3 h-3 mr-1" />
+          Shuffle
+        </Button>
+      </div>
+
+      {showResult && (
+        <Card className={`border ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+          <CardContent className="p-3 text-center">
+            <p className={`text-sm font-medium ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+              {isCorrect ? 
+                "Perfect! You've mastered the AI implementation sequence." : 
+                "Not quite right. Try rearranging the steps - think about what should come first!"
+              }
+            </p>
+          </CardContent>
+        </Card>
+      )}
+    </div>
   );
 };
