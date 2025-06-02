@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -16,13 +15,15 @@ import { GrantWritingAssistant } from '@/components/testing/GrantWritingAssistan
 import { AIContentGenerator } from '@/components/testing/AIContentGenerator';
 import { AIImpactStoryCreator } from '@/components/testing/AIImpactStoryCreator';
 
-// Import from PlaceholderComponents and InteractiveComponents
+// Import components from their respective files
+import { StoryFillInBlanks } from '@/components/testing/StoryFillInBlanks';
+import { TimeSavingsCalculator } from '@/components/testing/TimeSavingsCalculator';
+
+// Import from PlaceholderComponents
 import { 
   MultipleChoiceScenarios, 
-  StoryFillInBlanks, 
   SequenceSorter,
   AIToolRecommendationEngine,
-  TimeSavingsCalculator,
   SuccessStoryBuilder,
   AIEthicsDecisionTree,
   NonprofitAIReadinessQuiz,
