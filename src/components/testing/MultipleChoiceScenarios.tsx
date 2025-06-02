@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -61,7 +60,6 @@ export const MultipleChoiceScenarios = () => {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">AI Implementation Scenarios</h3>
         <p className="text-sm text-gray-600">Choose the best approach for each situation</p>
       </div>
 

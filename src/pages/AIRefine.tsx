@@ -93,12 +93,12 @@ const AIRefine = () => {
             
             return (
               <Card key={element.id} className="shadow-lg hover:shadow-xl transition-shadow">
-                {/* Lyra Avatar centered above the heading */}
+                {/* Lyra Avatar centered above the heading - doubled size */}
                 <div className="flex justify-center pt-6 pb-2">
                   <img 
                     src={getSupabaseIconUrl(element.avatarIcon)} 
                     alt={`Lyra avatar for ${element.title}`}
-                    className="w-16 h-16 object-contain"
+                    className="w-32 h-32 object-contain"
                     onError={(e) => {
                       // Fallback to a default icon if image fails to load
                       const target = e.target as HTMLImageElement;
@@ -122,6 +122,16 @@ const AIRefine = () => {
                     <CardTitle className="text-lg font-semibold text-center">
                       {element.title}
                     </CardTitle>
+                    <img 
+                      src={element.icon} 
+                      alt={`${element.title} icon`}
+                      className="w-8 h-8 object-contain"
+                      onError={(e) => {
+                        // Fallback to a default icon if image fails to load
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                      }}
+                    />
                   </div>
                 </CardHeader>
                 

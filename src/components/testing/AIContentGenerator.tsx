@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -91,7 +90,6 @@ Create compelling, professional content for this nonprofit. Make it engaging and
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">AI Nonprofit Content Generator</h3>
         <p className="text-sm text-gray-600">Generate personalized content for real organizations</p>
       </div>
 

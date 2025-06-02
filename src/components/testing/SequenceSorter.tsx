@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -134,7 +133,6 @@ export const SequenceSorter = () => {
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">AI Implementation Sequence</h3>
         <p className="text-sm text-gray-600">Drag the steps to put them in the correct order (click info for details)</p>
       </div>
 
