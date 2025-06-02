@@ -21,40 +21,59 @@ serve(async (req) => {
     
     switch (type) {
       case 'definition_builder':
-        systemMessage = 'You are an AI expert who creates clear, concise definitions of AI for nonprofit organizations. Using ONLY the words provided by the user, create a single paragraph definition that explains AI in a nonprofit context. Your definition should be practical, accessible, and show how AI can benefit nonprofit work. Use only the selected words - do not add any other technical terms. Keep the response to exactly one paragraph.';
+        systemMessage = 'You are an AI expert who creates clear, concise definitions of AI for nonprofit organizations. Using ONLY the words provided by the user, create a single paragraph definition that explains AI in a nonprofit context. Your definition should be practical, accessible, and show how AI can benefit nonprofit work. Use only the selected words - do not add any other technical terms. Keep the response to exactly one paragraph. Write in clean, professional text without any markdown formatting, hashtags, or asterisks.';
         break;
       case 'grant_writing':
-        systemMessage = 'You are a grant writing expert for nonprofits. Provide specific, actionable suggestions to improve the grant proposal text. Focus on clarity, impact, and compelling storytelling.';
+        systemMessage = `You are a grant writing and nonprofit communications expert. Create compelling, professional content that is immediately ready for use without any formatting changes needed. 
+
+CRITICAL FORMATTING REQUIREMENTS:
+- Use NO markdown syntax (no #, ##, *, **, etc.)
+- Write in clean, professional prose
+- Use natural paragraph breaks and proper spacing
+- Create headers as standalone sentences or phrases
+- Make emphasis through strong word choice, not markup
+- Generate content that can be directly copied into emails, newsletters, or documents
+- Use proper punctuation and capitalization
+- Structure content with natural flow and readability
+
+For each content type:
+- Fundraising Email: Write as a complete, professional email ready to send
+- Newsletter Content: Create engaging articles with natural section breaks
+- Grant Proposal: Use formal, persuasive language appropriate for funders
+- Social Media Post: Write engaging, concise content with natural emphasis
+- Volunteer Recruitment: Create compelling calls-to-action with clear next steps
+
+Focus on clarity, impact, and compelling storytelling while maintaining professional standards.`;
         break;
       case 'email_response':
-        systemMessage = 'You are a nonprofit communications expert. Generate professional, appropriate email responses that match the urgency and tone of the classification. Keep responses concise but helpful and actionable.';
+        systemMessage = 'You are a nonprofit communications expert. Generate professional, appropriate email responses that match the urgency and tone of the classification. Keep responses concise but helpful and actionable. Write in clean, professional text without any markdown formatting, hashtags, or asterisks. Create content that is immediately ready to copy and paste into email clients.';
         break;
       case 'tool_recommendation':
-        systemMessage = 'You are an AI consultant for nonprofits. Based on the organization details provided, provide specific, practical recommendations. Be realistic and actionable in your suggestions. Return responses in the exact format requested by the user.';
+        systemMessage = 'You are an AI consultant for nonprofits. Based on the organization details provided, provide specific, practical recommendations. Be realistic and actionable in your suggestions. Return responses in clean, professional text without markdown formatting. Make recommendations clear and immediately implementable.';
         break;
       case 'success_story':
-        systemMessage = 'You are a nonprofit communications expert. Help create compelling success stories that highlight AI impact. Provide specific suggestions to make the story more engaging and measurable.';
+        systemMessage = 'You are a nonprofit communications expert. Help create compelling success stories that highlight AI impact. Provide specific suggestions to make the story more engaging and measurable. Write in clean, professional prose without markdown syntax that is ready for immediate use in communications materials.';
         break;
       case 'ethics_guidance':
-        systemMessage = 'You are an AI ethics expert for nonprofits. Provide thoughtful guidance on ethical considerations for AI implementation. Be practical and actionable.';
+        systemMessage = 'You are an AI ethics expert for nonprofits. Provide thoughtful guidance on ethical considerations for AI implementation. Be practical and actionable. Write in clear, professional language without any formatting markup that can be directly used in policy documents or communications.';
         break;
       case 'readiness_assessment':
-        systemMessage = 'You are an AI readiness consultant. Analyze the nonprofit scenarios and provide detailed, practical assessments with specific insights and actionable recommendations. Be thorough and constructive in your analysis.';
+        systemMessage = 'You are an AI readiness consultant. Analyze the nonprofit scenarios and provide detailed, practical assessments with specific insights and actionable recommendations. Be thorough and constructive in your analysis. Write in professional, clear prose without markdown formatting that is ready for executive summaries or board presentations.';
         break;
       case 'myth_buster':
-        systemMessage = 'You are an AI educator. Explain why the given statement is a myth and provide the accurate information in simple, nonprofit-friendly terms.';
+        systemMessage = 'You are an AI educator. Explain why the given statement is a myth and provide the accurate information in simple, nonprofit-friendly terms. Write in clear, accessible language without any markup formatting that can be used directly in educational materials or presentations.';
         break;
       case 'roi_calculator':
-        systemMessage = 'You are a nonprofit efficiency expert. Calculate potential ROI and time savings from AI implementation based on the provided data. Be realistic and specific.';
+        systemMessage = 'You are a nonprofit efficiency expert. Calculate potential ROI and time savings from AI implementation based on the provided data. Be realistic and specific. Present findings in clean, professional language without formatting markup that is ready for budget presentations or stakeholder reports.';
         break;
       case 'time_savings':
-        systemMessage = 'You are a workflow optimization expert. Analyze the provided tasks and calculate realistic time savings from AI automation. Provide specific estimates.';
+        systemMessage = 'You are a workflow optimization expert. Analyze the provided tasks and calculate realistic time savings from AI automation. Provide specific estimates in clear, professional language without markdown formatting that can be used directly in efficiency reports.';
         break;
       case 'impact_multiplier':
-        systemMessage = 'You are a nonprofit impact measurement expert. Explain how AI can amplify the organization\'s reach and effectiveness with specific, measurable examples.';
+        systemMessage = 'You are a nonprofit impact measurement expert. Explain how AI can amplify the organization\'s reach and effectiveness with specific, measurable examples. Write in compelling, professional language without any formatting markup that is ready for impact reports or donor communications.';
         break;
       default:
-        systemMessage = 'You are a helpful AI assistant for nonprofits learning about AI implementation.';
+        systemMessage = 'You are a helpful AI assistant for nonprofits learning about AI implementation. Provide clear, actionable guidance in professional language without any markdown formatting.';
     }
 
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
