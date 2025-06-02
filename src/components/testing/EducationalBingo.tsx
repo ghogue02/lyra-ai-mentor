@@ -1,9 +1,10 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, Pause, RotateCcw, Clock, Trophy, BookOpen, X } from 'lucide-react';
+import { Play, Pause, RotateCcw, Clock, Trophy, BookOpen, X, Lightbulb } from 'lucide-react';
 
 interface AITool {
   name: string;
@@ -17,6 +18,7 @@ interface Scenario {
   correctTool: string;
   explanation: string;
   difficulty: 'basic' | 'intermediate' | 'advanced';
+  hint: string;
 }
 
 const AI_TOOLS: AITool[] = [
@@ -51,121 +53,141 @@ const SCENARIOS: Scenario[] = [
     challenge: "Donors are asking the same questions repeatedly about your programs",
     correctTool: "Chatbot",
     explanation: "A chatbot can handle common inquiries 24/7, freeing up staff time for complex donor relationships.",
-    difficulty: 'basic'
+    difficulty: 'basic',
+    hint: "Think about automating repetitive conversations that happen frequently"
   },
   {
     challenge: "Your thank you letters feel generic and donors mention this in feedback",
     correctTool: "Email Writer",
     explanation: "AI email writers can personalize messages based on donor history, interests, and giving patterns.",
-    difficulty: 'basic'
+    difficulty: 'basic',
+    hint: "Consider tools that can customize content based on individual donor data"
   },
   {
     challenge: "You want to identify which donors might be ready for a major gift ask",
     correctTool: "Donor Analytics",
     explanation: "Predictive analytics can score donors based on giving history, engagement, and capacity indicators.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Look for tools that can analyze patterns and predict future behavior"
   },
   {
     challenge: "Your development team spends hours searching for relevant grants",
     correctTool: "Grant Finder",
     explanation: "AI can continuously scan databases and alert you to opportunities matching your mission and criteria.",
-    difficulty: 'basic'
+    difficulty: 'basic',
+    hint: "Think about automating the search and discovery process"
   },
   {
     challenge: "Board members want clear data on program effectiveness and ROI",
     correctTool: "Impact Tracker",
     explanation: "AI can correlate activities with outcomes, providing compelling evidence of your organization's impact.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Consider tools that measure and visualize results and outcomes"
   },
   {
     challenge: "Your food delivery routes are inefficient and waste gas money",
     correctTool: "Route Planner",
     explanation: "Route optimization can reduce fuel costs by 20-30% while serving more clients in less time.",
-    difficulty: 'basic'
+    difficulty: 'basic',
+    hint: "Think about optimizing travel paths and logistics"
   },
   {
     challenge: "After events, you have thousands of photos that need organizing",
     correctTool: "Photo Sorter",
     explanation: "AI can automatically tag and categorize photos by people, activities, and locations for easy retrieval.",
-    difficulty: 'basic'
+    difficulty: 'basic',
+    hint: "Consider tools that can automatically organize and categorize visual content"
   },
   {
     challenge: "You're concerned about potential fraud in your donation processing",
     correctTool: "Security Monitor",
     explanation: "AI can detect unusual patterns in transactions and flag potentially fraudulent activity for review.",
-    difficulty: 'advanced'
+    difficulty: 'advanced',
+    hint: "Look for tools that can detect suspicious patterns and unusual activity"
   },
   {
     challenge: "Coordinating volunteer schedules is becoming a full-time job",
     correctTool: "Calendar Bot",
     explanation: "Automated scheduling can handle availability, preferences, and conflicts without human intervention.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Think about automating time management and scheduling coordination"
   },
   {
     challenge: "Your annual budget planning takes months and feels like guesswork",
     correctTool: "Budget Planner",
     explanation: "AI can analyze historical data and trends to create more accurate financial forecasts.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Consider tools that can analyze historical data to predict future financial needs"
   },
   {
     challenge: "Your social media posts get low engagement despite good content",
     correctTool: "Social Scheduler",
     explanation: "AI can determine optimal posting times based on your audience's behavior patterns.",
-    difficulty: 'basic'
+    difficulty: 'basic',
+    hint: "Think about timing and optimization of when content is shared"
   },
   {
     challenge: "Field workers waste time returning to office to enter data",
     correctTool: "Voice Assistant",
     explanation: "Voice-to-text AI allows real-time data entry while workers stay focused on clients.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Consider hands-free solutions that work in the field"
   },
   {
     challenge: "Processing volunteer applications manually takes your team weeks",
     correctTool: "Document Reader",
     explanation: "AI can extract key information from applications and forms, dramatically speeding up processing.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Look for tools that can automatically extract information from paperwork"
   },
   {
     challenge: "Your food pantry often runs out of essentials or overstocks items",
     correctTool: "Supply Tracker",
     explanation: "Predictive analytics can forecast demand and optimize inventory levels based on usage patterns.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Think about predicting demand and managing inventory levels"
   },
   {
     challenge: "Volunteers often quit because they're not matched to roles they enjoy",
     correctTool: "Talent Finder",
     explanation: "AI can match volunteer skills, interests, and personalities to roles where they'll be most effective.",
-    difficulty: 'advanced'
+    difficulty: 'advanced',
+    hint: "Consider tools that can match people based on skills and preferences"
   },
   {
     challenge: "You receive hundreds of client feedback forms but can't process them all",
     correctTool: "Feedback Analyzer",
     explanation: "AI can categorize feedback by themes and sentiment, highlighting priority areas for improvement.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Look for tools that can automatically categorize and analyze large amounts of text"
   },
   {
     challenge: "Creating board reports requires pulling data from multiple systems",
     correctTool: "Performance Dashboard",
     explanation: "AI dashboards can integrate multiple data sources into real-time, comprehensive reporting.",
-    difficulty: 'advanced'
+    difficulty: 'advanced',
+    hint: "Think about consolidating and visualizing data from various sources"
   },
   {
     challenge: "Your team uses different platforms and important messages get lost",
     correctTool: "Communication Hub",
     explanation: "AI can centralize and prioritize communications across email, Slack, texts, and other platforms.",
-    difficulty: 'intermediate'
+    difficulty: 'intermediate',
+    hint: "Consider tools that can unify and organize communications across platforms"
   },
   {
     challenge: "Planning your annual fundraising gala involves countless moving parts",
     correctTool: "Event Planner",
     explanation: "AI can coordinate timelines, vendor management, and logistics while tracking budget and attendance.",
-    difficulty: 'advanced'
+    difficulty: 'advanced',
+    hint: "Look for tools that can manage complex logistics and coordination"
   },
   {
     challenge: "Many of your clients speak different languages than your staff",
     correctTool: "Translation Tool",
     explanation: "Real-time AI translation can break down language barriers and improve service accessibility.",
-    difficulty: 'basic'
+    difficulty: 'basic',
+    hint: "Think about breaking down language barriers in real-time"
   }
 ];
 
@@ -183,8 +205,9 @@ export const EducationalBingo = () => {
   const [score, setScore] = useState(0);
   const [round, setRound] = useState(1);
   const [showEducation, setShowEducation] = useState<{[key: number]: boolean}>({});
-  const [timeLeft, setTimeLeft] = useState(15);
+  const [timeLeft, setTimeLeft] = useState(20);
   const [scenarioStartTime, setScenarioStartTime] = useState<Date | null>(null);
+  const [showHint, setShowHint] = useState(false);
 
   // Auto-dismiss education tooltips after 4 seconds
   useEffect(() => {
@@ -198,6 +221,19 @@ export const EducationalBingo = () => {
       return () => clearTimeout(timeout);
     }
   }, [showEducation]);
+
+  // Hint timer - show hint after 5 seconds
+  useEffect(() => {
+    let hintTimeout: NodeJS.Timeout;
+    
+    if (gameActive && !gameWon && currentScenario && !showHint) {
+      hintTimeout = setTimeout(() => {
+        setShowHint(true);
+      }, 5000);
+    }
+    
+    return () => clearTimeout(hintTimeout);
+  }, [gameActive, gameWon, currentScenario, showHint]);
 
   // Generate randomized bingo card
   const generateBingoCard = useCallback(() => {
@@ -215,11 +251,12 @@ export const EducationalBingo = () => {
     setGameWon(false);
     setScore(0);
     setScenarioIndex(0);
-    setShowEducation({}); // Clear all education tooltips
+    setShowEducation({});
+    setShowHint(false);
     setGameActive(true);
     setCurrentScenario(SCENARIOS[0]);
     setScenarioStartTime(new Date());
-    setTimeLeft(15);
+    setTimeLeft(20);
   }, [generateBingoCard]);
 
   // Timer effect
@@ -284,7 +321,7 @@ export const EducationalBingo = () => {
     const isCorrect = currentScenario && toolName === currentScenario.correctTool;
     
     if (isCorrect) {
-      const timeBonus = Math.max(0, Math.floor(timeLeft / 3));
+      const timeBonus = Math.max(0, Math.floor(timeLeft / 4));
       setScore(prev => prev + 10 + timeBonus);
       
       const newMarkedSquares = { ...markedSquares, [index]: true };
@@ -306,7 +343,8 @@ export const EducationalBingo = () => {
       if (winningLines.length > 0) {
         setGameWon(true);
         setGameActive(false);
-        setShowEducation({}); // Clear tooltips on game end
+        setShowEducation({});
+        setShowHint(false);
         toast({
           title: "🏆 BINGO!",
           description: `Congratulations! You completed the game with ${score + 10 + timeBonus} points!`,
@@ -314,8 +352,8 @@ export const EducationalBingo = () => {
         return;
       }
       
-      // Move to next scenario
-      setTimeout(() => nextScenario(), 2000);
+      // Automatically move to next scenario
+      setTimeout(() => nextScenario(), 1500);
     } else {
       setScore(prev => Math.max(0, prev - 2));
       toast({
@@ -328,14 +366,15 @@ export const EducationalBingo = () => {
 
   // Move to next scenario
   const nextScenario = () => {
-    setShowEducation({}); // Clear all education tooltips when moving to next scenario
+    setShowEducation({});
+    setShowHint(false);
     
     if (scenarioIndex < SCENARIOS.length - 1) {
       const nextIndex = scenarioIndex + 1;
       setScenarioIndex(nextIndex);
       setCurrentScenario(SCENARIOS[nextIndex]);
       setScenarioStartTime(new Date());
-      setTimeLeft(15);
+      setTimeLeft(20);
     } else {
       // End game
       setGameActive(false);
@@ -407,9 +446,23 @@ export const EducationalBingo = () => {
               <CardContent className="pt-4">
                 <div className="flex items-start gap-2">
                   <BookOpen className="w-5 h-5 text-blue-600 mt-0.5" />
-                  <div>
+                  <div className="flex-1">
                     <p className="font-medium text-blue-900 mb-1">Challenge:</p>
-                    <p className="text-blue-800">{currentScenario.challenge}</p>
+                    <p className="text-blue-800 mb-3">{currentScenario.challenge}</p>
+                    
+                    {/* Hint Section */}
+                    {showHint && (
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-3">
+                        <div className="flex items-start gap-2">
+                          <Lightbulb className="w-4 h-4 text-yellow-600 mt-0.5" />
+                          <div>
+                            <p className="font-medium text-yellow-800 text-sm mb-1">Hint:</p>
+                            <p className="text-yellow-700 text-sm">{currentScenario.hint}</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                    
                     <Badge 
                       variant="outline" 
                       className="mt-2"
@@ -468,8 +521,8 @@ export const EducationalBingo = () => {
                 // Calculate position based on grid index
                 const row = Math.floor(index / 5);
                 const col = index % 5;
-                const topPos = row * 65 + 32; // Approximate square height + gap
-                const leftPos = col * 65 + 32; // Approximate square width + gap
+                const topPos = row * 65 + 32;
+                const leftPos = col * 65 + 32;
                 
                 return (
                   <div
@@ -527,10 +580,11 @@ export const EducationalBingo = () => {
               <ol className="text-sm text-gray-600 space-y-1">
                 <li>1. Click "Start Game" to begin with a randomized bingo card</li>
                 <li>2. Read each nonprofit challenge scenario</li>
-                <li>3. Click the AI tool on your card that best solves the challenge</li>
-                <li>4. Earn points for correct matches (bonus for speed!)</li>
-                <li>5. Get 5 correct tools in a row to win BINGO!</li>
-                <li>6. Learn about each AI tool's implementation and costs</li>
+                <li>3. Wait for hints after 5 seconds if you need help</li>
+                <li>4. Click the AI tool on your card that best solves the challenge</li>
+                <li>5. Earn points for correct matches (bonus for speed!)</li>
+                <li>6. Get 5 correct tools in a row to win BINGO!</li>
+                <li>7. Learn about each AI tool's implementation and costs</li>
               </ol>
             </div>
           )}
