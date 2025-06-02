@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect, useCallback } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Play, Pause, RotateCcw, Clock, Trophy, BookOpen } from 'lucide-react';
+import { Play, Pause, RotateCcw, Clock, Trophy, BookOpen, X } from 'lucide-react';
 
 interface AITool {
   name: string;
@@ -187,6 +186,19 @@ export const EducationalBingo = () => {
   const [timeLeft, setTimeLeft] = useState(15);
   const [scenarioStartTime, setScenarioStartTime] = useState<Date | null>(null);
 
+  // Auto-dismiss education tooltips after 4 seconds
+  useEffect(() => {
+    const activeTooltips = Object.keys(showEducation).filter(key => showEducation[parseInt(key)]);
+    
+    if (activeTooltips.length > 0) {
+      const timeout = setTimeout(() => {
+        setShowEducation({});
+      }, 4000);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [showEducation]);
+
   // Generate randomized bingo card
   const generateBingoCard = useCallback(() => {
     const shuffled = [...AI_TOOLS].sort(() => 0.5 - Math.random());
@@ -203,7 +215,7 @@ export const EducationalBingo = () => {
     setGameWon(false);
     setScore(0);
     setScenarioIndex(0);
-    setShowEducation({});
+    setShowEducation({}); // Clear all education tooltips
     setGameActive(true);
     setCurrentScenario(SCENARIOS[0]);
     setScenarioStartTime(new Date());
@@ -282,7 +294,7 @@ export const EducationalBingo = () => {
       setCorrectMarks(newCorrectMarks);
       
       // Show educational content
-      setShowEducation({ ...showEducation, [index]: true });
+      setShowEducation({ [index]: true });
       
       toast({
         title: "🎯 Correct!",
@@ -294,6 +306,7 @@ export const EducationalBingo = () => {
       if (winningLines.length > 0) {
         setGameWon(true);
         setGameActive(false);
+        setShowEducation({}); // Clear tooltips on game end
         toast({
           title: "🏆 BINGO!",
           description: `Congratulations! You completed the game with ${score + 10 + timeBonus} points!`,
@@ -315,6 +328,8 @@ export const EducationalBingo = () => {
 
   // Move to next scenario
   const nextScenario = () => {
+    setShowEducation({}); // Clear all education tooltips when moving to next scenario
+    
     if (scenarioIndex < SCENARIOS.length - 1) {
       const nextIndex = scenarioIndex + 1;
       setScenarioIndex(nextIndex);
@@ -329,6 +344,15 @@ export const EducationalBingo = () => {
         description: `You've completed all scenarios! Final score: ${score}`,
       });
     }
+  };
+
+  // Manual dismiss of education tooltip
+  const dismissEducation = (index: number) => {
+    setShowEducation(prev => {
+      const newState = { ...prev };
+      delete newState[index];
+      return newState;
+    });
   };
 
   // Get tool info
@@ -400,7 +424,7 @@ export const EducationalBingo = () => {
 
           {/* Bingo Card */}
           {bingoCard.length > 0 && (
-            <div className="grid grid-cols-5 gap-2 max-w-md mx-auto">
+            <div className="grid grid-cols-5 gap-2 max-w-md mx-auto relative">
               {bingoCard.map((tool, index) => {
                 const isMarked = markedSquares[index];
                 const isCorrect = correctMarks[index];
@@ -413,6 +437,7 @@ export const EducationalBingo = () => {
                     className={`
                       aspect-square border-2 rounded-lg flex flex-col items-center justify-center
                       text-center p-1 text-xs font-medium leading-tight transition-all duration-200
+                      relative
                       ${tool === "FREE SPACE" 
                         ? "bg-yellow-200 border-yellow-400 text-yellow-800" 
                         : gameActive && !gameWon
@@ -428,15 +453,56 @@ export const EducationalBingo = () => {
                     `}
                   >
                     <span className="text-[10px] leading-tight">{tool}</span>
-                    {showEducation[index] && toolInfo && (
-                      <div className="absolute z-10 bg-white border-2 border-green-400 rounded p-2 shadow-lg max-w-xs">
-                        <p className="font-semibold text-xs mb-1">{toolInfo.name}</p>
-                        <p className="text-[10px] text-gray-600 mb-1">{toolInfo.description}</p>
-                        <Badge variant="outline" className="text-[8px]">
-                          Cost: {toolInfo.cost}
-                        </Badge>
+                  </div>
+                );
+              })}
+              
+              {/* Educational Tooltips - Positioned absolutely over the grid */}
+              {Object.keys(showEducation).map(indexStr => {
+                const index = parseInt(indexStr);
+                if (!showEducation[index]) return null;
+                
+                const toolInfo = getToolInfo(bingoCard[index]);
+                if (!toolInfo) return null;
+                
+                // Calculate position based on grid index
+                const row = Math.floor(index / 5);
+                const col = index % 5;
+                const topPos = row * 65 + 32; // Approximate square height + gap
+                const leftPos = col * 65 + 32; // Approximate square width + gap
+                
+                return (
+                  <div
+                    key={index}
+                    className="absolute z-20 bg-white border-2 border-green-400 rounded-lg p-3 shadow-lg max-w-xs"
+                    style={{
+                      top: `${topPos}px`,
+                      left: `${leftPos}px`,
+                      transform: 'translate(-50%, -100%)',
+                    }}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <p className="font-semibold text-sm mb-1">{toolInfo.name}</p>
+                        <p className="text-xs text-gray-600 mb-2">{toolInfo.description}</p>
+                        <div className="flex gap-1">
+                          <Badge variant="outline" className="text-xs">
+                            Cost: {toolInfo.cost}
+                          </Badge>
+                        </div>
+                        <p className="text-xs text-green-600 mt-1">
+                          Example: {toolInfo.example}
+                        </p>
                       </div>
-                    )}
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => dismissEducation(index)}
+                        className="h-6 w-6 p-0"
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
                   </div>
                 );
               })}
