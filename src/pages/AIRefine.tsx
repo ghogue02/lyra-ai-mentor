@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -10,8 +11,8 @@ import { LyraAvatar } from '@/components/LyraAvatar';
 import { AIContentGenerator } from '@/components/testing/AIContentGenerator';
 import { AIImpactStoryCreator } from '@/components/testing/AIImpactStoryCreator';
 import { SequenceSorter } from '@/components/testing/SequenceSorter';
+import { MultipleChoiceScenarios } from '@/components/testing/MultipleChoiceScenarios';
 import { 
-  MultipleChoiceScenarios, 
   NonprofitAIBingo
 } from '@/components/testing/PlaceholderComponents';
 
