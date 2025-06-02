@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +8,7 @@ export const MultipleChoiceScenarios = () => {
   const [currentScenario, setCurrentScenario] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showResult, setShowResult] = useState(false);
+  const [completed, setCompleted] = useState(false);
 
   const scenarios = [
     {
@@ -50,12 +52,50 @@ export const MultipleChoiceScenarios = () => {
   };
 
   const nextScenario = () => {
-    setCurrentScenario((prev) => (prev + 1) % scenarios.length);
+    if (currentScenario + 1 < scenarios.length) {
+      setCurrentScenario(prev => prev + 1);
+      setSelectedAnswer(null);
+      setShowResult(false);
+    } else {
+      setCompleted(true);
+    }
+  };
+
+  const restartScenarios = () => {
+    setCurrentScenario(0);
     setSelectedAnswer(null);
     setShowResult(false);
+    setCompleted(false);
   };
 
   const currentQ = scenarios[currentScenario];
+
+  if (completed) {
+    return (
+      <div className="space-y-4">
+        <div className="text-center">
+          <p className="text-sm text-gray-600">Choose the best approach for each situation</p>
+        </div>
+
+        <Card className="border border-green-200 bg-green-50">
+          <CardContent className="p-6 text-center">
+            <div className="mb-4">
+              <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-white text-2xl font-bold">✓</span>
+              </div>
+              <h4 className="font-semibold text-green-800 mb-2">Scenarios Complete!</h4>
+              <p className="text-sm text-green-700">
+                You've worked through all the AI implementation scenarios. Great job thinking through these practical situations!
+              </p>
+            </div>
+            <Button onClick={restartScenarios} variant="outline" size="sm">
+              Start Over
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -106,7 +146,10 @@ export const MultipleChoiceScenarios = () => {
 
       <div className="text-center">
         <Button onClick={nextScenario} size="sm">
-          {showResult ? "Next Scenario" : "Skip"}
+          {showResult ? 
+            (currentScenario + 1 < scenarios.length ? "Next Scenario" : "Complete") 
+            : "Skip"
+          }
         </Button>
       </div>
     </div>
