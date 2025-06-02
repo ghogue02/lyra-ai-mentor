@@ -1,485 +1,221 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { 
-  Loader2, Target, Trophy, Lightbulb, Users, MapPin, Clock, 
-  DollarSign, TrendingUp, CheckCircle, RotateCcw, ArrowRight,
-  Star, Calendar, FileText, Shuffle
+  ArrowUp, ArrowDown, Shuffle, CheckCircle, 
+  Clock, DollarSign, Calculator, Target, Zap, Users
 } from 'lucide-react';
 
 // Multiple Choice Scenarios Component
 export const MultipleChoiceScenarios = () => {
   const [currentScenario, setCurrentScenario] = useState(0);
-  const [answers, setAnswers] = useState<{[key: number]: string}>({});
-  const [showResults, setShowResults] = useState<{[key: number]: boolean}>({});
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showResult, setShowResult] = useState(false);
 
   const scenarios = [
     {
-      scenario: "Maria's Food Pantry receives 200 volunteer applications weekly. They need to match volunteers with appropriate roles based on skills, availability, and location. What's the best AI solution?",
+      question: "Your nonprofit wants to use AI for donor outreach. What's the first step?",
       options: [
-        "Manual spreadsheet matching",
-        "AI-powered volunteer matching system",
-        "First-come, first-served assignment",
-        "Random assignment system"
+        "Buy the most expensive AI tool available",
+        "Assess current donor communication processes", 
+        "Replace all staff with AI systems",
+        "Wait for AI to become cheaper"
       ],
       correct: 1,
-      explanation: "AI can analyze multiple factors (skills, availability, location, preferences) simultaneously to create optimal matches, saving hours of manual work."
+      explanation: "Always start by understanding your current processes before implementing any AI solution."
     },
     {
-      scenario: "Carmen's organization rescues food from 50+ restaurants daily. They need to predict which restaurants will have surplus food to optimize pickup routes. What approach works best?",
+      question: "When choosing an AI tool for your nonprofit, what matters most?",
       options: [
-        "Call every restaurant daily",
-        "Use historical data patterns only",
-        "AI predictive analytics combining weather, events, and historical data",
-        "Random route planning"
+        "The tool has the most features",
+        "It's the same tool big corporations use",
+        "It fits your budget and staff capabilities",
+        "It's the newest technology available"
       ],
       correct: 2,
-      explanation: "AI can analyze multiple variables (weather, local events, historical patterns, day of week) to predict surplus with high accuracy."
+      explanation: "The best AI tool is one your team can actually use effectively within your resources."
+    },
+    {
+      question: "How should you introduce AI to hesitant staff members?",
+      options: [
+        "Implement it without telling them",
+        "Force them to use it immediately",
+        "Provide training and address their concerns",
+        "Replace them with AI-friendly staff"
+      ],
+      correct: 2,
+      explanation: "Change management requires empathy, training, and open communication about concerns."
     }
   ];
 
-  const handleAnswer = (optionIndex: number) => {
-    setAnswers(prev => ({ ...prev, [currentScenario]: scenarios[currentScenario].options[optionIndex] }));
-    setShowResults(prev => ({ ...prev, [currentScenario]: true }));
+  const handleAnswer = (answerIndex: number) => {
+    setSelectedAnswer(answerIndex);
+    setShowResult(true);
   };
 
   const nextScenario = () => {
-    if (currentScenario < scenarios.length - 1) {
-      setCurrentScenario(currentScenario + 1);
-    }
+    setCurrentScenario((prev) => (prev + 1) % scenarios.length);
+    setSelectedAnswer(null);
+    setShowResult(false);
   };
 
-  const reset = () => {
-    setCurrentScenario(0);
-    setAnswers({});
-    setShowResults({});
-  };
-
-  const current = scenarios[currentScenario];
-  const hasAnswered = showResults[currentScenario];
-  const isCorrect = answers[currentScenario] === current.options[current.correct];
+  const currentQ = scenarios[currentScenario];
 
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">NYC Nonprofit AI Scenarios</h3>
-        <p className="text-sm text-gray-600">Choose the best AI solution for each situation</p>
-        <Badge variant="outline">{currentScenario + 1} of {scenarios.length}</Badge>
+        <h3 className="font-medium text-gray-800 mb-2">AI Implementation Scenarios</h3>
+        <p className="text-sm text-gray-600">Choose the best approach for each situation</p>
       </div>
 
       <Card className="border border-gray-200">
         <CardContent className="p-4">
-          <p className="text-sm mb-4">{current.scenario}</p>
-          
+          <div className="mb-4">
+            <Badge variant="outline" className="mb-2">
+              Scenario {currentScenario + 1} of {scenarios.length}
+            </Badge>
+            <h4 className="font-medium mb-3">{currentQ.question}</h4>
+          </div>
+
           <div className="space-y-2">
-            {current.options.map((option, index) => (
+            {currentQ.options.map((option, index) => (
               <Button
                 key={index}
-                onClick={() => handleAnswer(index)}
-                variant="outline"
-                className={`w-full text-left justify-start text-xs h-auto py-2 px-3 ${
-                  hasAnswered 
-                    ? index === current.correct 
-                      ? 'bg-green-100 border-green-300' 
-                      : answers[currentScenario] === option 
-                        ? 'bg-red-100 border-red-300' 
-                        : ''
-                    : 'hover:bg-gray-50'
+                variant={selectedAnswer === index ? "default" : "outline"}
+                className={`w-full text-left justify-start h-auto p-3 ${
+                  showResult
+                    ? index === currentQ.correct
+                      ? "bg-green-100 border-green-500 text-green-700"
+                      : selectedAnswer === index
+                      ? "bg-red-100 border-red-500 text-red-700"
+                      : ""
+                    : ""
                 }`}
-                disabled={hasAnswered}
+                onClick={() => !showResult && handleAnswer(index)}
+                disabled={showResult}
               >
-                {option}
+                <span className="text-sm">{option}</span>
               </Button>
             ))}
           </div>
 
-          {hasAnswered && (
-            <div className="mt-4 p-3 bg-blue-50 rounded border border-blue-200">
-              <div className="flex items-center gap-2 mb-2">
-                {isCorrect ? (
-                  <CheckCircle className="w-4 h-4 text-green-600" />
-                ) : (
-                  <Target className="w-4 h-4 text-orange-600" />
-                )}
-                <span className="text-sm font-medium">
-                  {isCorrect ? 'Correct!' : 'Good try!'}
-                </span>
-              </div>
-              <p className="text-sm text-blue-700">{current.explanation}</p>
+          {showResult && (
+            <div className="mt-4 p-3 bg-blue-50 border border-blue-200 rounded">
+              <p className="text-sm text-blue-700">
+                <strong>Explanation:</strong> {currentQ.explanation}
+              </p>
             </div>
           )}
         </CardContent>
       </Card>
 
-      <div className="flex justify-between">
-        <Button onClick={reset} variant="outline" size="sm">
-          <RotateCcw className="w-3 h-3 mr-1" />
-          Reset
+      <div className="text-center">
+        <Button onClick={nextScenario} size="sm">
+          {showResult ? "Next Scenario" : "Skip"}
         </Button>
-        {currentScenario < scenarios.length - 1 && (
-          <Button onClick={nextScenario} size="sm" disabled={!hasAnswered}>
-            Next Scenario
-          </Button>
-        )}
       </div>
     </div>
   );
 };
 
-// Story Fill-in-the-Blanks Component
+// Story Fill-in-the-Blanks Component  
 export const StoryFillInBlanks = () => {
-  const [currentStory, setCurrentStory] = useState(0);
   const [answers, setAnswers] = useState<{[key: string]: string}>({});
-  const [completed, setCompleted] = useState(false);
+  const [showStory, setShowStory] = useState(false);
 
-  const stories = [
-    {
-      title: "Maria's Volunteer Success",
-      text: "Maria used AI to _____ volunteer skills with program needs. This reduced her weekly coordination time from _____ hours to just 2 hours, allowing her to focus on _____ relationships with volunteers.",
-      blanks: ["match", "15", "building"],
-      options: {
-        0: ["match", "sort", "list", "count"],
-        1: ["5", "10", "15", "20"],
-        2: ["managing", "building", "tracking", "scheduling"]
-      }
+  const storyTemplate = {
+    title: "AI Success Story at Hope Community Center",
+    blanks: {
+      problem: "Our biggest challenge was ___________",
+      solution: "We decided to use AI to ___________", 
+      tool: "The AI tool we chose was ___________",
+      result: "After implementation, we saw ___________",
+      impact: "This helped our community by ___________"
     },
-    {
-      title: "Carmen's Food Rescue",
-      text: "Carmen's AI system predicts food surplus by analyzing _____, local events, and historical patterns. This increased rescue efficiency by _____% and reduced food waste in her neighborhood by _____ tons monthly.",
-      blanks: ["weather", "40", "12"],
-      options: {
-        0: ["weather", "traffic", "population", "economy"],
-        1: ["20", "30", "40", "50"],
-        2: ["8", "10", "12", "15"]
-      }
-    }
-  ];
-
-  const handleAnswer = (blankIndex: number, answer: string) => {
-    const key = `${currentStory}-${blankIndex}`;
-    setAnswers(prev => ({ ...prev, [key]: answer }));
-  };
-
-  const checkCompletion = () => {
-    const story = stories[currentStory];
-    const allFilled = story.blanks.every((_, index) => {
-      const key = `${currentStory}-${index}`;
-      return answers[key];
-    });
-    if (allFilled) setCompleted(true);
-  };
-
-  React.useEffect(checkCompletion, [answers, currentStory]);
-
-  const renderStoryWithBlanks = () => {
-    const story = stories[currentStory];
-    const parts = story.text.split('_____');
-    const result = [];
-
-    parts.forEach((part, index) => {
-      result.push(<span key={`text-${index}`}>{part}</span>);
-      
-      if (index < parts.length - 1) {
-        const key = `${currentStory}-${index}`;
-        const selectedAnswer = answers[key];
-        const isCorrect = selectedAnswer === story.blanks[index];
-        
-        result.push(
-          <span key={`blank-${index}`} className="inline-block mx-1">
-            {selectedAnswer ? (
-              <Badge className={isCorrect ? "bg-green-100 text-green-800" : "bg-orange-100 text-orange-800"}>
-                {selectedAnswer}
-              </Badge>
-            ) : (
-              <select 
-                onChange={(e) => handleAnswer(index, e.target.value)}
-                className="border border-gray-300 rounded px-2 py-1 text-sm"
-              >
-                <option value="">Select...</option>
-                {story.options[index].map(option => (
-                  <option key={option} value={option}>{option}</option>
-                ))}
-              </select>
-            )}
-          </span>
-        );
-      }
-    });
-
-    return result;
-  };
-
-  const nextStory = () => {
-    if (currentStory < stories.length - 1) {
-      setCurrentStory(currentStory + 1);
-      setCompleted(false);
+    suggestions: {
+      problem: ["volunteer scheduling", "donor communication", "data entry"],
+      solution: ["automate repetitive tasks", "improve efficiency", "better organize information"],
+      tool: ["a scheduling assistant", "an email automation system", "a data management platform"],
+      result: ["20% time savings", "improved volunteer satisfaction", "better donor engagement"],
+      impact: ["serving more families", "reducing staff burnout", "increasing program effectiveness"]
     }
   };
 
-  const reset = () => {
-    setCurrentStory(0);
-    setAnswers({});
-    setCompleted(false);
+  const handleInputChange = (key: string, value: string) => {
+    setAnswers(prev => ({ ...prev, [key]: value }));
   };
+
+  const generateStory = () => {
+    setShowStory(true);
+  };
+
+  const allFieldsFilled = Object.keys(storyTemplate.blanks).every(key => answers[key]?.trim());
 
   return (
     <div className="space-y-4">
       <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">Complete the Success Stories</h3>
-        <p className="text-sm text-gray-600">Fill in the blanks to complete the AI impact stories</p>
-        <Badge variant="outline">{currentStory + 1} of {stories.length}</Badge>
+        <h3 className="font-medium text-gray-800 mb-2">AI Success Story Builder</h3>
+        <p className="text-sm text-gray-600">Fill in the blanks to create your nonprofit's AI story</p>
       </div>
 
-      <Card className="border border-gray-200">
-        <CardContent className="p-4">
-          <h4 className="font-medium mb-3">{stories[currentStory].title}</h4>
-          <div className="text-sm leading-relaxed">
-            {renderStoryWithBlanks()}
-          </div>
-        </CardContent>
-      </Card>
-
-      {completed && (
-        <div className="p-3 bg-green-50 rounded border border-green-200 text-center">
-          <CheckCircle className="w-5 h-5 text-green-600 mx-auto mb-2" />
-          <p className="text-sm font-medium text-green-800">Story completed!</p>
-        </div>
-      )}
-
-      <div className="flex justify-between">
-        <Button onClick={reset} variant="outline" size="sm">
-          <RotateCcw className="w-3 h-3 mr-1" />
-          Reset
-        </Button>
-        {currentStory < stories.length - 1 && (
-          <Button onClick={nextStory} size="sm" disabled={!completed}>
-            Next Story
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// Sequence Sorter Component
-export const SequenceSorter = () => {
-  const [steps, setSteps] = useState([
-    "Assess current workflows",
-    "Identify AI use cases", 
-    "Choose appropriate tools",
-    "Train staff",
-    "Implement gradually",
-    "Monitor and adjust"
-  ]);
-  const [isCorrect, setIsCorrect] = useState(false);
-  const [attempts, setAttempts] = useState(0);
-
-  const correctOrder = [
-    "Assess current workflows",
-    "Identify AI use cases", 
-    "Choose appropriate tools",
-    "Train staff",
-    "Implement gradually",
-    "Monitor and adjust"
-  ];
-
-  const shuffleSteps = () => {
-    const shuffled = [...steps].sort(() => Math.random() - 0.5);
-    setSteps(shuffled);
-    setIsCorrect(false);
-    setAttempts(0);
-  };
-
-  const moveStep = (fromIndex: number, toIndex: number) => {
-    const newSteps = [...steps];
-    const [movedStep] = newSteps.splice(fromIndex, 1);
-    newSteps.splice(toIndex, 0, movedStep);
-    setSteps(newSteps);
-  };
-
-  const checkOrder = () => {
-    const correct = steps.every((step, index) => step === correctOrder[index]);
-    setIsCorrect(correct);
-    setAttempts(prev => prev + 1);
-  };
-
-  React.useEffect(() => {
-    shuffleSteps();
-  }, []);
-
-  return (
-    <div className="space-y-4">
-      <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">AI Implementation Sequence</h3>
-        <p className="text-sm text-gray-600">Arrange the steps in the correct order</p>
-      </div>
-
-      <div className="space-y-2">
-        {steps.map((step, index) => (
-          <div key={step} className="flex items-center gap-2">
-            <Badge variant="outline" className="text-xs w-6 h-6 rounded-full flex items-center justify-center">
-              {index + 1}
-            </Badge>
-            <Card className="flex-1 border border-gray-200">
-              <CardContent className="p-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-sm">{step}</span>
-                  <div className="flex gap-1">
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => moveStep(index, Math.max(0, index - 1))}
-                      disabled={index === 0}
-                      className="h-6 w-6 p-0"
-                    >
-                      ↑
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant="ghost"
-                      onClick={() => moveStep(index, Math.min(steps.length - 1, index + 1))}
-                      disabled={index === steps.length - 1}
-                      className="h-6 w-6 p-0"
-                    >
-                      ↓
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        ))}
-      </div>
-
-      <div className="flex gap-2">
-        <Button onClick={checkOrder} size="sm">
-          Check Order
-        </Button>
-        <Button onClick={shuffleSteps} variant="outline" size="sm">
-          <Shuffle className="w-3 h-3 mr-1" />
-          Shuffle
-        </Button>
-      </div>
-
-      {attempts > 0 && (
-        <div className={`p-3 rounded border ${isCorrect ? 'bg-green-50 border-green-200' : 'bg-orange-50 border-orange-200'}`}>
-          <div className="flex items-center gap-2">
-            {isCorrect ? (
-              <CheckCircle className="w-4 h-4 text-green-600" />
-            ) : (
-              <Target className="w-4 h-4 text-orange-600" />
-            )}
-            <span className="text-sm font-medium">
-              {isCorrect ? 'Perfect! You understand the AI implementation process.' : `Try again! Attempt ${attempts}`}
-            </span>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// AI Tool Recommendation Engine Component
-export const AIToolRecommendationEngine = () => {
-  const [responses, setResponses] = useState<{[key: string]: string}>({});
-  const [recommendations, setRecommendations] = useState<string>('');
-  const { callAI, loading } = useAITestingAssistant();
-
-  const questions = [
-    {
-      id: 'orgType',
-      question: 'What type of nonprofit are you?',
-      options: ['Food pantry/rescue', 'Education/youth', 'Health/social services', 'Arts/culture', 'Environment', 'Other']
-    },
-    {
-      id: 'size',
-      question: 'How many staff members do you have?',
-      options: ['1-5 staff', '6-15 staff', '16-50 staff', '50+ staff']
-    },
-    {
-      id: 'challenge',
-      question: 'What\'s your biggest operational challenge?',
-      options: ['Volunteer coordination', 'Donor management', 'Program delivery', 'Administrative tasks', 'Data analysis']
-    },
-    {
-      id: 'budget',
-      question: 'What\'s your tech budget range?',
-      options: ['$0-500/month', '$500-2000/month', '$2000-5000/month', '$5000+/month']
-    }
-  ];
-
-  const handleResponse = (questionId: string, answer: string) => {
-    setResponses(prev => ({ ...prev, [questionId]: answer }));
-  };
-
-  const getRecommendations = async () => {
-    const context = Object.entries(responses).map(([key, value]) => `${key}: ${value}`).join(', ');
-    try {
-      const result = await callAI(
-        'tool_recommendation',
-        'Based on my nonprofit profile, what AI tools would you recommend?',
-        `Organization details: ${context}`
-      );
-      setRecommendations(result);
-    } catch (error) {
-      setRecommendations('Sorry, there was an error getting recommendations. Please try again!');
-    }
-  };
-
-  const allAnswered = questions.every(q => responses[q.id]);
-
-  return (
-    <div className="space-y-4">
-      <div className="text-center">
-        <h3 className="font-medium text-gray-800 mb-2">AI Tool Recommendations</h3>
-        <p className="text-sm text-gray-600">Answer questions to get personalized AI tool suggestions</p>
-      </div>
-
-      <div className="space-y-4">
-        {questions.map(question => (
-          <Card key={question.id} className="border border-gray-200">
-            <CardContent className="p-4">
-              <h4 className="text-sm font-medium mb-3">{question.question}</h4>
-              <div className="grid grid-cols-2 gap-2">
-                {question.options.map(option => (
+      {!showStory ? (
+        <div className="space-y-3">
+          {Object.entries(storyTemplate.blanks).map(([key, prompt]) => (
+            <div key={key}>
+              <label className="text-sm font-medium text-gray-700 block mb-1">{prompt}</label>
+              <input
+                type="text"
+                value={answers[key] || ''}
+                onChange={(e) => handleInputChange(key, e.target.value)}
+                className="w-full p-2 border border-gray-300 rounded text-sm"
+                placeholder={`e.g., ${storyTemplate.suggestions[key as keyof typeof storyTemplate.suggestions][0]}`}
+              />
+              <div className="flex flex-wrap gap-1 mt-1">
+                {storyTemplate.suggestions[key as keyof typeof storyTemplate.suggestions].map((suggestion, idx) => (
                   <Button
-                    key={option}
-                    onClick={() => handleResponse(question.id, option)}
-                    variant={responses[question.id] === option ? "default" : "outline"}
+                    key={idx}
+                    variant="ghost"
                     size="sm"
-                    className="text-xs h-auto py-2"
+                    className="text-xs h-6 px-2"
+                    onClick={() => handleInputChange(key, suggestion)}
                   >
-                    {option}
+                    {suggestion}
                   </Button>
                 ))}
               </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <Button 
-        onClick={getRecommendations} 
-        disabled={!allAnswered || loading}
-        className="w-full"
-      >
-        {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Lightbulb className="w-4 h-4 mr-2" />}
-        Get AI Recommendations
-      </Button>
-
-      {recommendations && (
-        <Card className="border border-blue-200">
+            </div>
+          ))}
+          
+          <Button 
+            onClick={generateStory} 
+            disabled={!allFieldsFilled}
+            className="w-full"
+            size="sm"
+          >
+            Generate My Story
+          </Button>
+        </div>
+      ) : (
+        <Card className="border border-green-200">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Trophy className="w-4 h-4 text-blue-600" />
-              <Badge className="bg-blue-100 text-blue-700">Personalized Recommendations</Badge>
+            <h4 className="font-medium mb-3 text-green-700">{storyTemplate.title}</h4>
+            <div className="text-sm text-gray-700 space-y-2">
+              <p>{storyTemplate.blanks.problem.replace('___________', answers.problem)}.</p>
+              <p>{storyTemplate.blanks.solution.replace('___________', answers.solution)}.</p>
+              <p>{storyTemplate.blanks.tool.replace('___________', answers.tool)}.</p>
+              <p>{storyTemplate.blanks.result.replace('___________', answers.result)}.</p>
+              <p>{storyTemplate.blanks.impact.replace('___________', answers.impact)}.</p>
             </div>
-            <div className="text-sm text-gray-700 whitespace-pre-wrap">
-              {recommendations}
-            </div>
+            <Button 
+              onClick={() => {setShowStory(false); setAnswers({});}} 
+              variant="outline" 
+              size="sm" 
+              className="mt-3"
+            >
+              Create Another Story
+            </Button>
           </CardContent>
         </Card>
       )}
@@ -487,92 +223,404 @@ export const AIToolRecommendationEngine = () => {
   );
 };
 
-// Time Savings Calculator Component
-export const TimeSavingsCalculator = () => {
-  const [tasks, setTasks] = useState<{[key: string]: number}>({});
-  const [results, setResults] = useState<string>('');
-  const { callAI, loading } = useAITestingAssistant();
+// Enhanced Sequence Sorter Component with Tooltips
+export const SequenceSorter = () => {
+  const [steps, setSteps] = useState([
+    { 
+      id: 1, 
+      text: "Assess current workflows",
+      description: "Start by mapping out your current processes - from volunteer onboarding to donor communications. Document time-consuming tasks, identify bottlenecks, and note where staff spend most of their administrative time. This foundation helps you see where AI can make the biggest impact for your mission."
+    },
+    { 
+      id: 2, 
+      text: "Identify AI use cases",
+      description: "Look for repetitive tasks that follow patterns - email responses, volunteer matching, data entry, or scheduling. Focus on areas where AI can free up your team's time for relationship-building and direct service delivery. Start with one clear problem that affects your daily operations."
+    },
+    { 
+      id: 3, 
+      text: "Choose appropriate tools",
+      description: "Research AI solutions designed for nonprofits or small organizations. Consider your budget, technical skills, and integration needs. Look for tools with nonprofit pricing, good customer support, and simple interfaces that won't overwhelm your team."
+    },
+    { 
+      id: 4, 
+      text: "Train staff",
+      description: "Provide hands-on training in small groups, focusing on how AI tools will make their specific jobs easier. Address concerns openly, emphasize that AI enhances their work rather than replacing them, and ensure everyone feels comfortable with the new technology."
+    },
+    { 
+      id: 5, 
+      text: "Implement gradually",
+      description: "Start with a pilot program using one AI tool for one specific task. Monitor results closely, gather feedback from your team, and make adjustments before expanding. This approach reduces risk and builds confidence throughout your organization."
+    },
+    { 
+      id: 6, 
+      text: "Monitor and adjust",
+      description: "Track key metrics like time saved, accuracy improvements, and staff satisfaction. Regular check-ins help you optimize the AI tools for your specific needs and demonstrate the value to stakeholders. Be prepared to make changes as your organization grows."
+    }
+  ]);
 
-  const taskTypes = [
-    { id: 'emails', name: 'Email responses', unit: 'emails/week' },
-    { id: 'scheduling', name: 'Volunteer scheduling', unit: 'hours/week' },
-    { id: 'data', name: 'Data entry', unit: 'hours/week' },
-    { id: 'reports', name: 'Report generation', unit: 'reports/month' },
-    { id: 'social', name: 'Social media posts', unit: 'posts/week' }
-  ];
+  const [isCorrect, setIsCorrect] = useState(false);
+  const [showResult, setShowResult] = useState(false);
 
-  const handleTaskUpdate = (taskId: string, value: number) => {
-    setTasks(prev => ({ ...prev, [taskId]: value }));
-  };
+  const correctOrder = [1, 2, 3, 4, 5, 6];
 
-  const calculateSavings = async () => {
-    const taskData = taskTypes.map(task => 
-      `${task.name}: ${tasks[task.id] || 0} ${task.unit}`
-    ).join(', ');
-
-    try {
-      const result = await callAI(
-        'time_savings',
-        'Calculate realistic time savings from AI automation for these nonprofit tasks.',
-        `Current task volume: ${taskData}`
-      );
-      setResults(result);
-    } catch (error) {
-      setResults('Sorry, there was an error calculating savings. Please try again!');
+  const moveStep = (index: number, direction: 'up' | 'down') => {
+    const newSteps = [...steps];
+    const targetIndex = direction === 'up' ? index - 1 : index + 1;
+    
+    if (targetIndex >= 0 && targetIndex < newSteps.length) {
+      [newSteps[index], newSteps[targetIndex]] = [newSteps[targetIndex], newSteps[index]];
+      setSteps(newSteps);
+      setShowResult(false);
     }
   };
 
-  const hasData = Object.values(tasks).some(value => value > 0);
+  const checkOrder = () => {
+    const currentOrder = steps.map(step => step.id);
+    const correct = JSON.stringify(currentOrder) === JSON.stringify(correctOrder);
+    setIsCorrect(correct);
+    setShowResult(true);
+  };
+
+  const shuffleSteps = () => {
+    const shuffled = [...steps].sort(() => Math.random() - 0.5);
+    setSteps(shuffled);
+    setShowResult(false);
+  };
+
+  return (
+    <TooltipProvider>
+      <div className="space-y-4">
+        <div className="text-center">
+          <h3 className="font-medium text-gray-800 mb-2">AI Implementation Sequence</h3>
+          <p className="text-sm text-gray-600">Put these steps in the correct order (hover for details)</p>
+        </div>
+
+        <div className="space-y-2">
+          {steps.map((step, index) => (
+            <Tooltip key={step.id}>
+              <TooltipTrigger asChild>
+                <Card className="border border-gray-200 cursor-help hover:border-gray-300 transition-colors">
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <Badge variant="outline" className="text-xs">
+                          {index + 1}
+                        </Badge>
+                        <span className="text-sm font-medium">{step.text}</span>
+                      </div>
+                      <div className="flex gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => moveStep(index, 'up')}
+                          disabled={index === 0}
+                          className="h-8 w-8 p-0"
+                        >
+                          <ArrowUp className="h-3 w-3" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => moveStep(index, 'down')}
+                          disabled={index === steps.length - 1}
+                          className="h-8 w-8 p-0"
+                        >
+                          <ArrowDown className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-80 p-3">
+                <p className="text-sm">{step.description}</p>
+              </TooltipContent>
+            </Tooltip>
+          ))}
+        </div>
+
+        <div className="flex gap-2 justify-center">
+          <Button onClick={checkOrder} size="sm">
+            <CheckCircle className="w-3 h-3 mr-1" />
+            Check Order
+          </Button>
+          <Button onClick={shuffleSteps} variant="outline" size="sm">
+            <Shuffle className="w-3 h-3 mr-1" />
+            Shuffle
+          </Button>
+        </div>
+
+        {showResult && (
+          <Card className={`border ${isCorrect ? 'border-green-500 bg-green-50' : 'border-red-500 bg-red-50'}`}>
+            <CardContent className="p-3 text-center">
+              <p className={`text-sm font-medium ${isCorrect ? 'text-green-700' : 'text-red-700'}`}>
+                {isCorrect ? 
+                  "Perfect! You've mastered the AI implementation sequence." : 
+                  "Not quite right. Try rearranging the steps - think about what should come first!"
+                }
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </TooltipProvider>
+  );
+};
+
+// AI Tool Recommendation Engine Component
+export const AIToolRecommendationEngine = () => {
+  const [orgProfile, setOrgProfile] = useState({
+    size: '',
+    budget: '',
+    focus: '',
+    techLevel: ''
+  });
+  const [recommendations, setRecommendations] = useState<any[]>([]);
+
+  const generateRecommendations = () => {
+    const tools = [
+      {
+        name: "Mailchimp AI",
+        category: "Email Marketing",
+        price: "Free - $299/month",
+        fit: "Small to Medium Organizations",
+        description: "AI-powered email optimization and audience insights"
+      },
+      {
+        name: "Salesforce Nonprofit Cloud",
+        category: "Donor Management", 
+        price: "Free for qualifying nonprofits",
+        fit: "All sizes",
+        description: "Comprehensive CRM with AI-powered donor insights"
+      },
+      {
+        name: "Microsoft Dynamics 365",
+        category: "Operations",
+        price: "$20-95/user/month",
+        fit: "Medium to Large Organizations",
+        description: "AI-enhanced operations and volunteer management"
+      }
+    ];
+
+    const filtered = tools.filter(() => Math.random() > 0.3);
+    setRecommendations(filtered);
+  };
+
+  const hasProfile = Object.values(orgProfile).every(value => value !== '');
+
+  return (
+    <div className="space-y-4">
+      <div className="text-center">
+        <h3 className="font-medium text-gray-800 mb-2">AI Tool Recommendations</h3>
+        <p className="text-sm text-gray-600">Find the right AI tools for your organization</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Organization Size</label>
+          <select
+            value={orgProfile.size}
+            onChange={(e) => setOrgProfile(prev => ({ ...prev, size: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+          >
+            <option value="">Select size</option>
+            <option value="small">Small (1-10 staff)</option>
+            <option value="medium">Medium (11-50 staff)</option>
+            <option value="large">Large (50+ staff)</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Monthly Budget</label>
+          <select
+            value={orgProfile.budget}
+            onChange={(e) => setOrgProfile(prev => ({ ...prev, budget: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+          >
+            <option value="">Select budget</option>
+            <option value="low">Under $100</option>
+            <option value="medium">$100-500</option>
+            <option value="high">$500+</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Primary Focus</label>
+          <select
+            value={orgProfile.focus}
+            onChange={(e) => setOrgProfile(prev => ({ ...prev, focus: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+          >
+            <option value="">Select focus</option>
+            <option value="fundraising">Fundraising</option>
+            <option value="programs">Program Delivery</option>
+            <option value="operations">Operations</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Tech Comfort</label>
+          <select
+            value={orgProfile.techLevel}
+            onChange={(e) => setOrgProfile(prev => ({ ...prev, techLevel: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+          >
+            <option value="">Select level</option>
+            <option value="beginner">Beginner</option>
+            <option value="intermediate">Intermediate</option>
+            <option value="advanced">Advanced</option>
+          </select>
+        </div>
+      </div>
+
+      <Button 
+        onClick={generateRecommendations} 
+        disabled={!hasProfile}
+        className="w-full"
+        size="sm"
+      >
+        <Target className="w-3 h-3 mr-1" />
+        Get Recommendations
+      </Button>
+
+      {recommendations.length > 0 && (
+        <div className="space-y-2">
+          <h4 className="text-sm font-medium text-gray-800">Recommended Tools:</h4>
+          {recommendations.map((tool, index) => (
+            <Card key={index} className="border border-blue-200">
+              <CardContent className="p-3">
+                <div className="flex justify-between items-start mb-2">
+                  <h5 className="font-medium text-sm">{tool.name}</h5>
+                  <Badge variant="outline" className="text-xs">{tool.category}</Badge>
+                </div>
+                <p className="text-xs text-gray-600 mb-2">{tool.description}</p>
+                <div className="flex justify-between text-xs">
+                  <span className="text-gray-500">Fit: {tool.fit}</span>
+                  <span className="font-medium">{tool.price}</span>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Time Savings Calculator Component
+export const TimeSavingsCalculator = () => {
+  const [inputs, setInputs] = useState({
+    emailHours: '',
+    dataEntryHours: '',
+    schedulingHours: '',
+    reportingHours: ''
+  });
+  const [results, setResults] = useState<any>(null);
+
+  const calculateSavings = () => {
+    const total = Object.values(inputs).reduce((sum, val) => sum + (parseFloat(val) || 0), 0);
+    const aiSavings = total * 0.3; // Assume 30% time savings
+    const weeklySavings = aiSavings;
+    const monthlySavings = weeklySavings * 4;
+    const yearlySavings = monthlySavings * 12;
+    const costSavings = yearlySavings * 25; // $25/hour average
+
+    setResults({
+      totalHours: total,
+      weeklySavings,
+      monthlySavings,
+      yearlySavings,
+      costSavings
+    });
+  };
+
+  const hasData = Object.values(inputs).some(val => val !== '');
 
   return (
     <div className="space-y-4">
       <div className="text-center">
         <h3 className="font-medium text-gray-800 mb-2">AI Time Savings Calculator</h3>
-        <p className="text-sm text-gray-600">Enter your current task volume to see potential time savings</p>
+        <p className="text-sm text-gray-600">See how much time AI could save your team</p>
       </div>
 
       <div className="space-y-3">
-        {taskTypes.map(task => (
-          <Card key={task.id} className="border border-gray-200">
-            <CardContent className="p-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <span className="text-sm font-medium">{task.name}</span>
-                  <p className="text-xs text-gray-500">{task.unit}</p>
-                </div>
-                <input
-                  type="number"
-                  min="0"
-                  value={tasks[task.id] || ''}
-                  onChange={(e) => handleTaskUpdate(task.id, parseInt(e.target.value) || 0)}
-                  className="w-20 p-2 border border-gray-300 rounded text-sm text-center"
-                  placeholder="0"
-                />
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Email management (hours/week):</label>
+          <input
+            type="number"
+            value={inputs.emailHours}
+            onChange={(e) => setInputs(prev => ({ ...prev, emailHours: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+            placeholder="e.g., 10"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Data entry (hours/week):</label>
+          <input
+            type="number"
+            value={inputs.dataEntryHours}
+            onChange={(e) => setInputs(prev => ({ ...prev, dataEntryHours: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+            placeholder="e.g., 8"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Scheduling (hours/week):</label>
+          <input
+            type="number"
+            value={inputs.schedulingHours}
+            onChange={(e) => setInputs(prev => ({ ...prev, schedulingHours: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+            placeholder="e.g., 5"
+          />
+        </div>
+        <div>
+          <label className="text-xs font-medium text-gray-700 block mb-1">Reporting (hours/week):</label>
+          <input
+            type="number"
+            value={inputs.reportingHours}
+            onChange={(e) => setInputs(prev => ({ ...prev, reportingHours: e.target.value }))}
+            className="w-full p-2 border border-gray-300 rounded text-sm"
+            placeholder="e.g., 6"
+          />
+        </div>
       </div>
 
       <Button 
         onClick={calculateSavings} 
-        disabled={!hasData || loading}
+        disabled={!hasData}
         className="w-full"
+        size="sm"
       >
-        {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Clock className="w-4 h-4 mr-2" />}
-        Calculate Time Savings
+        <Calculator className="w-3 h-3 mr-1" />
+        Calculate Savings
       </Button>
 
       {results && (
         <Card className="border border-green-200">
           <CardContent className="p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <TrendingUp className="w-4 h-4 text-green-600" />
-              <Badge className="bg-green-100 text-green-700">Potential Savings</Badge>
+            <h4 className="font-medium mb-3 text-green-700">Your Potential Savings</h4>
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="text-center p-2 bg-green-50 rounded">
+                <div className="text-lg font-bold text-green-600">{results.weeklySavings.toFixed(1)}</div>
+                <div className="text-xs text-gray-600">Hours/Week</div>
+              </div>
+              <div className="text-center p-2 bg-green-50 rounded">
+                <div className="text-lg font-bold text-green-600">{results.monthlySavings.toFixed(0)}</div>
+                <div className="text-xs text-gray-600">Hours/Month</div>
+              </div>
+              <div className="text-center p-2 bg-green-50 rounded">
+                <div className="text-lg font-bold text-green-600">{results.yearlySavings.toFixed(0)}</div>
+                <div className="text-xs text-gray-600">Hours/Year</div>
+              </div>
+              <div className="text-center p-2 bg-green-50 rounded">
+                <div className="text-lg font-bold text-green-600">${results.costSavings.toLocaleString()}</div>
+                <div className="text-xs text-gray-600">Annual Savings</div>
+              </div>
             </div>
-            <div className="text-sm text-gray-700 whitespace-pre-wrap">
-              {results}
-            </div>
+            <p className="text-xs text-gray-500 mt-3 text-center">
+              *Based on 30% efficiency gains and $25/hour average cost
+            </p>
           </CardContent>
         </Card>
       )}
