@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,9 +11,7 @@ import { AIContentGenerator } from '@/components/testing/AIContentGenerator';
 import { AIImpactStoryCreator } from '@/components/testing/AIImpactStoryCreator';
 import { SequenceSorter } from '@/components/testing/SequenceSorter';
 import { MultipleChoiceScenarios } from '@/components/testing/MultipleChoiceScenarios';
-import { 
-  NonprofitAIBingo
-} from '@/components/testing/PlaceholderComponents';
+import { EducationalBingo } from '@/components/testing/EducationalBingo';
 
 const AIRefine = () => {
   const elementsToRefine = [
@@ -44,8 +41,8 @@ const AIRefine = () => {
     },
     { 
       id: 17, 
-      component: NonprofitAIBingo, 
-      title: "Nonprofit AI Bingo", 
+      component: EducationalBingo, 
+      title: "Educational Nonprofit AI Bingo", 
       aiPowered: false,
       icon: getSupabaseIconUrl('achievement-trophy.png'),
       avatarIcon: 'empty-state-welcome.png'
