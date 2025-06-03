@@ -112,13 +112,16 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     return sections.map((section, index) => {
       const trimmedSection = section.trim();
       
-      // Check if this section contains bullet points
+      // Check if this section contains actual bullet points (not just bold headers)
       const lines = trimmedSection.split('\n');
-      const isBulletList = lines.some(line => 
-        line.trim().startsWith('•') || 
-        line.trim().startsWith('-') || 
-        line.trim().startsWith('*')
-      );
+      const isBulletList = lines.some(line => {
+        const trimmedLine = line.trim();
+        // Only consider it a bullet if it starts with bullet chars AND is not a bold header
+        return (trimmedLine.startsWith('•') || 
+                trimmedLine.startsWith('-') || 
+                trimmedLine.startsWith('*')) &&
+               !trimmedLine.match(/^\*\*.*\*\*$/); // Exclude bold headers like **Title**
+      });
       
       if (isBulletList) {
         return (
