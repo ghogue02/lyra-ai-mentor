@@ -88,7 +88,7 @@ export const LessonContent: React.FC<LessonContentProps> = ({
   const firstLyraChatIndex = findFirstLyraChatIndex();
 
   return (
-    <div className="mx-auto space-y-8 max-w-4xl">
+    <div className="mx-auto space-y-6 max-w-4xl pb-16">
       {regularContent.map((item, index) => {
         const isBlocked = shouldBlockContent(index);
         console.log(`LessonContent: Rendering item at index ${index}, blocked: ${isBlocked}, type: ${item.type}`);
@@ -101,7 +101,10 @@ export const LessonContent: React.FC<LessonContentProps> = ({
         return (
           <div 
             key={`${item.contentType}-${item.id}`} 
-            className={chatEngagement.hasReachedMinimum && index > firstLyraChatIndex ? "animate-fade-in" : ""}
+            className={cn(
+              "transition-opacity duration-500",
+              chatEngagement.hasReachedMinimum && index > firstLyraChatIndex ? "animate-fade-in" : ""
+            )}
           >
             {item.contentType === 'block' ? (
               <ContentBlockRenderer 
@@ -124,4 +127,9 @@ export const LessonContent: React.FC<LessonContentProps> = ({
       })}
     </div>
   );
+};
+
+// Add the missing import
+const cn = (...classes: string[]) => {
+  return classes.filter(Boolean).join(' ');
 };
