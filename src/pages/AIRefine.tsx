@@ -6,12 +6,11 @@ import { Link } from 'react-router-dom';
 import { getSupabaseIconUrl } from '@/utils/supabaseIcons';
 import { LyraAvatar } from '@/components/LyraAvatar';
 
-// Import the 5 selected components
+// Import the 4 selected components (removed EducationalBingo)
 import { AIContentGenerator } from '@/components/testing/AIContentGenerator';
 import { AIImpactStoryCreator } from '@/components/testing/AIImpactStoryCreator';
 import { SequenceSorter } from '@/components/testing/SequenceSorter';
 import { MultipleChoiceScenarios } from '@/components/testing/MultipleChoiceScenarios';
-import { EducationalBingo } from '@/components/testing/EducationalBingo';
 
 const AIRefine = () => {
   const elementsToRefine = [
@@ -38,14 +37,6 @@ const AIRefine = () => {
       aiPowered: false,
       icon: getSupabaseIconUrl('learning-target.png'),
       avatarIcon: 'communication.png'
-    },
-    { 
-      id: 17, 
-      component: EducationalBingo, 
-      title: "Educational Nonprofit AI Bingo", 
-      aiPowered: false,
-      icon: getSupabaseIconUrl('achievement-trophy.png'),
-      avatarIcon: 'empty-state-welcome.png'
     },
     { 
       id: 4, 
