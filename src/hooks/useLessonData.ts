@@ -1,5 +1,5 @@
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
@@ -48,6 +48,19 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
     hasReachedMinimum: false,
     exchangeCount: 0
   });
+
+  // Stable debounced update function to prevent flickering
+  const updateChatEngagement = useCallback((engagement: { hasReachedMinimum: boolean; exchangeCount: number; }) => {
+    setChatEngagement(prev => {
+      // Only update if there's an actual change to prevent unnecessary re-renders
+      if (prev.hasReachedMinimum === engagement.hasReachedMinimum && 
+          prev.exchangeCount === engagement.exchangeCount) {
+        return prev;
+      }
+      console.log('useLessonData: Updating chat engagement:', engagement);
+      return engagement;
+    });
+  }, []);
 
   const fetchLessonData = async () => {
     if (!chapterId || !lessonId) return;
@@ -139,7 +152,7 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
           .maybeSingle();
         setIsChapterCompleted(chapterProgressData?.chapter_completed || false);
 
-        // Load chat engagement
+        // Load chat engagement - consolidated here for single source of truth
         const { data: conversationData } = await supabase
           .from('chat_conversations')
           .select('id, message_count')
@@ -152,7 +165,9 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
           );
           const hasReachedMinimum = totalExchanges >= 3;
           console.log(`useLessonData: Found ${totalExchanges} chat exchanges, minimum reached: ${hasReachedMinimum}`);
-          setChatEngagement({
+          
+          // Use the stable update function
+          updateChatEngagement({
             exchangeCount: totalExchanges,
             hasReachedMinimum
           });
@@ -169,7 +184,8 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
     fetchLessonData();
   }, [chapterId, lessonId, user]);
 
-  return {
+  // Memoize the return object to prevent unnecessary re-renders
+  const memoizedReturn = useMemo(() => ({
     lesson,
     contentBlocks,
     interactiveElements,
@@ -181,6 +197,18 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
     isChapterCompleted,
     setIsChapterCompleted,
     chatEngagement,
-    setChatEngagement
-  };
+    updateChatEngagement
+  }), [
+    lesson,
+    contentBlocks,
+    interactiveElements,
+    loading,
+    completedBlocks,
+    completedInteractiveElements,
+    isChapterCompleted,
+    chatEngagement,
+    updateChatEngagement
+  ]);
+
+  return memoizedReturn;
 };

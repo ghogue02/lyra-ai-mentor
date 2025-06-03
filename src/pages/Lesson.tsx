@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Navbar } from '@/components/Navbar';
@@ -30,7 +31,7 @@ export const Lesson = () => {
     isChapterCompleted,
     setIsChapterCompleted,
     chatEngagement,
-    setChatEngagement
+    updateChatEngagement
   } = useLessonData(chapterId, lessonId);
 
   // Calculate progress whenever completion states change
@@ -59,25 +60,21 @@ export const Lesson = () => {
     }
   };
 
-  const handleInteractiveElementComplete = (elementId: number) => {
+  const handleInteractiveElementComplete = useCallback((elementId: number) => {
     if (completedInteractiveElements.has(elementId)) return;
     console.log(`Lesson.tsx: Interactive element ${elementId} completed`);
     const newCompleted = new Set([...completedInteractiveElements, elementId]);
     setCompletedInteractiveElements(newCompleted);
-  };
+  }, [completedInteractiveElements, setCompletedInteractiveElements]);
 
-  const handleChatEngagementChange = (engagement: {
+  // Stable chat engagement handler
+  const handleChatEngagementChange = useCallback((engagement: {
     hasReachedMinimum: boolean;
     exchangeCount: number;
   }) => {
     console.log('Lesson.tsx: Chat engagement changed:', engagement);
-    setChatEngagement(engagement);
-
-    // Force a re-render of content to update blocking state
-    if (engagement.hasReachedMinimum && !chatEngagement.hasReachedMinimum) {
-      console.log('Lesson.tsx: Chat engagement threshold reached, content should unlock');
-    }
-  };
+    updateChatEngagement(engagement);
+  }, [updateChatEngagement]);
 
   const updateProgress = (blockIds: Set<number>, elementIds: Set<number>) => {
     const totalItems = contentBlocks.length + interactiveElements.length;
@@ -139,17 +136,19 @@ export const Lesson = () => {
     }
   };
 
-  // Find the first Lyra chat element to determine blocking point
-  const findFirstLyraChatIndex = () => {
-    const regularContent = [...contentBlocks.filter(block => block.type !== 'ai_generated_image').map(block => ({
-      ...block,
-      contentType: 'interactive'
-    })), ...interactiveElements.map(element => ({
-      ...element,
-      contentType: 'interactive'
-    }))].sort((a, b) => a.order_index - b.order_index);
-    return regularContent.findIndex(item => item.contentType === 'interactive' && item.type === 'lyra_chat');
-  };
+  // Memoize lesson context to prevent re-renders
+  const lessonContext = lesson ? {
+    chapterTitle: lesson.chapter.title,
+    lessonTitle: lesson.title,
+    content: contentBlocks.map(block => `${block.title}: ${block.content}`).join('\n\n').substring(0, 1000)
+  } : undefined;
+
+  // Calculate completion status for the bottom button
+  const totalItems = contentBlocks.length + interactiveElements.length;
+  const completedItems = completedBlocks.size + completedInteractiveElements.size;
+  const contentComplete = completedItems === totalItems;
+  const chatComplete = chatEngagement?.hasReachedMinimum || false;
+  const isFullyComplete = contentComplete && chatComplete;
 
   if (loading) {
     return (
@@ -174,26 +173,7 @@ export const Lesson = () => {
     );
   }
 
-  // Create lesson context for embedded chat
-  const lessonContext = lesson ? {
-    chapterTitle: lesson.chapter.title,
-    lessonTitle: lesson.title,
-    content: contentBlocks.map(block => `${block.title}: ${block.content}`).join('\n\n').substring(0, 1000)
-  } : undefined;
-
-  const firstLyraChatIndex = findFirstLyraChatIndex();
-  const hasContentBlocking = firstLyraChatIndex !== -1;
-
-  // Calculate completion status for the bottom button
-  const totalItems = contentBlocks.length + interactiveElements.length;
-  const completedItems = completedBlocks.size + completedInteractiveElements.size;
-  const contentComplete = completedItems === totalItems;
-  const chatComplete = chatEngagement?.hasReachedMinimum || false;
-  const isFullyComplete = contentComplete && chatComplete;
-
   console.log('Lesson.tsx: Rendering with chat engagement:', chatEngagement);
-  console.log('Lesson.tsx: Content blocking enabled:', hasContentBlocking);
-  console.log('Lesson.tsx: First Lyra chat index:', firstLyraChatIndex);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
@@ -211,7 +191,7 @@ export const Lesson = () => {
           totalInteractiveElements={interactiveElements.length}
           chatEngagement={chatEngagement}
           onMarkChapterComplete={handleMarkChapterComplete}
-          hasContentBlocking={hasContentBlocking}
+          hasContentBlocking={true}
         />
 
         <LessonContent 

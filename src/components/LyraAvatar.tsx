@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { cn } from '@/lib/utils';
 import { getLyraIconUrl } from '@/utils/supabaseIcons';
 
@@ -11,7 +11,7 @@ interface LyraAvatarProps {
   animated?: boolean;
 }
 
-export const LyraAvatar: React.FC<LyraAvatarProps> = ({ 
+const LyraAvatarComponent: React.FC<LyraAvatarProps> = ({ 
   className, 
   size = 'md',
   withWave = true,
@@ -43,7 +43,6 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
   };
 
   const iconUrl = getLyraIconUrl(expression);
-  console.log(`LyraAvatar rendering with expression: ${expression}, URL: ${iconUrl}`);
 
   const handleImageError = () => {
     console.error(`Failed to load Lyra image for expression: ${expression}, URL: ${iconUrl}`);
@@ -51,7 +50,6 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
   };
 
   const handleImageLoad = () => {
-    console.log(`Successfully loaded Lyra image for expression: ${expression}`);
     setImageLoaded(true);
   };
 
@@ -90,7 +88,7 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
       
       {withWave && expression !== 'loading' && !imageError && (
         <div className={cn(
-          "absolute -top-2 -right-2 animate-bounce",
+          "absolute -top-2 -right-2",
           waveSize[size]
         )}>
           {expression === 'celebrating' ? '🎉' : 
@@ -98,14 +96,8 @@ export const LyraAvatar: React.FC<LyraAvatarProps> = ({
            expression === 'helping' ? '💡' : '👋'}
         </div>
       )}
-      
-      {/* Subtle pulse animation on hover */}
-      {animated && (
-        <div className={cn(
-          "absolute inset-0 bg-purple-100 rounded-xl opacity-0 hover:opacity-20 transition-opacity duration-300",
-          sizeClasses[size]
-        )} />
-      )}
     </div>
   );
 };
+
+export const LyraAvatar = memo(LyraAvatarComponent);

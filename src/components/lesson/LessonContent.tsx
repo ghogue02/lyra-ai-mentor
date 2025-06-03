@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { ContentBlockRenderer } from './ContentBlockRenderer';
 import { InteractiveElementRenderer } from './InteractiveElementRenderer';
 
@@ -41,7 +41,7 @@ interface LessonContentProps {
   onInteractiveElementComplete: (elementId: number) => void;
 }
 
-export const LessonContent: React.FC<LessonContentProps> = ({
+const LessonContentComponent: React.FC<LessonContentProps> = ({
   contentBlocks,
   interactiveElements,
   completedBlocks,
@@ -53,47 +53,41 @@ export const LessonContent: React.FC<LessonContentProps> = ({
   onChatEngagementChange,
   onInteractiveElementComplete
 }) => {
-  // Find the first Lyra chat element to determine blocking point
-  const findFirstLyraChatIndex = () => {
-    return regularContent.findIndex(item => item.contentType === 'interactive' && item.type === 'lyra_chat');
-  };
+  // Memoize content to prevent unnecessary recalculations
+  const regularContent = useMemo(() => {
+    return [
+      ...contentBlocks.map(block => ({
+        ...block,
+        contentType: 'block' as const
+      })),
+      ...interactiveElements.map(element => ({
+        ...element,
+        contentType: 'interactive' as const
+      }))
+    ].sort((a, b) => a.order_index - b.order_index);
+  }, [contentBlocks, interactiveElements]);
 
-  // Check if content should be blocked based on chat completion
-  const shouldBlockContent = (index: number) => {
-    const firstLyraChatIndex = findFirstLyraChatIndex();
+  // Memoize blocking logic
+  const { firstLyraChatIndex, shouldBlockContent } = useMemo(() => {
+    const firstLyraChatIndex = regularContent.findIndex(
+      item => item.contentType === 'interactive' && item.type === 'lyra_chat'
+    );
 
-    // If no Lyra chat found, don't block anything
-    if (firstLyraChatIndex === -1) return false;
+    const shouldBlockContent = (index: number) => {
+      if (firstLyraChatIndex === -1) return false;
+      if (index <= firstLyraChatIndex) return false;
+      return !chatEngagement.hasReachedMinimum;
+    };
 
-    // If this is before or at the first Lyra chat, don't block
-    if (index <= firstLyraChatIndex) return false;
-
-    // Block if chat engagement hasn't reached minimum
-    console.log(`LessonContent: Checking if content at index ${index} should be blocked. Chat engagement:`, chatEngagement);
-    return !chatEngagement.hasReachedMinimum;
-  };
-
-  // Merge and sort all content blocks and interactive elements
-  const regularContent = [
-    ...contentBlocks.map(block => ({
-      ...block,
-      contentType: 'block' as const
-    })),
-    ...interactiveElements.map(element => ({
-      ...element,
-      contentType: 'interactive' as const
-    }))
-  ].sort((a, b) => a.order_index - b.order_index);
-
-  const firstLyraChatIndex = findFirstLyraChatIndex();
+    return { firstLyraChatIndex, shouldBlockContent };
+  }, [regularContent, chatEngagement.hasReachedMinimum]);
 
   return (
     <div className="mx-auto space-y-6 max-w-4xl pb-16">
       {regularContent.map((item, index) => {
         const isBlocked = shouldBlockContent(index);
-        console.log(`LessonContent: Rendering item at index ${index}, blocked: ${isBlocked}, type: ${item.type}`);
 
-        // Remove the ContentBlocker visual element - just skip blocked content
+        // Skip blocked content entirely to prevent flickering
         if (isBlocked) {
           return null;
         }
@@ -101,10 +95,7 @@ export const LessonContent: React.FC<LessonContentProps> = ({
         return (
           <div 
             key={`${item.contentType}-${item.id}`} 
-            className={cn(
-              "transition-opacity duration-500",
-              chatEngagement.hasReachedMinimum && index > firstLyraChatIndex ? "animate-fade-in" : ""
-            )}
+            className="transition-opacity duration-500"
           >
             {item.contentType === 'block' ? (
               <ContentBlockRenderer 
@@ -120,6 +111,7 @@ export const LessonContent: React.FC<LessonContentProps> = ({
                 onChatEngagementChange={onChatEngagementChange}
                 onElementComplete={onInteractiveElementComplete}
                 isBlockingContent={false}
+                chatEngagement={chatEngagement}
               />
             )}
           </div>
@@ -129,7 +121,4 @@ export const LessonContent: React.FC<LessonContentProps> = ({
   );
 };
 
-// Add the missing import
-const cn = (...classes: string[]) => {
-  return classes.filter(Boolean).join(' ');
-};
+export const LessonContent = memo(LessonContentComponent);

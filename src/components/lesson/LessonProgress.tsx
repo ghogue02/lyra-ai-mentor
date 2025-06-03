@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Clock } from 'lucide-react';
@@ -19,7 +19,7 @@ interface LessonProgressProps {
   hasContentBlocking?: boolean;
 }
 
-export const LessonProgress: React.FC<LessonProgressProps> = ({
+const LessonProgressComponent: React.FC<LessonProgressProps> = ({
   completedBlocks,
   totalBlocks,
   completedInteractiveElements,
@@ -28,39 +28,62 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
   chatEngagement,
   onMarkChapterComplete,
 }) => {
-  const totalItems = totalBlocks + totalInteractiveElements;
-  const completedItems = completedBlocks + completedInteractiveElements;
-  const contentComplete = completedItems === totalItems;
-  const chatComplete = chatEngagement?.hasReachedMinimum || false;
-  const isFullyComplete = contentComplete && chatComplete;
+  // Memoize calculations to prevent unnecessary re-renders
+  const progressData = useMemo(() => {
+    const totalItems = totalBlocks + totalInteractiveElements;
+    const completedItems = completedBlocks + completedInteractiveElements;
+    const contentComplete = completedItems === totalItems;
+    const chatComplete = chatEngagement?.hasReachedMinimum || false;
+    const isFullyComplete = contentComplete && chatComplete;
+
+    return {
+      totalItems,
+      completedItems,
+      contentComplete,
+      chatComplete,
+      isFullyComplete
+    };
+  }, [
+    totalBlocks,
+    totalInteractiveElements,
+    completedBlocks,
+    completedInteractiveElements,
+    chatEngagement?.hasReachedMinimum
+  ]);
 
   return (
     <div className="space-y-4">
-      {/* Simple checkmark badges */}
+      {/* Simple checkmark badges with stable references */}
       <div className="flex items-center gap-3 flex-wrap">
-        {contentComplete ? (
-          <Badge className="bg-green-100 text-green-700 flex items-center gap-2">
+        <Badge 
+          className={
+            progressData.contentComplete 
+              ? "bg-green-100 text-green-700 flex items-center gap-2"
+              : "bg-gray-100 text-gray-600 flex items-center gap-2"
+          }
+        >
+          {progressData.contentComplete ? (
             <CheckCircle className="w-3 h-3" />
-            Content Complete
-          </Badge>
-        ) : (
-          <Badge variant="outline" className="flex items-center gap-2">
+          ) : (
             <Clock className="w-3 h-3" />
-            Reading Progress
-          </Badge>
-        )}
+          )}
+          {progressData.contentComplete ? 'Content Complete' : 'Reading Progress'}
+        </Badge>
         
-        {chatComplete ? (
-          <Badge className="bg-purple-100 text-purple-700 flex items-center gap-2">
+        <Badge 
+          className={
+            progressData.chatComplete 
+              ? "bg-purple-100 text-purple-700 flex items-center gap-2"
+              : "bg-gray-100 text-gray-600 flex items-center gap-2"
+          }
+        >
+          {progressData.chatComplete ? (
             <CheckCircle className="w-3 h-3" />
-            Chat Complete
-          </Badge>
-        ) : (
-          <Badge variant="outline" className="flex items-center gap-2">
+          ) : (
             <Clock className="w-3 h-3" />
-            Chat Pending
-          </Badge>
-        )}
+          )}
+          {progressData.chatComplete ? 'Chat Complete' : 'Chat Pending'}
+        </Badge>
         
         {isCompleted && (
           <Badge className="bg-blue-100 text-blue-700 flex items-center gap-2">
@@ -71,7 +94,7 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
       </div>
 
       {/* Chapter completion button */}
-      {isFullyComplete && !isCompleted && onMarkChapterComplete && (
+      {progressData.isFullyComplete && !isCompleted && onMarkChapterComplete && (
         <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-center justify-between">
             <div>
@@ -92,3 +115,5 @@ export const LessonProgress: React.FC<LessonProgressProps> = ({
     </div>
   );
 };
+
+export const LessonProgress = memo(LessonProgressComponent);

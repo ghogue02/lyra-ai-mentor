@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, { memo, useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { MessageCircle, CheckSquare } from 'lucide-react';
@@ -13,7 +13,6 @@ import { AIContentGenerator } from '@/components/testing/AIContentGenerator';
 import { MultipleChoiceScenarios } from '@/components/testing/MultipleChoiceScenarios';
 import { AIImpactStoryCreator } from '@/components/testing/AIImpactStoryCreator';
 import { useElementCompletion } from './interactive/hooks/useElementCompletion';
-import { useChatEngagement } from './interactive/hooks/useChatEngagement';
 import { getElementIcon, getElementStyle } from './interactive/utils/elementUtils';
 import { getSupabaseIconUrl } from '@/utils/supabaseIcons';
 
@@ -40,6 +39,10 @@ interface InteractiveElementRendererProps {
   }) => void;
   onElementComplete?: (elementId: number) => void;
   isBlockingContent?: boolean;
+  chatEngagement?: {
+    hasReachedMinimum: boolean;
+    exchangeCount: number;
+  };
 }
 
 // Helper function to get avatar and icons for AI components
@@ -68,40 +71,37 @@ const getAIComponentAssets = (type: string) => {
   }
 };
 
-export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProps> = ({
+const InteractiveElementRendererComponent: React.FC<InteractiveElementRendererProps> = ({
   element,
   lessonId,
   lessonContext,
   onChatEngagementChange,
   onElementComplete,
-  isBlockingContent = false
+  isBlockingContent = false,
+  chatEngagement
 }) => {
   const { isElementCompleted, markElementComplete } = useElementCompletion(
     element.id, 
     lessonId, 
     onElementComplete
   );
-  
-  const { chatEngagement, handleChatEngagementChange } = useChatEngagement(
-    element.id,
-    lessonId,
-    onChatEngagementChange
-  );
 
   const handleElementComplete = async () => {
     await markElementComplete();
   };
 
-  const handleChatEngagement = async (engagement: {
-    hasReachedMinimum: boolean;
-    exchangeCount: number;
-  }) => {
-    handleChatEngagementChange(engagement);
-    if (engagement.hasReachedMinimum && !isElementCompleted) {
-      console.log(`InteractiveElementRenderer: Marking element ${element.id} as completed due to engagement threshold`);
-      await markElementComplete();
-    }
-  };
+  // Stable chat engagement handler
+  const handleChatEngagement = useMemo(() => {
+    return async (engagement: {
+      hasReachedMinimum: boolean;
+      exchangeCount: number;
+    }) => {
+      onChatEngagementChange?.(engagement);
+      if (engagement.hasReachedMinimum && !isElementCompleted) {
+        await markElementComplete();
+      }
+    };
+  }, [onChatEngagementChange, isElementCompleted, markElementComplete]);
 
   const renderContent = () => {
     switch (element.type) {
@@ -126,10 +126,10 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           <LyraChatRenderer
             element={element}
             lessonContext={lessonContext}
-            chatEngagement={chatEngagement}
+            chatEngagement={chatEngagement || { hasReachedMinimum: false, exchangeCount: 0 }}
             isBlockingContent={isBlockingContent}
             onEngagementChange={handleChatEngagement}
-            initialEngagementCount={chatEngagement.exchangeCount}
+            initialEngagementCount={chatEngagement?.exchangeCount || 0}
           />
         );
       case 'callout_box':
@@ -149,17 +149,11 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           />
         );
       case 'multiple_choice_scenarios':
-        return (
-          <MultipleChoiceScenarios />
-        );
+        return <MultipleChoiceScenarios />;
       case 'ai_impact_story_creator':
-        return (
-          <AIImpactStoryCreator />
-        );
+        return <AIImpactStoryCreator />;
       case 'ai_content_generator':
-        return (
-          <AIContentGenerator />
-        );
+        return <AIContentGenerator />;
       default:
         return <p className="text-gray-700">{element.content}</p>;
     }
@@ -183,10 +177,10 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
         <LyraChatRenderer
           element={element}
           lessonContext={lessonContext}
-          chatEngagement={chatEngagement}
+          chatEngagement={chatEngagement || { hasReachedMinimum: false, exchangeCount: 0 }}
           isBlockingContent={isBlockingContent}
           onEngagementChange={handleChatEngagement}
-          initialEngagementCount={chatEngagement.exchangeCount}
+          initialEngagementCount={chatEngagement?.exchangeCount || 0}
         />
       </div>
     );
@@ -208,7 +202,6 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
                   alt="AI Assistant" 
                   className="w-16 h-16 rounded-full border-2 border-purple-200 shadow-lg"
                   onError={(e) => {
-                    console.log('Avatar failed to load:', assets.avatar);
                     e.currentTarget.style.display = 'none';
                   }}
                 />
@@ -221,7 +214,6 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
                   alt="" 
                   className="w-6 h-6 opacity-70"
                   onError={(e) => {
-                    console.log('Left icon failed to load:', assets.leftIcon);
                     e.currentTarget.style.display = 'none';
                   }}
                 />
@@ -233,7 +225,6 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
                   alt="" 
                   className="w-6 h-6 opacity-70"
                   onError={(e) => {
-                    console.log('Right icon failed to load:', assets.rightIcon);
                     e.currentTarget.style.display = 'none';
                   }}
                 />
@@ -273,7 +264,7 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
               Completed
             </Badge>
           )}
-          {element.type === 'lyra_chat' && chatEngagement.hasReachedMinimum && (
+          {element.type === 'lyra_chat' && chatEngagement?.hasReachedMinimum && (
             <Badge className="bg-purple-100 text-purple-700 ml-auto">
               <MessageCircle className="w-3 h-3 mr-1" />
               Chat Complete
@@ -288,3 +279,5 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     </Card>
   );
 };
+
+export const InteractiveElementRenderer = memo(InteractiveElementRendererComponent);
