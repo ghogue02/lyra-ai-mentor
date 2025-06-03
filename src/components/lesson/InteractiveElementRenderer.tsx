@@ -66,6 +66,12 @@ const getAIComponentAssets = (type: string) => {
         leftIcon: getSupabaseIconUrl('mission-heart.png'),
         rightIcon: getSupabaseIconUrl('growth-plant.png')
       };
+    case 'sequence_sorter':
+      return {
+        avatar: getSupabaseIconUrl('lyra-avatar.png'),
+        leftIcon: getSupabaseIconUrl('workflow-process.png'),
+        rightIcon: getSupabaseIconUrl('workflow-process.png')
+      };
     default:
       return null;
   }
@@ -187,7 +193,7 @@ const InteractiveElementRendererComponent: React.FC<InteractiveElementRendererPr
   }
 
   // Special rendering for AI components with avatars and icons
-  if (['multiple_choice_scenarios', 'ai_impact_story_creator', 'ai_content_generator'].includes(element.type)) {
+  if (['multiple_choice_scenarios', 'ai_impact_story_creator', 'ai_content_generator', 'sequence_sorter'].includes(element.type)) {
     const assets = getAIComponentAssets(element.type);
     
     return (
