@@ -8,6 +8,10 @@ import { KnowledgeCheckRenderer } from './interactive/KnowledgeCheckRenderer';
 import { ReflectionRenderer } from './interactive/ReflectionRenderer';
 import { LyraChatRenderer } from './interactive/LyraChatRenderer';
 import { CalloutBoxRenderer } from './interactive/CalloutBoxRenderer';
+import { SequenceSorterRenderer } from './interactive/SequenceSorterRenderer';
+import { AIContentGeneratorRenderer } from './interactive/AIContentGeneratorRenderer';
+import { MultipleChoiceScenarios } from '@/components/testing/MultipleChoiceScenarios';
+import { AIImpactStoryCreator } from '@/components/testing/AIImpactStoryCreator';
 import { useElementCompletion } from './interactive/hooks/useElementCompletion';
 import { useChatEngagement } from './interactive/hooks/useChatEngagement';
 import { getElementIcon, getElementStyle } from './interactive/utils/elementUtils';
@@ -109,6 +113,30 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
             onComplete={handleElementComplete}
           />
         );
+      case 'sequence_sorter':
+        return (
+          <SequenceSorterRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={handleElementComplete}
+          />
+        );
+      case 'multiple_choice_scenarios':
+        return (
+          <MultipleChoiceScenarios />
+        );
+      case 'ai_impact_story_creator':
+        return (
+          <AIImpactStoryCreator />
+        );
+      case 'ai_content_generator':
+        return (
+          <AIContentGeneratorRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={handleElementComplete}
+          />
+        );
       default:
         return <p className="text-gray-700">{element.content}</p>;
     }
@@ -138,6 +166,30 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           initialEngagementCount={chatEngagement.exchangeCount}
         />
       </div>
+    );
+  }
+
+  // Special rendering for standalone components that manage their own layout
+  if (['multiple_choice_scenarios', 'ai_impact_story_creator'].includes(element.type)) {
+    return (
+      <Card className="shadow-sm backdrop-blur-sm transition-all duration-300 my-8">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <CardTitle className="text-lg font-medium">
+              {element.title}
+            </CardTitle>
+            {isElementCompleted && (
+              <Badge className="bg-green-100 text-green-700 ml-auto">
+                <CheckSquare className="w-3 h-3 mr-1" />
+                Completed
+              </Badge>
+            )}
+          </div>
+        </CardHeader>
+        <CardContent className="pt-0">
+          {renderContent()}
+        </CardContent>
+      </Card>
     );
   }
 
