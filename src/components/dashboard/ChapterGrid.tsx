@@ -96,26 +96,18 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
         // Check if this is a database chapter or placeholder
         const isPlaceholder = chapter.id > 2;
         
-        // Determine if chapter is locked - FIXED LOGIC
+        // Updated locking logic - removed profile completion requirement
         let isLocked = false;
         
         if (isPlaceholder) {
           // Placeholder chapters (3-6) are always locked
           isLocked = true;
         } else if (chapter.id === 1) {
-          // Chapter 1 is always unlocked (unless onboarding not complete, but that shouldn't happen)
-          isLocked = !onboardingComplete;
+          // Chapter 1 is always unlocked
+          isLocked = false;
         } else if (chapter.id === 2) {
-          // Chapter 2: If onboarding is complete, it should be unlocked
-          // Only check previous chapter completion if onboarding is NOT complete
-          if (onboardingComplete) {
-            isLocked = false;
-          } else {
-            // If onboarding not complete, check if previous chapter is completed
-            const previousChapterId = chapter.id - 1;
-            const previousChapterProgress = chapterProgress[previousChapterId];
-            isLocked = !previousChapterProgress?.isCompleted;
-          }
+          // Chapter 2: Only check if onboarding is complete (no profile completion requirement)
+          isLocked = !onboardingComplete;
         } else {
           // For chapters beyond 2, check if previous chapter is completed
           const previousChapterId = chapter.id - 1;
@@ -125,7 +117,7 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
 
         // Additional debug for Chapter 2
         if (chapter.id === 2) {
-          console.log('Chapter 2 Debug:', {
+          console.log('Chapter 2 Debug (Profile requirement removed):', {
             chapterId: chapter.id,
             onboardingComplete,
             isLocked,

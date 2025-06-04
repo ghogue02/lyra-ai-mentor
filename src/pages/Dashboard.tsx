@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
@@ -72,8 +73,8 @@ export const Dashboard = () => {
   const handleChapterClick = async (chapterId: number) => {
     if (!user || !profile) return;
 
-    // Only allow Chapter 1 during onboarding, or any chapter if onboarding is complete
-    const onboardingComplete = profile.profile_completed && profile.first_chapter_started && profile.first_chapter_completed;
+    // Updated logic: Only require chapter progress, not profile completion for testing
+    const onboardingComplete = profile.first_chapter_started && profile.first_chapter_completed;
     if (!onboardingComplete && chapterId > 1) {
       return; // Chapter is locked
     }
@@ -159,7 +160,8 @@ export const Dashboard = () => {
     );
   }
 
-  const onboardingComplete = profile?.profile_completed && profile?.first_chapter_started && profile?.first_chapter_completed;
+  // Updated logic: Only require chapter progress, not profile completion for testing
+  const onboardingComplete = profile?.first_chapter_started && profile?.first_chapter_completed;
   const userName = profile?.first_name && profile?.last_name ? `${profile.first_name} ${profile.last_name}` : user?.email;
 
   return (
