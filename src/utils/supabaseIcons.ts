@@ -6,6 +6,8 @@ export const SUPABASE_ICONS = {
   lyraAvatar: 'lyra-avatar.png',
   heroMain: 'hero-main.png',
   dashboardMeditation: 'dashboard-meditation.png',
+  dashboardRocketMp4: 'rocket-animated.mp4',
+  dashboardRocketGif: 'rocket-animated.gif',
   
   // Navbar and branding (using uploaded navbar logo)
   navbar: {
@@ -135,6 +137,17 @@ export const getSupabaseIconUrl = (iconPath: string): string => {
   
   console.log(`Generated URL: ${data.publicUrl}`);
   return data.publicUrl;
+};
+
+/**
+ * Get animated dashboard rocket URLs for video element
+ */
+export const getDashboardRocketUrls = () => {
+  return {
+    mp4: getSupabaseIconUrl(SUPABASE_ICONS.dashboardRocketMp4),
+    gif: getSupabaseIconUrl(SUPABASE_ICONS.dashboardRocketGif),
+    fallback: getSupabaseIconUrl(SUPABASE_ICONS.dashboardMeditation)
+  };
 };
 
 /**

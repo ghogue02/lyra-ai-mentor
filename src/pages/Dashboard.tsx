@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
@@ -10,7 +9,7 @@ import { ProfileTab } from '@/components/dashboard/ProfileTab';
 import { supabase } from '@/integrations/supabase/client';
 import { GraduationCap, UserCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getSupabaseIconUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
+import { getDashboardRocketUrls } from '@/utils/supabaseIcons';
 import { useToast } from '@/hooks/use-toast';
 
 interface UserProfile {
@@ -164,18 +163,40 @@ export const Dashboard = () => {
   const onboardingComplete = profile?.first_chapter_started && profile?.first_chapter_completed;
   const userName = profile?.first_name && profile?.last_name ? `${profile.first_name} ${profile.last_name}` : user?.email;
 
+  const rocketUrls = getDashboardRocketUrls();
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={false} onSignOut={signOut} />
       
       {/* Header Section - Fixed spacing to prevent header overlap */}
       <section className="container mx-auto px-4 pt-40 pb-8">
-        {/* Hero Image - Larger and more prominent */}
+        {/* Animated Rocket - Larger and more prominent */}
         <div className="mb-12 flex justify-center">
-          <img 
-            src={getSupabaseIconUrl(SUPABASE_ICONS.dashboardMeditation)} 
-            alt="Meditation Figure for AI Learning"
+          <video 
             className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain"
+            autoPlay
+            loop
+            muted
+            playsInline
+            preload="auto"
+            onError={(e) => {
+              console.error('Video failed to load, showing fallback image');
+              const target = e.currentTarget;
+              target.style.display = 'none';
+              const fallbackImg = target.nextElementSibling as HTMLImageElement;
+              if (fallbackImg) fallbackImg.style.display = 'block';
+            }}
+          >
+            <source src={rocketUrls.mp4} type="video/mp4" />
+            <source src={rocketUrls.gif} type="image/gif" />
+            Your browser does not support the video tag.
+          </video>
+          <img 
+            src={rocketUrls.fallback}
+            alt="AI Learning Journey Rocket"
+            className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain"
+            style={{ display: 'none' }}
           />
         </div>
 
