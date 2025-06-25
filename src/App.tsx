@@ -14,6 +14,7 @@ import NotFound from "./pages/NotFound";
 import Lesson from "./pages/Lesson";
 import AITesting from "./pages/AITesting";
 import AIRefine from "./pages/AIRefine";
+import InteractiveElementsHolding from "./pages/InteractiveElementsHolding";
 
 const queryClient = new QueryClient();
 
@@ -57,6 +58,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <AIRefine />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/interactive-elements" 
+                element={
+                  <ProtectedRoute>
+                    <InteractiveElementsHolding />
                   </ProtectedRoute>
                 } 
               />
