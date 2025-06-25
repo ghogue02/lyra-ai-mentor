@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
@@ -174,7 +175,7 @@ export const Dashboard = () => {
         {/* Animated Rocket - Larger and more prominent */}
         <div className="mb-12 flex justify-center">
           <video 
-            className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain"
+            className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 object-contain"
             autoPlay
             loop
             muted
@@ -195,7 +196,7 @@ export const Dashboard = () => {
           <img 
             src={rocketUrls.fallback}
             alt="AI Learning Journey Rocket"
-            className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain"
+            className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 object-contain"
             style={{ display: 'none' }}
           />
         </div>
