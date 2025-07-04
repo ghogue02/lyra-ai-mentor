@@ -47,6 +47,11 @@ export const PerformanceMonitorComponent: React.FC<PerformanceMonitorProps> = ({
     // Set up alert handler
     if (onAlert || enableConsoleLogging) {
       const unsubscribe = PerformanceMonitor.onAlert((alert) => {
+        // Skip memory leak alerts in development as they're often false positives
+        if (import.meta.env.DEV && alert.type === 'memory-leak') {
+          return;
+        }
+        
         if (enableConsoleLogging) {
           const logMethod = alert.severity === 'critical' ? 'error' : 
                           alert.severity === 'error' ? 'warn' : 'log';

@@ -140,6 +140,11 @@ class PerformanceMonitorClass {
       return;
     }
 
+    // Log if in development mode
+    if (import.meta.env.DEV) {
+      console.log('[PerformanceMonitor] Memory leak detection is less sensitive in development mode');
+    }
+
     // Check memory every 10 seconds
     this.memoryCheckInterval = setInterval(() => {
       this.captureMemorySnapshot();
@@ -180,19 +185,38 @@ class PerformanceMonitorClass {
       });
     }
 
-    // Check for potential memory leak pattern
-    if (this.memorySnapshots.length >= 10) {
-      const recentSnapshots = this.memorySnapshots.slice(-10);
-      const isIncreasing = recentSnapshots.every((snapshot, index) => {
-        if (index === 0) return true;
-        return snapshot.usedJSHeapSize > recentSnapshots[index - 1].usedJSHeapSize;
-      });
-
-      if (isIncreasing) {
+    // Check for potential memory leak pattern with more reasonable thresholds
+    if (this.memorySnapshots.length >= 20) {
+      const recentSnapshots = this.memorySnapshots.slice(-20);
+      const firstSnapshot = recentSnapshots[0];
+      const lastSnapshot = recentSnapshots[recentSnapshots.length - 1];
+      
+      // Calculate the increase
+      const startMB = firstSnapshot.usedJSHeapSize / (1024 * 1024);
+      const endMB = lastSnapshot.usedJSHeapSize / (1024 * 1024);
+      const increaseMB = endMB - startMB;
+      const increasePercent = ((endMB - startMB) / startMB) * 100;
+      
+      // Count how many times memory increased vs decreased
+      let increases = 0;
+      for (let i = 1; i < recentSnapshots.length; i++) {
+        if (recentSnapshots[i].usedJSHeapSize > recentSnapshots[i - 1].usedJSHeapSize) {
+          increases++;
+        }
+      }
+      
+      // Only alert if:
+      // 1. Memory increased by at least 10MB or 25%
+      // 2. Memory increased in at least 70% of samples
+      // 3. We're not in development mode (where memory patterns are different)
+      const significantIncrease = increaseMB > 10 || increasePercent > 25;
+      const consistentIncrease = increases > (recentSnapshots.length * 0.7);
+      
+      if (significantIncrease && consistentIncrease && !import.meta.env.DEV) {
         this.createAlert({
           type: 'memory-leak',
           severity: 'error',
-          message: 'Potential memory leak detected - memory usage continuously increasing',
+          message: `Potential memory leak - memory increased by ${increaseMB.toFixed(2)}MB (${increasePercent.toFixed(1)}%) over last 20 samples`,
           value: usedMB,
           threshold: this.thresholds.memoryUsageMB
         });

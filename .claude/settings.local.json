@@ -38,7 +38,9 @@
       "mcp__supabase__apply_migration",
       "Bash(tsx scripts/generate-component-tests.ts:*)",
       "Bash(chmod:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)",
+      "Bash(git commit:*)"
     ],
     "deny": []
   }

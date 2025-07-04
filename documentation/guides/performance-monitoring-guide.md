@@ -25,7 +25,8 @@ The system automatically alerts when:
   - Development loads ~4-5MB due to HMR, source maps, and individual modules
 - Component load times exceed 100ms
 - Object-to-primitive errors occur
-- Memory leaks are detected
+- Memory leaks are detected (requires 10MB+ or 25%+ increase over 20 samples)
+  - Note: Memory leak alerts are suppressed in development mode to avoid false positives
 - Error rates exceed 5%
 
 ## Key Features
