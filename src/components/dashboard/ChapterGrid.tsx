@@ -20,26 +20,26 @@ interface ChapterGridProps {
 const placeholderChapters: Chapter[] = [
   {
     id: 3,
-    title: "Machine Learning Fundamentals",
-    description: "Learn the basics of machine learning algorithms and applications.",
+    title: "Communication & Storytelling",
+    description: "Connect with your community using AI-enhanced content creation and storytelling techniques.",
     duration: "20 min"
   },
   {
     id: 4,
-    title: "Natural Language Processing",
-    description: "Discover how AI understands and processes human language.",
+    title: "Data & Decision Making",
+    description: "Make smarter decisions with AI insights for program analysis and impact measurement.",
     duration: "25 min"
   },
   {
     id: 5,
-    title: "Computer Vision",
-    description: "Explore how AI can see and interpret visual information.",
+    title: "Automation & Efficiency",
+    description: "Build AI-powered workflows that handle routine work automatically.",
     duration: "22 min"
   },
   {
     id: 6,
-    title: "AI Ethics & Future",
-    description: "Understand the ethical implications and future of AI technology.",
+    title: "Organizational Transformation",
+    description: "Become an AI champion and lead the integration of AI tools across your organization.",
     duration: "18 min"
   }
 ];
@@ -50,6 +50,13 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
 }) => {
   const { chapters: dbChapters, loading: chaptersLoading, error } = useChapters();
   const { chapterProgress, loading: progressLoading } = useChapterProgress();
+
+  // DEBUGGING: Log what we get from database
+  console.log('🔍 CHAPTER LOADING DEBUG:');
+  console.log('📊 Database chapters:', dbChapters);
+  console.log('📝 Placeholder chapters:', placeholderChapters);
+  console.log('⚠️ Loading states:', { chaptersLoading, progressLoading });
+  console.log('❌ Error:', error);
 
   if (chaptersLoading || progressLoading) {
     return (
@@ -68,8 +75,22 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
     );
   }
 
-  // Combine database chapters with placeholders
-  const allChapters = [...dbChapters, ...placeholderChapters].sort((a, b) => a.id - b.id);
+  // FIXED: Only use placeholders for chapters that don't exist in database
+  const dbChapterIds = new Set(dbChapters.map(c => c.id));
+  const neededPlaceholders = placeholderChapters.filter(p => !dbChapterIds.has(p.id));
+  
+  console.log('🔧 DUPLICATE PREVENTION:');
+  console.log('📋 DB Chapter IDs:', Array.from(dbChapterIds));
+  console.log('🔄 Needed placeholders:', neededPlaceholders.map(p => ({ id: p.id, title: p.title })));
+  
+  // Combine database chapters with only needed placeholders
+  const allChapters = [...dbChapters, ...neededPlaceholders].sort((a, b) => a.id - b.id);
+  
+  console.log('📚 FINAL CHAPTER LIST:');
+  console.log('Total chapters:', allChapters.length);
+  allChapters.forEach(c => {
+    console.log(`  Chapter ${c.id}: ${c.title} (${dbChapterIds.has(c.id) ? 'DATABASE' : 'PLACEHOLDER'})`);
+  });
 
   if (allChapters.length === 0) {
     return (
@@ -79,13 +100,6 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
     );
   }
 
-  // Add debug logging
-  console.log('Dashboard Debug:', {
-    onboardingComplete,
-    chapterProgress,
-    allChapters: allChapters.map(c => ({ id: c.id, title: c.title }))
-  });
-
   return (
     <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
       {allChapters.map((chapter, index) => {
@@ -94,34 +108,28 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
         const progressPercentage = progress?.progress || 0;
         
         // Check if this is a database chapter or placeholder
-        const isPlaceholder = chapter.id > 2;
+        const isPlaceholder = !dbChapterIds.has(chapter.id);
         
-        // Updated locking logic - removed profile completion requirement
+        console.log(`📖 Chapter ${chapter.id} (${chapter.title}):`, {
+          isPlaceholder,
+          fromDatabase: dbChapterIds.has(chapter.id),
+          progress: progressPercentage,
+          isCompleted
+        });
+        
+        // All chapters are unlocked - automation agents will build content as needed
         let isLocked = false;
         
-        if (isPlaceholder) {
-          // Placeholder chapters (3-6) are always locked
-          isLocked = true;
-        } else if (chapter.id === 1) {
-          // Chapter 1 is always unlocked
-          isLocked = false;
-        } else if (chapter.id === 2) {
-          // Chapter 2: Only check if onboarding is complete (no profile completion requirement)
-          isLocked = !onboardingComplete;
-        } else {
-          // For chapters beyond 2, check if previous chapter is completed
-          const previousChapterId = chapter.id - 1;
-          const previousChapterProgress = chapterProgress[previousChapterId];
-          isLocked = !previousChapterProgress?.isCompleted;
-        }
+        // All chapters are now accessible - placeholders will show "under construction" 
+        // and direct users to Chapter Builder Agent
 
-        // Additional debug for Chapter 2
+        // Debug for chapter navigation
         if (chapter.id === 2) {
-          console.log('Chapter 2 Debug (Profile requirement removed):', {
+          console.log('Chapter 2 Debug:', {
             chapterId: chapter.id,
-            onboardingComplete,
+            title: chapter.title,
             isLocked,
-            previousChapterProgress: chapterProgress[1]
+            isPlaceholder
           });
         }
 

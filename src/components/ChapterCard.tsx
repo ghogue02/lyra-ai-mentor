@@ -61,9 +61,10 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
   return (
     <Card className={cn(
       "border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300",
+      "h-80 flex flex-col", // Fixed height and flex layout
       (isLocked || isPlaceholder) ? "opacity-60" : "transform hover:scale-105"
     )}>
-      <CardHeader className="pb-4">
+      <CardHeader className="pb-4 flex-shrink-0">
         <div className="flex items-start justify-between">
           <div className={cn(
             "w-20 h-20 rounded-xl flex items-center justify-center shadow-md border",
@@ -103,15 +104,19 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
           </div>
         </div>
         
-        <CardTitle className="text-lg font-semibold mt-4">
-          Chapter {chapter.id}: {chapter.title}
+        <CardTitle className="text-lg font-semibold mt-4 h-14 overflow-hidden">
+          <div className="line-clamp-2">
+            Chapter {chapter.id}: {chapter.title}
+          </div>
         </CardTitle>
-        <CardDescription className="text-gray-600">
-          {chapter.description}
+        <CardDescription className="text-gray-600 text-sm h-16 overflow-hidden">
+          <div className="line-clamp-3">
+            {chapter.description}
+          </div>
         </CardDescription>
       </CardHeader>
       
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 flex flex-col justify-end flex-grow">
         {!isLocked && !isPlaceholder && progress > 0 && (
           <div className="mb-4">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
@@ -130,7 +135,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
         <Button 
           variant={isLocked || isPlaceholder ? "secondary" : "default"}
           className={cn(
-            "w-full",
+            "w-full mt-auto",
             !isLocked && !isPlaceholder && "bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
           )}
           disabled={isLocked || isPlaceholder}

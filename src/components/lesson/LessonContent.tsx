@@ -74,16 +74,20 @@ const LessonContentComponent: React.FC<LessonContentProps> = ({
     );
 
     const shouldBlockContent = (index: number) => {
-      if (firstLyraChatIndex === -1) return false;
-      if (index <= firstLyraChatIndex) return false;
-      return !chatEngagement.hasReachedMinimum;
+      // Disable content blocking entirely
+      return false;
+      
+      // Original blocking logic (commented out):
+      // if (firstLyraChatIndex === -1) return false;
+      // if (index <= firstLyraChatIndex) return false;
+      // return !chatEngagement.hasReachedMinimum;
     };
 
     return { firstLyraChatIndex, shouldBlockContent };
   }, [regularContent, chatEngagement.hasReachedMinimum]);
 
   return (
-    <div className="mx-auto space-y-6 max-w-4xl pb-16">
+    <div className="lesson-content mx-auto space-y-6 max-w-4xl pb-16">
       {regularContent.map((item, index) => {
         const isBlocked = shouldBlockContent(index);
 
@@ -96,6 +100,8 @@ const LessonContentComponent: React.FC<LessonContentProps> = ({
           <div 
             key={`${item.contentType}-${item.id}`} 
             className="transition-opacity duration-500"
+            data-content-block-id={item.contentType === 'block' ? item.id : undefined}
+            data-interactive-element-id={item.contentType === 'interactive' ? item.id : undefined}
           >
             {item.contentType === 'block' ? (
               <ContentBlockRenderer 

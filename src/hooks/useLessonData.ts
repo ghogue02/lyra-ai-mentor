@@ -62,17 +62,16 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
     });
   }, []);
 
-  const fetchLessonData = async () => {
+  const fetchLessonData = useCallback(async () => {
     if (!chapterId || !lessonId) return;
-    const chapterIdNum = parseInt(chapterId);
-    const lessonIdNum = parseInt(lessonId);
-    if (isNaN(chapterIdNum) || isNaN(lessonIdNum)) {
-      console.error('Invalid chapter or lesson ID');
-      setLoading(false);
-      return;
-    }
+
     try {
-      // Fetch lesson with chapter info
+      console.log(`useLessonData: Fetching data for Chapter ${chapterId}, Lesson ${lessonId}`);
+      
+      const lessonIdNum = parseInt(lessonId);
+      const chapterIdNum = parseInt(chapterId);
+
+      // Fetch lesson data with chapter info
       const { data: lessonData, error: lessonError } = await supabase
         .from('lessons')
         .select(`
@@ -80,38 +79,69 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
           title,
           subtitle,
           estimated_duration,
-          chapters:chapter_id (
-            title,
-            icon
-          )
+          chapter:chapters(title, icon)
         `)
         .eq('id', lessonIdNum)
         .eq('chapter_id', chapterIdNum)
         .single();
-      if (lessonError) throw lessonError;
 
-      // Fetch content blocks
-      const { data: blocksData, error: blocksError } = await supabase
+      if (lessonError) {
+        console.error('Error fetching lesson:', lessonError);
+        setLoading(false);
+        return;
+      }
+
+      // Fetch content blocks - only visible ones
+      const { data: contentBlocksData, error: contentError } = await supabase
         .from('content_blocks')
         .select('*')
         .eq('lesson_id', lessonIdNum)
+        .eq('is_visible', true)
+        .eq('is_active', true)
         .order('order_index');
-      if (blocksError) throw blocksError;
 
-      // Fetch interactive elements
-      const { data: elementsData, error: elementsError } = await supabase
+      if (contentError) {
+        console.error('Error fetching content blocks:', contentError);
+      }
+
+      // Fetch interactive elements - only visible, active, non-gated ones
+      const { data: interactiveElementsData, error: interactiveError } = await supabase
         .from('interactive_elements')
         .select('*')
         .eq('lesson_id', lessonIdNum)
+        .eq('is_visible', true)
+        .eq('is_active', true)
+        .eq('is_gated', false)
         .order('order_index');
-      if (elementsError) throw elementsError;
+      
+      // Filter out admin/debug/test element types that should not be visible to learners
+      const adminElementTypes = [
+        'difficult_conversation_helper',
+        'interactive_element_auditor', 
+        'automated_element_enhancer',
+        'database_debugger',
+        'interactive_element_builder',
+        'element_workflow_coordinator',
+        'chapter_builder_agent',
+        'content_audit_agent',
+        'storytelling_agent'
+      ];
+      
+      const filteredInteractiveElements = interactiveElementsData?.filter(
+        element => !adminElementTypes.includes(element.type) && 
+                  !element.title?.toLowerCase().includes('test') &&
+                  !element.title?.toLowerCase().includes('debug')
+      ) || [];
 
-      setLesson({
-        ...lessonData,
-        chapter: lessonData.chapters
-      });
-      setContentBlocks(blocksData || []);
-      setInteractiveElements(elementsData || []);
+      if (interactiveError) {
+        console.error('Error fetching interactive elements:', interactiveError);
+      }
+
+      console.log(`useLessonData: Found ${contentBlocksData?.length || 0} content blocks, ${filteredInteractiveElements.length} interactive elements (filtered from ${interactiveElementsData?.length || 0})`);
+
+      setLesson(lessonData);
+      setContentBlocks(contentBlocksData || []);
+      setInteractiveElements(filteredInteractiveElements);
 
       // Fetch user progress if authenticated
       if (user) {
@@ -173,16 +203,17 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
           });
         }
       }
+
     } catch (error) {
-      console.error('Error fetching lesson data:', error);
+      console.error('Error in fetchLessonData:', error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [chapterId, lessonId, user?.id, updateChatEngagement]);
 
   useEffect(() => {
     fetchLessonData();
-  }, [chapterId, lessonId, user]);
+  }, [fetchLessonData]);
 
   // Memoize the return object to prevent unnecessary re-renders
   const memoizedReturn = useMemo(() => ({

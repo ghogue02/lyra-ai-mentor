@@ -8,7 +8,7 @@ import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { JourneyTab } from '@/components/dashboard/JourneyTab';
 import { ProfileTab } from '@/components/dashboard/ProfileTab';
 import { supabase } from '@/integrations/supabase/client';
-import { GraduationCap, UserCircle } from 'lucide-react';
+import { GraduationCap, UserCircle, Code2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { getDashboardRocketUrls } from '@/utils/supabaseIcons';
 import { useToast } from '@/hooks/use-toast';
@@ -73,21 +73,24 @@ export const Dashboard = () => {
   const handleChapterClick = async (chapterId: number) => {
     if (!user || !profile) return;
 
-    // Updated logic: Only require chapter progress, not profile completion for testing
-    const onboardingComplete = profile.first_chapter_started && profile.first_chapter_completed;
-    if (!onboardingComplete && chapterId > 1) {
-      return; // Chapter is locked
-    }
+    // All chapters are unlocked for testing
+    // No locking logic required
 
     // Check if the chapter has lessons
     try {
+      console.log(`Checking lessons for Chapter ${chapterId}...`);
       const { data: lessons, error } = await supabase
         .from('lessons')
-        .select('id')
+        .select('id, title, order_index')
         .eq('chapter_id', chapterId)
         .eq('is_published', true)
-        .order('order_index')
-        .limit(1);
+        .order('order_index');
+      
+      console.log(`Found lessons for Chapter ${chapterId}:`, lessons);
+      
+      if (lessons && lessons.length > 0) {
+        console.log(`First lesson for Chapter ${chapterId}:`, lessons[0]);
+      }
 
       if (error) {
         console.error('Error checking lessons:', error);
@@ -130,6 +133,7 @@ export const Dashboard = () => {
       }
 
       // Navigate to the first lesson of the chapter
+      console.log(`Navigating to Chapter ${chapterId}, Lesson ${lessons[0].id}`);
       navigate(`/chapter/${chapterId}/lesson/${lessons[0].id}`);
     } catch (error) {
       console.error('Error:', error);
@@ -221,7 +225,7 @@ export const Dashboard = () => {
 
         {/* Tabbed Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger 
               value="journey" 
               className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white data-[state=active]:shadow-md"
@@ -232,6 +236,10 @@ export const Dashboard = () => {
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <UserCircle className="w-4 h-4" />
               Profile & Personalization
+            </TabsTrigger>
+            <TabsTrigger value="developer" className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-md">
+              <Code2 className="w-4 h-4" />
+              Developer Tools
             </TabsTrigger>
           </TabsList>
 
@@ -244,6 +252,62 @@ export const Dashboard = () => {
 
           <TabsContent value="profile" className="space-y-8">
             <ProfileTab />
+          </TabsContent>
+
+          <TabsContent value="developer" className="space-y-8">
+            <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-purple-100/50 p-8">
+              <h2 className="text-2xl font-bold mb-6 text-gray-800">Developer Tools</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <button
+                  onClick={() => navigate('/showcase')}
+                  className="group relative bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl p-6 hover:shadow-xl transition-all duration-200 hover:scale-105"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold mb-2">Component Showcase</h3>
+                      <p className="text-sm opacity-90">Explore all 35+ interactive components with live previews and code examples</p>
+                    </div>
+                    <Code2 className="w-8 h-8 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </button>
+                <button
+                  onClick={() => navigate('/ai-testing')}
+                  className="group relative bg-gradient-to-r from-green-500 to-teal-500 text-white rounded-xl p-6 hover:shadow-xl transition-all duration-200 hover:scale-105"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold mb-2">AI Testing Ground</h3>
+                      <p className="text-sm opacity-90">Test and explore AI-powered components and interactive elements</p>
+                    </div>
+                    <Code2 className="w-8 h-8 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </button>
+                <button
+                  onClick={() => navigate('/interactive-elements')}
+                  className="group relative bg-gradient-to-r from-orange-500 to-pink-500 text-white rounded-xl p-6 hover:shadow-xl transition-all duration-200 hover:scale-105"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold mb-2">Interactive Elements</h3>
+                      <p className="text-sm opacity-90">Browse and test all interactive learning components</p>
+                    </div>
+                    <Code2 className="w-8 h-8 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </button>
+                <button
+                  onClick={() => navigate('/ai-refine')}
+                  className="group relative bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-xl p-6 hover:shadow-xl transition-all duration-200 hover:scale-105"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="text-left">
+                      <h3 className="text-lg font-semibold mb-2">AI Refinement Lab</h3>
+                      <p className="text-sm opacity-90">Refine and optimize AI-powered features</p>
+                    </div>
+                    <Code2 className="w-8 h-8 opacity-50 group-hover:opacity-100 transition-opacity" />
+                  </div>
+                </button>
+              </div>
+            </div>
           </TabsContent>
         </Tabs>
       </section>

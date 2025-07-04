@@ -1,0 +1,22 @@
+{
+  "elementsAtTop": [],
+  "elementsBeforeContext": [],
+  "formattingIssues": [],
+  "missingComponents": [
+    {
+      "chapter": 3,
+      "lesson": 11,
+      "element": "Sofia's Silent Crisis Story Creator",
+      "currentType": "ai_content_generator",
+      "shouldHaveComponent": "Sofiaai_content_generator"
+    },
+    {
+      "chapter": 3,
+      "lesson": 11,
+      "element": "Analyze Sofia's Struggling Email",
+      "currentType": "ai_content_generator",
+      "shouldHaveComponent": "Sofiaai_content_generator"
+    }
+  ],
+  "orderingIssues": []
+}

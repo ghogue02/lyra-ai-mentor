@@ -1,0 +1,1422 @@
+{
+  "audit_date": "2025-07-01T20:42:14.451Z",
+  "summary": {
+    "totalElements": 72,
+    "highPriority": 54,
+    "needsReplacement": 54,
+    "aiConnected": 18,
+    "aiConnectedPercentage": 25,
+    "avgScores": {
+      "storyIntegration": 7.319444444444445,
+      "learningAlignment": 4.305555555555555,
+      "engagement": 6.847222222222222,
+      "contentRelevance": 2.263888888888889
+    },
+    "topRecommendations": [
+      "Integrate more character storyline references",
+      "Convert static elements to AI-powered interactions",
+      "Strengthen nonprofit context and terminology",
+      "Add scenario-based learning opportunities"
+    ]
+  },
+  "detailed_analysis": [
+    {
+      "element_id": 11,
+      "lesson_id": 1,
+      "chapter_id": 1,
+      "type": "ai_impact_story_creator",
+      "title": "Create Your Own Impact Story",
+      "content": "Use AI to transform your program data into compelling success stories for grants and marketing.",
+      "story_integration_score": 2,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 5,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Integrate character storyline references for better narrative flow",
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 1,
+      "lesson_id": 1,
+      "chapter_id": 1,
+      "type": "lyra_chat",
+      "title": "Chat with Lyra",
+      "content": "Ask Lyra to explain AI concepts in simple terms",
+      "story_integration_score": 2,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 5,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Integrate character storyline references for better narrative flow",
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 4,
+      "lesson_id": 1,
+      "chapter_id": 1,
+      "type": "reflection",
+      "title": "Reflection Moment",
+      "content": "What's one repetitive task in your nonprofit that takes up too much time?",
+      "story_integration_score": 2,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 5,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Integrate character storyline references for better narrative flow",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 138,
+      "lesson_id": 1,
+      "chapter_id": 1,
+      "type": "database_content_viewer",
+      "title": "Database Content Viewer",
+      "content": "Use this tool to explore all chapters, lessons, and interactive elements in your database. This will help you find where Maya, James, and all agent content is located.\n\n  Click through chapters to see their lessons and interactive elements. Search for specific content or agent elements.",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 68,
+      "lesson_id": 5,
+      "chapter_id": 2,
+      "type": "ai_email_composer",
+      "title": "Help Maya Write the Parent Response",
+      "content": "Maya just received this email from a concerned parent: \"I'm worried about the new pickup procedures. My work schedule is unpredictable, and I'm afraid I won't be able to get Marcus on time. Can you help me understand the options?\"\n\nMaya wants to respond with empathy while clearly explaining the policy. Help her craft the perfect response.",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 4,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 69,
+      "lesson_id": 5,
+      "chapter_id": 2,
+      "type": "difficult_conversation_helper",
+      "title": "Maya's Board Chair Challenge",
+      "content": "Now Maya faces her biggest test. The board chair just emailed: \"Maya, I need the Q3 budget variance report by tomorrow for the executive committee meeting. I know it's short notice, but the committee specifically requested it.\"\n\nMaya doesn't have the data compiled yet, and creating the report will take 6+ hours. Help her decline gracefully while maintaining the relationship.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 70,
+      "lesson_id": 5,
+      "chapter_id": 2,
+      "type": "lyra_chat",
+      "title": "Maya's Coffee Chat: What's Next?",
+      "content": "Maya has mastered AI-powered email communication and wants to share her excitement with you. She's curious about your email challenges and eager to help you apply what she's learned.\n\nWhat email situations in your nonprofit work could benefit from Maya's new AI-powered approach?",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 9,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 10,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 132,
+      "lesson_id": 5,
+      "chapter_id": 2,
+      "type": "interactive_element_auditor",
+      "title": "Interactive Element Auditor",
+      "content": "Maya discovered that great communication requires continuous improvement. This agent analyzes all interactive elements across chapters 1-6, evaluating story integration, learning alignment, AI connectivity, and engagement potential.\n\nUse this tool to identify which elements need enhancement to better serve nonprofit professionals.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 9,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 139,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "lyra_chat",
+      "title": "Test Element - Can You See This?",
+      "content": "If you can see this element, then the rendering system is working but specific agent types might not be registered.",
+      "story_integration_score": 2,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 5,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Integrate character storyline references for better narrative flow",
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 75,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "database_debugger",
+      "title": "Database Debugger",
+      "content": "This debugging tool shows exactly what chapters exist in the database and can clean up duplicates. Use this to understand why duplicates are appearing on the dashboard and fix them directly.",
+      "story_integration_score": 2,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 5,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Integrate character storyline references for better narrative flow",
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 71,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "document_generator",
+      "title": "Help James Complete His Grant Proposal",
+      "content": "It's 10 PM and James is stuck on the \"Project Impact\" section for the Morrison Foundation grant. He needs to explain why butterfly habitat restoration matters for urban ecosystems, but foundation officers might not understand the science.\n\nHelp James generate an impact section that balances scientific credibility with emotional appeal.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 4,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 72,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "document_improver",
+      "title": "Polish James's Executive Summary",
+      "content": "James wrote this rough executive summary: \"Our organization wants to create butterfly habitats in the city. Butterflies are important for ecosystems and we think this project would be good for the community. We need $75,000 to do this work over two years.\"\n\nHelp James transform this into something that would make foundation officers excited to fund the project.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 73,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "template_creator",
+      "title": "Build James's Success Template",
+      "content": "After winning the Morrison Foundation grant, James wants to capture what worked so he can replicate it. Help him create a grant proposal template that preserves the structure and language that succeeded.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 74,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "chapter_builder_agent",
+      "title": "James's Next Challenge: Build More Chapters",
+      "content": "James has conquered grant writing and wants to help other nonprofit professionals transform their work. Use his success as inspiration to automatically generate complete chapters for Sofia (Communication), David (Data), Rachel (Automation), and Alex (Transformation).\n\n⚡ Next Level: Use the Element Workflow Coordinator to audit and enhance all interactive elements in your newly built chapters, ensuring maximum engagement and AI integration.",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "update"
+    },
+    {
+      "element_id": 133,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "interactive_element_builder",
+      "title": "Interactive Element Builder",
+      "content": "James learned that great documents require the right tools. This agent implements audit recommendations, converting static elements to AI-powered experiences with OpenAI integration.\n\nTransform learning elements to maximize engagement and practical applicability for nonprofit work.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 9,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 134,
+      "lesson_id": 6,
+      "chapter_id": 2,
+      "type": "element_workflow_coordinator",
+      "title": "Element Workflow Coordinator",
+      "content": "Just as James created systems for efficient document creation, this coordinator manages the complete element enhancement workflow. It seamlessly connects the auditor and builder agents for systematic improvement.\n\nUse this for end-to-end element optimization across your entire learning platform.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 104,
+      "lesson_id": 11,
+      "chapter_id": 3,
+      "type": "ai_content_generator",
+      "title": "Analyze Sofia's Struggling Email",
+      "content": "Sofia needs your help analyzing why her donor email is not working. Read her current draft and identify what is preventing it from connecting with donors emotionally.\n\nCurrent draft: Dear Supporter, Our Q3 statistics show significant progress. We rescued 47 animals, achieved a 94% adoption rate, and expanded our volunteer program by 23%. Your continued support enables these operational improvements. Please consider increasing your donation to help us maintain this trajectory.\n\nWhat would make this more compelling?",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 7,
+      "recommendations": [
+        "Element meets quality standards - consider minor enhancements"
+      ],
+      "priority": "low",
+      "action_needed": "keep"
+    },
+    {
+      "element_id": 105,
+      "lesson_id": 11,
+      "chapter_id": 3,
+      "type": "difficult_conversation_helper",
+      "title": "Sofia's Board Meeting Challenge",
+      "content": "Sofia must present the communication failures to her board next week. The Executive Director expects explanations for the declining donor response rates. Help Sofia prepare talking points that acknowledge the problems while showing her plan for improvement.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 106,
+      "lesson_id": 11,
+      "chapter_id": 3,
+      "type": "lyra_chat",
+      "title": "Sofia's Crisis Conversation",
+      "content": "Sofia is feeling overwhelmed by her communication challenges. She wants to understand what successful nonprofit communicators do differently and how AI might help her transform her approach.",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 5,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 107,
+      "lesson_id": 12,
+      "chapter_id": 3,
+      "type": "ai_content_generator",
+      "title": "Help Sofia Rewrite Charlie's Story",
+      "content": "Sofia wants to transform Charlie's story from a basic adoption update into a compelling donor narrative. Help her apply the storytelling framework to create something that will make donors feel the impact of their support.\n\nBasic facts: Charlie, 13-year-old beagle, surrendered when owner moved to care facility, was depressed for 2 weeks, matched with retired teacher Margaret who needed companionship.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 10,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 7,
+      "recommendations": [
+        "Element meets quality standards - consider minor enhancements"
+      ],
+      "priority": "low",
+      "action_needed": "keep"
+    },
+    {
+      "element_id": 108,
+      "lesson_id": 12,
+      "chapter_id": 3,
+      "type": "document_improver",
+      "title": "Sofia's Voice Transformation Exercise",
+      "content": "Sofia has written a draft email but it still sounds too institutional. Help her rewrite it using storyteller voice instead of institutional voice while maintaining professionalism.\n\nDraft: Our facility continues to maintain high operational standards in animal care delivery while achieving optimal adoption placement rates through systematic matching protocols.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 109,
+      "lesson_id": 12,
+      "chapter_id": 3,
+      "type": "template_creator",
+      "title": "Build Sofia's Storytelling Template",
+      "content": "Sofia wants to create a template she can use for future animal stories. Help her build a framework that incorporates the Problem-Intervention-Resolution-Impact structure while maintaining emotional connection.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 110,
+      "lesson_id": 12,
+      "chapter_id": 3,
+      "type": "lyra_chat",
+      "title": "Sofia's Creative Confidence Chat",
+      "content": "Sofia is excited about her storytelling breakthrough but nervous about implementing it. She wants to discuss how to maintain authenticity while scaling her new approach across all communications.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 5,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 111,
+      "lesson_id": 13,
+      "chapter_id": 3,
+      "type": "ai_email_composer",
+      "title": "Sofia's Luna Campaign Email",
+      "content": "Help Sofia craft the perfect fundraising email about Luna's emergency. Apply the emotional architecture she learned: establish stakes, show vulnerability, demonstrate intervention, reveal transformation, and invite partnership.\n\nKey details: Luna (pregnant German Shepherd), emergency C-section needed, equipment failure during surgery, successful birth of 6 puppies, need $15,000 for equipment replacement.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "update"
+    },
+    {
+      "element_id": 112,
+      "lesson_id": 13,
+      "chapter_id": 3,
+      "type": "ai_social_media_generator",
+      "title": "Sofia's Multi-Platform Launch",
+      "content": "Sofia wants to extend Luna's story across social media platforms. Help her create platform-specific content that maintains the emotional impact while fitting each platform's format and audience expectations.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 113,
+      "lesson_id": 13,
+      "chapter_id": 3,
+      "type": "lyra_chat",
+      "title": "Sofia's Success Celebration",
+      "content": "Sofia is thrilled about her campaign's success but wants to understand what made it work so she can replicate it. She is eager to discuss the storytelling techniques and emotional architecture that created such strong donor response.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 114,
+      "lesson_id": 14,
+      "chapter_id": 3,
+      "type": "template_creator",
+      "title": "Sofia's Story Bank System",
+      "content": "Help Sofia create a comprehensive template system for documenting and deploying animal stories. This should include intake documentation, story development prompts, and various output formats for different communication needs.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 115,
+      "lesson_id": 14,
+      "chapter_id": 3,
+      "type": "ai_email_campaign_writer",
+      "title": "Sofia's Max Campaign",
+      "content": "Sofia wants to create a comprehensive email campaign about Max, the anxious pit bull who became a therapy dog. Help her develop a multi-email sequence that tells his complete transformation story while raising funds for the behavioral rehabilitation program.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 116,
+      "lesson_id": 14,
+      "chapter_id": 3,
+      "type": "content_calendar_builder",
+      "title": "Sofia's Strategic Communication Calendar",
+      "content": "Sofia needs a 6-month content calendar that balances compelling animal stories with other organizational communication needs. Help her create a strategic plan that maximizes emotional impact while covering all necessary updates.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 117,
+      "lesson_id": 14,
+      "chapter_id": 3,
+      "type": "lyra_chat",
+      "title": "Sofia's Mentoring Moment",
+      "content": "Sofia is excited about her upcoming collaboration with David Kim and wants to discuss how storytelling principles might apply to data-driven organizations. She is also proud of how far she has come and wants to inspire others facing similar communication challenges.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 76,
+      "lesson_id": 15,
+      "chapter_id": 4,
+      "type": "data_analyzer",
+      "title": "Analyze David's Failed Presentation",
+      "content": "David needs your help understanding why his data-heavy presentation failed to secure funding. Review his slide deck about youth employment outcomes and identify what's missing from a funder's perspective.\n\nKey slides: 47 total slides, 12 statistical charts, 5 methodology explanations, 3 correlation analyses, 1 brief \"participant outcomes\" summary.\n\nWhat would make this more compelling to foundation officers?",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 77,
+      "lesson_id": 15,
+      "chapter_id": 4,
+      "type": "difficult_conversation_helper",
+      "title": "David's Board Feedback Session",
+      "content": "David must discuss the latest funding rejections with his executive director. The board is questioning whether David's data-driven approach is effective for fundraising. Help David prepare talking points that acknowledge the presentation challenges while demonstrating the value of rigorous data analysis.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 78,
+      "lesson_id": 15,
+      "chapter_id": 4,
+      "type": "lyra_chat",
+      "title": "David's Data Frustration Chat",
+      "content": "David is feeling frustrated that his rigorous research isn't translating into funding success. He wants to understand how to maintain analytical integrity while making his presentations more compelling to non-technical audiences.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 79,
+      "lesson_id": 16,
+      "chapter_id": 4,
+      "type": "data_storyteller",
+      "title": "Help David Transform Marcus's Data",
+      "content": "David has Marcus's raw data points but needs to transform them into a compelling narrative that demonstrates both individual impact and systematic effectiveness. Help him weave together personal story with supporting statistics.\n\nMarcus's data: Age 19, homeless for 4 months, completed 6-month automotive program, hired as apprentice mechanic, $45,000 starting salary, part of 78% job placement rate, 89% retention rate.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 4,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 80,
+      "lesson_id": 16,
+      "chapter_id": 4,
+      "type": "document_improver",
+      "title": "David's Presentation Transformation",
+      "content": "David has rewritten his opening slides but they still feel too data-heavy. Help him balance human story with statistical evidence in a way that engages funders emotionally while maintaining analytical credibility.\n\nCurrent draft: \"Our youth employment program demonstrates significant statistical correlation between program completion and employment outcomes (p<0.01), with participants like Marcus Williams achieving 78% placement rates...\"",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 81,
+      "lesson_id": 16,
+      "chapter_id": 4,
+      "type": "impact_dashboard_creator",
+      "title": "David's Visual Story Dashboard",
+      "content": "David wants to create an interactive dashboard that tells the story of youth employment transformation through both individual narratives and population-level data. Help him design visualizations that make complex data accessible to non-technical funders.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 82,
+      "lesson_id": 16,
+      "chapter_id": 4,
+      "type": "lyra_chat",
+      "title": "David's Data Storytelling Breakthrough",
+      "content": "David is excited about learning to combine personal narratives with statistical evidence. He wants to discuss how this approach might transform other aspects of his organization's data communication and decision-making processes.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 83,
+      "lesson_id": 17,
+      "chapter_id": 4,
+      "type": "ai_content_generator",
+      "title": "David's Million-Dollar Opening",
+      "content": "Help David craft the perfect opening for his high-stakes Hartwell Foundation presentation. He needs to immediately establish emotional connection while demonstrating systematic impact. Use Marcus's story with supporting data to create maximum impact.\n\nKey elements: Marcus sleeping in car, $1.2M funding opportunity, 847 to 2,500 participant expansion, need to prove replicability not just individual success.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 84,
+      "lesson_id": 17,
+      "chapter_id": 4,
+      "type": "document_generator",
+      "title": "David's Data Story Presentation Deck",
+      "content": "David needs a complete presentation that balances compelling narratives with rigorous data analysis. Help him create a slide deck that tells the story of systematic youth employment transformation while maintaining statistical credibility for foundation officers.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 85,
+      "lesson_id": 17,
+      "chapter_id": 4,
+      "type": "lyra_chat",
+      "title": "David's Pre-Presentation Strategy",
+      "content": "David is nervous about his upcoming $1.2M presentation but confident in his new storytelling approach. He wants to discuss how to handle potential questions about methodology while maintaining focus on impact and scalability.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 86,
+      "lesson_id": 18,
+      "chapter_id": 4,
+      "type": "template_creator",
+      "title": "David's Data Storytelling Certification Kit",
+      "content": "David needs comprehensive templates for his nonprofit data storytelling certification program. Help him create frameworks that other organizations can use to combine individual narratives with systematic data analysis.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 87,
+      "lesson_id": 18,
+      "chapter_id": 4,
+      "type": "impact_dashboard_creator",
+      "title": "David's Organizational Transformation Dashboard",
+      "content": "David wants to create a dashboard showing how his data storytelling approach has transformed Metro Data Alliance's effectiveness. Include funding outcomes, staff engagement metrics, and presentation success rates with compelling visual narratives.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 88,
+      "lesson_id": 18,
+      "chapter_id": 4,
+      "type": "ai_content_generator",
+      "title": "David's Methodology Article",
+      "content": "David wants to write an article for Nonprofit Quarterly explaining his data storytelling methodology. Help him create content that shares his framework while demonstrating its application through specific examples and measurable outcomes.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "update"
+    },
+    {
+      "element_id": 89,
+      "lesson_id": 18,
+      "chapter_id": 4,
+      "type": "lyra_chat",
+      "title": "David's Legacy Conversation",
+      "content": "David is proud of how his data storytelling approach has transformed his organization and others. He's excited about mentoring Rachel Thompson and wants to discuss how his framework might apply to automation and operational efficiency storytelling.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 118,
+      "lesson_id": 19,
+      "chapter_id": 5,
+      "type": "workflow_automator",
+      "title": "Analyze Rachel's Time-Saving Systems",
+      "content": "Rachel needs to demonstrate the human impact of her automation systems. Help her calculate and visualize how her volunteer scheduling, donor management, and registration systems create additional capacity for direct client services.\n\nCurrent time savings: Volunteer coordination (8 hours to 45 minutes weekly), donor management (6 hours to 1 hour weekly), registration processing (3 days to automated). Total staff affected: 8 people.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 9,
+      "recommendations": [
+        "Element meets quality standards - consider minor enhancements"
+      ],
+      "priority": "low",
+      "action_needed": "keep"
+    },
+    {
+      "element_id": 119,
+      "lesson_id": 19,
+      "chapter_id": 5,
+      "type": "difficult_conversation_helper",
+      "title": "Rachel's Board Defense Strategy",
+      "content": "Rachel must address the board's concern that she prioritizes technology over human connection. Help her prepare talking points that reframe automation as mission amplification rather than efficiency for its own sake.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 120,
+      "lesson_id": 19,
+      "chapter_id": 5,
+      "type": "lyra_chat",
+      "title": "Rachel's Identity Crisis Chat",
+      "content": "Rachel is questioning whether her passion for automation truly aligns with nonprofit values. She feels misunderstood and wants to explore how to better communicate the human-centered purpose behind her technological solutions.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 121,
+      "lesson_id": 20,
+      "chapter_id": 5,
+      "type": "data_storyteller",
+      "title": "Rachel's Human-Centered Automation Stories",
+      "content": "Help Rachel transform her efficiency metrics into human impact narratives. Focus on how her volunteer scheduling system created space for Tom's coffee chat program and Mrs. Patterson's family reunion.\n\nSystem data: Volunteer scheduling saves 8 hours/week, Tom started coffee chat program, Mrs. Patterson reconnected with daughter, 15 seniors attend weekly, reduced isolation measurably improved.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 7,
+      "recommendations": [
+        "Element meets quality standards - consider minor enhancements"
+      ],
+      "priority": "low",
+      "action_needed": "keep"
+    },
+    {
+      "element_id": 122,
+      "lesson_id": 20,
+      "chapter_id": 5,
+      "type": "template_creator",
+      "title": "Rachel's Human-Centered Automation Framework",
+      "content": "Rachel needs a template for evaluating and communicating automation projects using her new human-centered approach. Help her create a framework that answers: How does this create time for human connection? How does this improve participant experience? How does this strengthen community relationships?",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 123,
+      "lesson_id": 20,
+      "chapter_id": 5,
+      "type": "process_optimizer",
+      "title": "Rachel's Impact-Driven System Design",
+      "content": "Rachel wants to redesign her donor management automation to more clearly demonstrate human-centered outcomes. Help her optimize the system to track not just efficiency metrics but relationship-building and community engagement indicators.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 7,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 124,
+      "lesson_id": 20,
+      "chapter_id": 5,
+      "type": "lyra_chat",
+      "title": "Rachel's Automation Philosophy Chat",
+      "content": "Rachel is excited about her new human-centered automation framework but wants to discuss how to maintain this perspective when building future systems. She is passionate about technology that amplifies rather than replaces human connection.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 125,
+      "lesson_id": 21,
+      "chapter_id": 5,
+      "type": "ai_content_generator",
+      "title": "Rachel's Board Redemption Presentation",
+      "content": "Help Rachel craft her redemption presentation that reframes automation as mission amplification. Start with Mrs. Patterson's story, connect it to Tom's capacity, and demonstrate how efficiency creates space for human connection.\n\nKey elements: Mrs. Patterson's isolation and family reunion, Tom's coffee chat program, 8 hours/week freed from scheduling, board's previous concerns about technology over humanity.",
+      "story_integration_score": 9,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 126,
+      "lesson_id": 21,
+      "chapter_id": 5,
+      "type": "impact_dashboard_creator",
+      "title": "Rachel's Human-Centered Impact Dashboard",
+      "content": "Rachel needs a dashboard that shows automation impact through human outcomes rather than just efficiency metrics. Include staff capacity utilization, participant engagement improvements, and relationship-building indicators.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 127,
+      "lesson_id": 21,
+      "chapter_id": 5,
+      "type": "lyra_chat",
+      "title": "Rachel's Validation Celebration",
+      "content": "Rachel is thrilled about the board's response and her new Director of Human-Centered Technology position. She wants to discuss how this validation changes her approach to future automation projects and her role in the nonprofit technology community.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 7,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 128,
+      "lesson_id": 22,
+      "chapter_id": 5,
+      "type": "workflow_automator",
+      "title": "Rachel's Nonprofit Technology Ecosystem",
+      "content": "Help Rachel design a comprehensive automation ecosystem for nonprofits that maintains human-centered values while maximizing operational efficiency. Include volunteer management, donor relations, program delivery, and impact measurement systems.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 10,
+      "recommendations": [
+        "Element meets quality standards - consider minor enhancements"
+      ],
+      "priority": "low",
+      "action_needed": "keep"
+    },
+    {
+      "element_id": 129,
+      "lesson_id": 22,
+      "chapter_id": 5,
+      "type": "template_creator",
+      "title": "Rachel's Technology Implementation Framework",
+      "content": "Rachel needs a framework that other nonprofits can use to evaluate and implement technology solutions using her human-centered approach. Create templates for technology assessment, implementation planning, and impact measurement.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 7,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 130,
+      "lesson_id": 22,
+      "chapter_id": 5,
+      "type": "ai_content_generator",
+      "title": "Rachel's Conference Keynote Speech",
+      "content": "Help Rachel write her keynote speech Technology That Makes Nonprofits More Human for the Regional Nonprofit Technology Conference. Include compelling case studies, practical frameworks, and inspiration for 200 nonprofit leaders.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 5,
+      "recommendations": [
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "update"
+    },
+    {
+      "element_id": 131,
+      "lesson_id": 22,
+      "chapter_id": 5,
+      "type": "lyra_chat",
+      "title": "Rachel's Leadership Evolution Chat",
+      "content": "Rachel has evolved from a systems builder to a thought leader in human-centered technology. She is excited about mentoring Alex Rivera on organizational transformation and wants to discuss how her automation expertise applies to broader change management challenges.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 90,
+      "lesson_id": 23,
+      "chapter_id": 6,
+      "type": "ai_readiness_assessor",
+      "title": "Assess Citywide Coalition's AI Readiness",
+      "content": "Help Alex evaluate their organization's readiness for AI adoption considering both opportunities and resistance. Analyze staff concerns, organizational values, and potential AI applications to create a comprehensive readiness assessment.\n\nOrganization context: 40-year social justice advocacy organization, divided staff opinions, focuses on policy advocacy and community organizing, strong grassroots values, concerns about surveillance and bias.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 91,
+      "lesson_id": 23,
+      "chapter_id": 6,
+      "type": "difficult_conversation_helper",
+      "title": "Alex's Values vs Innovation Discussion",
+      "content": "Alex needs to facilitate ongoing conversations between staff members who see AI as essential and those who view it as compromising their values. Help them prepare talking points that acknowledge both perspectives while moving toward constructive solutions.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 92,
+      "lesson_id": 23,
+      "chapter_id": 6,
+      "type": "lyra_chat",
+      "title": "Alex's Leadership Dilemma Chat",
+      "content": "Alex is feeling overwhelmed by the responsibility of making AI adoption decisions that could fundamentally change their organization's culture and effectiveness. They want to explore different approaches to navigating this transformation challenge.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 93,
+      "lesson_id": 24,
+      "chapter_id": 6,
+      "type": "ai_governance_builder",
+      "title": "Alex's Justice-Centered AI Framework",
+      "content": "Help Alex develop a comprehensive governance framework for evaluating AI tools against social justice values. Include decision-making criteria, community feedback mechanisms, and accountability measures that ensure AI adoption advances rather than compromises their mission.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 4,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 94,
+      "lesson_id": 24,
+      "chapter_id": 6,
+      "type": "change_leader",
+      "title": "Alex's Pilot Program Implementation Strategy",
+      "content": "Alex needs a change management strategy for implementing AI pilots while building organizational consensus. Help them design an approach that addresses resistance, builds buy-in, and creates feedback loops for continuous improvement.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 95,
+      "lesson_id": 24,
+      "chapter_id": 6,
+      "type": "template_creator",
+      "title": "Alex's AI Evaluation Toolkit",
+      "content": "Alex wants to create templates that other social justice organizations can use to evaluate AI tools using justice-centered criteria. Develop assessment tools that help organizations make ethical technology decisions aligned with their values.",
+      "story_integration_score": 8,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 96,
+      "lesson_id": 24,
+      "chapter_id": 6,
+      "type": "lyra_chat",
+      "title": "Alex's Framework Validation Chat",
+      "content": "Alex is excited about their Justice-Centered AI Framework but wants to discuss potential blind spots and implementation challenges. They're particularly interested in ensuring community voice remains central to their technology decisions.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 97,
+      "lesson_id": 25,
+      "chapter_id": 6,
+      "type": "change_leader",
+      "title": "Alex's Organization-Wide AI Transformation Plan",
+      "content": "Help Alex design a comprehensive change management strategy for rolling out AI across their entire organization. Include stakeholder engagement, timeline management, resistance mitigation, and success measurement approaches.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 98,
+      "lesson_id": 25,
+      "chapter_id": 6,
+      "type": "ai_governance_builder",
+      "title": "Alex's Community AI Advisory Board Framework",
+      "content": "Alex wants to create a replicable model for community governance of AI adoption in social justice organizations. Help them design structures, processes, and decision-making protocols that center community voice in technology choices.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 2,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 99,
+      "lesson_id": 25,
+      "chapter_id": 6,
+      "type": "lyra_chat",
+      "title": "Alex's Transformation Leadership Reflection",
+      "content": "Alex is proud of their organization's successful AI transformation and wants to discuss the leadership lessons learned. They're particularly interested in how this experience has shaped their understanding of change management in social justice contexts.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 6,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 100,
+      "lesson_id": 26,
+      "chapter_id": 6,
+      "type": "innovation_roadmap",
+      "title": "Alex's Justice AI Innovation Lab Roadmap",
+      "content": "Help Alex develop a comprehensive roadmap for the Justice AI Innovation Lab that includes community partnerships, technology development priorities, funding strategies, and impact measurement frameworks.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 4,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 101,
+      "lesson_id": 26,
+      "chapter_id": 6,
+      "type": "ai_governance_builder",
+      "title": "Alex's Sector-Wide AI Ethics Framework",
+      "content": "Alex wants to create governance standards that the entire social justice sector can adopt for ethical AI use. Help them design principles, accountability mechanisms, and implementation guidelines that ensure AI serves liberation rather than oppression.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "connected",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "medium",
+      "action_needed": "enhance"
+    },
+    {
+      "element_id": 102,
+      "lesson_id": 26,
+      "chapter_id": 6,
+      "type": "impact_measurement",
+      "title": "Alex's Transformation Impact Assessment",
+      "content": "Alex needs to measure the broader impact of their justice-centered AI work across the organizations and communities they've influenced. Help them design assessment tools that capture both quantitative outcomes and qualitative community experiences.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 4,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    },
+    {
+      "element_id": 103,
+      "lesson_id": 26,
+      "chapter_id": 6,
+      "type": "lyra_chat",
+      "title": "Alex's Legacy and Future Vision Chat",
+      "content": "Alex is transitioning from organizational leadership to sector-wide innovation work. They want to discuss their vision for how AI can serve social justice movements and their hopes for the next generation of advocacy leaders.",
+      "story_integration_score": 7,
+      "learning_objective_alignment": 3,
+      "ai_connectivity_status": "needs_integration",
+      "engagement_potential": 7,
+      "content_relevance_score": 0,
+      "recommendations": [
+        "Strengthen connection to lesson learning objectives",
+        "Convert to AI-powered interactive component with LLM integration",
+        "Add more nonprofit-specific context and terminology"
+      ],
+      "priority": "high",
+      "action_needed": "replace"
+    }
+  ]
+}

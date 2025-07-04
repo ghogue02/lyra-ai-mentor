@@ -125,17 +125,24 @@ export const ROLE_MESSAGING = {
   }
 } as const;
 
+// Cache for icon URLs to prevent repeated generation
+const iconUrlCache = new Map<string, string>();
+
 /**
- * Get the full Supabase Storage URL for an icon with fallback to navbar logo
+ * Get the full Supabase Storage URL for an icon with caching
  */
 export const getSupabaseIconUrl = (iconPath: string): string => {
-  console.log(`Getting icon URL for: ${iconPath}`);
+  // Check cache first
+  if (iconUrlCache.has(iconPath)) {
+    return iconUrlCache.get(iconPath)!;
+  }
   
   const { data } = supabase.storage
     .from('app-icons')
     .getPublicUrl(iconPath);
   
-  console.log(`Generated URL: ${data.publicUrl}`);
+  // Cache the result
+  iconUrlCache.set(iconPath, data.publicUrl);
   return data.publicUrl;
 };
 

@@ -379,6 +379,8 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
     <Card 
       ref={blockRef}
       onClick={handleCardClick}
+      data-testid="content-block-renderer"
+      data-content-block-id={block.id}
       className={cn(
         "shadow-sm backdrop-blur-sm transition-all duration-300 my-8 cursor-pointer",
         "border border-gray-200 bg-white/60",

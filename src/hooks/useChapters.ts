@@ -23,20 +23,29 @@ export const useChapters = () => {
 
   const fetchChapters = async () => {
     try {
+      console.log('🔍 useChapters: Fetching chapters from database...');
+      
       const { data, error } = await supabase
         .from('chapters')
         .select('*')
         .eq('is_published', true)
         .order('order_index');
 
+      console.log('📊 useChapters: Database response:', { data, error });
+
       if (error) {
-        console.error('Error fetching chapters:', error);
+        console.error('❌ useChapters: Error fetching chapters:', error);
         setError(error.message);
       } else {
+        console.log('✅ useChapters: Successfully fetched chapters:', data);
+        console.log('📝 useChapters: Chapter details:');
+        (data || []).forEach(chapter => {
+          console.log(`  📖 Chapter ${chapter.id}: "${chapter.title}" (published: ${chapter.is_published})`);
+        });
         setChapters(data || []);
       }
     } catch (err) {
-      console.error('Error:', err);
+      console.error('💥 useChapters: Unexpected error:', err);
       setError('Failed to load chapters');
     } finally {
       setLoading(false);
