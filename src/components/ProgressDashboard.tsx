@@ -219,19 +219,19 @@ export const ProgressDashboard: React.FC = () => {
                 <h3 className="font-semibold text-gray-700 mb-3 flex items-center gap-2">
                   {categoryLabels[category] || category}
                   <BadgeUI variant="secondary" className="text-xs">
-                    {categoryBadges.filter(b => 
+                    {Array.isArray(categoryBadges) ? categoryBadges.filter(b => 
                       unlockedBadges.some(ub => ub.id === b.id)
-                    ).length} / {categoryBadges.length}
+                    ).length : 0} / {Array.isArray(categoryBadges) ? categoryBadges.length : 0}
                   </BadgeUI>
                 </h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {categoryBadges.map(badge => (
+                  {Array.isArray(categoryBadges) ? categoryBadges.map(badge => (
                     <BadgeCard
                       key={badge.id}
                       badge={badge}
                       isUnlocked={unlockedBadges.some(ub => ub.id === badge.id)}
                     />
-                  ))}
+                  )) : null}
                 </div>
               </div>
             ))}
