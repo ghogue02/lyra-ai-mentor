@@ -180,6 +180,93 @@ export type Database = {
           },
         ]
       }
+      content_scaling_jobs: {
+        Row: {
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          id: string
+          input_data: Json
+          job_type: string
+          output_data: Json | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          input_data: Json
+          job_type: string
+          output_data?: Json | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          input_data?: Json
+          job_type?: string
+          output_data?: Json | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      generated_content: {
+        Row: {
+          approval_status: string
+          approved_at: string | null
+          approved_by: string | null
+          character_type: string
+          content: string
+          content_type: string
+          created_at: string
+          id: string
+          metadata: Json | null
+          source_lesson_id: number | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          character_type: string
+          content: string
+          content_type: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          source_lesson_id?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approval_status?: string
+          approved_at?: string | null
+          approved_by?: string | null
+          character_type?: string
+          content?: string
+          content_type?: string
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          source_lesson_id?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       interactive_element_progress: {
         Row: {
           completed: boolean
@@ -388,6 +475,42 @@ export type Database = {
           },
         ]
       }
+      maya_analysis_results: {
+        Row: {
+          analysis_results: Json
+          analysis_type: string
+          confidence_score: number | null
+          created_at: string
+          id: string
+          recommendations: Json | null
+          source_data: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          analysis_results: Json
+          analysis_type: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          recommendations?: Json | null
+          source_data: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          analysis_results?: Json
+          analysis_type?: string
+          confidence_score?: number | null
+          created_at?: string
+          id?: string
+          recommendations?: Json | null
+          source_data?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           ai_experience: string | null
@@ -463,6 +586,42 @@ export type Database = {
           updated_at?: string | null
           user_id?: string
           years_experience?: string | null
+        }
+        Relationships: []
+      }
+      prototype_sessions: {
+        Row: {
+          ai_feedback: Json | null
+          configuration: Json
+          created_at: string
+          id: string
+          session_name: string
+          status: string
+          test_results: Json | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: Json | null
+          configuration: Json
+          created_at?: string
+          id?: string
+          session_name: string
+          status?: string
+          test_results?: Json | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: Json | null
+          configuration?: Json
+          created_at?: string
+          id?: string
+          session_name?: string
+          status?: string
+          test_results?: Json | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

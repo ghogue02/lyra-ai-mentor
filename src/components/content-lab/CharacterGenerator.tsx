@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { Users, Sparkles, MessageSquare, Target, BookOpen } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface Character {
   id: string;
@@ -83,32 +84,53 @@ export const CharacterGenerator = () => {
     try {
       // Simulate progress
       const progressInterval = setInterval(() => {
-        setProgress(prev => Math.min(prev + 15, 90));
+        setProgress(prev => Math.min(prev + 15, 85));
       }, 400);
 
-      // Simulate AI content generation - in real implementation, this would call OpenAI
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
+      const character = characters.find(c => c.id === selectedCharacter)!;
+
+      // Call the generate-character-content edge function
+      const { data, error } = await supabase.functions.invoke('generate-character-content', {
+        body: {
+          characterType: selectedCharacter,
+          contentType: 'lesson',
+          topic: lessonTopic,
+          targetAudience: 'professional learners'
+        }
+      });
+
       clearInterval(progressInterval);
       setProgress(100);
 
-      const character = characters.find(c => c.id === selectedCharacter)!;
+      if (error) {
+        console.error("Generation error:", error);
+        toast.error("Failed to generate content. Please try again.");
+        return;
+      }
+
+      if (!data.success) {
+        toast.error(data.error || "Content generation failed");
+        return;
+      }
+
+      // Parse AI-generated content
+      const aiContent = data.content;
       
-      // Mock generated content - in real implementation, this would come from AI
+      // Structure the content for display
       const content: GeneratedContent = {
         character,
-        lessonTitle: `${character.name}'s Guide to ${lessonTopic}`,
-        introduction: `Hi there! I'm ${character.name}, your ${character.role.toLowerCase()}. I've been working in ${character.expertise.toLowerCase()} for years, and I'm excited to share what I've learned about ${lessonTopic.toLowerCase()}. Let's dive in together!`,
-        challenge: `Many people struggle with ${lessonTopic.toLowerCase()} because they haven't found the right approach for their unique situation. I remember when I first encountered this challenge - it felt overwhelming, but I discovered a systematic way to break it down.`,
-        solution: `Here's my proven framework for mastering ${lessonTopic.toLowerCase()}: First, we'll identify your specific goals. Then, I'll show you the exact tools and techniques I use daily. Finally, we'll practice together so you feel confident applying these skills.`,
-        interactiveElements: [
+        lessonTitle: data.title || `${character.name}'s Guide to ${lessonTopic}`,
+        introduction: extractSection(aiContent, 'introduction') || `Hi there! I'm ${character.name}, your ${character.role.toLowerCase()}. I've been working in ${character.expertise.toLowerCase()} for years, and I'm excited to share what I've learned about ${lessonTopic.toLowerCase()}. Let's dive in together!`,
+        challenge: extractSection(aiContent, 'challenge') || `Many people struggle with ${lessonTopic.toLowerCase()} because they haven't found the right approach for their unique situation. I remember when I first encountered this challenge - it felt overwhelming, but I discovered a systematic way to break it down.`,
+        solution: extractSection(aiContent, 'solution') || `Here's my proven framework for mastering ${lessonTopic.toLowerCase()}: First, we'll identify your specific goals. Then, I'll show you the exact tools and techniques I use daily. Finally, we'll practice together so you feel confident applying these skills.`,
+        interactiveElements: extractList(aiContent, 'interactive') || [
           "Self-assessment quiz to identify current skill level",
           "Interactive tool demonstration with hands-on practice",
           "Real-world scenario simulation",
           "Progress tracking dashboard",
           "Peer collaboration exercise"
         ],
-        outcomes: [
+        outcomes: extractList(aiContent, 'outcomes') || [
           `Clear understanding of ${lessonTopic.toLowerCase()} fundamentals`,
           "Practical skills you can apply immediately",
           "Confidence in tackling similar challenges",
@@ -118,13 +140,35 @@ export const CharacterGenerator = () => {
       };
 
       setGeneratedContent(content);
-      toast.success(`Content generated for ${character.name}!`);
+      toast.success(`Content generated for ${character.name} using AI!`);
     } catch (error) {
       console.error("Generation error:", error);
       toast.error("Failed to generate content. Please try again.");
     } finally {
       setIsGenerating(false);
     }
+  };
+
+  // Helper functions to extract structured data from AI content
+  const extractSection = (content: string, sectionType: string): string => {
+    const patterns = {
+      introduction: /(?:introduction|hello|hi|welcome)[^.]*[.!?]/gi,
+      challenge: /(?:challenge|problem|struggle|difficulty)[^.]*[.!?]/gi,
+      solution: /(?:solution|framework|approach|method)[^.]*[.!?]/gi
+    };
+    
+    const matches = content.match(patterns[sectionType as keyof typeof patterns]) || [];
+    return matches.join(' ').trim();
+  };
+
+  const extractList = (content: string, listType: string): string[] => {
+    const patterns = {
+      interactive: /(?:interactive|activity|exercise|practice)[^.]*[.!?]/gi,
+      outcomes: /(?:outcome|result|benefit|learn)[^.]*[.!?]/gi
+    };
+    
+    const matches = content.match(patterns[listType as keyof typeof patterns]) || [];
+    return matches.slice(0, 5).map(item => item.trim());
   };
 
   return (

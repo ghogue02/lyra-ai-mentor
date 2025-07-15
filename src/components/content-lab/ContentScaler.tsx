@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input";
 import { Zap, Target, Users, BookOpen, PlayCircle, CheckCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface ScalingTarget {
   id: string;
@@ -102,25 +103,50 @@ export const ContentScaler = () => {
   const [activeJob, setActiveJob] = useState<ScalingJob | null>(null);
   const [jobHistory, setJobHistory] = useState<ScalingJob[]>([]);
 
-  const startScalingJob = () => {
+  const startScalingJob = async () => {
     if (!selectedFramework || selectedTargets.length === 0 || !jobName.trim()) {
       toast.error("Please select framework, targets, and enter a job name");
       return;
     }
 
-    const targets = scalingTargets.filter(target => selectedTargets.includes(target.id));
-    const job: ScalingJob = {
-      id: Date.now().toString(),
-      name: jobName,
-      targets: targets.map(t => ({ ...t, status: "pending", progress: 0 })),
-      framework: selectedFramework,
-      status: "running",
-      createdAt: new Date(),
-    };
+    try {
+      const targets = scalingTargets.filter(target => selectedTargets.includes(target.id));
+      const framework = availableFrameworks.find(f => f.id === selectedFramework)!;
+      
+      const { data, error } = await supabase.functions.invoke('content-scaling', {
+        body: {
+          action: 'start',
+          jobType: 'pattern-application',
+          inputData: {
+            patterns: framework.pattern,
+            targetChapters: targets.filter(t => t.type === 'chapter'),
+            targetCharacters: targets.filter(t => t.type === 'character')
+          }
+        }
+      });
 
-    setActiveJob(job);
-    simulateScaling(job);
-    toast.success("Content scaling job started!");
+      if (error) {
+        console.error("Scaling job error:", error);
+        toast.error("Failed to start scaling job");
+        return;
+      }
+
+      const job: ScalingJob = {
+        id: data.jobId,
+        name: jobName,
+        targets: targets.map(t => ({ ...t, status: "pending", progress: 0 })),
+        framework: selectedFramework,
+        status: "running",
+        createdAt: new Date(),
+      };
+
+      setActiveJob(job);
+      simulateScaling(job);
+      toast.success("AI-powered content scaling job started!");
+    } catch (error) {
+      console.error("Scaling job error:", error);
+      toast.error("Failed to start scaling job");
+    }
   };
 
   const simulateScaling = async (job: ScalingJob) => {

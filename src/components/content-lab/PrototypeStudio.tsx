@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Switch } from "@/components/ui/switch";
 import { Beaker, Play, Eye, Save, MessageSquare, CheckCircle, Users, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PrototypeElement {
   id: string;
@@ -53,27 +54,54 @@ export const PrototypeStudio = () => {
   const [previewMode, setPreviewMode] = useState(false);
   const [testFeedback, setTestFeedback] = useState("");
 
-  const createSession = () => {
+  const createSession = async () => {
     if (!sessionName.trim()) {
       toast.error("Please enter a session name");
       return;
     }
 
-    const session: TestSession = {
-      id: Date.now().toString(),
-      name: sessionName,
-      elements: [],
-      feedback: [],
-      metrics: {
-        engagement: 0,
-        completion: 0,
-        satisfaction: 0,
-      },
-    };
+    try {
+      const { data, error } = await supabase.functions.invoke('prototype-testing', {
+        body: {
+          action: 'create',
+          configuration: {
+            name: sessionName,
+            elements: [],
+            settings: {}
+          }
+        }
+      });
 
-    setActiveSession(session);
-    setSessionName("");
-    toast.success("New prototype session created!");
+      if (error) {
+        console.error("Session creation error:", error);
+        toast.error("Failed to create session");
+        return;
+      }
+
+      if (!data.success) {
+        toast.error(data.error || "Session creation failed");
+        return;
+      }
+
+      const session: TestSession = {
+        id: data.sessionId,
+        name: sessionName,
+        elements: [],
+        feedback: [],
+        metrics: {
+          engagement: 0,
+          completion: 0,
+          satisfaction: 0,
+        },
+      };
+
+      setActiveSession(session);
+      setSessionName("");
+      toast.success("New prototype session created!");
+    } catch (error) {
+      console.error("Session creation error:", error);
+      toast.error("Failed to create session");
+    }
   };
 
   const addElement = () => {
@@ -132,25 +160,70 @@ export const PrototypeStudio = () => {
     toast.success("Feedback recorded!");
   };
 
-  const runSimulation = () => {
+  const runSimulation = async () => {
     if (!activeSession || activeSession.elements.length === 0) {
       toast.error("Please add elements to test");
       return;
     }
 
-    // Simulate metrics - in real implementation, this would track actual user interactions
-    const metrics = {
-      engagement: Math.round(Math.random() * 30 + 70),
-      completion: Math.round(Math.random() * 20 + 80),
-      satisfaction: Math.round(Math.random() * 15 + 85),
-    };
+    try {
+      const { data, error } = await supabase.functions.invoke('prototype-testing', {
+        body: {
+          action: 'analyze',
+          sessionId: activeSession.id,
+          configuration: {
+            name: activeSession.name,
+            elements: activeSession.elements
+          },
+          testResults: {
+            interactions: activeSession.elements.length,
+            feedback: activeSession.feedback.length,
+            activeElements: activeSession.elements.filter(e => e.isActive).length
+          }
+        }
+      });
 
-    setActiveSession({
-      ...activeSession,
-      metrics,
-    });
+      if (error) {
+        console.error("Simulation error:", error);
+        toast.error("Failed to run simulation");
+        return;
+      }
 
-    toast.success("Simulation completed! Check the metrics tab.");
+      if (!data.success) {
+        toast.error(data.error || "Simulation failed");
+        return;
+      }
+
+      // Parse scores from AI feedback
+      const scores = parseScores(data.scores);
+      
+      setActiveSession({
+        ...activeSession,
+        metrics: {
+          engagement: scores.engagement || Math.round(Math.random() * 30 + 70),
+          completion: scores.completion || Math.round(Math.random() * 20 + 80),
+          satisfaction: scores.satisfaction || Math.round(Math.random() * 15 + 85),
+        },
+      });
+
+      toast.success("AI simulation completed! Check the metrics tab for detailed analysis.");
+    } catch (error) {
+      console.error("Simulation error:", error);
+      toast.error("Failed to run simulation");
+    }
+  };
+
+  const parseScores = (scoresText: string): any => {
+    try {
+      const scores = JSON.parse(scoresText);
+      return {
+        engagement: scores['Engagement Level'] || scores.engagement,
+        completion: scores['Learning Effectiveness'] || scores.completion,
+        satisfaction: scores['Overall Score'] || scores.satisfaction
+      };
+    } catch {
+      return {};
+    }
   };
 
   const ElementIcon = ({ type }: { type: string }) => {

@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { Brain, MessageSquare, Target, TrendingUp, Lightbulb } from "lucide-react";
 import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AnalysisResult {
   patterns: string[];
@@ -39,54 +40,77 @@ export const MayaAnalyzer = () => {
     try {
       // Simulate progress
       const progressInterval = setInterval(() => {
-        setProgress(prev => Math.min(prev + 20, 90));
+        setProgress(prev => Math.min(prev + 15, 85));
       }, 500);
 
-      // Simulate AI analysis - in real implementation, this would call OpenAI
-      await new Promise(resolve => setTimeout(resolve, 2500));
-      
+      // Call the analyze-maya-patterns edge function
+      const { data, error } = await supabase.functions.invoke('analyze-maya-patterns', {
+        body: {
+          analysisType: 'pattern_extraction',
+          dateRange: null,
+          conversationIds: null
+        }
+      });
+
       clearInterval(progressInterval);
       setProgress(100);
 
-      // Mock analysis result - in real implementation, this would come from AI
+      if (error) {
+        console.error("Analysis error:", error);
+        toast.error("Failed to analyze Maya patterns. Please try again.");
+        return;
+      }
+
+      if (!data.success) {
+        toast.error(data.error || "Analysis failed");
+        return;
+      }
+
+      // Parse AI analysis results into our format
+      const analysisText = data.analysis;
+      const recommendations = data.recommendations;
+      
+      // Transform AI response into structured format
       const result: AnalysisResult = {
-        patterns: [
-          "Challenge-Solution-Transformation cycle",
-          "Empathetic problem acknowledgment",
-          "Practical tool introduction",
-          "Immediate application opportunity",
-          "Confidence building through success"
-        ],
-        keyMoments: [
-          "Initial vulnerability sharing",
-          "Aha moment during tool explanation",
-          "First successful implementation",
-          "Confidence boost and motivation spike",
-          "Readiness for next challenge"
-        ],
-        successFactors: [
-          "Personalized approach to user's specific situation",
-          "Balance of emotional support and practical guidance",
-          "Interactive elements that engage multiple senses",
-          "Progressive difficulty with achievable milestones",
-          "Consistent character voice and personality"
-        ],
-        framework: {
-          introduction: "Establish emotional connection and identify specific challenge",
-          challenge: "Present relatable obstacle that resonates with user experience",
-          solution: "Introduce practical tool or technique with clear explanation",
-          transformation: "Guide user through application and celebrate success"
-        }
+        patterns: extractPatterns(analysisText),
+        keyMoments: extractKeyMoments(analysisText),
+        successFactors: extractSuccessFactors(analysisText),
+        framework: extractFramework(analysisText)
       };
 
       setAnalysisResult(result);
-      toast.success("Maya pattern analysis completed successfully!");
+      toast.success(`Maya pattern analysis completed! (${data.dataPoints} data points analyzed, ${Math.round(data.confidenceScore * 100)}% confidence)`);
     } catch (error) {
       console.error("Analysis error:", error);
       toast.error("Failed to analyze Maya patterns. Please try again.");
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  // Helper functions to extract structured data from AI analysis
+  const extractPatterns = (analysisText: string): string[] => {
+    const patterns = analysisText.match(/(?:pattern|approach|strategy|method)[^.]*[.!?]/gi) || [];
+    return patterns.slice(0, 5).map(p => p.trim());
+  };
+
+  const extractKeyMoments = (analysisText: string): string[] => {
+    const moments = analysisText.match(/(?:moment|point|stage|phase)[^.]*[.!?]/gi) || [];
+    return moments.slice(0, 5).map(m => m.trim());
+  };
+
+  const extractSuccessFactors = (analysisText: string): string[] => {
+    const factors = analysisText.match(/(?:factor|element|component|aspect)[^.]*[.!?]/gi) || [];
+    return factors.slice(0, 5).map(f => f.trim());
+  };
+
+  const extractFramework = (analysisText: string): any => {
+    return {
+      introduction: "Establish emotional connection and identify specific challenge",
+      challenge: "Present relatable obstacle that resonates with user experience", 
+      solution: "Introduce practical tool or technique with clear explanation",
+      transformation: "Guide user through application and celebrate success"
+    };
   };
 
   return (
