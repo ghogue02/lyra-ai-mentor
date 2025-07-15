@@ -9,7 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
-import { Flask, Play, Eye, Save, MessageSquare, CheckCircle, Users, BarChart3 } from "lucide-react";
+import { Beaker, Play, Eye, Save, MessageSquare, CheckCircle, Users, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 
 interface PrototypeElement {
@@ -155,7 +155,7 @@ export const PrototypeStudio = () => {
 
   const ElementIcon = ({ type }: { type: string }) => {
     const elementType = elementTypes.find(et => et.id === type);
-    const IconComponent = elementType?.icon || Flask;
+    const IconComponent = elementType?.icon || Beaker;
     return <IconComponent className="h-4 w-4" />;
   };
 
@@ -165,7 +165,7 @@ export const PrototypeStudio = () => {
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Flask className="h-5 w-5" />
+              <Beaker className="h-5 w-5" />
               Create New Prototype Session
             </CardTitle>
             <CardDescription>

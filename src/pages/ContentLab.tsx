@@ -6,7 +6,7 @@ import { MayaAnalyzer } from "@/components/content-lab/MayaAnalyzer";
 import { CharacterGenerator } from "@/components/content-lab/CharacterGenerator";
 import { PrototypeStudio } from "@/components/content-lab/PrototypeStudio";
 import { ContentScaler } from "@/components/content-lab/ContentScaler";
-import { Flask, Brain, Users, Zap } from "lucide-react";
+import { Beaker, Brain, Users, Zap } from "lucide-react";
 
 const ContentLab = () => {
   const [activeTab, setActiveTab] = useState("maya-analyzer");
@@ -16,7 +16,7 @@ const ContentLab = () => {
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <Flask className="h-8 w-8 text-primary" />
+            <Beaker className="h-8 w-8 text-primary" />
             <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
               Content Lab
             </h1>
@@ -38,7 +38,7 @@ const ContentLab = () => {
               Character Generator
             </TabsTrigger>
             <TabsTrigger value="prototype-studio" className="flex items-center gap-2">
-              <Flask className="h-4 w-4" />
+              <Beaker className="h-4 w-4" />
               Prototype Studio
             </TabsTrigger>
             <TabsTrigger value="content-scaler" className="flex items-center gap-2">
@@ -85,7 +85,7 @@ const ContentLab = () => {
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Flask className="h-5 w-5" />
+                  <Beaker className="h-5 w-5" />
                   Interactive Element Testing
                 </CardTitle>
                 <CardDescription>
