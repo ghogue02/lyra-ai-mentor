@@ -19,6 +19,8 @@ import AIRefinePage from "./pages/AIRefinePage";
 import AIPlaygroundPage from "./pages/AIPlaygroundPage";
 import JourneyShowcasePage from "./pages/JourneyShowcasePage";
 import SkillsDashboardPage from "./pages/SkillsDashboardPage";
+import Lesson from "./pages/Lesson";
+import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
 
 const queryClient = new QueryClient();
 
@@ -103,6 +105,31 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <SkillsDashboardPage />
+                  </ProtectedRoute>
+                } 
+              />
+              {/* Chapter and Lesson Routes */}
+              <Route 
+                path="/lesson/:lessonId" 
+                element={
+                  <ProtectedRoute>
+                    <Lesson />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/:chapterId" 
+                element={
+                  <ProtectedRoute>
+                    <ChapterOverviewPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/:chapterId/lesson/:lessonId" 
+                element={
+                  <ProtectedRoute>
+                    <ChapterLessonPage />
                   </ProtectedRoute>
                 } 
               />
