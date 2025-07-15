@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
-import { MayaEmailComposer } from '@/components/interactive/MayaEmailComposer';
+import { MayaPromptSandwichBuilder } from '@/components/interactive/MayaPromptSandwichBuilder';
 
 /**
  * Enhanced Maya Component with Dynamic PACE Integration
@@ -228,7 +228,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Interactive Workshop</h3>
-              <MayaEmailComposer
+              <MayaPromptSandwichBuilder
                 onComplete={handleEmailComposerComplete}
                 lessonContext={lessonContext}
               />
