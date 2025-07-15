@@ -1,0 +1,57 @@
+{
+  "timestamp": "2025-07-02T12:50:34.456Z",
+  "reason": "Removed per user request - \"try chatting with lyra\" elements",
+  "elements": [
+    {
+      "id": 70,
+      "lesson_id": 5,
+      "type": "lyra_chat",
+      "title": "Maya's Coffee Chat: What's Next?",
+      "content": "Maya Rodriguez is facing a challenge that many nonprofit professionals encounter. Maya has mastered AI-powered email communication and wants to share her excitement with you. She's curious about your email challenges and eager to help you apply what she's learned.\n\nWhat email situations in your nonprofit work could benefit from Maya's new AI-powered approach?\n\n🎯 Learning Focus: Master AI-powered email communication and difficult conversations\n\n🤖 AI Capabilities: This tool uses advanced language models to provide conversational guidance and celebrate your progress in AI adoption.",
+      "configuration": {
+        "features": {
+          "context_aware": true,
+          "nonprofit_focus": true,
+          "character_integration": "Maya Rodriguez"
+        },
+        "llm_model": "gpt-4o",
+        "ai_powered": true,
+        "api_config": {
+          "max_tokens": 500,
+          "temperature": 0.7,
+          "response_format": "conversational"
+        },
+        "system_prompt": "You are Lyra, an AI assistant helping Maya celebrate her email communication success and plan next steps. Be encouraging and help identify new areas for AI adoption.",
+        "lesson_context": "AI Email Assistant",
+        "chapter_context": "AI for Your Daily Work",
+        "nonprofit_focus": true,
+        "character_context": "Maya Rodriguez",
+        "learning_objectives": [
+          "Compose professional emails 3x faster using AI assistance",
+          "Maintain authentic voice while leveraging AI suggestions",
+          "Apply appropriate tone for different nonprofit audiences"
+        ]
+      },
+      "order_index": 170,
+      "created_at": "2025-07-01T19:40:02.116278+00:00",
+      "is_active": true,
+      "is_gated": false,
+      "is_visible": true
+    },
+    {
+      "id": 139,
+      "lesson_id": 6,
+      "type": "lyra_chat",
+      "title": "Test Element - Can You See This?",
+      "content": "If you can see this element, then the rendering system is working but specific agent types might not be registered.",
+      "configuration": {
+        "test": true
+      },
+      "order_index": 1,
+      "created_at": "2025-07-01T20:38:34.155783+00:00",
+      "is_active": true,
+      "is_gated": false,
+      "is_visible": true
+    }
+  ]
+}

@@ -836,3 +836,28 @@ Claude Flow extends the base coordination with:
 ---
 
 Remember: **Claude Flow coordinates, Claude Code creates!** Start with `mcp__claude-flow__swarm_init` to enhance your development workflow.
+
+---
+
+## Build Commands
+- `npm run build`: Build the project
+- `npm run test`: Run the full test suite
+- `npm run lint`: Run ESLint and format checks
+- `npm run typecheck`: Run TypeScript type checking
+- `./claude-flow --help`: Show all available commands
+
+## Code Style Preferences
+- Use ES modules (import/export) syntax
+- Destructure imports when possible
+- Use TypeScript for all new code
+- Follow existing naming conventions
+- Add JSDoc comments for public APIs
+- Use async/await instead of Promise chains
+- Prefer const/let over var
+
+## Workflow Guidelines
+- Always run typecheck after making code changes
+- Run tests before committing changes
+- Use meaningful commit messages
+- Create feature branches for new functionality
+- Ensure all tests pass before merging

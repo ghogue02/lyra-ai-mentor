@@ -1,0 +1,96 @@
+{
+  "currentStructure": [],
+  "narrativeGaps": [],
+  "flowIssues": [],
+  "recommendations": [],
+  "proposedStructure": [
+    {
+      "order": 10,
+      "type": "content",
+      "title": "Maya's Monday Morning Crisis",
+      "purpose": "PROBLEM - Establish emotional connection",
+      "edits": "Keep vivid description of email overwhelm"
+    },
+    {
+      "order": 20,
+      "type": "content",
+      "title": "The Cost of Communication Chaos",
+      "purpose": "PROBLEM - Show impact on mission",
+      "edits": "Merge \"Hidden Cost\" and \"Nonprofit Crisis\" blocks"
+    },
+    {
+      "order": 30,
+      "type": "content",
+      "title": "Maya Discovers AI Email Tools",
+      "purpose": "DISCOVERY - Introduction to solution",
+      "edits": "Show Maya learning about AI Email Composer with examples"
+    },
+    {
+      "order": 40,
+      "type": "content",
+      "title": "Sarah's Urgent Concern",
+      "purpose": "PRACTICE SETUP - Real scenario",
+      "edits": "Introduce parent email situation"
+    },
+    {
+      "order": 50,
+      "type": "interactive",
+      "title": "Help Maya Respond to Sarah",
+      "purpose": "PRACTICE - First hands-on with guidance"
+    },
+    {
+      "order": 60,
+      "type": "content",
+      "title": "Maya's First Success",
+      "purpose": "REFLECTION - Show immediate impact",
+      "edits": "Maya sends email in 5 minutes vs usual 30"
+    },
+    {
+      "order": 70,
+      "type": "content",
+      "title": "Mastering Tone and Context",
+      "purpose": "DISCOVERY - Advanced features",
+      "edits": "Introduce tone adjustment, templates"
+    },
+    {
+      "order": 80,
+      "type": "content",
+      "title": "Board Chair Emergency",
+      "purpose": "PRACTICE SETUP - Higher stakes",
+      "edits": "Urgent funding question from board chair"
+    },
+    {
+      "order": 90,
+      "type": "interactive",
+      "title": "Maya's Board Communication",
+      "purpose": "PRACTICE - More complex scenario"
+    },
+    {
+      "order": 100,
+      "type": "content",
+      "title": "The Power of AI Guidance",
+      "purpose": "DISCOVERY - Introduce Lyra Chat",
+      "edits": "Maya discovers she can get personalized help"
+    },
+    {
+      "order": 110,
+      "type": "interactive",
+      "title": "Explore Communication Strategies with Lyra",
+      "purpose": "PRACTICE - Open-ended exploration"
+    },
+    {
+      "order": 120,
+      "type": "content",
+      "title": "Maya's Transformation Complete",
+      "purpose": "MASTERY - Show full impact",
+      "edits": "Monday is now her most productive day"
+    },
+    {
+      "order": 130,
+      "type": "content",
+      "title": "Your Journey Begins",
+      "purpose": "CALL TO ACTION - Transition to user",
+      "edits": "Inspire user to transform their communication"
+    }
+  ]
+}

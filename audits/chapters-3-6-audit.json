@@ -1,0 +1,1095 @@
+{
+  "timestamp": "2025-07-02T13:11:39.828Z",
+  "summary": {
+    "chaptersAudited": 4,
+    "totalElementsToArchive": 16,
+    "totalElementsToDeactivate": 4,
+    "totalComponentsToCreate": 16
+  },
+  "auditResults": [
+    {
+      "chapterId": 3,
+      "title": "Communication & Storytelling",
+      "character": "Sofia Martinez",
+      "lessons": [
+        {
+          "lessonId": 11,
+          "title": "The Silent Crisis",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 104,
+              "title": "Analyze Sofia's Struggling Email",
+              "type": "ai_content_generator",
+              "lessonId": 11,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 105,
+              "title": "Sofia's Board Meeting Challenge",
+              "type": "difficult_conversation_helper",
+              "lessonId": 11,
+              "isActive": true,
+              "orderIndex": 50,
+              "shouldDeactivate": true
+            },
+            {
+              "id": 106,
+              "title": "Sofia's Crisis Conversation",
+              "type": "lyra_chat",
+              "lessonId": 11,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 1,
+            "Sofia": 9,
+            "David": 0,
+            "Rachel": 0,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 12,
+          "title": "Finding Her Voice",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 107,
+              "title": "Help Sofia Rewrite Charlie's Story",
+              "type": "ai_content_generator",
+              "lessonId": 12,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 108,
+              "title": "Sofia's Voice Transformation Exercise",
+              "type": "document_improver",
+              "lessonId": 12,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 109,
+              "title": "Build Sofia's Storytelling Template",
+              "type": "template_creator",
+              "lessonId": 12,
+              "isActive": true,
+              "orderIndex": 65
+            },
+            {
+              "id": 110,
+              "title": "Sofia's Creative Confidence Chat",
+              "type": "lyra_chat",
+              "lessonId": 12,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 1,
+            "Sofia": 13,
+            "David": 0,
+            "Rachel": 0,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 13,
+          "title": "The Breakthrough Story",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 111,
+              "title": "Sofia's Luna Campaign Email",
+              "type": "ai_email_composer",
+              "lessonId": 13,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 112,
+              "title": "Sofia's Multi-Platform Launch",
+              "type": "ai_social_media_generator",
+              "lessonId": 13,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 113,
+              "title": "Sofia's Success Celebration",
+              "type": "lyra_chat",
+              "lessonId": 13,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 10,
+            "David": 0,
+            "Rachel": 0,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 14,
+          "title": "Scaling Impact",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 114,
+              "title": "Sofia's Story Bank System",
+              "type": "template_creator",
+              "lessonId": 14,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 115,
+              "title": "Sofia's Max Campaign",
+              "type": "ai_email_campaign_writer",
+              "lessonId": 14,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 116,
+              "title": "Sofia's Strategic Communication Calendar",
+              "type": "content_calendar_builder",
+              "lessonId": 14,
+              "isActive": true,
+              "orderIndex": 65
+            },
+            {
+              "id": 117,
+              "title": "Sofia's Mentoring Moment",
+              "type": "lyra_chat",
+              "lessonId": 14,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 13,
+            "David": 3,
+            "Rachel": 0,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        }
+      ],
+      "elementsToArchive": [
+        {
+          "id": 106,
+          "title": "Sofia's Crisis Conversation",
+          "type": "lyra_chat",
+          "lessonId": 11,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 110,
+          "title": "Sofia's Creative Confidence Chat",
+          "type": "lyra_chat",
+          "lessonId": 12,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        },
+        {
+          "id": 113,
+          "title": "Sofia's Success Celebration",
+          "type": "lyra_chat",
+          "lessonId": 13,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 117,
+          "title": "Sofia's Mentoring Moment",
+          "type": "lyra_chat",
+          "lessonId": 14,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        }
+      ],
+      "elementsToDeactivate": [
+        {
+          "id": 105,
+          "title": "Sofia's Board Meeting Challenge",
+          "type": "difficult_conversation_helper",
+          "lessonId": 11,
+          "isActive": true,
+          "orderIndex": 50,
+          "shouldDeactivate": true
+        }
+      ],
+      "storyArc": [
+        {
+          "lesson": 11,
+          "phase": "Problem",
+          "challenge": "Silent crisis - mission invisible",
+          "solution": "AI storytelling discovery",
+          "component": "SofiaMissionStoryCreator"
+        },
+        {
+          "lesson": 12,
+          "phase": "Discovery",
+          "challenge": "Finding authentic voice",
+          "solution": "AI narrative tools",
+          "component": "SofiaVoiceDiscovery"
+        },
+        {
+          "lesson": 13,
+          "phase": "Practice",
+          "challenge": "Breakthrough story creation",
+          "solution": "AI story enhancement",
+          "component": "SofiaStoryBreakthrough"
+        },
+        {
+          "lesson": 14,
+          "phase": "Mastery",
+          "challenge": "Scaling impact storytelling",
+          "solution": "AI content strategy",
+          "component": "SofiaImpactScaling"
+        }
+      ]
+    },
+    {
+      "chapterId": 4,
+      "title": "Data & Decision Making",
+      "character": "David Chen",
+      "lessons": [
+        {
+          "lessonId": 15,
+          "title": "The Data Graveyard",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 78,
+              "title": "David's Data Frustration Chat",
+              "type": "lyra_chat",
+              "lessonId": 15,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            },
+            {
+              "id": 76,
+              "title": "Analyze David's Failed Presentation",
+              "type": "data_analyzer",
+              "lessonId": 15,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 77,
+              "title": "David's Board Feedback Session",
+              "type": "difficult_conversation_helper",
+              "lessonId": 15,
+              "isActive": true,
+              "orderIndex": 50,
+              "shouldDeactivate": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 6,
+            "David": 15,
+            "Rachel": 0,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 2
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 16,
+          "title": "Finding the Story in Numbers",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 79,
+              "title": "Help David Transform Marcus's Data",
+              "type": "data_storyteller",
+              "lessonId": 16,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 80,
+              "title": "David's Presentation Transformation",
+              "type": "document_improver",
+              "lessonId": 16,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 81,
+              "title": "David's Visual Story Dashboard",
+              "type": "impact_dashboard_creator",
+              "lessonId": 16,
+              "isActive": true,
+              "orderIndex": 65
+            },
+            {
+              "id": 82,
+              "title": "David's Data Storytelling Breakthrough",
+              "type": "lyra_chat",
+              "lessonId": 16,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 2,
+            "David": 12,
+            "Rachel": 0,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 9
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 17,
+          "title": "The Million-Dollar Presentation",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 83,
+              "title": "David's Million-Dollar Opening",
+              "type": "ai_content_generator",
+              "lessonId": 17,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 84,
+              "title": "David's Data Story Presentation Deck",
+              "type": "document_generator",
+              "lessonId": 17,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 85,
+              "title": "David's Pre-Presentation Strategy",
+              "type": "lyra_chat",
+              "lessonId": 17,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 0,
+            "David": 11,
+            "Rachel": 0,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 11
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 18,
+          "title": "Building the Data Storytelling System",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 86,
+              "title": "David's Data Storytelling Certification Kit",
+              "type": "template_creator",
+              "lessonId": 18,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 87,
+              "title": "David's Organizational Transformation Dashboard",
+              "type": "impact_dashboard_creator",
+              "lessonId": 18,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 88,
+              "title": "David's Methodology Article",
+              "type": "ai_content_generator",
+              "lessonId": 18,
+              "isActive": true,
+              "orderIndex": 65
+            },
+            {
+              "id": 89,
+              "title": "David's Legacy Conversation",
+              "type": "lyra_chat",
+              "lessonId": 18,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 0,
+            "David": 13,
+            "Rachel": 3,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        }
+      ],
+      "elementsToArchive": [
+        {
+          "id": 78,
+          "title": "David's Data Frustration Chat",
+          "type": "lyra_chat",
+          "lessonId": 15,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 82,
+          "title": "David's Data Storytelling Breakthrough",
+          "type": "lyra_chat",
+          "lessonId": 16,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        },
+        {
+          "id": 85,
+          "title": "David's Pre-Presentation Strategy",
+          "type": "lyra_chat",
+          "lessonId": 17,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 89,
+          "title": "David's Legacy Conversation",
+          "type": "lyra_chat",
+          "lessonId": 18,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        }
+      ],
+      "elementsToDeactivate": [
+        {
+          "id": 77,
+          "title": "David's Board Feedback Session",
+          "type": "difficult_conversation_helper",
+          "lessonId": 15,
+          "isActive": true,
+          "orderIndex": 50,
+          "shouldDeactivate": true
+        }
+      ],
+      "storyArc": [
+        {
+          "lesson": 15,
+          "phase": "Problem",
+          "challenge": "Data graveyard - insights lost",
+          "solution": "AI data analysis discovery",
+          "component": "DavidDataRevival"
+        },
+        {
+          "lesson": 16,
+          "phase": "Discovery",
+          "challenge": "Finding story in numbers",
+          "solution": "AI data storytelling",
+          "component": "DavidDataStoryFinder"
+        },
+        {
+          "lesson": 17,
+          "phase": "Practice",
+          "challenge": "Million-dollar presentation",
+          "solution": "AI presentation builder",
+          "component": "DavidPresentationMaster"
+        },
+        {
+          "lesson": 18,
+          "phase": "Mastery",
+          "challenge": "Data storytelling system",
+          "solution": "AI dashboard creation",
+          "component": "DavidSystemBuilder"
+        }
+      ]
+    },
+    {
+      "chapterId": 5,
+      "title": "Automation & Efficiency",
+      "character": "Rachel Thompson",
+      "lessons": [
+        {
+          "lessonId": 19,
+          "title": "The Misunderstood Systems Builder",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 118,
+              "title": "Analyze Rachel's Time-Saving Systems",
+              "type": "workflow_automator",
+              "lessonId": 19,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 119,
+              "title": "Rachel's Board Defense Strategy",
+              "type": "difficult_conversation_helper",
+              "lessonId": 19,
+              "isActive": true,
+              "orderIndex": 50,
+              "shouldDeactivate": true
+            },
+            {
+              "id": 120,
+              "title": "Rachel's Identity Crisis Chat",
+              "type": "lyra_chat",
+              "lessonId": 19,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 0,
+            "David": 1,
+            "Rachel": 15,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 20,
+          "title": "Discovering Human-Centered Automation",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 124,
+              "title": "Rachel's Automation Philosophy Chat",
+              "type": "lyra_chat",
+              "lessonId": 20,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            },
+            {
+              "id": 121,
+              "title": "Rachel's Human-Centered Automation Stories",
+              "type": "data_storyteller",
+              "lessonId": 20,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 122,
+              "title": "Rachel's Human-Centered Automation Framework",
+              "type": "template_creator",
+              "lessonId": 20,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 123,
+              "title": "Rachel's Impact-Driven System Design",
+              "type": "process_optimizer",
+              "lessonId": 20,
+              "isActive": true,
+              "orderIndex": 65
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 1,
+            "David": 5,
+            "Rachel": 14,
+            "Alex": 0,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 21,
+          "title": "The Transformation Story",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 125,
+              "title": "Rachel's Board Redemption Presentation",
+              "type": "ai_content_generator",
+              "lessonId": 21,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 126,
+              "title": "Rachel's Human-Centered Impact Dashboard",
+              "type": "impact_dashboard_creator",
+              "lessonId": 21,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 127,
+              "title": "Rachel's Validation Celebration",
+              "type": "lyra_chat",
+              "lessonId": 21,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 0,
+            "David": 0,
+            "Rachel": 12,
+            "Alex": 0,
+            "James": 1,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 22,
+          "title": "Building the Automation Ecosystem",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 128,
+              "title": "Rachel's Nonprofit Technology Ecosystem",
+              "type": "workflow_automator",
+              "lessonId": 22,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 129,
+              "title": "Rachel's Technology Implementation Framework",
+              "type": "template_creator",
+              "lessonId": 22,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 130,
+              "title": "Rachel's Conference Keynote Speech",
+              "type": "ai_content_generator",
+              "lessonId": 22,
+              "isActive": true,
+              "orderIndex": 65
+            },
+            {
+              "id": 131,
+              "title": "Rachel's Leadership Evolution Chat",
+              "type": "lyra_chat",
+              "lessonId": 22,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 0,
+            "David": 0,
+            "Rachel": 12,
+            "Alex": 3,
+            "James": 0,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        }
+      ],
+      "elementsToArchive": [
+        {
+          "id": 120,
+          "title": "Rachel's Identity Crisis Chat",
+          "type": "lyra_chat",
+          "lessonId": 19,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 124,
+          "title": "Rachel's Automation Philosophy Chat",
+          "type": "lyra_chat",
+          "lessonId": 20,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        },
+        {
+          "id": 127,
+          "title": "Rachel's Validation Celebration",
+          "type": "lyra_chat",
+          "lessonId": 21,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 131,
+          "title": "Rachel's Leadership Evolution Chat",
+          "type": "lyra_chat",
+          "lessonId": 22,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        }
+      ],
+      "elementsToDeactivate": [
+        {
+          "id": 119,
+          "title": "Rachel's Board Defense Strategy",
+          "type": "difficult_conversation_helper",
+          "lessonId": 19,
+          "isActive": true,
+          "orderIndex": 50,
+          "shouldDeactivate": true
+        }
+      ],
+      "storyArc": [
+        {
+          "lesson": 19,
+          "phase": "Problem",
+          "challenge": "Misunderstood systems builder",
+          "solution": "AI automation discovery",
+          "component": "RachelAutomationVision"
+        },
+        {
+          "lesson": 20,
+          "phase": "Discovery",
+          "challenge": "Human-centered automation",
+          "solution": "AI workflow design",
+          "component": "RachelWorkflowDesigner"
+        },
+        {
+          "lesson": 21,
+          "phase": "Practice",
+          "challenge": "Transformation story proof",
+          "solution": "AI process optimization",
+          "component": "RachelProcessTransformer"
+        },
+        {
+          "lesson": 22,
+          "phase": "Mastery",
+          "challenge": "Automation ecosystem build",
+          "solution": "AI integration strategy",
+          "component": "RachelEcosystemBuilder"
+        }
+      ]
+    },
+    {
+      "chapterId": 6,
+      "title": "Organizational Transformation",
+      "character": "Alex Rivera",
+      "lessons": [
+        {
+          "lessonId": 23,
+          "title": "The Great Divide",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 90,
+              "title": "Assess Citywide Coalition's AI Readiness",
+              "type": "ai_readiness_assessor",
+              "lessonId": 23,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 91,
+              "title": "Alex's Values vs Innovation Discussion",
+              "type": "difficult_conversation_helper",
+              "lessonId": 23,
+              "isActive": true,
+              "orderIndex": 50,
+              "shouldDeactivate": true
+            },
+            {
+              "id": 92,
+              "title": "Alex's Leadership Dilemma Chat",
+              "type": "lyra_chat",
+              "lessonId": 23,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 3,
+            "David": 3,
+            "Rachel": 3,
+            "Alex": 10,
+            "James": 0,
+            "Marcus": 1
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 24,
+          "title": "Building the Vision",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 93,
+              "title": "Alex's Justice-Centered AI Framework",
+              "type": "ai_governance_builder",
+              "lessonId": 24,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 94,
+              "title": "Alex's Pilot Program Implementation Strategy",
+              "type": "change_leader",
+              "lessonId": 24,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 95,
+              "title": "Alex's AI Evaluation Toolkit",
+              "type": "template_creator",
+              "lessonId": 24,
+              "isActive": true,
+              "orderIndex": 65
+            },
+            {
+              "id": 96,
+              "title": "Alex's Framework Validation Chat",
+              "type": "lyra_chat",
+              "lessonId": 24,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 2,
+            "David": 2,
+            "Rachel": 1,
+            "Alex": 7,
+            "James": 0,
+            "Marcus": 3
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 25,
+          "title": "The Transformation Strategy",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 98,
+              "title": "Alex's Community AI Advisory Board Framework",
+              "type": "ai_governance_builder",
+              "lessonId": 25,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 99,
+              "title": "Alex's Transformation Leadership Reflection",
+              "type": "lyra_chat",
+              "lessonId": 25,
+              "isActive": true,
+              "orderIndex": 65,
+              "shouldArchive": true
+            },
+            {
+              "id": 97,
+              "title": "Alex's Organization-Wide AI Transformation Plan",
+              "type": "change_leader",
+              "lessonId": 25,
+              "isActive": true,
+              "orderIndex": 35
+            }
+          ],
+          "characterMentions": {
+            "Maya": 0,
+            "Sofia": 1,
+            "David": 1,
+            "Rachel": 2,
+            "Alex": 11,
+            "James": 1,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        },
+        {
+          "lessonId": 26,
+          "title": "Leading the Future",
+          "contentBlocks": 3,
+          "activeElements": [
+            {
+              "id": 100,
+              "title": "Alex's Justice AI Innovation Lab Roadmap",
+              "type": "innovation_roadmap",
+              "lessonId": 26,
+              "isActive": true,
+              "orderIndex": 35
+            },
+            {
+              "id": 101,
+              "title": "Alex's Sector-Wide AI Ethics Framework",
+              "type": "ai_governance_builder",
+              "lessonId": 26,
+              "isActive": true,
+              "orderIndex": 50
+            },
+            {
+              "id": 102,
+              "title": "Alex's Transformation Impact Assessment",
+              "type": "impact_measurement",
+              "lessonId": 26,
+              "isActive": true,
+              "orderIndex": 65
+            },
+            {
+              "id": 103,
+              "title": "Alex's Legacy and Future Vision Chat",
+              "type": "lyra_chat",
+              "lessonId": 26,
+              "isActive": true,
+              "orderIndex": 80,
+              "shouldArchive": true
+            }
+          ],
+          "characterMentions": {
+            "Maya": 2,
+            "Sofia": 2,
+            "David": 2,
+            "Rachel": 2,
+            "Alex": 15,
+            "James": 1,
+            "Marcus": 0
+          },
+          "needsUpdate": true
+        }
+      ],
+      "elementsToArchive": [
+        {
+          "id": 92,
+          "title": "Alex's Leadership Dilemma Chat",
+          "type": "lyra_chat",
+          "lessonId": 23,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 96,
+          "title": "Alex's Framework Validation Chat",
+          "type": "lyra_chat",
+          "lessonId": 24,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        },
+        {
+          "id": 99,
+          "title": "Alex's Transformation Leadership Reflection",
+          "type": "lyra_chat",
+          "lessonId": 25,
+          "isActive": true,
+          "orderIndex": 65,
+          "shouldArchive": true
+        },
+        {
+          "id": 103,
+          "title": "Alex's Legacy and Future Vision Chat",
+          "type": "lyra_chat",
+          "lessonId": 26,
+          "isActive": true,
+          "orderIndex": 80,
+          "shouldArchive": true
+        }
+      ],
+      "elementsToDeactivate": [
+        {
+          "id": 91,
+          "title": "Alex's Values vs Innovation Discussion",
+          "type": "difficult_conversation_helper",
+          "lessonId": 23,
+          "isActive": true,
+          "orderIndex": 50,
+          "shouldDeactivate": true
+        }
+      ],
+      "storyArc": [
+        {
+          "lesson": 23,
+          "phase": "Problem",
+          "challenge": "The great divide - resistance",
+          "solution": "AI change strategy",
+          "component": "AlexChangeStrategy"
+        },
+        {
+          "lesson": 24,
+          "phase": "Discovery",
+          "challenge": "Building unified vision",
+          "solution": "AI vision alignment",
+          "component": "AlexVisionBuilder"
+        },
+        {
+          "lesson": 25,
+          "phase": "Practice",
+          "challenge": "Transformation strategy",
+          "solution": "AI roadmap creation",
+          "component": "AlexRoadmapCreator"
+        },
+        {
+          "lesson": 26,
+          "phase": "Mastery",
+          "challenge": "Leading the future",
+          "solution": "AI leadership framework",
+          "component": "AlexLeadershipFramework"
+        }
+      ]
+    }
+  ]
+}

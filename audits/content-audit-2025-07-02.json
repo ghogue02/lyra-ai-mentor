@@ -1,0 +1,698 @@
+{
+  "timestamp": "2025-07-02T12:27:27.183Z",
+  "chapters": [
+    {
+      "id": 1,
+      "title": "What Is AI Anyway?",
+      "description": "Demystify artificial intelligence with real-world examples",
+      "lessons": [
+        {
+          "id": 1,
+          "chapterId": 1,
+          "title": "Introduction to AI",
+          "orderIndex": 1,
+          "contentBlocks": {
+            "total": 5,
+            "characterMentions": {
+              "Alex": 2
+            },
+            "averageLength": 1436,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "lyra_chat",
+              "reflection",
+              "ai_impact_story_creator",
+              "database_content_viewer"
+            ],
+            "adminTools": [
+              "Database Content Viewer"
+            ]
+          },
+          "issues": [
+            "1 admin tools visible"
+          ]
+        }
+      ],
+      "totalDuration": 0,
+      "characterConsistency": true,
+      "narrativeFlow": "complete"
+    },
+    {
+      "id": 2,
+      "title": "AI for Your Daily Work",
+      "description": "Transform everyday tasks with universal workflow wins for all non-profit workers",
+      "lessons": [
+        {
+          "id": 5,
+          "chapterId": 2,
+          "title": "AI Email Assistant",
+          "orderIndex": 10,
+          "contentBlocks": {
+            "total": 12,
+            "characterMentions": {
+              "Maya": 44,
+              "Marcus": 1
+            },
+            "averageLength": 1315,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 5,
+            "visible": 2,
+            "hidden": 3,
+            "types": [
+              "lyra_chat",
+              "ai_email_composer",
+              "difficult_conversation_helper",
+              "automated_element_enhancer",
+              "interactive_element_auditor"
+            ],
+            "adminTools": [
+              "Automated Element Enhancement System",
+              "Interactive Element Auditor"
+            ]
+          },
+          "issues": [
+            "2 admin tools visible"
+          ]
+        },
+        {
+          "id": 6,
+          "chapterId": 2,
+          "title": "Document Creation Powerhouse",
+          "orderIndex": 20,
+          "contentBlocks": {
+            "total": 7,
+            "characterMentions": {
+              "Maya": 11
+            },
+            "averageLength": 503,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 9,
+            "visible": 5,
+            "hidden": 4,
+            "types": [
+              "element_workflow_coordinator",
+              "chapter_builder_agent",
+              "database_debugger",
+              "document_generator",
+              "lyra_chat",
+              "interactive_element_builder",
+              "document_improver",
+              "template_creator"
+            ],
+            "adminTools": [
+              "Element Workflow Coordinator",
+              "James's Next Challenge: Build More Chapters",
+              "Database Debugger",
+              "Interactive Element Builder"
+            ]
+          },
+          "issues": [
+            "4 admin tools visible"
+          ]
+        },
+        {
+          "id": 7,
+          "chapterId": 2,
+          "title": "Meeting Master",
+          "orderIndex": 30,
+          "contentBlocks": {
+            "total": 9,
+            "characterMentions": {
+              "Maya": 7
+            },
+            "averageLength": 309,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 1,
+            "visible": 1,
+            "hidden": 0,
+            "types": [
+              "meeting_prep_assistant"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        },
+        {
+          "id": 8,
+          "chapterId": 2,
+          "title": "Research & Organization Pro",
+          "orderIndex": 40,
+          "contentBlocks": {
+            "total": 9,
+            "characterMentions": {
+              "Maya": 6
+            },
+            "averageLength": 309,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 1,
+            "visible": 1,
+            "hidden": 0,
+            "types": [
+              "research_assistant"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        }
+      ],
+      "totalDuration": 0,
+      "characterConsistency": false,
+      "narrativeFlow": "partial"
+    },
+    {
+      "id": 3,
+      "title": "Communication & Storytelling",
+      "description": "Join Sofia Martinez as she transforms her nonprofit communication from overlooked to unforgettable using AI-powered storytelling techniques",
+      "lessons": [
+        {
+          "id": 11,
+          "chapterId": 3,
+          "title": "The Silent Crisis",
+          "orderIndex": 10,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 8,
+              "Maya": 1
+            },
+            "averageLength": 819,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "ai_content_generator",
+              "difficult_conversation_helper",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        },
+        {
+          "id": 12,
+          "chapterId": 3,
+          "title": "Finding Her Voice",
+          "orderIndex": 20,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Maya": 1,
+              "Sofia": 13
+            },
+            "averageLength": 1029,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "ai_content_generator",
+              "document_improver",
+              "template_creator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        },
+        {
+          "id": 13,
+          "chapterId": 3,
+          "title": "The Breakthrough Story",
+          "orderIndex": 30,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 9
+            },
+            "averageLength": 1055,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "ai_email_composer",
+              "ai_social_media_generator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        },
+        {
+          "id": 14,
+          "chapterId": 3,
+          "title": "Scaling Impact",
+          "orderIndex": 40,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 11,
+              "David": 3
+            },
+            "averageLength": 1124,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "template_creator",
+              "ai_email_campaign_writer",
+              "content_calendar_builder",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        }
+      ],
+      "totalDuration": 0,
+      "characterConsistency": false,
+      "narrativeFlow": "partial"
+    },
+    {
+      "id": 4,
+      "title": "Data & Decision Making",
+      "description": "Follow David Kim as he transforms overwhelming spreadsheets into compelling narratives that drive funding and strategic decisions",
+      "lessons": [
+        {
+          "id": 15,
+          "chapterId": 4,
+          "title": "The Data Graveyard",
+          "orderIndex": 10,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 6,
+              "David": 14,
+              "Marcus": 2
+            },
+            "averageLength": 1159,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "lyra_chat",
+              "data_analyzer",
+              "difficult_conversation_helper"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        },
+        {
+          "id": 16,
+          "chapterId": 4,
+          "title": "Finding the Story in Numbers",
+          "orderIndex": 20,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 2,
+              "David": 11,
+              "Marcus": 9
+            },
+            "averageLength": 1207,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "data_storyteller",
+              "document_improver",
+              "impact_dashboard_creator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        },
+        {
+          "id": 17,
+          "chapterId": 4,
+          "title": "The Million-Dollar Presentation",
+          "orderIndex": 30,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "David": 11,
+              "Marcus": 11
+            },
+            "averageLength": 1260,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "ai_content_generator",
+              "document_generator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        },
+        {
+          "id": 18,
+          "chapterId": 4,
+          "title": "Building the Data Storytelling System",
+          "orderIndex": 40,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "David": 11,
+              "Rachel": 3
+            },
+            "averageLength": 1279,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "template_creator",
+              "impact_dashboard_creator",
+              "ai_content_generator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        }
+      ],
+      "totalDuration": 0,
+      "characterConsistency": false,
+      "narrativeFlow": "partial"
+    },
+    {
+      "id": 5,
+      "title": "Automation & Efficiency",
+      "description": "Join Rachel Thompson as she transforms automation from cold technology into systems that amplify human connection and mission impact",
+      "lessons": [
+        {
+          "id": 19,
+          "chapterId": 5,
+          "title": "The Misunderstood Systems Builder",
+          "orderIndex": 10,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Rachel": 14,
+              "David": 1
+            },
+            "averageLength": 1215,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "workflow_automator",
+              "difficult_conversation_helper",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        },
+        {
+          "id": 20,
+          "chapterId": 5,
+          "title": "Discovering Human-Centered Automation",
+          "orderIndex": 20,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 1,
+              "David": 5,
+              "Rachel": 13
+            },
+            "averageLength": 1302,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "lyra_chat",
+              "data_storyteller",
+              "template_creator",
+              "process_optimizer"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        },
+        {
+          "id": 21,
+          "chapterId": 5,
+          "title": "The Transformation Story",
+          "orderIndex": 30,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Rachel": 11,
+              "James": 1
+            },
+            "averageLength": 1289,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "ai_content_generator",
+              "impact_dashboard_creator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        },
+        {
+          "id": 22,
+          "chapterId": 5,
+          "title": "Building the Automation Ecosystem",
+          "orderIndex": 40,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Rachel": 10,
+              "Alex": 3
+            },
+            "averageLength": 1360,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "workflow_automator",
+              "template_creator",
+              "ai_content_generator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        }
+      ],
+      "totalDuration": 0,
+      "characterConsistency": false,
+      "narrativeFlow": "partial"
+    },
+    {
+      "id": 6,
+      "title": "Organizational Transformation",
+      "description": "Follow Alex Rivera as they navigate the complex challenge of transforming a social justice organization through ethical AI adoption while maintaining core values",
+      "lessons": [
+        {
+          "id": 23,
+          "chapterId": 6,
+          "title": "The Great Divide",
+          "orderIndex": 10,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Alex": 9,
+              "Marcus": 1,
+              "Sofia": 3,
+              "David": 3,
+              "Rachel": 3
+            },
+            "averageLength": 1335,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "ai_readiness_assessor",
+              "difficult_conversation_helper",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        },
+        {
+          "id": 24,
+          "chapterId": 6,
+          "title": "Building the Vision",
+          "orderIndex": 20,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 2,
+              "David": 2,
+              "Rachel": 1,
+              "Alex": 7,
+              "Marcus": 3
+            },
+            "averageLength": 1302,
+            "hasProperFlow": false
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "ai_governance_builder",
+              "change_leader",
+              "template_creator",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": [
+            "Missing problem->solution narrative flow"
+          ]
+        },
+        {
+          "id": 25,
+          "chapterId": 6,
+          "title": "The Transformation Strategy",
+          "orderIndex": 30,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 1,
+              "David": 1,
+              "Rachel": 2,
+              "Alex": 11,
+              "James": 1
+            },
+            "averageLength": 1339,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 3,
+            "visible": 3,
+            "hidden": 0,
+            "types": [
+              "ai_governance_builder",
+              "lyra_chat",
+              "change_leader"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        },
+        {
+          "id": 26,
+          "chapterId": 6,
+          "title": "Leading the Future",
+          "orderIndex": 40,
+          "contentBlocks": {
+            "total": 3,
+            "characterMentions": {
+              "Sofia": 2,
+              "David": 2,
+              "Rachel": 2,
+              "Alex": 14,
+              "Maya": 2,
+              "James": 1
+            },
+            "averageLength": 1583,
+            "hasProperFlow": true
+          },
+          "interactiveElements": {
+            "total": 4,
+            "visible": 4,
+            "hidden": 0,
+            "types": [
+              "innovation_roadmap",
+              "ai_governance_builder",
+              "impact_measurement",
+              "lyra_chat"
+            ],
+            "adminTools": []
+          },
+          "issues": []
+        }
+      ],
+      "totalDuration": 0,
+      "characterConsistency": false,
+      "narrativeFlow": "partial"
+    }
+  ],
+  "issues": [
+    "Chapter 2 has multiple characters: Maya, Marcus",
+    "Chapter 3 has multiple characters: Sofia, Maya, David",
+    "Chapter 4 has multiple characters: Sofia, David, Marcus, Rachel",
+    "Chapter 5 has multiple characters: Rachel, David, Sofia, James, Alex",
+    "Chapter 6 has multiple characters: Alex, Marcus, Sofia, David, Rachel, James, Maya"
+  ],
+  "recommendations": [
+    "Chapter 2: Consolidate to single character (Maya) or clearly separate character stories",
+    "Chapter 2: Hide 6 admin tools from user view"
+  ]
+}
