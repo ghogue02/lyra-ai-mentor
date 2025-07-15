@@ -22,6 +22,7 @@ import InteractiveElementsHolding from "./pages/InteractiveElementsHolding";
 import DebugChapter3 from "./pages/DebugChapter3";
 import PerformanceDashboard from "./pages/PerformanceDashboard";
 import ComponentShowcase from "./pages/ComponentShowcase";
+import ContentLab from "./pages/ContentLab";
 
 const queryClient = new QueryClient();
 
@@ -130,6 +131,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <PerformanceDashboard />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/content-lab" 
+                element={
+                  <ProtectedRoute>
+                    <ContentLab />
                   </ProtectedRoute>
                 } 
               />

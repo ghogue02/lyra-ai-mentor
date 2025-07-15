@@ -7,6 +7,11 @@ export type Json =
   | Json[]
 
 export type Database = {
+  // Allows to automatically instanciate createClient with right options
+  // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
+  __InternalSupabase: {
+    PostgrestVersion: "12.2.3 (519615d)"
+  }
   public: {
     Tables: {
       chapters: {
@@ -133,6 +138,8 @@ export type Database = {
           content: string
           created_at: string | null
           id: number
+          is_active: boolean | null
+          is_visible: boolean | null
           lesson_id: number | null
           metadata: Json | null
           order_index: number
@@ -143,6 +150,8 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: number
+          is_active?: boolean | null
+          is_visible?: boolean | null
           lesson_id?: number | null
           metadata?: Json | null
           order_index: number
@@ -153,6 +162,8 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: number
+          is_active?: boolean | null
+          is_visible?: boolean | null
           lesson_id?: number | null
           metadata?: Json | null
           order_index?: number
@@ -205,6 +216,9 @@ export type Database = {
           content: string
           created_at: string | null
           id: number
+          is_active: boolean | null
+          is_gated: boolean | null
+          is_visible: boolean | null
           lesson_id: number | null
           order_index: number
           title: string | null
@@ -215,6 +229,9 @@ export type Database = {
           content: string
           created_at?: string | null
           id?: number
+          is_active?: boolean | null
+          is_gated?: boolean | null
+          is_visible?: boolean | null
           lesson_id?: number | null
           order_index: number
           title?: string | null
@@ -225,6 +242,9 @@ export type Database = {
           content?: string
           created_at?: string | null
           id?: number
+          is_active?: boolean | null
+          is_gated?: boolean | null
+          is_visible?: boolean | null
           lesson_id?: number | null
           order_index?: number
           title?: string | null
@@ -446,6 +466,176 @@ export type Database = {
         }
         Relationships: []
       }
+      toolkit_achievements: {
+        Row: {
+          achievement_key: string
+          achievement_tier: string | null
+          color: string
+          created_at: string
+          criteria_metadata: Json | null
+          criteria_type: string
+          criteria_value: number | null
+          description: string
+          icon: string
+          id: string
+          name: string
+          order_index: number | null
+          updated_at: string
+        }
+        Insert: {
+          achievement_key: string
+          achievement_tier?: string | null
+          color: string
+          created_at?: string
+          criteria_metadata?: Json | null
+          criteria_type: string
+          criteria_value?: number | null
+          description: string
+          icon: string
+          id?: string
+          name: string
+          order_index?: number | null
+          updated_at?: string
+        }
+        Update: {
+          achievement_key?: string
+          achievement_tier?: string | null
+          color?: string
+          created_at?: string
+          criteria_metadata?: Json | null
+          criteria_type?: string
+          criteria_value?: number | null
+          description?: string
+          icon?: string
+          id?: string
+          name?: string
+          order_index?: number | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      toolkit_categories: {
+        Row: {
+          category_key: string
+          created_at: string
+          description: string
+          gradient: string
+          icon: string
+          id: string
+          is_active: boolean | null
+          name: string
+          order_index: number
+          updated_at: string
+        }
+        Insert: {
+          category_key: string
+          created_at?: string
+          description: string
+          gradient: string
+          icon: string
+          id?: string
+          is_active?: boolean | null
+          name: string
+          order_index?: number
+          updated_at?: string
+        }
+        Update: {
+          category_key?: string
+          created_at?: string
+          description?: string
+          gradient?: string
+          icon?: string
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          order_index?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      toolkit_items: {
+        Row: {
+          average_rating: number | null
+          category_id: string
+          created_at: string
+          description: string | null
+          download_count: number | null
+          download_url: string | null
+          file_size: number | null
+          file_type: string | null
+          id: string
+          is_active: boolean | null
+          is_featured: boolean | null
+          is_new: boolean | null
+          is_premium: boolean | null
+          metadata: Json | null
+          name: string
+          preview_url: string | null
+          rating_count: number | null
+          rating_sum: number | null
+          required_achievements: string[] | null
+          required_level: number | null
+          unlock_count: number | null
+          updated_at: string
+        }
+        Insert: {
+          average_rating?: number | null
+          category_id: string
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          download_url?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          is_new?: boolean | null
+          is_premium?: boolean | null
+          metadata?: Json | null
+          name: string
+          preview_url?: string | null
+          rating_count?: number | null
+          rating_sum?: number | null
+          required_achievements?: string[] | null
+          required_level?: number | null
+          unlock_count?: number | null
+          updated_at?: string
+        }
+        Update: {
+          average_rating?: number | null
+          category_id?: string
+          created_at?: string
+          description?: string | null
+          download_count?: number | null
+          download_url?: string | null
+          file_size?: number | null
+          file_type?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_featured?: boolean | null
+          is_new?: boolean | null
+          is_premium?: boolean | null
+          metadata?: Json | null
+          name?: string
+          preview_url?: string | null
+          rating_count?: number | null
+          rating_sum?: number | null
+          required_achievements?: string[] | null
+          required_level?: number | null
+          unlock_count?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "toolkit_items_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_categories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_interactions: {
         Row: {
           content: string
@@ -494,6 +684,91 @@ export type Database = {
           },
         ]
       }
+      user_toolkit_achievements: {
+        Row: {
+          achievement_id: string
+          current_value: number | null
+          id: string
+          is_unlocked: boolean | null
+          notification_shown: boolean | null
+          target_value: number | null
+          unlocked_at: string | null
+          user_id: string
+        }
+        Insert: {
+          achievement_id: string
+          current_value?: number | null
+          id?: string
+          is_unlocked?: boolean | null
+          notification_shown?: boolean | null
+          target_value?: number | null
+          unlocked_at?: string | null
+          user_id: string
+        }
+        Update: {
+          achievement_id?: string
+          current_value?: number | null
+          id?: string
+          is_unlocked?: boolean | null
+          notification_shown?: boolean | null
+          target_value?: number | null
+          unlocked_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_toolkit_achievements_achievement_id_fkey"
+            columns: ["achievement_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_achievements"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_toolkit_unlocks: {
+        Row: {
+          download_count: number | null
+          id: string
+          last_downloaded_at: string | null
+          rated_at: string | null
+          rating: number | null
+          toolkit_item_id: string
+          unlocked_at: string
+          user_id: string
+          user_notes: string | null
+        }
+        Insert: {
+          download_count?: number | null
+          id?: string
+          last_downloaded_at?: string | null
+          rated_at?: string | null
+          rating?: number | null
+          toolkit_item_id: string
+          unlocked_at?: string
+          user_id: string
+          user_notes?: string | null
+        }
+        Update: {
+          download_count?: number | null
+          id?: string
+          last_downloaded_at?: string | null
+          rated_at?: string | null
+          rating?: number | null
+          toolkit_item_id?: string
+          unlocked_at?: string
+          user_id?: string
+          user_notes?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_toolkit_unlocks_toolkit_item_id_fkey"
+            columns: ["toolkit_item_id"]
+            isOneToOne: false
+            referencedRelation: "toolkit_items"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -510,21 +785,25 @@ export type Database = {
   }
 }
 
-type DefaultSchema = Database[Extract<keyof Database, "public">]
+type DatabaseWithoutInternals = Omit<Database, "__InternalSupabase">
+
+type DefaultSchema = DatabaseWithoutInternals[Extract<keyof Database, "public">]
 
 export type Tables<
   DefaultSchemaTableNameOrOptions extends
     | keyof (DefaultSchema["Tables"] & DefaultSchema["Views"])
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-        Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
+    ? keyof (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+        DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
-      Database[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? (DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"] &
+      DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Views"])[TableName] extends {
       Row: infer R
     }
     ? R
@@ -542,14 +821,16 @@ export type Tables<
 export type TablesInsert<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Insert: infer I
     }
     ? I
@@ -565,14 +846,16 @@ export type TablesInsert<
 export type TablesUpdate<
   DefaultSchemaTableNameOrOptions extends
     | keyof DefaultSchema["Tables"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   TableName extends DefaultSchemaTableNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"]
     : never = never,
-> = DefaultSchemaTableNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+> = DefaultSchemaTableNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaTableNameOrOptions["schema"]]["Tables"][TableName] extends {
       Update: infer U
     }
     ? U
@@ -588,14 +871,16 @@ export type TablesUpdate<
 export type Enums<
   DefaultSchemaEnumNameOrOptions extends
     | keyof DefaultSchema["Enums"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   EnumName extends DefaultSchemaEnumNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"]
     : never = never,
-> = DefaultSchemaEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
+> = DefaultSchemaEnumNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[DefaultSchemaEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : DefaultSchemaEnumNameOrOptions extends keyof DefaultSchema["Enums"]
     ? DefaultSchema["Enums"][DefaultSchemaEnumNameOrOptions]
     : never
@@ -603,14 +888,16 @@ export type Enums<
 export type CompositeTypes<
   PublicCompositeTypeNameOrOptions extends
     | keyof DefaultSchema["CompositeTypes"]
-    | { schema: keyof Database },
+    | { schema: keyof DatabaseWithoutInternals },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
-    schema: keyof Database
+    schema: keyof DatabaseWithoutInternals
   }
-    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    ? keyof DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
     : never = never,
-> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+> = PublicCompositeTypeNameOrOptions extends {
+  schema: keyof DatabaseWithoutInternals
+}
+  ? DatabaseWithoutInternals[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
   : PublicCompositeTypeNameOrOptions extends keyof DefaultSchema["CompositeTypes"]
     ? DefaultSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
