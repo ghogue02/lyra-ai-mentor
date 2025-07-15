@@ -20,6 +20,8 @@ import AIPlaygroundPage from "./pages/AIPlaygroundPage";
 import JourneyShowcasePage from "./pages/JourneyShowcasePage";
 import SkillsDashboardPage from "./pages/SkillsDashboardPage";
 import Lesson from "./pages/Lesson";
+import LyraNarratedMayaDemo from "./pages/LyraNarratedMayaDemo";
+import Chapter2Hub from "./pages/Chapter2Hub";
 import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
 
 const queryClient = new QueryClient();
@@ -118,10 +120,26 @@ const App = () => {
                 } 
               />
               <Route 
+                path="/chapter/2" 
+                element={
+                  <ProtectedRoute>
+                    <Chapter2Hub />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
                 path="/chapter/:chapterId" 
                 element={
                   <ProtectedRoute>
                     <ChapterOverviewPage />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/lyra-maya-demo" 
+                element={
+                  <ProtectedRoute>
+                    <LyraNarratedMayaDemo />
                   </ProtectedRoute>
                 } 
               />

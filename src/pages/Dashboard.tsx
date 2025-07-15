@@ -135,9 +135,14 @@ export const Dashboard = () => {
         }
       }
 
-      // Navigate to the first lesson of the chapter
-      console.log(`Navigating to Chapter ${chapterId}, Lesson ${lessons[0].id}`);
-      navigate(`/chapter/${chapterId}/lesson/${lessons[0].id}`);
+      // Navigate to chapter overview (Chapter 2 has special hub)
+      if (chapterId === 2) {
+        console.log(`Navigating to Chapter 2 Hub`);
+        navigate(`/chapter/2`);
+      } else {
+        console.log(`Navigating to Chapter ${chapterId}, Lesson ${lessons[0].id}`);
+        navigate(`/chapter/${chapterId}/lesson/${lessons[0].id}`);
+      }
     } catch (error) {
       console.error('Error:', error);
       toast({
