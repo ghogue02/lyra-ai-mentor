@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
-import { AIEmailComposerRenderer } from '@/components/lesson/interactive/AIEmailComposerRenderer';
+import { MayaEmailComposer } from '@/components/interactive/MayaEmailComposer';
 
 /**
  * Enhanced Maya Component with Dynamic PACE Integration
@@ -107,41 +107,17 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
     }
   ];
 
-  // Configuration for the interactive email composer
-  const emailComposerElement = {
-    id: 1,
-    title: "Maya's Email Mastery Workshop",
-    content: "Help Maya craft professional emails using the PACE framework",
-    configuration: {
-      character: "Maya Rodriguez",
-      phases: [
-        {
-          title: "Context & Purpose",
-          description: "Describe the email situation Maya needs to address",
-          duration: "5 minutes"
-        },
-        {
-          title: "Audience Analysis", 
-          description: "Identify who Maya is writing to and what they need",
-          duration: "3 minutes"
-        },
-        {
-          title: "Execution",
-          description: "Review and refine Maya's AI-generated email",
-          duration: "7 minutes"
-        }
-      ],
-      timeSavings: {
-        before: "45 min",
-        after: "12 min",
-        metric: "73% time saved"
-      }
-    }
-  };
-
-  const handleEmailComposerComplete = async () => {
+  // Handle email composer completion
+  const handleEmailComposerComplete = () => {
     setIsElementCompleted(true);
     setCurrentStageIndex(2); // Move to completion stage
+  };
+
+  // Lesson context for the interactive component
+  const lessonContext = {
+    chapterTitle: "Maya's Communication Mastery",
+    lessonTitle: "PACE Framework Foundation",
+    content: "Learn the PACE framework through Maya's story: Purpose → Audience → Context → Execute"
   };
 
   const currentStage = stages[currentStageIndex];
@@ -252,10 +228,9 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Interactive Workshop</h3>
-              <AIEmailComposerRenderer
-                element={emailComposerElement}
-                isElementCompleted={isElementCompleted}
+              <MayaEmailComposer
                 onComplete={handleEmailComposerComplete}
+                lessonContext={lessonContext}
               />
             </div>
 
