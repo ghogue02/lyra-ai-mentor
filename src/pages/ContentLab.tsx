@@ -6,6 +6,7 @@ import { MayaAnalyzer } from "@/components/content-lab/MayaAnalyzer";
 import { CharacterGenerator } from "@/components/content-lab/CharacterGenerator";
 import { PrototypeStudio } from "@/components/content-lab/PrototypeStudio";
 import { ContentScaler } from "@/components/content-lab/ContentScaler";
+import { ApprovalWorkflow } from "@/components/content-lab/ApprovalWorkflow";
 import { Beaker, Brain, Users, Zap } from "lucide-react";
 
 const ContentLab = () => {
@@ -28,7 +29,7 @@ const ContentLab = () => {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-5 mb-6">
             <TabsTrigger value="maya-analyzer" className="flex items-center gap-2">
               <Brain className="h-4 w-4" />
               Maya Analyzer
@@ -44,6 +45,10 @@ const ContentLab = () => {
             <TabsTrigger value="content-scaler" className="flex items-center gap-2">
               <Zap className="h-4 w-4" />
               Content Scaler
+            </TabsTrigger>
+            <TabsTrigger value="approval-workflow" className="flex items-center gap-2">
+              <Beaker className="h-4 w-4" />
+              Approval Workflow
             </TabsTrigger>
           </TabsList>
 
@@ -111,6 +116,23 @@ const ContentLab = () => {
               </CardHeader>
               <CardContent>
                 <ContentScaler />
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="approval-workflow" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Beaker className="h-5 w-5" />
+                  Approval Workflow System
+                </CardTitle>
+                <CardDescription>
+                  Review, approve, and deploy AI-generated content to production
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <ApprovalWorkflow />
               </CardContent>
             </Card>
           </TabsContent>
