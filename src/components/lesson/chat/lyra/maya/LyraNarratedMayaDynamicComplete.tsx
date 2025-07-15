@@ -152,9 +152,9 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       {isMobile && (
         <button
           onClick={() => setIsMobilePanelOpen(!isMobilePanelOpen)}
-          className="fixed top-4 right-4 z-50 bg-white rounded-full p-2 shadow-lg"
+          className="fixed top-4 right-4 z-50 bg-purple-600 hover:bg-purple-700 text-white rounded-full p-3 shadow-lg transition-colors"
         >
-          {isMobilePanelOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          {isMobilePanelOpen ? <X className="w-6 h-6" /> : <Target className="w-6 h-6" />}
         </button>
       )}
 
@@ -191,10 +191,26 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
                   ))}
                 </div>
               </div>
+
+              {/* Mobile Call-to-Action */}
+              {isMobile && currentStageIndex === 1 && (
+                <div className="bg-gradient-to-r from-purple-100 to-pink-100 border border-purple-200 rounded-lg p-4">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <h4 className="font-medium text-purple-900">Ready to Practice?</h4>
+                      <p className="text-sm text-purple-700">Try Maya's interactive email composer</p>
+                    </div>
+                    <Button
+                      onClick={() => setIsMobilePanelOpen(true)}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
+                      Start Workshop
+                    </Button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
-
-          {/* Navigation */}
           <div className="bg-white/80 backdrop-blur-sm border-t border-purple-100 p-6">
             <div className="flex items-center justify-between max-w-3xl mx-auto">
               <Button
