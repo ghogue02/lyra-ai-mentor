@@ -1,0 +1,2069 @@
+import React, { useState, useEffect } from 'react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { 
+  Mail, Clock, Target, CheckCircle2, Copy, RefreshCw, 
+  Sparkles, Heart, AlertCircle, Users, FileText, ChevronRight,
+  ArrowRight, Eye, EyeOff, PlayCircle
+} from 'lucide-react';
+import { toast } from 'sonner';
+import { motion, AnimatePresence } from 'framer-motion';
+import { MayaConfidenceMeter } from '@/components/magical/MayaConfidenceMeter';
+import { StreamingTextArea } from '@/components/ui/StreamingTextArea';
+import { enhancedAIService } from '@/services/enhancedAIService';
+import { useComponentProgress } from '@/hooks/useComponentProgress';
+import { ProgressWidget } from '@/components/ProgressWidget';
+import { StoryIntegration } from '@/components/StoryIntegration';
+import { HelpTooltip } from '@/components/ui/HelpTooltip';
+import { ContextualHelp } from '@/components/ui/ContextualHelp';
+import { characterHelpContent } from '@/utils/helpContent';
+import { ExportButton } from '@/components/ui/ExportButton';
+import { UseInSuggestions } from '@/components/ui/UseInSuggestions';
+import { ExportData } from '@/services/exportService';
+import { useNavigate } from 'react-router-dom';
+import { GraduationCap } from 'lucide-react';
+import { AIComponentErrorBoundary } from '@/components/ai-playground/AIComponentErrorBoundary';
+import { ExampleSelector } from '@/components/ai-playground/ExampleSelector';
+import { AIExample } from '@/services/aiExamplesService';
+import { handleAIError, retryWithBackoff } from '@/services/aiErrorHandler';
+import { TutorialButton } from '@/components/tutorial/TutorialButton';
+import { useTutorialElement } from '@/hooks/useTutorial';
+// Maya Progress Components
+import { MayaHeaderProgress, useMayaProgress, type MayaJourneyState } from './maya';
+
+// Enhanced Animation Variants
+const stepVariants = {
+  hidden: { opacity: 0, x: 30, scale: 0.98 },
+  visible: { 
+    opacity: 1, 
+    x: 0, 
+    scale: 1,
+    transition: { duration: 0.4, ease: 'easeOut' }
+  },
+  exit: { 
+    opacity: 0, 
+    x: -30, 
+    scale: 0.98,
+    transition: { duration: 0.3, ease: 'easeIn' }
+  }
+};
+
+const optionVariants = {
+  hidden: { opacity: 0, y: 15, scale: 0.95 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: {
+      delay: i * 0.08,
+      duration: 0.35,
+      ease: 'easeOut'
+    }
+  }),
+  exit: { opacity: 0, y: -15, scale: 0.95 }
+};
+
+const selectionVariants = {
+  selected: {
+    scale: 1.02,
+    boxShadow: '0 8px 32px rgba(147, 51, 234, 0.25)',
+    borderColor: 'rgb(147, 51, 234)',
+    transition: { duration: 0.2 }
+  },
+  unselected: {
+    scale: 1,
+    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+    transition: { duration: 0.2 }
+  }
+};
+
+// Enhanced PACE Stepper Component
+const PACEStepper: React.FC<{
+  currentStep: number;
+  totalSteps: number;
+  stepLabels: string[];
+  completedSteps: boolean[];
+  onStepClick?: (step: number) => void;
+}> = ({ currentStep, totalSteps, stepLabels, completedSteps, onStepClick }) => {
+  return (
+    <div className="w-full max-w-4xl mx-auto mb-6">
+      <div className="flex items-center justify-between relative px-4">
+        {/* Animated Progress Line */}
+        <div className="absolute top-6 left-8 right-8 h-1 bg-gray-200 rounded-full -z-10">
+          <motion.div
+            className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full"
+            initial={{ width: '0%' }}
+            animate={{ width: `${Math.min((currentStep / (totalSteps - 1)) * 100, 100)}%` }}
+            transition={{ duration: 0.6, ease: 'easeInOut' }}
+          />
+        </div>
+        
+        {/* Step Circles with Enhanced Animation */}
+        {stepLabels.map((label, index) => (
+          <div key={index} className="flex flex-col items-center relative z-10">
+            <motion.div
+              className={`w-12 h-12 rounded-full flex items-center justify-center border-2 cursor-pointer transition-all duration-300 ${
+                index <= currentStep
+                  ? 'bg-gradient-to-r from-purple-500 to-cyan-500 border-purple-500 text-white shadow-lg'
+                  : 'bg-white border-gray-300 text-gray-400 hover:border-purple-300 hover:shadow-md'
+              }`}
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={() => onStepClick?.(index)}
+            >
+              <AnimatePresence mode="wait">
+                {completedSteps[index] ? (
+                  <motion.div
+                    key="check"
+                    initial={{ scale: 0, rotate: -180 }}
+                    animate={{ scale: 1, rotate: 0 }}
+                    exit={{ scale: 0, rotate: 180 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <CheckCircle2 className="w-6 h-6" />
+                  </motion.div>
+                ) : (
+                  <motion.span 
+                    key="number"
+                    className="text-sm font-semibold"
+                    initial={{ scale: 0 }}
+                    animate={{ scale: 1 }}
+                    exit={{ scale: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {index + 1}
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.div>
+            <motion.span
+              className={`text-xs font-medium mt-2 text-center transition-colors duration-300 ${
+                index <= currentStep ? 'text-purple-700' : 'text-gray-500'
+              }`}
+              initial={{ opacity: 0.7 }}
+              animate={{ 
+                opacity: index <= currentStep ? 1 : 0.7,
+                y: index === currentStep ? -2 : 0
+              }}
+              transition={{ delay: index * 0.05 }}
+            >
+              {label}
+            </motion.span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+// Progressive Disclosure Preview Component
+const StepPreview: React.FC<{
+  title: string;
+  description: string;
+  isVisible: boolean;
+  isLocked: boolean;
+  onUnlock?: () => void;
+}> = ({ title, description, isVisible, isLocked, onUnlock }) => {
+  if (!isVisible) return null;
+  
+  return (
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0, height: 0, y: -10 }}
+        animate={{ opacity: 1, height: 'auto', y: 0 }}
+        exit={{ opacity: 0, height: 0, y: -10 }}
+        transition={{ duration: 0.3 }}
+        className="mt-4 p-4 bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg border border-purple-200/50 overflow-hidden"
+      >
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <motion.div 
+              className={`w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 ${
+                isLocked ? 'bg-gray-300' : 'bg-gradient-to-r from-purple-500 to-cyan-500'
+              }`}
+              whileHover={{ scale: 1.05 }}
+            >
+              <motion.div
+                initial={{ rotate: 0 }}
+                animate={{ rotate: isLocked ? 0 : 360 }}
+                transition={{ duration: 0.3 }}
+              >
+                {isLocked ? (
+                  <EyeOff className="w-4 h-4 text-gray-600" />
+                ) : (
+                  <Eye className="w-4 h-4 text-white" />
+                )}
+              </motion.div>
+            </motion.div>
+            <div>
+              <h4 className="font-semibold text-gray-900">{title}</h4>
+              <p className="text-sm text-gray-600">{description}</p>
+            </div>
+          </div>
+          {isLocked && (
+            <motion.div
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={onUnlock}
+                className="border-purple-300 text-purple-700 hover:bg-purple-100 transition-colors duration-200"
+              >
+                <ArrowRight className="w-4 h-4 mr-1" />
+                Unlock
+              </Button>
+            </motion.div>
+          )}
+        </div>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
+// Content Adaptation Engine
+interface PurposeAudienceMatrix {
+  [key: string]: {
+    toneRecommendations: Array<{
+      toneId: string;
+      priority: 'primary' | 'secondary' | 'tertiary';
+      reasoning: string;
+    }>;
+    template: {
+      structure: string[];
+      keyElements: string[];
+      callToAction: string;
+    };
+    adaptiveHelp: {
+      title: string;
+      explanation: string;
+      bestPractices: string[];
+      commonMistakes: string[];
+    };
+  };
+}
+
+interface ToneAdaptation {
+  filteredTones: typeof toneOptions;
+  recommendedTone: string;
+  reasoning: string;
+  adaptiveHelp: string;
+}
+
+interface MayaEmailComposerProps {
+  onComplete?: (data: {
+    timeSpent: number;
+    recipesCreated: number;
+    transformationViewed: boolean;
+  }) => void;
+}
+
+type Phase = 'intro' | 'build' | 'preview' | 'success';
+type PaceStep = 'purpose' | 'audience' | 'content' | 'execution';
+
+interface EmailRecipe {
+  purpose: string;
+  purposeEmoji: string;
+  audience: string;
+  audienceEmoji: string;
+  tone: string;
+  toneEmoji: string;
+}
+
+interface PaceProgress {
+  currentStep: PaceStep;
+  completedSteps: PaceStep[];
+  isStepComplete: (step: PaceStep) => boolean;
+  canAdvanceToStep: (step: PaceStep) => boolean;
+}
+
+// PACE Step 1: Purpose Options (8 options as specified)
+const purposeOptions = [
+  { id: 'address-concern', label: 'Address Concern', emoji: '💬', description: 'Respond to worries or issues' },
+  { id: 'share-update', label: 'Share Update', emoji: '📢', description: 'Inform about progress or changes' },
+  { id: 'make-request', label: 'Make Request', emoji: '📝', description: 'Ask for something specific' },
+  { id: 'express-thanks', label: 'Express Thanks', emoji: '💌', description: 'Show appreciation and gratitude' },
+  { id: 'invite-action', label: 'Invite Action', emoji: '🎯', description: 'Call to participate or engage' },
+  { id: 'provide-info', label: 'Provide Information', emoji: '📋', description: 'Share important details' },
+  { id: 'build-relationship', label: 'Build Relationship', emoji: '🌱', description: 'Strengthen connections' },
+  { id: 'resolve-issue', label: 'Resolve Issue', emoji: '🔧', description: 'Fix a problem or conflict' }
+];
+
+// PACE Step 2: Audience Intelligence (Dynamic based on Purpose)
+const getFilteredAudienceOptions = (selectedPurpose: string) => {
+  const audienceMap: Record<string, string[]> = {
+    'address-concern': ['concerned-parent', 'program-family', 'crisis-contact', 'staff-team', 'volunteer'],
+    'share-update': ['potential-donor', 'major-donor', 'board-member', 'volunteer', 'staff-team', 'community-partner', 'foundation-contact'],
+    'make-request': ['board-member', 'major-donor', 'foundation-contact', 'community-partner', 'local-business', 'government-official'],
+    'express-thanks': ['volunteer', 'potential-donor', 'major-donor', 'community-partner', 'foundation-contact', 'program-family'],
+    'invite-action': ['volunteer', 'new-volunteer', 'community-partner', 'local-business', 'alumni', 'potential-donor'],
+    'provide-info': ['concerned-parent', 'program-family', 'staff-team', 'volunteer', 'board-member', 'foundation-contact'],
+    'build-relationship': ['community-partner', 'potential-donor', 'major-donor', 'local-business', 'school-partner', 'health-provider'],
+    'resolve-issue': ['concerned-parent', 'crisis-contact', 'staff-team', 'vendor-contractor', 'program-family']
+  };
+  
+  const relevantIds = audienceMap[selectedPurpose] || [];
+  return allRecipientOptions.filter(option => relevantIds.includes(option.id));
+};
+
+// PACE Step 3: Content Strategy (Adaptive tone based on Purpose + Audience)
+const getContentStrategies = (purpose: string, audience: string) => {
+  // Use the sophisticated tone adaptation logic from Agent 4
+  const toneAdaptation = getAdaptedTones(purpose, audience);
+  
+  // Convert filtered tones to the expected format for the UI, adding intelligence
+  return toneAdaptation.filteredTones.map(tone => ({
+    id: tone.id,
+    label: tone.label,
+    emoji: tone.emoji,
+    description: tone.description,
+    isRecommended: tone.label === toneAdaptation.recommendedTone,
+    reasoning: toneAdaptation.reasoning,
+    adaptiveHelp: toneAdaptation.adaptiveHelp
+  }));
+};
+
+// PACE Stepper Component
+const PaceStepper: React.FC<{ currentStep: PaceStep; completedSteps: PaceStep[] }> = ({ currentStep, completedSteps }) => {
+  const steps = [
+    { id: 'purpose', label: 'Purpose', icon: '🎯', description: 'Why are you writing?' },
+    { id: 'audience', label: 'Audience', icon: '👥', description: 'Who are you writing to?' },
+    { id: 'content', label: 'Content', icon: '✍️', description: 'How should you approach?' },
+    { id: 'execution', label: 'Execute', icon: '🚀', description: 'Generate your email' }
+  ];
+  
+  return (
+    <div className="pace-stepper-container mb-6">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-xl font-bold text-gray-900">PACE Email Framework</h2>
+        <Badge variant="outline" className="text-purple-700 border-purple-300">
+          {completedSteps.length}/4 Complete
+        </Badge>
+      </div>
+      
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-3">
+        {steps.map((step, index) => {
+          const isCompleted = completedSteps.includes(step.id as PaceStep);
+          const isCurrent = currentStep === step.id;
+          const isAccessible = index === 0 || completedSteps.includes(steps[index - 1].id as PaceStep);
+          
+          return (
+            <div
+              key={step.id}
+              className={`pace-step p-3 rounded-lg border-2 transition-all duration-300 ${
+                isCurrent ? 'border-purple-500 bg-purple-50 shadow-md' :
+                isCompleted ? 'border-green-500 bg-green-50' :
+                isAccessible ? 'border-gray-300 bg-gray-50' :
+                'border-gray-200 bg-gray-100 opacity-50'
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-1">
+                <span className="text-lg">{step.icon}</span>
+                <span className={`font-semibold ${
+                  isCurrent ? 'text-purple-900' :
+                  isCompleted ? 'text-green-900' :
+                  'text-gray-700'
+                }`}>
+                  {step.label}
+                </span>
+                {isCompleted && <CheckCircle2 className="w-4 h-4 text-green-600" />}
+              </div>
+              <p className="text-xs text-gray-600">{step.description}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// Expanded audience options with context-aware descriptions
+const allRecipientOptions = [
+  { id: 'concerned-parent', label: 'Concerned Parent', emoji: '👪', description: 'Worried about their child', baseDescription: 'Parent with concerns about their child' },
+  { id: 'potential-donor', label: 'Potential Donor', emoji: '💰', description: 'Considering initial support', baseDescription: 'Individual considering donation' },
+  { id: 'major-donor', label: 'Major Donor', emoji: '💝', description: 'Significant financial supporter', baseDescription: 'High-value financial supporter' },
+  { id: 'board-member', label: 'Board Member', emoji: '🏛️', description: 'Governance and oversight', baseDescription: 'Organization board member' },
+  { id: 'volunteer', label: 'Volunteer', emoji: '🙋‍♀️', description: 'Current active volunteer', baseDescription: 'Person offering time and skills' },
+  { id: 'new-volunteer', label: 'New Volunteer', emoji: '🌟', description: 'Recently joined volunteer', baseDescription: 'Recently joined volunteer' },
+  { id: 'staff-team', label: 'Staff Team', emoji: '👥', description: 'Internal team communication', baseDescription: 'Internal team members' },
+  { id: 'community-partner', label: 'Community Partner', emoji: '🤝', description: 'Collaborative organization', baseDescription: 'Partner organization' },
+  { id: 'program-family', label: 'Program Family', emoji: '🏠', description: 'Families receiving services', baseDescription: 'Family receiving services' },
+  { id: 'foundation-contact', label: 'Foundation Contact', emoji: '🏦', description: 'Grant funding organization', baseDescription: 'Foundation representative' },
+  { id: 'crisis-contact', label: 'Crisis Contact', emoji: '🆘', description: 'Emergency or urgent situation', baseDescription: 'Emergency contact person' },
+  { id: 'media-contact', label: 'Media Contact', emoji: '📰', description: 'Journalist or media representative', baseDescription: 'Media professional' },
+  { id: 'local-business', label: 'Local Business', emoji: '🏪', description: 'Community business owner', baseDescription: 'Local business owner' },
+  { id: 'alumni', label: 'Alumni', emoji: '🎓', description: 'Former program participant', baseDescription: 'Former program participant' },
+  { id: 'vendor-contractor', label: 'Vendor/Contractor', emoji: '🔧', description: 'Service provider or contractor', baseDescription: 'External service provider' },
+  { id: 'government-official', label: 'Government Official', emoji: '🏛️', description: 'Local government representative', baseDescription: 'Government representative' },
+  { id: 'school-partner', label: 'School Partner', emoji: '🏫', description: 'Educational institution contact', baseDescription: 'School representative' },
+  { id: 'health-provider', label: 'Health Provider', emoji: '🏥', description: 'Healthcare professional', baseDescription: 'Healthcare professional' },
+  { id: 'legal-advisor', label: 'Legal Advisor', emoji: '⚖️', description: 'Legal counsel or advisor', baseDescription: 'Legal professional' },
+  { id: 'consultant', label: 'Consultant', emoji: '💼', description: 'External consultant or advisor', baseDescription: 'External consultant' }
+];
+
+// Purpose-to-audience mapping logic
+const purposeToAudienceMapping = {
+  'address-concern': ['concerned-parent', 'crisis-contact', 'board-member', 'staff-team', 'program-family', 'vendor-contractor', 'legal-advisor'],
+  'share-update': ['board-member', 'major-donor', 'community-partner', 'foundation-contact', 'media-contact', 'volunteer', 'government-official'],
+  'make-request': ['major-donor', 'foundation-contact', 'board-member', 'community-partner', 'volunteer', 'potential-donor', 'local-business'],
+  'express-thanks': ['major-donor', 'volunteer', 'foundation-contact', 'community-partner', 'staff-team', 'new-volunteer', 'local-business'],
+  'invite-action': ['potential-donor', 'community-partner', 'volunteer', 'media-contact', 'program-family', 'local-business', 'alumni'],
+  'provide-info': ['board-member', 'staff-team', 'program-family', 'media-contact', 'community-partner', 'school-partner', 'health-provider'],
+  'build-relationship': ['potential-donor', 'community-partner', 'new-volunteer', 'alumni', 'local-business', 'school-partner', 'media-contact'],
+  'resolve-issue': ['concerned-parent', 'crisis-contact', 'staff-team', 'board-member', 'vendor-contractor', 'legal-advisor', 'consultant']
+};
+
+// Context-aware descriptions based on purpose
+const getContextualDescription = (recipientId: string, purposeId: string): string => {
+  const recipient = allRecipientOptions.find(r => r.id === recipientId);
+  if (!recipient) return '';
+  
+  const contextualDescriptions: Record<string, Record<string, string>> = {
+    'concerned-parent': {
+      'address-concern': 'Anxious parent needing reassurance',
+      'provide-info': 'Parent seeking program details',
+      'resolve-issue': 'Parent with specific complaint'
+    },
+    'major-donor': {
+      'share-update': 'Investor in program outcomes',
+      'make-request': 'Philanthropist considering gift',
+      'express-thanks': 'Generous supporter to acknowledge'
+    },
+    'potential-donor': {
+      'invite-action': 'Prospect ready to engage',
+      'build-relationship': 'New contact to cultivate',
+      'make-request': 'Qualified prospect for solicitation'
+    },
+    'volunteer': {
+      'invite-action': 'Volunteer ready for new project',
+      'express-thanks': 'Dedicated volunteer to appreciate',
+      'share-update': 'Volunteer invested in mission'
+    },
+    'foundation-contact': {
+      'make-request': 'Funder for grant proposal',
+      'share-update': 'Grantor requiring reporting',
+      'express-thanks': 'Foundation to acknowledge'
+    },
+    'media-contact': {
+      'share-update': 'Reporter covering your story',
+      'invite-action': 'Media for event coverage',
+      'provide-info': 'Journalist needing information'
+    },
+    'board-member': {
+      'address-concern': 'Board member with governance issue',
+      'share-update': 'Board member needing briefing',
+      'provide-info': 'Board member requiring details'
+    },
+    'crisis-contact': {
+      'address-concern': 'Emergency contact for urgent matter',
+      'resolve-issue': 'Crisis manager for immediate action'
+    },
+    'community-partner': {
+      'build-relationship': 'Partner for ongoing collaboration',
+      'invite-action': 'Partner for joint initiative',
+      'share-update': 'Partner invested in outcomes'
+    },
+    'staff-team': {
+      'address-concern': 'Team member with work issue',
+      'provide-info': 'Team needing operational details',
+      'resolve-issue': 'Team member for problem-solving'
+    }
+  };
+  
+  return contextualDescriptions[recipientId]?.[purposeId] || recipient.baseDescription;
+};
+
+// Dynamic filtering function
+const getFilteredRecipients = (selectedPurpose: string | undefined) => {
+  if (!selectedPurpose) {
+    return allRecipientOptions;
+  }
+  
+  const purposeKey = purposeOptions.find(p => p.label === selectedPurpose)?.id;
+  if (!purposeKey || !purposeToAudienceMapping[purposeKey as keyof typeof purposeToAudienceMapping]) {
+    return allRecipientOptions;
+  }
+  
+  const relevantRecipientIds = purposeToAudienceMapping[purposeKey as keyof typeof purposeToAudienceMapping];
+  return allRecipientOptions.filter(recipient => 
+    relevantRecipientIds.includes(recipient.id)
+  );
+};
+
+// Agent 4: Dynamic Tone Adaptation - Audience-to-tone mapping
+const audienceToToneMapping = {
+  'concerned-parent': ['warm', 'professional', 'urgent-calm'],
+  'potential-donor': ['professional', 'warm', 'encouraging'],
+  'major-donor': ['professional', 'grateful', 'encouraging'],
+  'board-member': ['professional', 'urgent-calm'],
+  'volunteer': ['warm', 'grateful', 'encouraging'],
+  'new-volunteer': ['warm', 'encouraging', 'professional'],
+  'staff-team': ['professional', 'urgent-calm', 'encouraging'],
+  'community-partner': ['professional', 'warm', 'encouraging'],
+  'program-family': ['warm', 'encouraging', 'professional'],
+  'foundation-contact': ['professional', 'grateful'],
+  'crisis-contact': ['urgent-calm', 'professional'],
+  'media-contact': ['professional', 'warm'],
+  'local-business': ['professional', 'grateful', 'encouraging'],
+  'alumni': ['warm', 'grateful', 'encouraging'],
+  'vendor-contractor': ['professional', 'urgent-calm'],
+  'government-official': ['professional', 'urgent-calm'],
+  'school-partner': ['professional', 'warm', 'encouraging'],
+  'health-provider': ['professional', 'warm'],
+  'legal-advisor': ['professional', 'urgent-calm'],
+  'consultant': ['professional', 'encouraging']
+};
+
+// Dynamic tone filtering based on purpose and audience
+const getAdaptedTones = (purpose: string | undefined, audience: string | undefined): ToneAdaptation => {
+  const allTones = toneOptions;
+  
+  if (!purpose || !audience) {
+    return {
+      filteredTones: allTones,
+      recommendedTone: '',
+      reasoning: 'Select both purpose and audience to see personalized tone recommendations.',
+      adaptiveHelp: 'Each combination of purpose and audience works best with specific tones.'
+    };
+  }
+
+  const audienceKey = allRecipientOptions.find(r => r.label === audience)?.id;
+  if (!audienceKey || !audienceToToneMapping[audienceKey as keyof typeof audienceToToneMapping]) {
+    return {
+      filteredTones: allTones,
+      recommendedTone: '',
+      reasoning: 'Using all available tones for this audience.',
+      adaptiveHelp: 'Consider your relationship and the formality level needed.'
+    };
+  }
+
+  const relevantToneIds = audienceToToneMapping[audienceKey as keyof typeof audienceToToneMapping];
+  const filteredTones = allTones.filter(tone => relevantToneIds.includes(tone.id));
+  
+  // Intelligent tone recommendation based on purpose + audience combination
+  const purposeKey = purposeOptions.find(p => p.label === purpose)?.id;
+  let recommendedTone = '';
+  let reasoning = '';
+  let adaptiveHelp = '';
+
+  // Smart recommendation logic
+  if (purposeKey === 'address-concern' && audienceKey === 'concerned-parent') {
+    recommendedTone = 'Warm & Understanding';
+    reasoning = 'Concerned parents need empathy first, professionalism second.';
+    adaptiveHelp = 'Start with acknowledgment of their feelings, then provide clear next steps.';
+  } else if (purposeKey === 'express-thanks' && audienceKey === 'major-donor') {
+    recommendedTone = 'Grateful & Appreciative';
+    reasoning = 'Major donors have invested significantly and deserve heartfelt recognition.';
+    adaptiveHelp = 'Be specific about impact and connect their gift to real outcomes.';
+  } else if (purposeKey === 'make-request' && audienceKey === 'board-member') {
+    recommendedTone = 'Professional & Respectful';
+    reasoning = 'Board members need clear, professional requests with supporting rationale.';
+    adaptiveHelp = 'Include background, specific ask, expected outcomes, and timeline.';
+  } else if (audienceKey === 'crisis-contact') {
+    recommendedTone = 'Urgent but Calm';
+    reasoning = 'Crisis situations require immediate attention while maintaining professionalism.';
+    adaptiveHelp = 'Lead with the situation, provide clear facts, and outline immediate next steps.';
+  } else if (filteredTones.length > 0) {
+    recommendedTone = filteredTones[0].label;
+    reasoning = `Based on your audience and purpose, ${filteredTones[0].label.toLowerCase()} tone typically works best.`;
+    adaptiveHelp = `Consider their expectations and your relationship when finalizing tone choice.`;
+  }
+
+  return {
+    filteredTones,
+    recommendedTone,
+    reasoning,
+    adaptiveHelp
+  };
+};
+
+// Removed duplicate purposeOptions declaration - using the one defined earlier
+
+// Content Adaptation Matrix - Purpose + Audience Intelligence
+const purposeAudienceMatrix: PurposeAudienceMatrix = {
+  // Address Concern combinations
+  'address-concern_concerned-parent': {
+    toneRecommendations: [
+      { toneId: 'warm', priority: 'primary', reasoning: 'Parents need empathy and understanding when worried about their children' },
+      { toneId: 'professional', priority: 'secondary', reasoning: 'Professional tone maintains credibility while addressing concerns' },
+      { toneId: 'urgent-calm', priority: 'tertiary', reasoning: 'Shows urgency without causing panic' }
+    ],
+    template: {
+      structure: ['Acknowledgment', 'Empathy', 'Explanation', 'Action Steps', 'Follow-up Commitment'],
+      keyElements: ['Thank them for bringing this up', 'Validate their concerns', 'Provide clear explanation', 'Outline specific actions', 'Commit to follow-up'],
+      callToAction: 'Schedule a meeting or phone call to discuss further'
+    },
+    adaptiveHelp: {
+      title: 'Addressing Parent Concerns',
+      explanation: 'Parents are naturally protective and need to feel heard and reassured about their child\'s wellbeing.',
+      bestPractices: ['Start with gratitude for their communication', 'Acknowledge their feelings are valid', 'Be specific about next steps', 'Offer multiple ways to stay in touch'],
+      commonMistakes: ['Being defensive', 'Minimizing their concerns', 'Using technical jargon', 'Delaying response']
+    }
+  },
+  'address-concern_major-donor': {
+    toneRecommendations: [
+      { toneId: 'professional', priority: 'primary', reasoning: 'Major donors expect professional, respectful communication' },
+      { toneId: 'grateful', priority: 'secondary', reasoning: 'Acknowledge their investment and partnership' },
+      { toneId: 'warm', priority: 'tertiary', reasoning: 'Personal warmth builds stronger relationships' }
+    ],
+    template: {
+      structure: ['Relationship Acknowledgment', 'Concern Validation', 'Transparent Explanation', 'Solution Presentation', 'Partnership Reinforcement'],
+      keyElements: ['Reference their partnership', 'Take concerns seriously', 'Provide transparent details', 'Present solutions', 'Strengthen relationship'],
+      callToAction: 'Invite them to a private meeting to discuss in detail'
+    },
+    adaptiveHelp: {
+      title: 'Addressing Donor Concerns',
+      explanation: 'Major donors are investors in your mission and deserve transparent, strategic communication.',
+      bestPractices: ['Reference their history of support', 'Be completely transparent', 'Focus on solutions', 'Reinforce shared values'],
+      commonMistakes: ['Being vague about issues', 'Not acknowledging their investment', 'Appearing defensive', 'Failing to show accountability']
+    }
+  },
+  'address-concern_board-member': {
+    toneRecommendations: [
+      { toneId: 'professional', priority: 'primary', reasoning: 'Board members need governance-level communication' },
+      { toneId: 'urgent-calm', priority: 'secondary', reasoning: 'Shows appropriate urgency for governance issues' },
+      { toneId: 'grateful', priority: 'tertiary', reasoning: 'Acknowledge their oversight role' }
+    ],
+    template: {
+      structure: ['Governance Context', 'Issue Analysis', 'Risk Assessment', 'Mitigation Strategy', 'Governance Next Steps'],
+      keyElements: ['Frame in governance terms', 'Analyze the issue systematically', 'Assess risks', 'Present mitigation plan', 'Define board role'],
+      callToAction: 'Schedule board discussion or committee review'
+    },
+    adaptiveHelp: {
+      title: 'Board Member Governance Communication',
+      explanation: 'Board members need strategic, governance-focused communication that helps them fulfill their oversight responsibilities.',
+      bestPractices: ['Frame issues in governance context', 'Include risk analysis', 'Present clear options', 'Define decision points'],
+      commonMistakes: ['Too much operational detail', 'Not framing governance implications', 'Failing to present options', 'Overwhelming with information']
+    }
+  },
+  'address-concern_volunteer': {
+    toneRecommendations: [
+      { toneId: 'warm', priority: 'primary', reasoning: 'Volunteers give their time freely and deserve appreciation' },
+      { toneId: 'encouraging', priority: 'secondary', reasoning: 'Maintain their enthusiasm and commitment' },
+      { toneId: 'grateful', priority: 'tertiary', reasoning: 'Acknowledge their valuable contribution' }
+    ],
+    template: {
+      structure: ['Appreciation', 'Concern Validation', 'Explanation', 'Solution', 'Continued Partnership'],
+      keyElements: ['Thank them for their service', 'Validate their concerns', 'Explain the situation', 'Share solutions', 'Invite continued involvement'],
+      callToAction: 'Invite them to share more feedback or join solution planning'
+    },
+    adaptiveHelp: {
+      title: 'Volunteer Concern Resolution',
+      explanation: 'Volunteers are passionate about your mission and their concerns often come from a place of caring.',
+      bestPractices: ['Lead with appreciation', 'Validate their passion', 'Include them in solutions', 'Keep them engaged'],
+      commonMistakes: ['Dismissing their concerns', 'Being too formal', 'Not acknowledging their contribution', 'Excluding them from solutions']
+    }
+  },
+  // Make Request combinations
+  'make-request_major-donor': {
+    toneRecommendations: [
+      { toneId: 'professional', priority: 'primary', reasoning: 'Major gift requests require professional, strategic presentation' },
+      { toneId: 'grateful', priority: 'secondary', reasoning: 'Acknowledge their previous support and partnership' },
+      { toneId: 'warm', priority: 'tertiary', reasoning: 'Personal connection enhances the relationship' }
+    ],
+    template: {
+      structure: ['Relationship Context', 'Impact Story', 'Specific Need', 'Investment Opportunity', 'Next Steps'],
+      keyElements: ['Reference their support history', 'Share compelling impact story', 'Present specific need', 'Frame as investment', 'Provide clear next steps'],
+      callToAction: 'Schedule a meeting to discuss their potential involvement'
+    },
+    adaptiveHelp: {
+      title: 'Major Gift Request Strategy',
+      explanation: 'Major gift requests should position the donor as a strategic partner in creating impact.',
+      bestPractices: ['Reference their giving history', 'Lead with impact story', 'Be specific about the ask', 'Show return on investment'],
+      commonMistakes: ['Generic ask without personalization', 'Focusing on organizational need vs impact', 'Vague request amounts', 'No clear next steps']
+    }
+  },
+  'make-request_board-member': {
+    toneRecommendations: [
+      { toneId: 'professional', priority: 'primary', reasoning: 'Board requests require governance-appropriate communication' },
+      { toneId: 'urgent-calm', priority: 'secondary', reasoning: 'Shows appropriate priority for board attention' },
+      { toneId: 'grateful', priority: 'tertiary', reasoning: 'Acknowledge their leadership role' }
+    ],
+    template: {
+      structure: ['Board Context', 'Strategic Rationale', 'Resource Request', 'Expected Outcomes', 'Board Action Needed'],
+      keyElements: ['Frame in board oversight context', 'Provide strategic justification', 'Specify resource needs', 'Define success metrics', 'Clarify board role'],
+      callToAction: 'Request board discussion or formal approval'
+    },
+    adaptiveHelp: {
+      title: 'Board Resource Requests',
+      explanation: 'Board members need strategic context and governance implications when considering resource requests.',
+      bestPractices: ['Provide strategic rationale', 'Include budget implications', 'Define success metrics', 'Clarify approval process'],
+      commonMistakes: ['Operational details without strategy', 'No cost-benefit analysis', 'Unclear approval pathway', 'Missing risk assessment']
+    }
+  },
+  'make-request_volunteer': {
+    toneRecommendations: [
+      { toneId: 'warm', priority: 'primary', reasoning: 'Volunteers respond to personal, warm requests' },
+      { toneId: 'encouraging', priority: 'secondary', reasoning: 'Inspire them about the opportunity' },
+      { toneId: 'grateful', priority: 'tertiary', reasoning: 'Acknowledge their existing contribution' }
+    ],
+    template: {
+      structure: ['Appreciation', 'Opportunity Presentation', 'Impact Connection', 'Specific Ask', 'Flexible Participation'],
+      keyElements: ['Thank them for current service', 'Present exciting opportunity', 'Connect to mission impact', 'Make specific ask', 'Offer flexible options'],
+      callToAction: 'Invite them to learn more or commit to specific role'
+    },
+    adaptiveHelp: {
+      title: 'Volunteer Opportunity Requests',
+      explanation: 'Volunteers are motivated by mission connection and personal fulfillment.',
+      bestPractices: ['Connect to mission impact', 'Offer flexible options', 'Highlight personal growth', 'Make it easy to say yes'],
+      commonMistakes: ['Demanding without appreciation', 'Rigid requirements', 'No mission connection', 'Overwhelming commitment']
+    }
+  },
+  // Express Thanks combinations
+  'express-thanks_volunteer': {
+    toneRecommendations: [
+      { toneId: 'warm', priority: 'primary', reasoning: 'Volunteers deserve heartfelt, personal appreciation' },
+      { toneId: 'grateful', priority: 'secondary', reasoning: 'Deep gratitude for their service' },
+      { toneId: 'encouraging', priority: 'tertiary', reasoning: 'Celebrate their contribution and impact' }
+    ],
+    template: {
+      structure: ['Personal Recognition', 'Specific Impact', 'Gratitude Expression', 'Community Value', 'Future Invitation'],
+      keyElements: ['Name their specific contribution', 'Quantify their impact', 'Express genuine gratitude', 'Show their value to community', 'Invite continued involvement'],
+      callToAction: 'Invite them to celebration event or continued partnership'
+    },
+    adaptiveHelp: {
+      title: 'Volunteer Appreciation',
+      explanation: 'Volunteers give freely of their time and deserve specific, heartfelt recognition.',
+      bestPractices: ['Be specific about their contribution', 'Quantify impact when possible', 'Make it personal', 'Share community benefit'],
+      commonMistakes: ['Generic thank you', 'No specific examples', 'Focusing on organization vs impact', 'Forgetting personal touch']
+    }
+  },
+  'express-thanks_major-donor': {
+    toneRecommendations: [
+      { toneId: 'grateful', priority: 'primary', reasoning: 'Major donors deserve profound gratitude for their investment' },
+      { toneId: 'professional', priority: 'secondary', reasoning: 'Maintain professional relationship standards' },
+      { toneId: 'warm', priority: 'tertiary', reasoning: 'Personal warmth strengthens partnership' }
+    ],
+    template: {
+      structure: ['Partnership Acknowledgment', 'Impact Documentation', 'Gratitude Expression', 'Community Benefit', 'Relationship Strengthening'],
+      keyElements: ['Acknowledge their partnership', 'Document specific impact', 'Express deep gratitude', 'Show community transformation', 'Strengthen relationship'],
+      callToAction: 'Invite them to see impact firsthand or continue partnership'
+    },
+    adaptiveHelp: {
+      title: 'Major Donor Stewardship',
+      explanation: 'Major donors are partners in your mission and deserve detailed impact reporting and genuine gratitude.',
+      bestPractices: ['Include impact metrics', 'Show long-term community benefit', 'Make it personal', 'Invite deeper engagement'],
+      commonMistakes: ['Generic acknowledgment', 'No impact measurement', 'Transactional tone', 'Missing personal connection']
+    }
+  },
+  // Build Relationship combinations
+  'build-relationship_program-participant': {
+    toneRecommendations: [
+      { toneId: 'warm', priority: 'primary', reasoning: 'Families need to feel welcomed and supported' },
+      { toneId: 'encouraging', priority: 'secondary', reasoning: 'Build confidence in their participation' },
+      { toneId: 'professional', priority: 'tertiary', reasoning: 'Maintain professional boundaries while being warm' }
+    ],
+    template: {
+      structure: ['Welcome', 'Program Value', 'Support Availability', 'Community Connection', 'Open Communication'],
+      keyElements: ['Welcome them warmly', 'Explain program benefits', 'Offer support resources', 'Connect to community', 'Encourage communication'],
+      callToAction: 'Invite them to upcoming event or program activity'
+    },
+    adaptiveHelp: {
+      title: 'Program Family Relationship Building',
+      explanation: 'Program families need to feel welcomed, supported, and valued as community members.',
+      bestPractices: ['Use welcoming language', 'Explain available support', 'Connect to other families', 'Encourage questions'],
+      commonMistakes: ['Too formal tone', 'Overwhelming with information', 'Not offering support', 'Creating barriers to communication']
+    }
+  },
+  'build-relationship_community-partner': {
+    toneRecommendations: [
+      { toneId: 'professional', priority: 'primary', reasoning: 'Partners expect professional, collaborative communication' },
+      { toneId: 'warm', priority: 'secondary', reasoning: 'Build genuine partnership connection' },
+      { toneId: 'encouraging', priority: 'tertiary', reasoning: 'Inspire collaborative opportunities' }
+    ],
+    template: {
+      structure: ['Partnership Vision', 'Mutual Benefits', 'Collaboration Opportunities', 'Resource Sharing', 'Next Steps'],
+      keyElements: ['Paint partnership vision', 'Identify mutual benefits', 'Explore collaboration', 'Discuss resource sharing', 'Define next steps'],
+      callToAction: 'Schedule partnership planning meeting'
+    },
+    adaptiveHelp: {
+      title: 'Community Partnership Development',
+      explanation: 'Community partners want to understand mutual benefits and collaboration opportunities.',
+      bestPractices: ['Focus on mutual benefits', 'Explore win-win opportunities', 'Be specific about collaboration', 'Respect their expertise'],
+      commonMistakes: ['One-sided benefits', 'Vague collaboration ideas', 'Not respecting their priorities', 'Rushing the relationship']
+    }
+  },
+  // Resolve Issue combinations
+  'resolve-issue_staff-team': {
+    toneRecommendations: [
+      { toneId: 'professional', priority: 'primary', reasoning: 'Staff need clear, professional problem-solving communication' },
+      { toneId: 'urgent-calm', priority: 'secondary', reasoning: 'Shows appropriate urgency without panic' },
+      { toneId: 'encouraging', priority: 'tertiary', reasoning: 'Maintain team morale during problem resolution' }
+    ],
+    template: {
+      structure: ['Issue Identification', 'Impact Assessment', 'Solution Strategy', 'Implementation Plan', 'Support Resources'],
+      keyElements: ['Clearly identify issue', 'Assess impact', 'Present solution strategy', 'Outline implementation', 'Provide support resources'],
+      callToAction: 'Schedule team meeting to discuss implementation'
+    },
+    adaptiveHelp: {
+      title: 'Staff Issue Resolution',
+      explanation: 'Staff need clear, actionable communication that helps them understand and address problems effectively.',
+      bestPractices: ['Be clear about the issue', 'Provide solution path', 'Offer support resources', 'Maintain team unity'],
+      commonMistakes: ['Vague problem description', 'No clear solution path', 'Blame culture', 'Insufficient support']
+    }
+  },
+  'resolve-issue_crisis-contact': {
+    toneRecommendations: [
+      { toneId: 'urgent-calm', priority: 'primary', reasoning: 'Crisis situations require calm urgency' },
+      { toneId: 'professional', priority: 'secondary', reasoning: 'Maintain professional standards in crisis' },
+      { toneId: 'warm', priority: 'tertiary', reasoning: 'Provide human connection during crisis' }
+    ],
+    template: {
+      structure: ['Crisis Acknowledgment', 'Immediate Actions', 'Support Resources', 'Communication Plan', 'Follow-up Commitment'],
+      keyElements: ['Acknowledge crisis seriously', 'Outline immediate actions', 'Provide support resources', 'Establish communication plan', 'Commit to follow-up'],
+      callToAction: 'Provide emergency contact information and next steps'
+    },
+    adaptiveHelp: {
+      title: 'Crisis Communication',
+      explanation: 'Crisis situations require calm, professional response that provides clarity and support.',
+      bestPractices: ['Stay calm and professional', 'Provide clear next steps', 'Offer immediate support', 'Maintain regular communication'],
+      commonMistakes: ['Panic or emotional response', 'Vague next steps', 'Insufficient support', 'Poor communication rhythm']
+    }
+  }
+};
+
+export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({ onComplete }) => {
+  const navigate = useNavigate();
+  const [phase, setPhase] = useState<Phase>('intro');
+  const [recipe, setRecipe] = useState<Partial<EmailRecipe>>({});
+  const [generatedEmail, setGeneratedEmail] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [startTime] = useState(Date.now());
+  const [recipesCreated, setRecipesCreated] = useState(0);
+  const [currentLayer, setCurrentLayer] = useState(1);
+  const [showContextualHelp, setShowContextualHelp] = useState(true);
+  const [additionalContext, setAdditionalContext] = useState('');
+  const [keyPoints, setKeyPoints] = useState<string[]>([]);
+  const [usageCount, setUsageCount] = useState(() => {
+    const stored = localStorage.getItem('maya-email-composer-usage');
+    return stored ? parseInt(stored, 10) : 0;
+  });
+  
+  // Voice and transcript state for enhanced interaction
+  const [userResponse, setUserResponse] = useState('');
+  const [currentTranscript, setCurrentTranscript] = useState('');
+  
+  // Enhanced Animation & UX State
+  const [showPreview, setShowPreview] = useState(false);
+  const [hoveredOption, setHoveredOption] = useState<string | null>(null);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [animationKey, setAnimationKey] = useState(0);
+  
+  // PACE Step Management
+  const [currentPaceStep, setCurrentPaceStep] = useState<PaceStep>('purpose');
+  const [completedPaceSteps, setCompletedPaceSteps] = useState<PaceStep[]>([]);
+  const [filteredAudiences, setFilteredAudiences] = useState<typeof allRecipientOptions>([]);
+  const [availableContentStrategies, setAvailableContentStrategies] = useState<ReturnType<typeof getContentStrategies>>([]);
+  
+  // PACE Steps Configuration for Stepper
+  const paceStepLabels = ['Purpose', 'Audience', 'Content', 'Execute'];
+  const stepCompletionStatus = [
+    completedPaceSteps.includes('purpose'),
+    completedPaceSteps.includes('audience'), 
+    completedPaceSteps.includes('content'),
+    completedPaceSteps.includes('execution')
+  ];
+  
+  // Get current step index for stepper
+  const getCurrentStepIndex = () => {
+    const stepOrder: PaceStep[] = ['purpose', 'audience', 'content', 'execution'];
+    return stepOrder.indexOf(currentPaceStep);
+  };
+  
+  // Enhanced layer transition with animation
+  const transitionToStep = (newStep: PaceStep, delay = 0) => {
+    setIsTransitioning(true);
+    setTimeout(() => {
+      setCurrentPaceStep(newStep);
+      setCurrentLayer(getCurrentStepIndex() + 1);
+      setIsTransitioning(false);
+      setAnimationKey(prev => prev + 1);
+      setShowPreview(true);
+    }, delay);
+  };
+  
+  // Content Adaptation Engine State
+  const [contentAdaptation, setContentAdaptation] = useState<ToneAdaptation | null>(null);
+  const [smartRecommendations, setSmartRecommendations] = useState(getSmartRecommendations('', ''));
+  const [contextualTemplate, setContextualTemplate] = useState(getContextualTemplate('', ''));
+  
+  // PACE Progress Helper Functions
+  const paceProgress: PaceProgress = {
+    currentStep: currentPaceStep,
+    completedSteps: completedPaceSteps,
+    isStepComplete: (step: PaceStep) => completedPaceSteps.includes(step),
+    canAdvanceToStep: (step: PaceStep) => {
+      const stepOrder: PaceStep[] = ['purpose', 'audience', 'content', 'execution'];
+      const currentIndex = stepOrder.indexOf(step);
+      if (currentIndex === 0) return true;
+      return completedPaceSteps.includes(stepOrder[currentIndex - 1]);
+    }
+  };
+  
+  // Gamification integration
+  const { isCompleted, timeSpent, trackInteraction, markAsComplete } = useComponentProgress({
+    componentId: 'MayaEmailComposer',
+    autoStart: true,
+    completionThreshold: 80
+  });
+
+  // PACE Step Handlers
+  const handlePurposeSelect = (purpose: typeof purposeOptions[0]) => {
+    if (phase !== 'build') return;
+    
+    setRecipe({ ...recipe, purpose: purpose.label, purposeEmoji: purpose.emoji });
+    
+    // Mark purpose step as complete and advance to audience
+    if (!completedPaceSteps.includes('purpose')) {
+      setCompletedPaceSteps([...completedPaceSteps, 'purpose']);
+    }
+    setCurrentPaceStep('audience');
+    
+    // Update filtered audiences based on purpose
+    const filtered = getFilteredAudienceOptions(purpose.id);
+    setFilteredAudiences(filtered);
+    
+    trackInteraction(25); // 25% progress for purpose selection
+  };
+  
+  const handleAudienceSelect = (audience: typeof allRecipientOptions[0]) => {
+    if (phase !== 'build' || !paceProgress.canAdvanceToStep('audience')) return;
+    
+    setRecipe({ ...recipe, audience: audience.label, audienceEmoji: audience.emoji });
+    
+    // Mark audience step as complete and advance to content
+    if (!completedPaceSteps.includes('audience')) {
+      setCompletedPaceSteps([...completedPaceSteps, 'audience']);
+    }
+    setCurrentPaceStep('content');
+    
+    // Update available content strategies based on purpose + audience using Content Adaptation Engine
+    const purposeId = purposeOptions.find(p => p.label === recipe.purpose)?.id;
+    if (purposeId) {
+      const adaptation = getContentAdaptation(purposeId, audience.id);
+      setContentAdaptation(adaptation);
+      setSmartRecommendations(getSmartRecommendations(purposeId, audience.id));
+      setContextualTemplate(getContextualTemplate(purposeId, audience.id));
+      
+      // Use adaptive tone filtering for content strategies
+      setAvailableContentStrategies(adaptation.filteredTones);
+    } else {
+      // Fallback to existing system
+      const strategies = getContentStrategies(recipe.purpose!, audience.id);
+      setAvailableContentStrategies(strategies);
+    }
+    
+    trackInteraction(25); // 25% progress for audience selection
+  };
+  
+  const handleContentStrategySelect = (strategy: ReturnType<typeof getContentStrategies>[0]) => {
+    if (phase !== 'build' || !paceProgress.canAdvanceToStep('content')) return;
+    
+    setRecipe({ ...recipe, tone: strategy.label, toneEmoji: strategy.emoji });
+    
+    // Mark content step as complete and advance to execution
+    if (!completedPaceSteps.includes('content')) {
+      setCompletedPaceSteps([...completedPaceSteps, 'content']);
+    }
+    setCurrentPaceStep('execution');
+    
+    trackInteraction(25); // 25% progress for content strategy selection
+  };
+  
+  // Enhanced Legacy handlers with animations
+  const handleToneSelect = (tone: typeof availableContentStrategies[0]) => {
+    // Validate we're in the correct phase
+    if (phase !== 'build') {
+      console.warn('Cannot select tone outside of build phase');
+      return;
+    }
+    
+    setRecipe({ ...recipe, tone: tone.label, toneEmoji: tone.emoji });
+    
+    // Mark content step as completed
+    const newCompletedSteps = [...completedPaceSteps];
+    if (!newCompletedSteps.includes('content')) {
+      newCompletedSteps.push('content');
+      setCompletedPaceSteps(newCompletedSteps);
+    }
+    
+    setCurrentLayer(4); // Move to execution
+    trackInteraction(25);
+    
+    // Enhanced success feedback with animation
+    toast.success('Perfect content strategy! 🎯', {
+      className: 'animate-bounce',
+      duration: 2000
+    });
+  };
+
+  const handleRecipientSelect = (recipient: typeof allRecipientOptions[0]) => {
+    // Validate we're in the correct phase
+    if (phase !== 'build') {
+      console.warn('Cannot select recipient outside of build phase');
+      return;
+    }
+    if (!recipe.purpose) {
+      toast.error('Please select a purpose first');
+      return;
+    }
+    
+    setRecipe({ ...recipe, audience: recipient.label, audienceEmoji: recipient.emoji });
+    
+    // Mark audience step as completed
+    const newCompletedSteps = [...completedPaceSteps];
+    if (!newCompletedSteps.includes('audience')) {
+      newCompletedSteps.push('audience');
+      setCompletedPaceSteps(newCompletedSteps);
+    }
+    
+    // Update available content strategies
+    setAvailableContentStrategies(getContentStrategies(recipe.purpose!, recipient.label));
+    setCurrentLayer(3); // Move to content selection
+    
+    trackInteraction(25);
+    
+    // Enhanced success feedback
+    toast.success('Audience locked in! 🎯', {
+      className: 'animate-bounce',
+      duration: 2000
+    });
+  };
+
+  // Removed duplicate handlePurposeSelect - using PACE version above
+
+  const handleExampleSelect = (example: AIExample) => {
+    const data = example.data;
+    
+    // Map example data to recipe
+    if (data.tone) {
+      const toneOption = toneOptions.find(t => t.id === data.tone || t.label.toLowerCase().includes(data.tone.toLowerCase()));
+      if (toneOption) {
+        setRecipe(prev => ({ ...prev, tone: toneOption.label, toneEmoji: toneOption.emoji }));
+        setCurrentLayer(2);
+      }
+    }
+    
+    if (data.recipient) {
+      const recipientOption = allRecipientOptions.find(r => 
+        r.id === data.recipient || 
+        r.label.toLowerCase().includes(data.recipient.toLowerCase()) ||
+        r.description.toLowerCase().includes(data.recipient.toLowerCase())
+      );
+      if (recipientOption) {
+        setRecipe(prev => ({ ...prev, recipient: recipientOption.label, recipientEmoji: recipientOption.emoji }));
+        setCurrentLayer(3);
+      }
+    }
+    
+    if (data.purpose) {
+      const purposeOption = purposeOptions.find(p => 
+        p.id === data.purpose || 
+        p.label.toLowerCase().includes(data.purpose.toLowerCase())
+      );
+      if (purposeOption) {
+        setRecipe(prev => ({ ...prev, purpose: purposeOption.label, purposeEmoji: purposeOption.emoji }));
+      }
+    }
+    
+    // Set additional context and key points if provided
+    if (data.context) {
+      setAdditionalContext(data.context);
+    }
+    
+    if (data.keyPoints) {
+      setKeyPoints(data.keyPoints);
+    }
+    
+    // Start in build phase if not already there
+    if (phase === 'intro') {
+      setPhase('build');
+    }
+    
+    toast.success('Example loaded! Customize as needed.');
+    trackInteraction(40); // Bonus progress for using examples
+  };
+
+  // PACE-based progress calculation
+  const paceRecipeProgress = completedPaceSteps.length / 4;
+  const isRecipeComplete = recipe.purpose && recipe.audience && recipe.tone;
+  const recipeProgress = paceRecipeProgress; // For backward compatibility
+  
+  // Clear transcript and voice responses
+  const clearTranscript = () => {
+    setUserResponse('');
+    setCurrentTranscript('');
+  };
+
+  const generateEmail = async () => {
+    if (!isRecipeComplete) {
+      toast.error('Please complete all recipe ingredients before generating');
+      return;
+    }
+    
+    // Ensure we're in the build phase
+    if (phase !== 'build') {
+      console.warn('Cannot generate email outside of build phase');
+      return;
+    }
+    
+    setIsGenerating(true);
+    
+    // Track usage
+    const newCount = usageCount + 1;
+    setUsageCount(newCount);
+    localStorage.setItem('maya-email-composer-usage', newCount.toString());
+    localStorage.setItem('maya-last-used', new Date().toISOString());
+    
+    try {
+      // Use retry logic for AI service calls
+      const email = await retryWithBackoff(async () => {
+        // Use contextual template from Content Adaptation Engine
+        const template = contextualTemplate;
+        const enhancedContext = `${additionalContext || 'after-school program communication'}\n\nEmail Structure: ${template.structure.join(' -> ')}\nKey Elements: ${template.keyElements.join(', ')}\nCall to Action: ${template.callToAction}`;
+        
+        return await enhancedAIService.generateEmail({
+          tone: recipe.tone!,
+          recipient: recipe.audience || recipe.recipient!,
+          purpose: recipe.purpose!,
+          context: enhancedContext,
+          keyPoints: keyPoints.length > 0 ? keyPoints : undefined
+        });
+      });
+      
+      setGeneratedEmail(email);
+      setRecipesCreated(prev => prev + 1);
+      setPhase('preview');
+      trackInteraction(20); // Final 20% for generating email
+    } catch (error) {
+      const aiError = handleAIError(error);
+      console.error('Email generation failed:', aiError);
+      toast.error(aiError.userMessage);
+      
+      // Fallback to mock content
+      const fallbackEmail = `Dear ${recipe.recipient},
+
+I hope this message finds you well. Thank you for reaching out about your concerns regarding our programs.
+
+I completely understand your situation and want to address your needs effectively. Here's what we're doing to help:
+
+• Implementing immediate improvements to address your concerns
+• Scheduling follow-up meetings to ensure continued communication
+• Creating clear processes for future interactions
+• Providing ongoing support and resources
+
+Please don't hesitate to reach out if you have any other questions or concerns. We truly value your involvement and feedback.
+
+Best regards,
+Maya Rodriguez
+Program Director`;
+      
+      setGeneratedEmail(fallbackEmail);
+      setRecipesCreated(prev => prev + 1);
+      setPhase('preview');
+      trackInteraction(20); // Final 20% for generating email
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(generatedEmail);
+    toast.success('Email copied to clipboard!');
+  };
+
+  const handleTryAgain = () => {
+    // Reset PACE state
+    setCurrentPaceStep('purpose');
+    setCompletedPaceSteps([]);
+    setFilteredAudiences([]);
+    setAvailableContentStrategies([]);
+    
+    // Reset Content Adaptation Engine state
+    setContentAdaptation(null);
+    setSmartRecommendations(getSmartRecommendations('', ''));
+    setContextualTemplate(getContextualTemplate('', ''));
+    
+    // Reset all state to ensure clean restart
+    setRecipe({});
+    setCurrentLayer(1);
+    setPhase('build');
+    setGeneratedEmail('');
+    setAdditionalContext('');
+    setKeyPoints([]);
+    // Clear any interim transcripts or other temporary state
+    clearTranscript?.();
+  };
+
+  const handleViewTransformation = () => {
+    // Validate we're in preview phase before transitioning to success
+    if (phase !== 'preview') {
+      console.warn('Cannot view transformation from current phase:', phase);
+      return;
+    }
+    
+    setPhase('success');
+    // Mark component as complete when viewing transformation
+    if (!isCompleted) {
+      markAsComplete(100);
+    }
+    onComplete?.({
+      timeSpent: Math.floor((Date.now() - startTime) / 1000),
+      recipesCreated,
+      transformationViewed: true
+    });
+  };
+
+  return (
+    <AIComponentErrorBoundary componentName="MayaEmailComposer">
+      <div role="region" aria-label="Email composition tool" className="maya-component-wrapper">
+        {/* Progress Header - Sticky and responsive */}
+        <div className="maya-progress-header">
+          <ProgressWidget
+            componentId="MayaEmailComposer"
+            isCompleted={isCompleted}
+            timeSpent={timeSpent}
+            characterName="Maya"
+            characterColor="purple"
+            className="maya-progress-widget"
+          />
+          
+          {/* Skills Counter - Only show on desktop */}
+          <div className="hidden lg:flex items-center gap-3">
+            <span className="maya-skills-counter">
+              Skills: {completedPaceSteps.length}/4
+            </span>
+            <div className="maya-progress-dots">
+              {[1, 2, 3, 4].map((dot) => (
+                <div
+                  key={dot}
+                  className={`maya-progress-dot ${
+                    completedPaceSteps.length >= dot ? 'active' : 'inactive'
+                  }`}
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        {/* Enhanced PACE Stepper - Show during build phase */}
+        {phase === 'build' && (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="mb-6"
+          >
+            <PACEStepper
+              currentStep={getCurrentStepIndex()}
+              totalSteps={4}
+              stepLabels={paceStepLabels}
+              completedSteps={stepCompletionStatus}
+              onStepClick={(step) => {
+                // Allow navigation to completed steps or current step
+                const stepOrder: PaceStep[] = ['purpose', 'audience', 'content', 'execution'];
+                const targetStep = stepOrder[step];
+                if (step <= getCurrentStepIndex() || stepCompletionStatus[step]) {
+                  setCurrentPaceStep(targetStep);
+                  setCurrentLayer(step + 1);
+                }
+              }}
+            />
+          </motion.div>
+        )}
+        
+        <div className="maya-component-content">
+      
+      {/* Story Context - Only show initially */}
+      {phase === 'intro' && (
+        <StoryIntegration 
+          characterId="maya" 
+          variant="compact" 
+          className="mb-4"
+          showMetrics={true}
+          showQuote={true}
+        />
+      )}
+      
+      {/* Learning Path Banner */}
+      {phase === 'intro' && (
+        <Card className="border-purple-200 bg-gradient-to-r from-purple-50 to-indigo-50 mb-4">
+          <CardContent className="pt-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center">
+                  <GraduationCap className="w-5 h-5 text-white" />
+                </div>
+                <div>
+                  <p className="font-semibold text-purple-900">New! 5-Minute Learning Path</p>
+                  <p className="text-sm text-purple-700">Master email writing with guided AI practice</p>
+                </div>
+              </div>
+              <Button 
+                onClick={() => navigate('/learning/maya-email')}
+                variant="outline"
+                className="border-purple-300 hover:bg-purple-100"
+              >
+                Try Learning Mode
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+      {/* Phase 1: Story Introduction */}
+      {phase === 'intro' && (
+        <Card className="border-0 shadow-lg sm:shadow-xl bg-gradient-to-br from-purple-50 to-cyan-50 transition-all duration-300 max-w-4xl mx-auto">
+          <CardHeader className="text-center pb-4">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-purple-600 to-cyan-500 flex items-center justify-center">
+              <Mail className="w-10 h-10 text-white" />
+            </div>
+            <CardTitle className="text-3xl font-bold text-gray-900">
+              Maya's Email Challenge
+            </CardTitle>
+            <p className="text-lg text-gray-700 mt-2">
+              Maya spent <span className="font-bold text-red-600">32 minutes</span> struggling with a parent email yesterday
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="bg-white/80 rounded-lg p-6 space-y-4">
+              <h3 className="font-semibold text-lg text-gray-900">Her struggles:</h3>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <Target className="w-5 h-5 text-purple-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-gray-900">Finding the right tone</p>
+                    <p className="text-sm text-gray-600">Professional? Friendly? How formal should she be?</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <FileText className="w-5 h-5 text-purple-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-gray-900">Starting from scratch</p>
+                    <p className="text-sm text-gray-600">Staring at a blank screen, unsure how to begin</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-purple-600 mt-0.5" />
+                  <div>
+                    <p className="font-medium text-gray-900">Second-guessing every word</p>
+                    <p className="text-sm text-gray-600">Rewriting sentences over and over</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div className="text-center">
+              <Button 
+                onClick={() => setPhase('build')}
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white px-8 py-6 text-lg shadow-lg hover:shadow-xl transition-all duration-300"
+              >
+                <Sparkles className="w-5 h-5 mr-2" />
+                Help Maya Master Email Writing
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Phase 2: Email Recipe Builder - Two Column Layout */}
+      {phase === 'build' && (
+        <>
+          {/* Contextual Help - Full width above columns */}
+          {showContextualHelp && (
+            <div className="max-w-7xl mx-auto mb-4">
+              <ContextualHelp
+                toolId="emailComposer"
+                toolCategory="email"
+                userProgress={{
+                  completedTools: localStorage.getItem('completed-tools') 
+                    ? JSON.parse(localStorage.getItem('completed-tools') || '[]')
+                    : [],
+                  currentTool: 'emailComposer'
+                }}
+                usageStats={{
+                  count: usageCount,
+                  lastUsed: localStorage.getItem('maya-last-used') 
+                    ? new Date(localStorage.getItem('maya-last-used') || '')
+                    : null
+                }}
+                onDismiss={() => setShowContextualHelp(false)}
+              />
+            </div>
+          )}
+          
+          {/* PACE Stepper */}
+          <div className="max-w-7xl mx-auto mb-6">
+            <PaceStepper currentStep={currentPaceStep} completedSteps={completedPaceSteps} />
+          </div>
+          
+          <div className="maya-two-column-layout maya-phase-transition maya-phase-enter-active">
+            <div role="status" aria-live="polite" className="sr-only">
+              Now in Email Recipe Builder phase
+            </div>
+            
+            {/* Left Column - Recipe Builder */}
+            <div className="maya-column maya-email-builder">
+              <div className="flex items-center justify-between mb-4">
+                <HelpTooltip 
+                  content={characterHelpContent.maya.emailRecipe}
+                  side="bottom"
+                  onHelpViewed={(type) => {
+                    if (type === 'click') {
+                      localStorage.setItem('maya-help-viewed', 'true');
+                    }
+                  }}
+                >
+                  <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
+                    Email Recipe Builder
+                  </h2>
+                </HelpTooltip>
+                <div className="flex items-center gap-2">
+                  <TutorialButton 
+                    tutorialId="maya-email-composer"
+                    variant="icon"
+                    size="sm"
+                  />
+                  <ExampleSelector
+                    character="maya"
+                    onSelectExample={handleExampleSelect}
+                    buttonVariant="outline"
+                    size="sm"
+                  />
+                </div>
+              </div>
+              
+              <Progress value={paceRecipeProgress * 100} className="mb-4 h-3" />
+              <MayaConfidenceMeter 
+                progress={paceRecipeProgress * 100}
+                currentLayer={completedPaceSteps.length}
+                totalLayers={4}
+                className="mb-6"
+              />
+              
+              <motion.div 
+                className="space-y-6"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.4 }}
+              >
+                {/* PACE Step 1: Purpose with Enhanced Animations */}
+                <AnimatePresence mode="wait">
+                  {(currentPaceStep === 'purpose' || completedPaceSteps.includes('purpose')) && (
+                    <motion.div
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      variants={stepVariants}
+                      className="maya-recipe-layer"
+                    >
+                  <div className="maya-recipe-layer-header">
+                    <span className="maya-recipe-layer-number bg-purple-600">P</span>
+                    <h3 className="text-base sm:text-lg font-semibold text-purple-800">
+                      PACE Step 1: Purpose - Why are you writing?
+                    </h3>
+                    <HelpTooltip
+                      content={{
+                        title: 'Define Your Purpose',
+                        quickHelp: 'Every effective email has one clear purpose. Start by defining exactly why you\'re writing.',
+                        detailedHelp: {
+                          whatIs: 'Purpose is the primary reason you\'re writing this email - what you want to achieve.',
+                          whyItMatters: 'Clear purpose drives everything else: tone, content, and call-to-action. Without it, emails become confusing.',
+                          howToUse: [
+                            'Choose one primary purpose per email',
+                            'Be specific about what you want to happen',
+                            'Consider the recipient\'s perspective',
+                            'Keep it simple and focused'
+                          ],
+                          examples: [
+                            { description: 'Address concern: Parent worried about program changes' },
+                            { description: 'Make request: Board member considering funding increase' }
+                          ],
+                          proTips: [
+                            'If you have multiple purposes, send multiple emails',
+                            'Your purpose should be clear in the subject line',
+                            'Ask yourself: What do I want them to do after reading?'
+                          ]
+                        }
+                      }}
+                      variant="inline"
+                      iconSize="sm"
+                    />
+                  </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3" data-tutorial="purpose-selector">
+                  {purposeOptions.map((purpose, index) => (
+                    <motion.div
+                      key={purpose.id}
+                      custom={index}
+                      initial="hidden"
+                      animate="visible"
+                      variants={optionVariants}
+                      whileHover="hover"
+                      onHoverStart={() => setHoveredOption(purpose.id)}
+                      onHoverEnd={() => setHoveredOption(null)}
+                    >
+                      <motion.div
+                        variants={selectionVariants}
+                        animate={recipe.purpose === purpose.label ? 'selected' : 'unselected'}
+                      >
+                        <Button
+                          variant={recipe.purpose === purpose.label ? "default" : "outline"}
+                          className={`h-auto p-3 sm:p-4 justify-start transition-all duration-200 w-full ${
+                            recipe.purpose === purpose.label 
+                              ? 'bg-purple-600 text-white hover:bg-purple-700' 
+                              : 'hover:bg-purple-50 hover:border-purple-300'
+                          }`}
+                          onClick={() => handlePurposeSelect(purpose)}
+                        >
+                          <div className="text-left">
+                            <div className="font-medium flex items-center gap-2">
+                              {purpose.label} {purpose.emoji}
+                            </div>
+                            <div className="text-xs opacity-80 mt-1">{purpose.description}</div>
+                          </div>
+                        </Button>
+                      </motion.div>
+                    </motion.div>
+                  ))}
+                </div>
+
+              {/* PACE Step 2: Audience Intelligence */}
+              {(currentPaceStep === 'audience' || completedPaceSteps.includes('audience')) && (
+                <div className="space-y-4 animate-fade-in transition-all duration-500">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-blue-800 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm">A</span>
+                      PACE Step 2: Audience Intelligence
+                      <HelpTooltip
+                        content={{
+                          title: 'Audience Intelligence',
+                          quickHelp: 'Based on your purpose, these are the most relevant audiences to consider.',
+                          detailedHelp: {
+                            whatIs: 'Audience intelligence means understanding who you\'re writing to and what they care about.',
+                            whyItMatters: 'The right audience selection ensures your message resonates and achieves your purpose.',
+                            howToUse: [
+                              'Consider their relationship to your organization',
+                              'Think about their primary concerns',
+                              'Adjust language complexity appropriately',
+                              'Address their specific needs'
+                            ],
+                            commonMistakes: [
+                              'Using internal jargon with external audiences',
+                              'Being too casual with formal stakeholders',
+                              'Forgetting their perspective'
+                            ]
+                          }
+                        }}
+                        variant="inline"
+                        iconSize="sm"
+                      />
+                    </h3>
+                    {recipe.purpose && (
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+                          {getFilteredRecipients(recipe.purpose).length} relevant audiences
+                        </Badge>
+                        <span className="text-xs text-blue-600">✨ Smart filtered</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {recipe.purpose && (
+                    <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 transition-all duration-300">
+                      <p className="text-sm text-blue-800">
+                        <span className="font-medium">📍 Showing audiences most relevant for:</span> {recipe.purpose} {recipe.purposeEmoji}
+                      </p>
+                      <p className="text-xs text-blue-600 mt-1">
+                        Descriptions are customized for your specific purpose
+                      </p>
+                    </div>
+                  )}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3" data-tutorial="audience-selector">
+                    {filteredAudiences.map((audience) => {
+                      const purposeId = purposeOptions.find(p => p.label === recipe.purpose)?.id;
+                      const contextualDescription = purposeId ? getContextualDescription(audience.id, purposeId) : audience.description;
+                      
+                      return (
+                        <Button
+                          key={audience.id}
+                          variant={recipe.audience === audience.label ? "default" : "outline"}
+                          className={`h-auto p-3 sm:p-4 justify-start transition-all duration-200 ${
+                            recipe.audience === audience.label 
+                              ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-md' 
+                              : 'hover:bg-blue-50 hover:border-blue-300'
+                          }`}
+                          onClick={() => handleAudienceSelect(audience)}
+                        >
+                          <div className="text-left">
+                            <div className="font-medium flex items-center gap-2">
+                              {audience.label} {audience.emoji}
+                            </div>
+                            <div className="text-xs opacity-80 mt-1">{contextualDescription}</div>
+                          </div>
+                        </Button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+
+              {/* PACE Step 3: Content Strategy */}
+              {(currentPaceStep === 'content' || completedPaceSteps.includes('content')) && (
+                <div className="space-y-4 animate-fade-in">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-semibold text-green-800 flex items-center gap-2">
+                      <span className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center text-sm">C</span>
+                      PACE Step 3: Content Strategy
+                      <HelpTooltip
+                        content={{
+                          title: 'Content Strategy',
+                          quickHelp: 'Based on your purpose and audience, these are the most effective tone strategies.',
+                          detailedHelp: {
+                            whatIs: 'Content strategy determines how you approach your message - the tone and style that will resonate.',
+                            whyItMatters: 'The right tone builds trust and ensures your message is received as intended.',
+                            howToUse: [
+                              'Choose one primary purpose per email',
+                              'Make sure every paragraph supports this purpose',
+                              'End with a clear call-to-action',
+                              'Test: can you summarize purpose in one sentence?'
+                            ],
+                            proTips: [
+                              'If you have multiple purposes, send multiple emails',
+                              'Lead with purpose in subject line',
+                              'Make next steps crystal clear'
+                            ]
+                          }
+                        }}
+                        variant="inline"
+                        iconSize="sm"
+                      />
+                    </h3>
+                    <div className="flex items-center gap-2">
+                      <span className="text-xs text-green-600">🎯 Smart filtering enabled</span>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-3 mb-4 transition-all duration-300">
+                    <p className="text-sm text-green-800">
+                      <span className="font-medium">🎯 Purpose drives everything:</span> Your selection will filter recipients to show only the most relevant audiences and customize their descriptions.
+                    </p>
+                    <p className="text-xs text-green-600 mt-1">
+                      If you change your purpose, recipient options will update automatically
+                    </p>
+                  </div>
+                  {/* Intelligent Tone Recommendations */}
+                  {availableContentStrategies.length > 0 && availableContentStrategies[0].reasoning && (
+                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 mb-4 border border-green-200">
+                      <div className="flex items-start gap-3">
+                        <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center flex-shrink-0">
+                          <Sparkles className="w-4 h-4 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-green-800 mb-1">🎯 AI Recommendation</h4>
+                          <p className="text-sm text-green-700 mb-2">{availableContentStrategies[0].reasoning}</p>
+                          {availableContentStrategies[0].adaptiveHelp && (
+                            <p className="text-xs text-green-600 italic">{availableContentStrategies[0].adaptiveHelp}</p>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Filtered Results Info */}
+                  <div className="flex items-center justify-between mb-3">
+                    <p className="text-sm text-gray-600">
+                      Showing {availableContentStrategies.length} of 5 recommended tones for this context
+                    </p>
+                    {availableContentStrategies.length < 5 && (
+                      <p className="text-xs text-green-600 font-medium">
+                        ✨ Smart filtering applied
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3" data-tutorial="content-strategy-selector">
+                    {availableContentStrategies.map((strategy) => (
+                      <Button
+                        key={strategy.id}
+                        variant={recipe.tone === strategy.label ? "default" : "outline"}
+                        className={`h-auto p-3 sm:p-4 justify-start transition-all duration-200 relative ${
+                          recipe.tone === strategy.label 
+                            ? 'bg-green-600 text-white hover:bg-green-700 shadow-md' 
+                            : strategy.isRecommended
+                            ? 'hover:bg-green-50 hover:border-green-300 border-2 border-green-400 bg-green-25'
+                            : 'hover:bg-green-50 hover:border-green-300'
+                        }`}
+                        onClick={() => handleContentStrategySelect(strategy)}
+                      >
+                        {strategy.isRecommended && (
+                          <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center">
+                            <span className="text-xs text-white font-bold">★</span>
+                          </div>
+                        )}
+                        <div className="text-left">
+                          <div className="font-medium flex items-center gap-2">
+                            {strategy.label} {strategy.emoji}
+                            {strategy.isRecommended && (
+                              <span className="text-xs bg-green-100 text-green-700 px-1 rounded">
+                                AI Pick
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs opacity-80 mt-1">{strategy.description}</div>
+                        </div>
+                      </Button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Content Adaptation Engine - Smart Recommendations */}
+              {contentAdaptation && smartRecommendations && (
+                <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 space-y-3 animate-fade-in">
+                  <div className="flex items-center gap-2">
+                    <div className="w-6 h-6 rounded-full bg-blue-600 flex items-center justify-center">
+                      <span className="text-white text-xs font-bold">AI</span>
+                    </div>
+                    <h4 className="font-semibold text-blue-900">{smartRecommendations.title}</h4>
+                  </div>
+                  
+                  {contentAdaptation.recommendedTone && (
+                    <div className="bg-white/80 rounded-lg p-3 border border-blue-100">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-blue-600">🎯</span>
+                        <span className="font-medium text-blue-900">Recommended Tone</span>
+                      </div>
+                      <p className="text-sm text-blue-800 font-medium mb-1">{contentAdaptation.recommendedTone}</p>
+                      <p className="text-xs text-blue-700">{contentAdaptation.reasoning}</p>
+                    </div>
+                  )}
+                  
+                  <div className="bg-white/80 rounded-lg p-3 border border-blue-100">
+                    <p className="text-sm text-blue-800 mb-2">{smartRecommendations.explanation}</p>
+                    
+                    {smartRecommendations.bestPractices.length > 0 && (
+                      <div className="mb-2">
+                        <p className="text-xs font-medium text-green-700 mb-1">✅ Best Practices:</p>
+                        <ul className="text-xs text-green-600 space-y-0.5">
+                          {smartRecommendations.bestPractices.map((practice, index) => (
+                            <li key={index} className="flex items-start gap-1">
+                              <span className="text-green-500 mt-0.5">•</span>
+                              <span>{practice}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                    
+                    {smartRecommendations.commonMistakes.length > 0 && (
+                      <div>
+                        <p className="text-xs font-medium text-red-700 mb-1">❌ Avoid These Mistakes:</p>
+                        <ul className="text-xs text-red-600 space-y-0.5">
+                          {smartRecommendations.commonMistakes.map((mistake, index) => (
+                            <li key={index} className="flex items-start gap-1">
+                              <span className="text-red-500 mt-0.5">•</span>
+                              <span>{mistake}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {contextualTemplate && (
+                    <div className="bg-white/80 rounded-lg p-3 border border-purple-100">
+                      <div className="flex items-center gap-2 mb-2">
+                        <span className="text-purple-600">📝</span>
+                        <span className="font-medium text-purple-900">Email Structure Template</span>
+                      </div>
+                      <div className="text-xs text-purple-700 space-y-1">
+                        <p><span className="font-medium">Structure:</span> {contextualTemplate.structure.join(' -> ')}</p>
+                        <p><span className="font-medium">Call to Action:</span> {contextualTemplate.callToAction}</p>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Recipe Preview */}
+              {Object.keys(recipe).length > 0 && (
+                <div className="bg-gradient-to-r from-purple-50 to-cyan-50 rounded-lg p-4 space-y-2">
+                  <h4 className="font-semibold text-gray-900">Your Email Recipe:</h4>
+                  <div className="space-y-1">
+                    {recipe.purpose && (
+                      <p className="text-sm">
+                        <span className="font-medium">Purpose:</span> {recipe.purpose} {recipe.purposeEmoji}
+                      </p>
+                    )}
+                    {recipe.audience && (
+                      <p className="text-sm">
+                        <span className="font-medium">Audience:</span> {recipe.audience} {recipe.audienceEmoji}
+                      </p>
+                    )}
+                    {recipe.tone && (
+                      <p className="text-sm">
+                        <span className="font-medium">Content Strategy:</span> {recipe.tone} {recipe.toneEmoji}
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* Show additional context if loaded from example */}
+                  {(additionalContext || keyPoints.length > 0) && (
+                    <div className="mt-3 pt-3 border-t border-purple-200/50">
+                      {additionalContext && (
+                        <div className="mb-2">
+                          <p className="text-xs font-medium text-purple-700 mb-1">Context from example:</p>
+                          <p className="text-xs text-gray-600 italic">{additionalContext}</p>
+                        </div>
+                      )}
+                      {keyPoints.length > 0 && (
+                        <div>
+                          <p className="text-xs font-medium text-purple-700 mb-1">Key points to include:</p>
+                          <ul className="text-xs text-gray-600 space-y-0.5">
+                            {keyPoints.map((point, index) => (
+                              <li key={index} className="flex items-start gap-1">
+                                <span className="text-purple-500 mt-0.5">•</span>
+                                <span>{point}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* PACE Step 4: Execution */}
+              {(currentPaceStep === 'execution' || completedPaceSteps.includes('execution')) && (
+                <div className="space-y-4 animate-fade-in transition-all duration-500">
+                  <h3 className="text-lg font-semibold text-purple-800 flex items-center gap-2">
+                    <span className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm">E</span>
+                    PACE Step 4: Execution - Generate Your Email
+                  </h3>
+                  
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-4">
+                      Ready to generate your perfectly crafted email using the PACE methodology!
+                    </p>
+                    <Button
+                      onClick={generateEmail}
+                      disabled={!isRecipeComplete || isGenerating}
+                      size="lg"
+                      className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white disabled:opacity-50"
+                      data-tutorial="get-suggestions"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Clock className="w-5 h-5 mr-2 animate-spin" />
+                          Crafting Perfect Email...
+                        </>
+                      ) : (
+                        <>
+                          <Mail className="w-5 h-5 mr-2" />
+                          Generate Email
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </motion.div>
+          </div>
+        </div>
+        </>
+      )}
+      {/* Phase 3: Email Preview */}
+      {phase === 'preview' && (
+        <div className="space-y-4 lg:space-y-6 max-w-4xl mx-auto">
+          <Card className="border-0 shadow-xl">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-2xl">Generated Email</CardTitle>
+                <div className="flex gap-2">
+                  <Badge className="bg-green-100 text-green-800">
+                    <CheckCircle2 className="w-4 h-4 mr-1" />
+                    Ready to send
+                  </Badge>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Quality Indicators */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                <div className="text-center p-3 bg-purple-50 rounded-lg transition-all duration-200 hover:shadow-md">
+                  <p className="text-xs sm:text-sm text-gray-600">Tone Match</p>
+                  <p className="text-base sm:text-lg font-bold text-purple-800">95%</p>
+                </div>
+                <div className="text-center p-3 bg-blue-50 rounded-lg transition-all duration-200 hover:shadow-md">
+                  <p className="text-xs sm:text-sm text-gray-600">Clarity Score</p>
+                  <p className="text-base sm:text-lg font-bold text-blue-800">High</p>
+                </div>
+                <div className="text-center p-3 bg-green-50 rounded-lg transition-all duration-200 hover:shadow-md">
+                  <p className="text-xs sm:text-sm text-gray-600">Empathy Level</p>
+                  <p className="text-base sm:text-lg font-bold text-green-800">Strong</p>
+                </div>
+              </div>
+
+              {/* Email Content */}
+              <div className="bg-gray-50 rounded-lg p-4 sm:p-6 font-mono text-xs sm:text-sm whitespace-pre-wrap overflow-x-auto" data-tutorial="email-body">
+                {generatedEmail}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-3 justify-center">
+                <Button onClick={handleCopy} variant="default" size="lg" data-tutorial="preview-button">
+                  <Copy className="w-4 h-4 mr-2" />
+                  Copy to Clipboard
+                </Button>
+                <ExportButton
+                  data={(): ExportData => ({
+                    title: `Email - ${recipe.recipient} - ${new Date().toLocaleDateString()}`,
+                    content: generatedEmail,
+                    metadata: {
+                      createdAt: new Date().toISOString(),
+                      author: 'Maya Rodriguez',
+                      tags: ['email', recipe.tone!, recipe.recipient!, recipe.purpose!],
+                      recipe: recipe
+                    },
+                    sections: [
+                      {
+                        title: 'Email Recipe',
+                        content: `Tone: ${recipe.tone} ${recipe.toneEmoji}\nRecipient: ${recipe.recipient} ${recipe.recipientEmoji}\nPurpose: ${recipe.purpose} ${recipe.purposeEmoji}`,
+                        type: 'text'
+                      },
+                      {
+                        title: 'Generated Email',
+                        content: generatedEmail,
+                        type: 'text'
+                      }
+                    ]
+                  })}
+                  formats={['pdf', 'docx', 'txt']}
+                  size="lg"
+                  variant="outline"
+                  characterName="Maya"
+                  suggestUseIn={['Communication Metrics', 'Sofia Story Creator', 'Template Library']}
+                />
+                <Button onClick={handleTryAgain} variant="outline" size="lg">
+                  <RefreshCw className="w-4 h-4 mr-2" />
+                  Try Different Recipe
+                </Button>
+                <Button 
+                  onClick={handleViewTransformation} 
+                  variant="default" 
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+                >
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  See My Transformation
+                </Button>
+              </div>
+              
+              {/* Use In Suggestions */}
+              <UseInSuggestions
+                content={{
+                  email: generatedEmail,
+                  recipe: recipe,
+                  metadata: {
+                    tone: recipe.tone,
+                    recipient: recipe.recipient,
+                    purpose: recipe.purpose
+                  }
+                }}
+                contentType="email"
+                fromCharacter="Maya"
+                componentType="maya-email"
+                className="mt-4"
+              />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {/* Phase 4: Success & Transformation */}
+      {phase === 'success' && (
+        <Card className="border-0 shadow-xl bg-gradient-to-br from-green-50 to-purple-50 max-w-4xl mx-auto">
+          <CardHeader className="text-center">
+            <div className="w-20 h-20 mx-auto mb-4 rounded-full bg-gradient-to-r from-green-500 to-purple-600 flex items-center justify-center">
+              <CheckCircle2 className="w-10 h-10 text-white" />
+            </div>
+            <CardTitle className="text-3xl font-bold text-gray-900">
+              Maya's Transformation
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            {/* Time Metrics */}
+            <div className="bg-white/90 rounded-lg p-6 space-y-4">
+              <div className="text-center space-y-2">
+                <p className="text-lg">
+                  <span className="line-through text-red-600">Before: 32 minutes</span>
+                </p>
+                <p className="text-2xl font-bold text-green-600">
+                  After: 5 minutes
+                </p>
+                <p className="text-xl font-semibold text-purple-800">
+                  Time Saved: 27 minutes per email
+                </p>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-6">
+                <div className="text-center p-3 sm:p-4 bg-purple-100 rounded-lg transition-all duration-200 hover:shadow-md">
+                  <Clock className="w-6 sm:w-8 h-6 sm:h-8 mx-auto mb-2 text-purple-600" />
+                  <p className="text-sm sm:text-base font-semibold">Weekly: 2.25 hours saved</p>
+                  <p className="text-xs sm:text-sm text-gray-600">(5 emails/week)</p>
+                </div>
+                <div className="text-center p-3 sm:p-4 bg-cyan-100 rounded-lg transition-all duration-200 hover:shadow-md">
+                  <Target className="w-6 sm:w-8 h-6 sm:h-8 mx-auto mb-2 text-cyan-600" />
+                  <p className="text-sm sm:text-base font-semibold">Annual: 117 hours saved</p>
+                  <p className="text-xs sm:text-sm text-gray-600">(That's 3 work weeks!)</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Maya's Testimonial */}
+            <div className="bg-white/90 rounded-lg p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-full bg-purple-600 flex-shrink-0 flex items-center justify-center">
+                  <span className="text-white font-bold">MR</span>
+                </div>
+                <div>
+                  <p className="italic text-gray-700 mb-2">
+                    "I used to dread email time. Now, with my email recipe system, I can craft professional, 
+                    empathetic responses in minutes. It's not just about saving time – it's about feeling 
+                    confident in my communication. I can focus on what really matters: our programs and families."
+                  </p>
+                  <p className="font-semibold text-gray-900">- Maya Rodriguez</p>
+                  <p className="text-sm text-gray-600">Program Director</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Next Steps */}
+            <div className="text-center space-y-4">
+              <h3 className="text-xl font-semibold text-gray-900">Ready to transform your email game?</h3>
+              <Button 
+                size="lg"
+                className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white"
+              >
+                Create Your Own Email Recipe
+              </Button>
+              <p className="text-sm text-gray-600">
+                You've created {recipesCreated} recipe{recipesCreated !== 1 ? 's' : ''} today!
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+        </>
+      )}
+        </div>
+      </div>
+    </AIComponentErrorBoundary>
+  );
+};

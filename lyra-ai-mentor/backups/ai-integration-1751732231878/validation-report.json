@@ -1,0 +1,11 @@
+{
+  "syntaxErrors": [],
+  "importErrors": [
+    {
+      "file": "ai-playground/MultimodalVoiceChat.tsx",
+      "issue": "Missing openai.service import"
+    }
+  ],
+  "functionCallErrors": [],
+  "passed": false
+}

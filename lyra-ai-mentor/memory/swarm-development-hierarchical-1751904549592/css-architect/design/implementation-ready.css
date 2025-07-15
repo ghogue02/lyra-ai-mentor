@@ -1,0 +1,370 @@
+/* Three-Column Layout - Production Ready CSS */
+/* Exact proportions: Summary (25%) | Lyra Chat (37.5%) | Interactive (37.5%) */
+
+/* ========================================
+   CSS Custom Properties
+   ======================================== */
+:root {
+  /* Layout proportions */
+  --col-summary: 25%;
+  --col-chat: 37.5%;
+  --col-interactive: 37.5%;
+  
+  /* Alternative proportions using fr units (2:3:3 ratio) */
+  --fr-summary: 2fr;
+  --fr-chat: 3fr;
+  --fr-interactive: 3fr;
+  
+  /* Spacing and dimensions */
+  --panel-gap: 0;
+  --panel-padding: 1.5rem;
+  --header-height: 60px;
+  --mobile-nav-height: 56px;
+  
+  /* Minimum widths for readability */
+  --min-summary-width: 280px;
+  --min-chat-width: 360px;
+  --min-interactive-width: 360px;
+  
+  /* Colors */
+  --bg-summary: #fafbfc;
+  --bg-chat: #ffffff;
+  --bg-interactive: #f6f8fa;
+  --border-color: #e1e4e8;
+  --text-primary: #24292e;
+  --text-secondary: #586069;
+  
+  /* Transitions */
+  --transition-speed: 200ms;
+  --transition-easing: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Dark mode variables */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-summary: #0d1117;
+    --bg-chat: #010409;
+    --bg-interactive: #161b22;
+    --border-color: #30363d;
+    --text-primary: #c9d1d9;
+    --text-secondary: #8b949e;
+  }
+}
+
+/* ========================================
+   Base Layout - CSS Grid (Primary Solution)
+   ======================================== */
+.three-column-layout {
+  display: grid;
+  grid-template-columns: var(--col-summary) var(--col-chat) var(--col-interactive);
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--bg-chat);
+}
+
+/* Alternative with fr units for better flexibility */
+.three-column-layout--flexible {
+  display: grid;
+  grid-template-columns: var(--fr-summary) var(--fr-chat) var(--fr-interactive);
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+/* With gap for visual separation */
+.three-column-layout--gap {
+  gap: 1px;
+  background-color: var(--border-color);
+}
+
+/* ========================================
+   Panel Base Styles
+   ======================================== */
+.panel {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel--summary {
+  background-color: var(--bg-summary);
+  min-width: var(--min-summary-width);
+}
+
+.panel--chat {
+  background-color: var(--bg-chat);
+  min-width: var(--min-chat-width);
+}
+
+.panel--interactive {
+  background-color: var(--bg-interactive);
+  min-width: var(--min-interactive-width);
+}
+
+/* Panel Header */
+.panel__header {
+  flex-shrink: 0;
+  padding: var(--panel-padding);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  background-color: inherit;
+  position: relative;
+  z-index: 1;
+}
+
+/* Panel Content */
+.panel__content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: var(--panel-padding);
+  padding-top: 0;
+}
+
+/* Custom Scrollbar */
+.panel__content::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.panel__content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.panel__content::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.panel__content:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+/* Dark mode scrollbar */
+@media (prefers-color-scheme: dark) {
+  .panel__content::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .panel__content:hover::-webkit-scrollbar-thumb {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* ========================================
+   Responsive Breakpoints
+   ======================================== */
+
+/* Large Desktop (1440px+) - Default layout */
+@media (min-width: 1440px) {
+  .three-column-layout {
+    max-width: 1920px;
+    margin: 0 auto;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Medium Desktop (1200px - 1439px) */
+@media (min-width: 1200px) and (max-width: 1439px) {
+  .three-column-layout {
+    /* Slightly adjust proportions for smaller screens */
+    grid-template-columns: 23% 38.5% 38.5%;
+  }
+  
+  .panel__content {
+    padding: 1.25rem;
+  }
+}
+
+/* Small Desktop (992px - 1199px) - Two column with sticky summary */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .three-column-layout {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  
+  .panel--summary {
+    grid-column: 1 / -1;
+    max-height: 180px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .panel--chat {
+    grid-column: 1;
+    grid-row: 2;
+  }
+  
+  .panel--interactive {
+    grid-column: 2;
+    grid-row: 2;
+  }
+}
+
+/* Tablet (768px - 991px) - Stacked with collapsible summary */
+@media (min-width: 768px) and (max-width: 991px) {
+  .three-column-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  .panel--summary {
+    flex: 0 0 auto;
+    max-height: 30vh;
+    border-bottom: 2px solid var(--border-color);
+  }
+  
+  .panel--chat,
+  .panel--interactive {
+    flex: 1;
+    min-height: 35vh;
+  }
+  
+  /* Collapsible summary on tablet */
+  .panel--summary.is-collapsed {
+    max-height: 60px;
+  }
+  
+  .panel--summary.is-collapsed .panel__content {
+    display: none;
+  }
+}
+
+/* Mobile (<768px) - Tab-based interface */
+@media (max-width: 767px) {
+  .three-column-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+  }
+  
+  /* Mobile tab navigation */
+  .mobile-tabs {
+    display: flex;
+    flex-shrink: 0;
+    background-color: var(--bg-summary);
+    border-bottom: 1px solid var(--border-color);
+    padding: 0.5rem;
+    gap: 0.5rem;
+  }
+  
+  .mobile-tabs__button {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    border: none;
+    background-color: transparent;
+    color: var(--text-secondary);
+    font-weight: 500;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all var(--transition-speed) var(--transition-easing);
+  }
+  
+  .mobile-tabs__button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .mobile-tabs__button.is-active {
+    background-color: var(--bg-chat);
+    color: var(--text-primary);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Hide inactive panels on mobile */
+  .panel {
+    display: none;
+    height: calc(100vh - var(--mobile-nav-height));
+  }
+  
+  .panel.is-active {
+    display: flex;
+  }
+  
+  /* Mobile-specific panel adjustments */
+  .panel__header {
+    padding: 1rem;
+  }
+  
+  .panel__content {
+    padding: 1rem;
+  }
+}
+
+/* ========================================
+   Desktop-only Tab Navigation (hidden by default)
+   ======================================== */
+@media (min-width: 768px) {
+  .mobile-tabs {
+    display: none !important;
+  }
+}
+
+/* ========================================
+   Utility Classes
+   ======================================== */
+
+/* Loading states */
+.panel--loading .panel__content {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Empty states */
+.panel__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-secondary);
+  text-align: center;
+  padding: 2rem;
+}
+
+/* Resize handle (optional) */
+.panel__resize-handle {
+  position: absolute;
+  top: 0;
+  right: -4px;
+  width: 8px;
+  height: 100%;
+  cursor: col-resize;
+  background-color: transparent;
+  z-index: 2;
+  transition: background-color var(--transition-speed);
+}
+
+.panel__resize-handle:hover {
+  background-color: var(--border-color);
+}
+
+/* Focus visible for accessibility */
+.panel:focus-visible {
+  outline: 2px solid #0969da;
+  outline-offset: -2px;
+}
+
+/* Print styles */
+@media print {
+  .three-column-layout {
+    display: block;
+    height: auto;
+  }
+  
+  .panel {
+    page-break-inside: avoid;
+    border-bottom: 1px solid #000;
+    margin-bottom: 2rem;
+  }
+  
+  .mobile-tabs,
+  .panel__resize-handle {
+    display: none !important;
+  }
+}

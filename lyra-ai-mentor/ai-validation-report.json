@@ -1,0 +1,59 @@
+{
+  "timestamp": "2025-07-05T16:23:01.115Z",
+  "statistics": {
+    "totalComponents": 390,
+    "aiComponents": 22,
+    "properlyIntegrated": 15,
+    "issues": [
+      {
+        "component": "interactive/AlexChangeStrategy.tsx",
+        "issues": [
+          "Missing proper AIService import"
+        ]
+      },
+      {
+        "component": "interactive/MayaEmailComposer.tsx",
+        "issues": [
+          "Missing proper AIService import"
+        ]
+      },
+      {
+        "component": "interactive/__tests__/ai-comprehensive/AlexChangeStrategy.comprehensive.test.tsx",
+        "issues": [
+          "Missing proper AIService import",
+          "Missing error handling for AI calls"
+        ]
+      },
+      {
+        "component": "interactive/__tests__/ai-comprehensive/DavidDataAnalyzer.comprehensive.test.tsx",
+        "issues": [
+          "Missing proper AIService import",
+          "Missing error handling for AI calls"
+        ]
+      },
+      {
+        "component": "interactive/__tests__/ai-comprehensive/MayaEmailComposer.comprehensive.test.tsx",
+        "issues": [
+          "Missing proper AIService import",
+          "Missing error handling for AI calls"
+        ]
+      },
+      {
+        "component": "interactive/__tests__/ai-comprehensive/RachelAutomationBuilder.comprehensive.test.tsx",
+        "issues": [
+          "Missing proper AIService import",
+          "Missing error handling for AI calls"
+        ]
+      },
+      {
+        "component": "interactive/__tests__/ai-comprehensive/SofiaVoiceStory.comprehensive.test.tsx",
+        "issues": [
+          "Missing proper AIService import",
+          "Missing error handling for AI calls"
+        ]
+      }
+    ]
+  },
+  "environmentReady": true,
+  "recommendation": "NEEDS_ATTENTION"
+}

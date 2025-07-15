@@ -1,0 +1,157 @@
+{
+  "id": "db-fix-automation",
+  "name": "Automated Database Fix Workflow",
+  "description": "Automatically detects and fixes missing database tables",
+  "version": "1.0.0",
+  "triggers": [
+    {
+      "type": "error",
+      "pattern": "404.*toolkit_categories",
+      "description": "Triggered when toolkit_categories table is missing"
+    },
+    {
+      "type": "error", 
+      "pattern": "relation.*does not exist",
+      "description": "Triggered when any required table is missing"
+    },
+    {
+      "type": "manual",
+      "command": "db:fix",
+      "description": "Manual trigger via command"
+    }
+  ],
+  "inputs": {
+    "skipVerification": {
+      "type": "boolean",
+      "default": false,
+      "description": "Skip initial verification check"
+    },
+    "autoApply": {
+      "type": "boolean", 
+      "default": true,
+      "description": "Automatically apply fixes"
+    }
+  },
+  "steps": [
+    {
+      "id": "check-state",
+      "name": "Check Database State",
+      "tool": "Bash",
+      "command": "node scripts/verify-toolkit-fix.js",
+      "continueOnError": true,
+      "outputs": {
+        "needsFix": {
+          "type": "boolean",
+          "from": "exitCode !== 0"
+        }
+      }
+    },
+    {
+      "id": "store-initial-state",
+      "name": "Store Initial State",
+      "tool": "mcp__claude-flow__memory_usage",
+      "parameters": {
+        "action": "store",
+        "key": "db-fix/initial-state",
+        "value": {
+          "timestamp": "${timestamp}",
+          "needsFix": "${steps.check-state.outputs.needsFix}"
+        }
+      }
+    },
+    {
+      "id": "generate-fix",
+      "name": "Generate Fix SQL",
+      "tool": "Bash",
+      "command": "node scripts/automated-db-fix.js",
+      "condition": "steps.check-state.outputs.needsFix === true",
+      "outputs": {
+        "sqlFile": {
+          "type": "string",
+          "from": "stdout.match(/SQL saved to: (.+)/)?.[1]"
+        }
+      }
+    },
+    {
+      "id": "apply-fix",
+      "name": "Apply Database Fix",
+      "tool": "Bash", 
+      "command": "./scripts/apply-db-fix.sh",
+      "condition": "steps.check-state.outputs.needsFix === true && inputs.autoApply === true",
+      "env": {
+        "DATABASE_URL": "${env.DATABASE_URL}"
+      },
+      "continueOnError": true
+    },
+    {
+      "id": "verify-fix",
+      "name": "Verify Fix Applied",
+      "tool": "Bash",
+      "command": "node scripts/verify-toolkit-fix.js",
+      "condition": "steps.apply-fix.executed === true"
+    },
+    {
+      "id": "update-types",
+      "name": "Update TypeScript Types",
+      "tool": "Bash",
+      "command": "npx supabase gen types typescript --local > src/integrations/supabase/types.ts",
+      "condition": "steps.verify-fix.exitCode === 0"
+    },
+    {
+      "id": "store-result",
+      "name": "Store Fix Result",
+      "tool": "mcp__claude-flow__memory_usage",
+      "parameters": {
+        "action": "store",
+        "key": "db-fix/result",
+        "value": {
+          "timestamp": "${timestamp}",
+          "fixApplied": "${steps.apply-fix.executed}",
+          "verificationPassed": "${steps.verify-fix.exitCode === 0}",
+          "typesUpdated": "${steps.update-types.executed}"
+        }
+      }
+    },
+    {
+      "id": "notification",
+      "name": "Send Notification",
+      "tool": "mcp__claude-flow__memory_usage",
+      "parameters": {
+        "action": "store",
+        "key": "notifications/db-fix",
+        "value": {
+          "timestamp": "${timestamp}",
+          "status": "${steps.verify-fix.exitCode === 0 ? 'success' : 'failed'}",
+          "message": "${steps.verify-fix.exitCode === 0 ? 'Database fix applied successfully' : 'Database fix failed - manual intervention required'}"
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "success": {
+      "type": "boolean",
+      "value": "${steps.verify-fix.exitCode === 0}"
+    },
+    "sqlFile": {
+      "type": "string",
+      "value": "${steps.generate-fix.outputs.sqlFile}"
+    },
+    "message": {
+      "type": "string", 
+      "value": "${steps.notification.parameters.value.message}"
+    }
+  },
+  "errorHandling": {
+    "onError": "continue",
+    "maxRetries": 1,
+    "fallback": {
+      "action": "manual",
+      "message": "Automated fix failed. Please run manually: npm run db:fix"
+    }
+  },
+  "metadata": {
+    "author": "Database Automation Agent",
+    "tags": ["database", "automation", "toolkit", "fix"],
+    "documentation": "/docs/AUTOMATED_DB_FIX_GUIDE.md"
+  }
+}

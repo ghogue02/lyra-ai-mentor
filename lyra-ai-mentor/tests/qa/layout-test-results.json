@@ -1,0 +1,192 @@
+{
+  "timestamp": "2025-07-07T15:57:08.770Z",
+  "component": "LyraNarratedMayaSideBySideComplete",
+  "codeAnalysis": {
+    "responsive": [
+      {
+        "check": "Mobile detection implemented",
+        "passed": false,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Conditional mobile classes",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Large screen hiding",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Mobile menu button positioning",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      }
+    ],
+    "layout": [
+      {
+        "check": "Desktop sidebar positioning",
+        "passed": false,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Main content margin for sidebar",
+        "passed": false,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Mobile panel overlay",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      }
+    ],
+    "overlap": [
+      {
+        "check": "Overflow hidden on containers",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Z-index layering",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Flexbox min-width fix",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      }
+    ],
+    "accessibility": [
+      {
+        "check": "ARIA labels present",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Landmark roles",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Skip link component",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      },
+      {
+        "check": "Tab index management",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.774Z"
+      }
+    ]
+  },
+  "cssAnalysis": {
+    "mediaQueries": [
+      {
+        "check": "Media query: @media (min-width: 1024px)",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Media query: @media (max-width: 1023px)",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Media query: @media (prefers-reduced-motion: reduce)",
+        "passed": false,
+        "warning": "Non-standard breakpoint",
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Media query: @media (prefers-contrast: high)",
+        "passed": false,
+        "warning": "Non-standard breakpoint",
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Media query: @media print",
+        "passed": false,
+        "warning": "Non-standard breakpoint",
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      }
+    ],
+    "flexbox": [
+      {
+        "check": "Sidebar fixed width (20rem)",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Main content flex grow",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Flex overflow prevention",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      }
+    ],
+    "positioning": [
+      {
+        "check": "Fixed positioning for mobile",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Z-index layering",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Full screen overlays",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      }
+    ],
+    "overflow": [
+      {
+        "check": "Overflow control",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      },
+      {
+        "check": "Scrollbar space reservation",
+        "passed": true,
+        "warning": null,
+        "timestamp": "2025-07-07T15:57:08.775Z"
+      }
+    ]
+  },
+  "summary": {
+    "totalChecks": 27,
+    "passed": 21,
+    "warnings": 0,
+    "failed": 6
+  }
+}

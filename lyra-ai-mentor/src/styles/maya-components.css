@@ -1,0 +1,252 @@
+/* Maya Component Responsive Design System */
+/* Mobile-first approach with clean layouts */
+
+/* ===== Base Component Layout ===== */
+.maya-component-wrapper {
+  @apply w-full h-full flex flex-col overflow-hidden;
+}
+
+.maya-component-content {
+  @apply flex-1 overflow-y-auto;
+  /* Mobile padding */
+  @apply px-4 py-4;
+  /* Tablet padding */
+  @apply sm:px-6 sm:py-5;
+  /* Desktop padding */
+  @apply lg:px-8 lg:py-6;
+}
+
+/* ===== Progress Header Styles ===== */
+.maya-progress-header {
+  @apply sticky top-0 z-10 bg-white/95 backdrop-blur-sm border-b border-purple-100;
+  @apply px-4 py-3 sm:px-6 sm:py-4 lg:px-8;
+  @apply flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3;
+}
+
+.maya-progress-widget {
+  @apply flex flex-wrap items-center gap-2 sm:gap-3;
+}
+
+/* Progress badges with proper sizing */
+.maya-progress-badge {
+  @apply text-xs sm:text-sm px-2 py-1 sm:px-3 sm:py-1.5 rounded-full font-medium;
+  @apply bg-purple-100 text-purple-700 border border-purple-200;
+  @apply flex items-center gap-1.5;
+}
+
+.maya-skills-counter {
+  @apply text-sm sm:text-base font-semibold text-purple-800;
+  @apply bg-purple-50 px-3 py-1.5 rounded-lg;
+}
+
+.maya-progress-dots {
+  @apply flex items-center gap-1 sm:gap-1.5;
+}
+
+.maya-progress-dot {
+  @apply w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full transition-all duration-200;
+}
+
+.maya-progress-dot.active {
+  @apply bg-purple-600 scale-110;
+}
+
+.maya-progress-dot.inactive {
+  @apply bg-gray-300;
+}
+
+/* ===== Two-Column Layout System ===== */
+.maya-two-column-layout {
+  @apply max-w-7xl mx-auto;
+  /* Stack on mobile, side-by-side on desktop */
+  @apply grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-6;
+}
+
+.maya-column {
+  @apply bg-white rounded-xl shadow-md border border-purple-100/50;
+  @apply p-4 sm:p-5 lg:p-6;
+  @apply transition-all duration-200 hover:shadow-lg;
+}
+
+/* Left column - Email Builder */
+.maya-email-builder {
+  @apply space-y-4 sm:space-y-5;
+}
+
+/* Right column - Preview/Results */
+.maya-email-preview {
+  @apply space-y-4 sm:space-y-5;
+  /* Sticky on desktop */
+  @apply lg:sticky lg:top-24 lg:h-[calc(100vh-8rem)];
+  @apply lg:overflow-y-auto;
+}
+
+/* ===== Recipe Builder Specific ===== */
+.maya-recipe-layer {
+  @apply space-y-3 sm:space-y-4;
+  @apply transition-all duration-300;
+}
+
+.maya-recipe-layer-header {
+  @apply flex items-center gap-3 mb-3;
+}
+
+.maya-recipe-layer-number {
+  @apply w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center;
+  @apply text-white font-bold text-sm sm:text-base;
+  @apply shadow-md;
+}
+
+.maya-recipe-options-grid {
+  /* Responsive grid - 1 column mobile, 2 tablet, 3 desktop */
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-3;
+}
+
+.maya-recipe-option-button {
+  @apply h-auto p-3 sm:p-4 justify-start;
+  @apply transition-all duration-200 hover:scale-[1.02];
+  @apply text-left space-y-1;
+}
+
+.maya-recipe-option-button.selected {
+  @apply shadow-md ring-2 ring-offset-2;
+}
+
+/* ===== Email Preview Card ===== */
+.maya-email-preview-card {
+  @apply bg-gray-50 rounded-lg p-4 sm:p-6;
+  @apply font-mono text-xs sm:text-sm;
+  @apply whitespace-pre-wrap break-words;
+  @apply max-h-[400px] sm:max-h-[500px] overflow-y-auto;
+}
+
+/* ===== Mobile-Specific Optimizations ===== */
+@media (max-width: 640px) {
+  /* Reduce vertical spacing on mobile */
+  .maya-component-content {
+    @apply space-y-3;
+  }
+  
+  /* Full-width buttons on mobile */
+  .maya-action-buttons {
+    @apply flex flex-col gap-2;
+  }
+  
+  .maya-action-buttons button {
+    @apply w-full;
+  }
+  
+  /* Simplified progress widget on mobile */
+  .maya-progress-widget {
+    @apply flex-col items-start;
+  }
+  
+  /* Stack recipe preview on mobile */
+  .maya-recipe-preview {
+    @apply flex flex-col gap-2;
+  }
+}
+
+/* ===== Tablet-Specific Adjustments ===== */
+@media (min-width: 640px) and (max-width: 1023px) {
+  /* Better spacing for tablets */
+  .maya-two-column-layout {
+    @apply gap-5;
+  }
+  
+  /* 2-column grid for options on tablet */
+  .maya-recipe-options-grid {
+    @apply grid-cols-2;
+  }
+}
+
+/* ===== Desktop Enhancements ===== */
+@media (min-width: 1024px) {
+  /* Enhanced hover states on desktop */
+  .maya-recipe-option-button:hover {
+    @apply shadow-lg;
+  }
+  
+  /* Better visual hierarchy */
+  .maya-email-builder {
+    @apply min-h-[600px];
+  }
+  
+  /* Sticky sidebar behavior */
+  .maya-email-preview {
+    scrollbar-width: thin;
+    scrollbar-color: theme('colors.purple.300') transparent;
+  }
+  
+  .maya-email-preview::-webkit-scrollbar {
+    width: 6px;
+  }
+  
+  .maya-email-preview::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  
+  .maya-email-preview::-webkit-scrollbar-thumb {
+    @apply bg-purple-300 rounded-full;
+  }
+}
+
+/* ===== Phase Transitions ===== */
+.maya-phase-transition {
+  @apply transition-all duration-500 ease-in-out;
+}
+
+.maya-phase-enter {
+  @apply opacity-0 translate-y-4;
+}
+
+.maya-phase-enter-active {
+  @apply opacity-100 translate-y-0;
+}
+
+/* ===== Success State Styling ===== */
+.maya-success-card {
+  @apply bg-gradient-to-br from-green-50 to-purple-50;
+  @apply border-0 shadow-xl;
+  @apply transform transition-all duration-500;
+}
+
+.maya-metric-card {
+  @apply p-3 sm:p-4 rounded-lg;
+  @apply transition-all duration-200 hover:shadow-md;
+  @apply text-center space-y-1;
+}
+
+/* ===== Loading States ===== */
+.maya-loading-skeleton {
+  @apply animate-pulse bg-gray-200 rounded;
+}
+
+/* ===== Accessibility Enhancements ===== */
+.maya-focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2;
+}
+
+/* Ensure touch targets are at least 44x44px on mobile */
+@media (max-width: 640px) {
+  .maya-recipe-option-button {
+    min-height: 44px;
+  }
+  
+  button, a {
+    min-height: 44px;
+    @apply px-4;
+  }
+}
+
+/* ===== Print Styles ===== */
+@media print {
+  .maya-progress-header,
+  .maya-action-buttons {
+    @apply hidden;
+  }
+  
+  .maya-email-preview-card {
+    @apply max-h-none;
+  }
+}

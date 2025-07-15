@@ -1,0 +1,128 @@
+{
+  "component": "LyraNarratedMayaSideBySideComplete",
+  "file_path": "/src/components/lesson/chat/lyra/LyraNarratedMayaSideBySideComplete.tsx",
+  "layout_analysis": {
+    "current_implementation": {
+      "layout_type": "Flexbox-based with absolute positioning",
+      "structure": {
+        "desktop": {
+          "summary_panel": {
+            "positioning": "absolute",
+            "location": "left-0 top-0",
+            "width": "w-80 (20rem)",
+            "z_index": "z-10",
+            "issues": [
+              "Absolute positioning can cause overlay issues",
+              "Z-index of 10 might overlay main content"
+            ]
+          },
+          "main_content": {
+            "positioning": "relative with margin-left",
+            "margin": "ml-80 when panel shown",
+            "contains": "Two 50% width panels (chat + interactive)",
+            "issues": [
+              "Fixed margin might not adapt to all screen sizes",
+              "Content could overflow under the absolute panel"
+            ]
+          },
+          "internal_split": {
+            "method": "Flexbox with calc() widths",
+            "left_panel": "Lyra's narrative - w-[calc(50%-0.25rem)]",
+            "right_panel": "Interactive content - w-[calc(50%-0.25rem)]",
+            "gap": "gap-2 (0.5rem)"
+          }
+        },
+        "mobile": {
+          "summary_panel": {
+            "positioning": "fixed overlay",
+            "width": "w-72 (18rem)",
+            "z_index": "z-50",
+            "behavior": "Slides in/out with menu button"
+          },
+          "main_content": {
+            "layout": "Stacked vertically (flex-col)",
+            "panels": "Full width, stacked"
+          }
+        }
+      }
+    },
+    "css_usage": {
+      "grid": {
+        "used": false,
+        "potential_benefits": [
+          "Better control over panel sizing",
+          "No overlay issues with proper grid areas",
+          "Responsive without absolute positioning"
+        ]
+      },
+      "flexbox": {
+        "used": true,
+        "locations": [
+          "Main container layout",
+          "Header layout",
+          "Internal panel splits",
+          "Button groups"
+        ]
+      },
+      "absolute_positioning": {
+        "used": true,
+        "locations": [
+          "Desktop summary panel (line 1554)",
+          "Blur overlay effect (line 1742)"
+        ]
+      }
+    },
+    "identified_issues": {
+      "primary": {
+        "description": "Summary panel uses absolute positioning which can overlay chat content",
+        "severity": "high",
+        "affected_lines": [1554, 1586],
+        "details": "The absolute positioned panel with z-10 can overlay the main content area, especially when content overflows or on certain screen sizes"
+      },
+      "secondary": [
+        {
+          "issue": "Fixed margin approach",
+          "description": "Main content uses ml-80 which might not adapt properly",
+          "affected_lines": [1586]
+        },
+        {
+          "issue": "Z-index layering",
+          "description": "Multiple z-index values (z-10, z-40, z-50) could cause stacking issues",
+          "affected_lines": [1554, 1543, 1569]
+        },
+        {
+          "issue": "Width calculations",
+          "description": "Using calc() for 50% splits might cause rounding issues",
+          "affected_lines": [1672, 1727]
+        }
+      ]
+    },
+    "recommendations": {
+      "immediate_fixes": [
+        "Replace absolute positioning with CSS Grid for desktop layout",
+        "Use grid-template-columns: 20rem 1fr for proper panel sizing",
+        "Remove z-index from summary panel",
+        "Ensure main content properly respects panel space"
+      ],
+      "long_term_improvements": [
+        "Implement CSS Grid for the entire layout system",
+        "Use CSS container queries for better responsive design",
+        "Reduce reliance on absolute/fixed positioning",
+        "Implement proper overflow handling"
+      ]
+    }
+  },
+  "custom_css_files": [
+    {
+      "file": "maya-journey-layout.css",
+      "relevant_classes": [
+        "maya-journey-sidebar",
+        "maya-journey-main",
+        "maya-journey-split-panel"
+      ],
+      "notes": "Contains responsive layout rules but not currently used by the component"
+    }
+  ],
+  "analysis_timestamp": "2025-07-07T16:00:00Z",
+  "analyst": "Component Analyst"
+}

@@ -1,0 +1,50 @@
+{
+  "id": "db-fix-automation-v2",
+  "name": "Automated Database Fix v2",
+  "description": "Automatically fixes missing toolkit tables using multiple methods",
+  "triggers": [
+    "404.*toolkit_categories",
+    "relation.*does not exist",
+    "Could not find.*category"
+  ],
+  "steps": [
+    {
+      "name": "detect_issue",
+      "action": "mcp__claude-flow__memory_usage",
+      "params": {
+        "action": "store",
+        "key": "db-fix/issue-detected",
+        "value": "{\"timestamp\":\"2025-07-09T13:10:20.192Z\",\"issue\":\"toolkit_tables_missing\"}"
+      }
+    },
+    {
+      "name": "generate_fix",
+      "action": "terminal_execute",
+      "params": {
+        "command": "node scripts/mcp-db-fix.js"
+      }
+    },
+    {
+      "name": "apply_fix",
+      "action": "terminal_execute",
+      "params": {
+        "command": "./scripts/apply-mcp-fix.sh"
+      },
+      "fallback": {
+        "action": "mcp__claude-flow__memory_usage",
+        "params": {
+          "action": "store",
+          "key": "db-fix/manual-required",
+          "value": "{\"message\":\"Automated fix failed. Manual intervention required.\",\"sqlFile\":\"scripts/mcp-toolkit-fix.sql\"}"
+        }
+      }
+    },
+    {
+      "name": "verify_fix",
+      "action": "terminal_execute",
+      "params": {
+        "command": "node scripts/verify-toolkit-fix.js"
+      }
+    }
+  ]
+}

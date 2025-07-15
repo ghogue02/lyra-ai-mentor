@@ -1,0 +1,117 @@
+{
+  "component": "LyraNarratedMayaSideBySide",
+  "timestamp": "2025-07-07T17:20:00Z",
+  "issues_found": {
+    "infinite_loop_causes": [
+      {
+        "location": "useEffect lines 1147-1181",
+        "issue": "processMessages in dependency array is recreated on every render",
+        "severity": "critical",
+        "cause": "useCallback dependency chain causing circular updates",
+        "fix": "Use useRef for processMessages or remove from dependencies"
+      },
+      {
+        "location": "stages useMemo line 114",
+        "issue": "stages recreated when panelBlurLevel changes, triggering useEffect",
+        "severity": "high",
+        "cause": "circular dependency between blur state and stages",
+        "fix": "Remove panelBlurLevel from stages dependencies"
+      },
+      {
+        "location": "typeMessage callback",
+        "issue": "State updates trigger re-renders during message processing",
+        "severity": "medium",
+        "cause": "Multiple state updates in succession",
+        "fix": "Batch state updates or use unstable_batchedUpdates"
+      }
+    ],
+    "missing_cleanups": [
+      "typewriterTimeoutRef not always cleared",
+      "messageTimeoutsRef array not properly managed",
+      "No abort mechanism for ongoing animations"
+    ],
+    "performance_issues": [
+      "Auto-scroll effect runs too frequently (lines 1187-1196)",
+      "Multiple state updates cause unnecessary re-renders",
+      "Large stages array recreated on state changes"
+    ]
+  },
+  "optimizations_applied": {
+    "dependency_fixes": [
+      {
+        "issue": "processMessages circular dependency",
+        "solution": "Convert to useRef or remove from dependencies",
+        "code_example": "const processMessagesRef = useRef(processMessages);"
+      },
+      {
+        "issue": "stages recreation",
+        "solution": "Separate static structure from dynamic state",
+        "code_example": "const stages = useMemo(() => [...], []); // No dependencies"
+      }
+    ],
+    "cleanup_improvements": [
+      {
+        "issue": "Memory leaks from timeouts",
+        "solution": "Comprehensive cleanup in useEffect return",
+        "code_example": "return () => { clearAllTimeouts(); clearAllRefs(); };"
+      }
+    ],
+    "performance_enhancements": [
+      {
+        "issue": "Frequent re-renders",
+        "solution": "Use React.memo and useCallback strategically",
+        "code_example": "const MemoizedStage = React.memo(StageComponent);"
+      }
+    ],
+    "state_management": [
+      {
+        "issue": "Multiple related state updates",
+        "solution": "Consolidate into reducer pattern",
+        "code_example": "const [state, dispatch] = useReducer(mayaReducer, initialState);"
+      }
+    ]
+  },
+  "key_changes": {
+    "1_fix_circular_dependency": {
+      "problem": "processMessages recreated every render",
+      "solution": "Use ref pattern to maintain stable reference",
+      "implementation": "const processMessagesRef = useRef<ProcessMessagesFn>();\nprocessMessagesRef.current = processMessages;"
+    },
+    "2_stabilize_stages": {
+      "problem": "stages array depends on component state",
+      "solution": "Separate static structure from dynamic rendering",
+      "implementation": "Create stages without state dependencies, handle blur in render"
+    },
+    "3_cleanup_timeouts": {
+      "problem": "Timeouts not cleared causing memory leaks",
+      "solution": "Track all timeouts and clear on cleanup",
+      "implementation": "const cleanupTimeouts = () => { ... }"
+    },
+    "4_batch_updates": {
+      "problem": "Multiple setState calls cause re-renders",
+      "solution": "Use unstable_batchedUpdates or consolidate state",
+      "implementation": "import { unstable_batchedUpdates } from 'react-dom';"
+    },
+    "5_prevent_blur_loops": {
+      "problem": "Blur state changes trigger effect loops",
+      "solution": "Guard state updates with previous value check",
+      "implementation": "if (prevBlur !== newBlur) setBlur(newBlur);"
+    }
+  },
+  "critical_fix_summary": {
+    "main_issue": "The primary infinite loop is caused by processMessages being recreated on every render and included in useEffect dependencies",
+    "immediate_fix": "Remove processMessages from the dependency array or use useRef to maintain stable reference",
+    "long_term_fix": "Refactor component to separate concerns: narrative logic, blur animations, and stage management"
+  },
+  "testing_recommendations": [
+    "Test rapid stage transitions",
+    "Verify cleanup on component unmount",
+    "Check memory leaks with React DevTools Profiler",
+    "Validate blur/unblur animations complete properly",
+    "Test with React.StrictMode to catch double-render issues"
+  ],
+  "code_snippets": {
+    "fix_useEffect": "// Fixed useEffect without circular dependency\nuseEffect(() => {\n  // Clear previous timeouts\n  messageTimeoutsRef.current.forEach(clearTimeout);\n  messageTimeoutsRef.current = [];\n  \n  const stage = stages[currentStageIndex];\n  if (!stage) return;\n  \n  // Process messages without dependency\n  const messages = stage.narrativeMessages;\n  processMessagesStable(messages);\n  \n  return () => {\n    // Comprehensive cleanup\n    clearAllTimeouts();\n  };\n}, [currentStageIndex]); // Remove processMessages and stages",
+    "stable_process_messages": "// Use ref for stable function reference\nconst processMessagesRef = useRef<typeof processMessages>();\nprocessMessagesRef.current = processMessages;\n\nconst processMessagesStable = useCallback((messages: LyraNarrativeMessage[]) => {\n  processMessagesRef.current?.(messages);\n}, []);"
+  }
+}

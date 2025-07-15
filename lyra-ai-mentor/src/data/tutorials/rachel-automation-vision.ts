@@ -1,0 +1,106 @@
+import { Tutorial } from '../../types/tutorial';
+
+export const rachelAutomationVisionTutorial: Tutorial = {
+  id: 'rachel-automation-vision',
+  name: 'Envision Automation Possibilities with Rachel',
+  description: 'Discover how to identify and implement automation opportunities in your workflow',
+  category: 'automation',
+  estimatedTime: 8,
+  steps: [
+    {
+      id: 'intro',
+      title: 'Welcome to Automation Vision',
+      content: 'Rachel will help you see automation opportunities you never knew existed. Let\'s transform your repetitive tasks into efficient systems.',
+      position: 'center',
+    },
+    {
+      id: 'workflow-input',
+      title: 'Describe Your Workflow',
+      content: 'Start by describing a task you do regularly. Be specific about the steps involved - Rachel will identify automation opportunities.',
+      target: '[data-tutorial="workflow-description"]',
+      position: 'bottom',
+      spotlightPadding: 16,
+      allowInteraction: true,
+    },
+    {
+      id: 'time-tracker',
+      title: 'Track Time Investment',
+      content: 'Estimate how much time this task takes. Rachel will calculate potential time savings through automation.',
+      target: '[data-tutorial="time-input"]',
+      position: 'right',
+      mobilePosition: 'bottom',
+      spotlightPadding: 12,
+      allowInteraction: true,
+    },
+    {
+      id: 'analyze-workflow',
+      title: 'Analyze for Automation',
+      content: 'Click "Analyze" to let Rachel identify automation opportunities in your workflow. She looks for patterns, repetition, and decision points.',
+      target: '[data-tutorial="analyze-button"]',
+      position: 'bottom',
+      action: {
+        label: 'Analyze My Workflow',
+        handler: () => {
+          const button = document.querySelector('[data-tutorial="analyze-button"]') as HTMLButtonElement;
+          button?.click();
+        },
+      },
+    },
+    {
+      id: 'automation-map',
+      title: 'Your Automation Roadmap',
+      content: 'Rachel created a visual map of your workflow, highlighting steps that can be automated. Green nodes show the highest impact opportunities.',
+      target: '[data-tutorial="automation-map"]',
+      position: 'top',
+      spotlightPadding: 20,
+    },
+    {
+      id: 'automation-suggestions',
+      title: 'Explore Automation Options',
+      content: 'Each automation opportunity includes specific tools and implementation steps. Start with high-impact, low-effort options.',
+      target: '[data-tutorial="suggestion-list"]',
+      position: 'left',
+      mobilePosition: 'bottom',
+      spotlightPadding: 16,
+      allowInteraction: true,
+    },
+    {
+      id: 'roi-calculator',
+      title: 'Calculate Your ROI',
+      content: 'See how much time and resources you\'ll save. Rachel shows both immediate and long-term benefits of each automation.',
+      target: '[data-tutorial="roi-display"]',
+      position: 'right',
+      mobilePosition: 'top',
+    },
+    {
+      id: 'implementation-guide',
+      title: 'Step-by-Step Implementation',
+      content: 'Select an automation to see detailed implementation steps. Rachel breaks down complex automations into manageable tasks.',
+      target: '[data-tutorial="implementation-steps"]',
+      position: 'bottom',
+      spotlightPadding: 16,
+      allowInteraction: true,
+    },
+    {
+      id: 'automation-templates',
+      title: 'Use Proven Templates',
+      content: 'Access Rachel\'s library of automation templates. These pre-built workflows can be customized for your specific needs.',
+      target: '[data-tutorial="template-library"]',
+      position: 'left',
+      mobilePosition: 'bottom',
+    },
+    {
+      id: 'progress-tracker',
+      title: 'Track Your Automation Journey',
+      content: 'Monitor your automation progress and measure actual time savings. Celebrate each workflow you optimize!',
+      target: '[data-tutorial="progress-dashboard"]',
+      position: 'top',
+    },
+    {
+      id: 'complete',
+      title: 'You\'re an Automation Visionary!',
+      content: 'Excellent work! You\'ve learned to spot and implement automation opportunities. Keep looking for ways to work smarter, not harder.',
+      position: 'center',
+    },
+  ],
+};

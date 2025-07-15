@@ -1,0 +1,355 @@
+/* Enhanced Maya Email Composer Animations */
+
+/* PACE Stepper Enhanced Animations */
+.maya-pace-stepper {
+  margin-bottom: 2rem;
+  padding: 0 1rem;
+}
+
+.maya-pace-progress-line {
+  position: absolute;
+  top: 1.5rem;
+  left: 2rem;
+  right: 2rem;
+  height: 4px;
+  background: linear-gradient(to right, #e5e7eb, #e5e7eb);
+  border-radius: 2px;
+  z-index: 0;
+}
+
+.maya-pace-progress-fill {
+  height: 100%;
+  background: linear-gradient(to right, #8b5cf6, #06b6d4);
+  border-radius: 2px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.maya-pace-step {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.maya-pace-step-circle {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-weight: 600;
+  font-size: 0.875rem;
+}
+
+.maya-pace-step-circle.active {
+  background: linear-gradient(to right, #8b5cf6, #06b6d4);
+  border-color: #8b5cf6;
+  color: white;
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+}
+
+.maya-pace-step-circle.completed {
+  background: linear-gradient(to right, #8b5cf6, #06b6d4);
+  border-color: #8b5cf6;
+  color: white;
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.3);
+}
+
+.maya-pace-step-circle.inactive {
+  background: white;
+  border-color: #d1d5db;
+  color: #9ca3af;
+}
+
+.maya-pace-step-circle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.maya-pace-step-circle.inactive:hover {
+  border-color: #8b5cf6;
+  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.2);
+}
+
+.maya-pace-step-label {
+  margin-top: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.maya-pace-step-label.active {
+  color: #7c3aed;
+  transform: translateY(-2px);
+}
+
+.maya-pace-step-label.inactive {
+  color: #6b7280;
+}
+
+/* Enhanced Option Selection Animations */
+.maya-option-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 0.75rem;
+}
+
+.maya-option-card {
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 0.5rem;
+  overflow: hidden;
+}
+
+.maya-option-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+}
+
+.maya-option-card.selected {
+  transform: scale(1.02);
+  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.25);
+  border-color: #8b5cf6;
+}
+
+.maya-option-card.selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.1));
+  border-radius: 0.5rem;
+  z-index: -1;
+}
+
+/* Progressive Disclosure Preview */
+.maya-step-preview {
+  margin-top: 1rem;
+  padding: 1rem;
+  background: linear-gradient(to right, #faf5ff, #f0f9ff);
+  border: 1px solid #e9d5ff;
+  border-radius: 0.5rem;
+  animation: slideInUp 0.3s ease-out;
+}
+
+.maya-step-preview.locked {
+  opacity: 0.7;
+}
+
+.maya-step-preview-icon {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.maya-step-preview-icon.unlocked {
+  background: linear-gradient(to right, #8b5cf6, #06b6d4);
+  color: white;
+}
+
+.maya-step-preview-icon.locked {
+  background: #d1d5db;
+  color: #6b7280;
+}
+
+.maya-step-preview-unlock-btn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1px solid #8b5cf6;
+  color: #7c3aed;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.maya-step-preview-unlock-btn:hover {
+  background: #f3f4f6;
+  transform: translateX(2px);
+}
+
+/* Step Transition Animations */
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fadeInScale {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulseSuccess {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Enhanced Layer Transitions */
+.maya-layer-enter {
+  animation: slideInRight 0.4s ease-out;
+}
+
+.maya-layer-exit {
+  animation: fadeOut 0.3s ease-in;
+}
+
+.maya-option-enter {
+  animation: fadeInScale 0.35s ease-out;
+}
+
+.maya-option-enter:nth-child(1) { animation-delay: 0s; }
+.maya-option-enter:nth-child(2) { animation-delay: 0.08s; }
+.maya-option-enter:nth-child(3) { animation-delay: 0.16s; }
+.maya-option-enter:nth-child(4) { animation-delay: 0.24s; }
+.maya-option-enter:nth-child(5) { animation-delay: 0.32s; }
+.maya-option-enter:nth-child(6) { animation-delay: 0.4s; }
+
+/* Success Feedback Animation */
+.maya-success-pulse {
+  animation: pulseSuccess 0.6s ease-out;
+}
+
+/* Generate Button Enhanced Animation */
+.maya-generate-btn {
+  background: linear-gradient(to right, #8b5cf6, #06b6d4);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.maya-generate-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.4);
+}
+
+.maya-generate-btn:active {
+  transform: translateY(0);
+}
+
+.maya-generate-btn.generating {
+  pointer-events: none;
+}
+
+.maya-generate-btn.generating::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  to {
+    left: 100%;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/* Mobile Responsive Enhancements */
+@media (max-width: 640px) {
+  .maya-pace-stepper {
+    padding: 0 0.5rem;
+  }
+  
+  .maya-pace-step-circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .maya-pace-step-label {
+    font-size: 0.625rem;
+  }
+  
+  .maya-option-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  
+  .maya-option-card {
+    padding: 0.75rem;
+  }
+}
+
+/* Accessibility Enhancements */
+@media (prefers-reduced-motion: reduce) {
+  .maya-pace-step-circle,
+  .maya-option-card,
+  .maya-generate-btn {
+    transition: none;
+    animation: none;
+  }
+  
+  .maya-layer-enter,
+  .maya-layer-exit,
+  .maya-option-enter {
+    animation: none;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .maya-pace-step-circle.active,
+  .maya-pace-step-circle.completed {
+    background: #000;
+    color: #fff;
+    border-color: #000;
+  }
+  
+  .maya-option-card.selected {
+    border-color: #000;
+    border-width: 2px;
+  }
+}

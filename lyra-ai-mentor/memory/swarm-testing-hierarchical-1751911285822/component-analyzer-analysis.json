@@ -1,0 +1,171 @@
+{
+  "analysis_complete": true,
+  "timestamp": "2025-01-07T16:50:00Z",
+  "agent": "Component Analyzer",
+  "mission": "Analyze Maya blur functionality",
+  "blur_mechanism": {
+    "state_management": {
+      "variable": "panelBlurLevel",
+      "values": ["full", "partial", "clear"],
+      "initial_state": "full",
+      "location": "LyraNarratedMayaSideBySideComplete.tsx:30"
+    },
+    "blur_control_points": {
+      "stage_configuration": {
+        "description": "Each stage defines initial blur state via panelBlurState property",
+        "example": "stages.tsx:39 - panelBlurState: 'full'",
+        "stages_with_blur": ["intro", "pace-purpose", "pace-audience", "pace-connection", "tone-mastery"]
+      },
+      "message_triggers": {
+        "description": "Messages can trigger blur changes via trigger property",
+        "example": "stages.tsx:102 - trigger: 'blur-clear'",
+        "implementation": "hooks.ts:58-60"
+      },
+      "narrative_completion": {
+        "description": "Completion callback ensures panel is unblurred",
+        "location": "LyraNarratedMayaSideBySideComplete.tsx:135-143",
+        "code": "setIsNarrativeComplete(true); if (panelBlurLevel !== 'clear') { setPanelBlurLevel('clear'); }"
+      },
+      "fast_forward": {
+        "description": "Fast-forward immediately clears blur and marks narrative complete",
+        "location": "LyraNarratedMayaSideBySideComplete.tsx:177-179"
+      }
+    },
+    "visual_implementation": {
+      "blur_overlay": {
+        "location": "LyraNarratedMayaSideBySideComplete.tsx:319-332",
+        "css_classes": {
+          "full": "backdrop-blur-xl",
+          "partial": "backdrop-blur-sm", 
+          "clear": "backdrop-blur-none"
+        },
+        "animation": "framer-motion with 1.5s ease-in-out transition"
+      }
+    }
+  },
+  "narrative_completion_flow": {
+    "message_processing": {
+      "processor": "useMessageProcessor hook",
+      "completion_detection": "When index >= messages.length or last message typed",
+      "callback_storage": "onNarrativeCompleteRef stores callback to prevent re-execution"
+    },
+    "completion_triggers": [
+      "All messages processed (processMessages)",
+      "Last message typed (typeMessage callback)",
+      "Fast-forward clicked (sets isNarrativeComplete directly)",
+      "Empty narrative array (immediate completion)"
+    ]
+  },
+  "identified_issues": {
+    "stale_closure_risk": {
+      "description": "panelBlurLevel passed as function to stages might capture stale values",
+      "location": "stages.tsx:24",
+      "severity": "medium"
+    },
+    "completion_timing": {
+      "description": "500ms delay before completion callback might conflict with React updates",
+      "locations": ["hooks.ts:104-108", "hooks.ts:128-133"],
+      "severity": "high"
+    },
+    "empty_messages_handling": {
+      "description": "When stage has no narrative messages, completion might not trigger blur clear",
+      "location": "LyraNarratedMayaSideBySideComplete.tsx:144-147",
+      "severity": "medium"
+    },
+    "state_update_batching": {
+      "description": "Multiple state updates in completion callback might batch incorrectly",
+      "location": "LyraNarratedMayaSideBySideComplete.tsx:137-142",
+      "severity": "high"
+    }
+  },
+  "test_scenarios": [
+    {
+      "name": "Empty narrative messages",
+      "description": "Test stage with no narrativeMessages array",
+      "expected": "Panel should unblur immediately",
+      "edge_case": true
+    },
+    {
+      "name": "Messages without blur triggers", 
+      "description": "Test messages that don't have trigger: 'blur-clear'",
+      "expected": "Completion callback should still unblur",
+      "edge_case": false
+    },
+    {
+      "name": "Fast-forward during typing",
+      "description": "Click fast-forward while message is being typed",
+      "expected": "Should complete typing and unblur",
+      "edge_case": true
+    },
+    {
+      "name": "Rapid stage transitions",
+      "description": "Quickly navigate between stages",
+      "expected": "Blur state should update correctly for each stage",
+      "edge_case": true
+    },
+    {
+      "name": "React 18 batching",
+      "description": "Test with React 18's automatic batching",
+      "expected": "State updates should batch correctly",
+      "edge_case": false
+    },
+    {
+      "name": "Concurrent features",
+      "description": "Test with React concurrent features enabled",
+      "expected": "Transitions should work smoothly",
+      "edge_case": true
+    },
+    {
+      "name": "Component unmount during typing",
+      "description": "Navigate away while narrative is typing",
+      "expected": "No memory leaks or errors",
+      "edge_case": true
+    },
+    {
+      "name": "Multiple completion callbacks",
+      "description": "Test if completion callback fires multiple times",
+      "expected": "Should only fire once per stage",
+      "edge_case": false
+    }
+  ],
+  "key_files": [
+    {
+      "path": "src/components/lesson/chat/lyra/maya/LyraNarratedMayaSideBySideComplete.tsx",
+      "purpose": "Main component with blur state management"
+    },
+    {
+      "path": "src/components/lesson/chat/lyra/maya/stages.tsx", 
+      "purpose": "Stage configurations with blur states"
+    },
+    {
+      "path": "src/components/lesson/chat/lyra/maya/hooks.ts",
+      "purpose": "Typewriter and message processing logic"
+    },
+    {
+      "path": "src/components/interactive/MayaEmailComposer.tsx",
+      "purpose": "Interactive component that should unblur"
+    }
+  ],
+  "recommended_fixes": [
+    {
+      "priority": "high",
+      "fix": "Use useCallback for panelBlurLevel getter or pass value directly",
+      "reason": "Prevents stale closure issues"
+    },
+    {
+      "priority": "high", 
+      "fix": "Ensure completion callback runs in useEffect to avoid batching issues",
+      "reason": "React 18 automatic batching might delay state updates"
+    },
+    {
+      "priority": "medium",
+      "fix": "Add explicit blur clear for empty narrative stages",
+      "reason": "Some stages might have no messages but still need interaction"
+    },
+    {
+      "priority": "low",
+      "fix": "Add debug logging for blur state transitions",
+      "reason": "Helps diagnose timing issues in production"
+    }
+  ]
+}

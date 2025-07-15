@@ -1,0 +1,135 @@
+{
+  "diagnostic_timestamp": "2025-07-07T16:00:00Z",
+  "issue": "Desktop summary panel overlap with Lyra chat content",
+  "root_cause_analysis": {
+    "primary_issue": "Layout structure lacks proper isolation between summary panel and main content",
+    "contributing_factors": [
+      "No z-index management for overlapping elements",
+      "Fixed width summary panel without proper containment",
+      "Main content area not accounting for summary panel width"
+    ]
+  },
+  "current_css_positioning": {
+    "summary_panel": {
+      "container": {
+        "width": "w-80 (20rem)",
+        "flex": "flex-shrink-0",
+        "height": "h-full",
+        "overflow": "overflow-hidden",
+        "position": "relative (implicit)",
+        "z_index": "not specified"
+      },
+      "component_styles": {
+        "width": "w-full",
+        "border": "border-r-2",
+        "background": "bg-white",
+        "shadow": "shadow-xl",
+        "overflow": "overflow-y-auto"
+      }
+    },
+    "chat_content": {
+      "main_container": {
+        "flex": "flex-1",
+        "height": "h-screen",
+        "display": "flex flex-col",
+        "background": "bg-white",
+        "overflow": "overflow-hidden"
+      },
+      "content_area": {
+        "flex": "flex-1 flex",
+        "overflow": "overflow-hidden",
+        "layout": "flex-row gap-2"
+      },
+      "lyra_panel": {
+        "width": "w-[calc(50%-0.25rem)]",
+        "flex": "flex-shrink-0",
+        "border": "border-r",
+        "background": "bg-white"
+      }
+    }
+  },
+  "z_index_conflicts": {
+    "identified_issues": [
+      "Summary panel has no explicit z-index",
+      "Main content has no z-index management",
+      "Mobile overlay uses z-40 and z-50 but desktop doesn't use z-index",
+      "No stacking context isolation between panels"
+    ],
+    "mobile_z_indices": {
+      "menu_button": "z-50",
+      "overlay": "z-40",
+      "panel": "z-50"
+    },
+    "desktop_z_indices": {
+      "summary_panel": "not specified",
+      "main_content": "not specified",
+      "chat_panels": "not specified"
+    }
+  },
+  "css_classes_causing_overlap": {
+    "layout_container": {
+      "class": "h-screen flex overflow-hidden",
+      "issue": "No proper containment for child elements"
+    },
+    "summary_panel_wrapper": {
+      "class": "w-80 flex-shrink-0 h-full overflow-hidden",
+      "issue": "Missing position and z-index properties"
+    },
+    "main_content": {
+      "class": "flex-1 h-screen flex flex-col bg-white overflow-hidden",
+      "issue": "No isolation from adjacent summary panel"
+    }
+  },
+  "css_file_analysis": {
+    "maya-sidebyside-layout.css": {
+      "strengths": [
+        "Proper border-box sizing",
+        "Good flexbox structure",
+        "Mobile responsive design"
+      ],
+      "weaknesses": [
+        "No z-index management",
+        "Missing isolation properties",
+        "No stacking context definitions"
+      ]
+    },
+    "maya-journey-layout.css": {
+      "strengths": [
+        "Container queries for responsive design",
+        "Proper overflow protection",
+        "Safe area insets for mobile"
+      ],
+      "weaknesses": [
+        "Limited desktop layout protection",
+        "No z-index specifications"
+      ]
+    },
+    "minimal-ui.css": {
+      "relevant_properties": {
+        "shadows": "minimal shadows defined",
+        "transitions": "base transitions defined",
+        "z_index": "no z-index system defined"
+      }
+    }
+  },
+  "recommended_fixes": {
+    "immediate": [
+      "Add position: relative to summary panel container",
+      "Add z-index: 10 to summary panel",
+      "Add position: relative and z-index: 1 to main content",
+      "Add isolation: isolate to prevent stacking context issues"
+    ],
+    "comprehensive": [
+      "Implement proper z-index system across all components",
+      "Add contain: layout style to panels",
+      "Use CSS Grid instead of Flexbox for more predictable layouts",
+      "Add backdrop-filter management for overlapping elements"
+    ]
+  },
+  "specific_css_selectors": {
+    "summary_panel_container": "div.w-80.flex-shrink-0.h-full.overflow-hidden",
+    "main_content_area": "main.flex-1.h-screen.flex.flex-col.bg-white.overflow-hidden",
+    "chat_layout_container": "div.flex-1.flex.overflow-hidden",
+    "lyra_chat_panel": "div.flex.flex-col.bg-white.overflow-hidden.w-\\[calc\\(50\\%-0\\.25rem\\)\\]"
+  }
+}

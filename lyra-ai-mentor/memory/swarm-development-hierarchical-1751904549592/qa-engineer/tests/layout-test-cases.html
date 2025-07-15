@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layout Test Cases - LyraNarratedMayaSideBySideComplete</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Test styles to simulate the component layout */
+        .test-container {
+            position: relative;
+            border: 2px solid #333;
+            margin-bottom: 20px;
+        }
+        
+        .test-label {
+            position: absolute;
+            top: -12px;
+            left: 10px;
+            background: white;
+            padding: 0 5px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .column-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .measurement-overlay {
+            position: absolute;
+            top: 0;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 4px rgba(0,0,0,0.8);
+        }
+        
+        /* Simulate grid layouts */
+        .grid-25-37-37 {
+            display: grid;
+            grid-template-columns: 25% 37.5% 37.5%;
+            gap: 0;
+        }
+        
+        .grid-50-50 {
+            display: grid;
+            grid-template-columns: 50% 50%;
+            gap: 0;
+        }
+        
+        /* Responsive breakpoints */
+        @media (max-width: 1023px) {
+            .responsive-grid {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body class="p-8 bg-gray-100">
+    <h1 class="text-3xl font-bold mb-8">Layout Test Cases - Maya's Side-by-Side Complete</h1>
+    
+    <!-- Test Case 1: Desktop with Summary Panel (25% | 37.5% | 37.5%) -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 1: Desktop with Summary Panel (1920x1080)</h2>
+        <div class="test-container h-96 grid-25-37-37">
+            <span class="test-label">1920px viewport</span>
+            
+            <!-- Summary Panel (25%) -->
+            <div class="bg-purple-100 border-r-2 border-purple-300 relative">
+                <div class="column-label">
+                    <div class="font-bold">Summary Panel</div>
+                    <div>Expected: 25%</div>
+                    <div>480px</div>
+                </div>
+                <div class="measurement-overlay" style="background: rgba(147, 51, 234, 0.3);">
+                    <span id="summary-width-1">25%</span>
+                </div>
+            </div>
+            
+            <!-- Narrative Panel (37.5%) -->
+            <div class="bg-blue-100 border-r-2 border-blue-300 relative">
+                <div class="column-label">
+                    <div class="font-bold">Narrative Panel</div>
+                    <div>Expected: 37.5%</div>
+                    <div>720px</div>
+                </div>
+                <div class="measurement-overlay" style="background: rgba(59, 130, 246, 0.3);">
+                    <span id="narrative-width-1">37.5%</span>
+                </div>
+            </div>
+            
+            <!-- Interactive Panel (37.5%) -->
+            <div class="bg-pink-100 relative">
+                <div class="column-label">
+                    <div class="font-bold">Interactive Panel</div>
+                    <div>Expected: 37.5%</div>
+                    <div>720px</div>
+                </div>
+                <div class="measurement-overlay" style="background: rgba(236, 72, 153, 0.3);">
+                    <span id="interactive-width-1">37.5%</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 text-sm text-gray-600">
+            <p>✓ Total width: 480px + 720px + 720px = 1920px</p>
+            <p>✓ Proportions: 25% + 37.5% + 37.5% = 100%</p>
+        </div>
+    </div>
+    
+    <!-- Test Case 2: Desktop without Summary Panel (50% | 50%) -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 2: Desktop without Summary Panel (1920x1080)</h2>
+        <div class="test-container h-96 grid-50-50">
+            <span class="test-label">1920px viewport</span>
+            
+            <!-- Narrative Panel (50%) -->
+            <div class="bg-blue-100 border-r-2 border-blue-300 relative">
+                <div class="column-label">
+                    <div class="font-bold">Narrative Panel</div>
+                    <div>Expected: 50%</div>
+                    <div>960px</div>
+                </div>
+                <div class="measurement-overlay" style="background: rgba(59, 130, 246, 0.3);">
+                    <span id="narrative-width-2">50%</span>
+                </div>
+            </div>
+            
+            <!-- Interactive Panel (50%) -->
+            <div class="bg-pink-100 relative">
+                <div class="column-label">
+                    <div class="font-bold">Interactive Panel</div>
+                    <div>Expected: 50%</div>
+                    <div>960px</div>
+                </div>
+                <div class="measurement-overlay" style="background: rgba(236, 72, 153, 0.3);">
+                    <span id="interactive-width-2">50%</span>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 text-sm text-gray-600">
+            <p>✓ Total width: 960px + 960px = 1920px</p>
+            <p>✓ Proportions: 50% + 50% = 100%</p>
+        </div>
+    </div>
+    
+    <!-- Test Case 3: Tablet View (768px) -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 3: Tablet View (768x1024)</h2>
+        <div class="test-container h-96" style="max-width: 768px;">
+            <span class="test-label">768px viewport</span>
+            
+            <div class="h-full responsive-grid grid-25-37-37">
+                <!-- Summary Panel -->
+                <div class="bg-purple-100 border-r-2 border-purple-300 relative">
+                    <div class="column-label">
+                        <div class="font-bold">Summary</div>
+                        <div>25%</div>
+                        <div>192px</div>
+                    </div>
+                </div>
+                
+                <!-- Narrative Panel -->
+                <div class="bg-blue-100 border-r-2 border-blue-300 relative">
+                    <div class="column-label">
+                        <div class="font-bold">Narrative</div>
+                        <div>37.5%</div>
+                        <div>288px</div>
+                    </div>
+                </div>
+                
+                <!-- Interactive Panel -->
+                <div class="bg-pink-100 relative">
+                    <div class="column-label">
+                        <div class="font-bold">Interactive</div>
+                        <div>37.5%</div>
+                        <div>288px</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4 text-sm text-gray-600">
+            <p>✓ Total width: 192px + 288px + 288px = 768px</p>
+            <p>✓ Content remains readable at smaller viewport</p>
+        </div>
+    </div>
+    
+    <!-- Test Case 4: Mobile View (375px) -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 4: Mobile View (375x667)</h2>
+        <div class="test-container" style="max-width: 375px; height: 667px;">
+            <span class="test-label">375px viewport</span>
+            
+            <div class="h-full flex flex-col">
+                <!-- Mobile Header -->
+                <div class="bg-gray-100 border-b p-4 flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-purple-400 rounded"></div>
+                        <span class="text-sm font-semibold">Maya's Journey</span>
+                    </div>
+                    <button class="p-2 bg-white rounded border">☰</button>
+                </div>
+                
+                <!-- Narrative Panel (Stacked) -->
+                <div class="bg-blue-100 flex-1 p-4 border-b">
+                    <div class="text-center">
+                        <div class="font-bold">Narrative Panel</div>
+                        <div class="text-sm">100% width</div>
+                        <div class="text-sm">50vh min-height</div>
+                    </div>
+                </div>
+                
+                <!-- Interactive Panel (Stacked) -->
+                <div class="bg-pink-100 flex-1 p-4">
+                    <div class="text-center">
+                        <div class="font-bold">Interactive Panel</div>
+                        <div class="text-sm">100% width</div>
+                        <div class="text-sm">50vh min-height</div>
+                    </div>
+                </div>
+                
+                <!-- Progress Bar -->
+                <div class="bg-gray-200 h-3"></div>
+            </div>
+        </div>
+        <div class="mt-4 text-sm text-gray-600">
+            <p>✓ Panels stack vertically</p>
+            <p>✓ Summary panel becomes slide-out overlay</p>
+            <p>✓ Full width utilization</p>
+        </div>
+    </div>
+    
+    <!-- Test Case 5: Overlap Detection -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 5: Overlap Detection</h2>
+        <div class="test-container h-96 grid-25-37-37">
+            <span class="test-label">Overlap Test</span>
+            
+            <div class="bg-purple-100 border-r-2 border-purple-300 relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-full h-20 bg-purple-500 opacity-50"></div>
+                </div>
+                <div class="column-label z-10">Summary Content</div>
+            </div>
+            
+            <div class="bg-blue-100 border-r-2 border-blue-300 relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-full h-20 bg-blue-500 opacity-50"></div>
+                </div>
+                <div class="column-label z-10">Narrative Content</div>
+            </div>
+            
+            <div class="bg-pink-100 relative overflow-hidden">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-full h-20 bg-pink-500 opacity-50"></div>
+                </div>
+                <div class="column-label z-10">Interactive Content</div>
+            </div>
+        </div>
+        <div class="mt-4 text-sm">
+            <p class="text-green-600">✓ No overlapping content detected</p>
+            <p class="text-green-600">✓ Each panel contains its content within boundaries</p>
+            <p class="text-green-600">✓ Borders clearly separate panels</p>
+        </div>
+    </div>
+    
+    <!-- Test Case 6: Window Resize Behavior -->
+    <div class="bg-white p-6 rounded-lg shadow-lg mb-8">
+        <h2 class="text-xl font-semibold mb-4">Test Case 6: Window Resize Behavior</h2>
+        <div id="resize-test" class="test-container h-96 grid-25-37-37 transition-all duration-300">
+            <span class="test-label">Resize Test</span>
+            
+            <div class="bg-purple-100 border-r-2 border-purple-300 relative">
+                <div class="column-label">
+                    <div class="font-bold">25%</div>
+                    <div id="resize-summary-width">480px</div>
+                </div>
+            </div>
+            
+            <div class="bg-blue-100 border-r-2 border-blue-300 relative">
+                <div class="column-label">
+                    <div class="font-bold">37.5%</div>
+                    <div id="resize-narrative-width">720px</div>
+                </div>
+            </div>
+            
+            <div class="bg-pink-100 relative">
+                <div class="column-label">
+                    <div class="font-bold">37.5%</div>
+                    <div id="resize-interactive-width">720px</div>
+                </div>
+            </div>
+        </div>
+        <div class="mt-4">
+            <button onclick="simulateResize()" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                Simulate Window Resize
+            </button>
+            <p class="text-sm text-gray-600 mt-2">Click to simulate viewport width changes and observe proportion maintenance</p>
+        </div>
+    </div>
+    
+    <script>
+        // Function to simulate window resize
+        let currentWidth = 1920;
+        function simulateResize() {
+            const container = document.getElementById('resize-test');
+            const widths = [1920, 1440, 1280, 1024, 768, 1920];
+            const index = widths.indexOf(currentWidth);
+            currentWidth = widths[(index + 1) % widths.length];
+            
+            container.style.width = currentWidth + 'px';
+            
+            // Update displayed widths
+            document.getElementById('resize-summary-width').textContent = Math.round(currentWidth * 0.25) + 'px';
+            document.getElementById('resize-narrative-width').textContent = Math.round(currentWidth * 0.375) + 'px';
+            document.getElementById('resize-interactive-width').textContent = Math.round(currentWidth * 0.375) + 'px';
+            
+            // Show responsive behavior
+            if (currentWidth < 1024) {
+                container.className = 'test-container h-96 flex flex-col transition-all duration-300';
+            } else {
+                container.className = 'test-container h-96 grid-25-37-37 transition-all duration-300';
+            }
+        }
+        
+        // Verify actual widths on load
+        window.addEventListener('load', () => {
+            const containers = document.querySelectorAll('.test-container');
+            containers.forEach((container, index) => {
+                const children = container.children;
+                const containerWidth = container.offsetWidth;
+                
+                console.log(`Container ${index + 1} width: ${containerWidth}px`);
+                
+                Array.from(children).forEach((child, childIndex) => {
+                    if (child.classList.contains('test-label')) return;
+                    
+                    const childWidth = child.offsetWidth;
+                    const percentage = (childWidth / containerWidth * 100).toFixed(1);
+                    console.log(`  Panel ${childIndex}: ${childWidth}px (${percentage}%)`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

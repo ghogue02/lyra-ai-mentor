@@ -1,0 +1,109 @@
+{
+  "stateFlowAnalysis": {
+    "rootCause": "Incomplete stage array causing navigation to non-existent stages",
+    "currentStateMachine": {
+      "stages": [
+        {
+          "index": 0,
+          "id": "intro",
+          "title": "Meeting Maya Rodriguez",
+          "hasNarrativeMessages": true,
+          "messageCount": 3,
+          "blurState": "full",
+          "nextStageAction": "Button onClick={() => setCurrentStageIndex(1)}"
+        },
+        {
+          "index": 1,
+          "id": "final",
+          "title": "Journey Complete",
+          "hasNarrativeMessages": true,
+          "messageCount": 1,
+          "blurState": "clear",
+          "nextStageAction": "Button onClick={() => setCurrentStageIndex(0)}"
+        }
+      ],
+      "totalDefinedStages": 2,
+      "expectedStages": 9
+    },
+    "brokenTransitionPoints": [
+      {
+        "location": "Stage 0 (intro) Button",
+        "issue": "Attempts to navigate to index 1, but stage array only has 2 stages (0 and final)",
+        "result": "Either falls back to stage 0 or jumps to final stage, causing narrative repetition"
+      },
+      {
+        "location": "useEffect in LyraNarratedMayaSideBySideComplete (line 140)",
+        "issue": "When currentStageIndex changes to 1, it retrieves stages[1] which is the 'final' stage, not the expected next stage",
+        "result": "User experiences jumping from intro directly to completion"
+      }
+    ],
+    "unblurTriggerMechanisms": {
+      "working": {
+        "mechanism": "Message trigger system",
+        "implementation": "message.trigger === 'blur-clear' in typeMessage function",
+        "location": "hooks.ts lines 58-60",
+        "status": "FUNCTIONAL"
+      },
+      "issues": [
+        {
+          "problem": "Blur clears but no proper stage progression",
+          "cause": "Missing intermediate stages between intro and final"
+        }
+      ]
+    },
+    "timerIntervalIssues": [
+      {
+        "component": "processMessages",
+        "issue": "Recursive message processing continues only while isInitializedRef.current is true",
+        "location": "hooks.ts line 110",
+        "impact": "Messages stop processing when stage changes"
+      },
+      {
+        "component": "Stage loading effect",
+        "issue": "300ms delay before processing messages might cause race conditions",
+        "location": "LyraNarratedMayaSideBySideComplete.tsx line 128",
+        "impact": "Potential timing conflicts during rapid stage changes"
+      }
+    ],
+    "requiredFixes": [
+      {
+        "priority": "CRITICAL",
+        "fix": "Implement all 9 stages in stages.tsx as indicated by comments",
+        "stages": [
+          "Stage 2: PACE Framework - P is for Purpose",
+          "Stage 3: PACE Framework - A is for Audience",
+          "Stage 4: PACE Framework - C is for Connection",
+          "Stage 5: PACE Framework - E is for Execute",
+          "Stage 6: Tone Mastery Workshop",
+          "Stage 7: Template Library Builder",
+          "Stage 8: Difficult Conversations Guide",
+          "Stage 9: Subject Line Excellence"
+        ]
+      },
+      {
+        "priority": "HIGH",
+        "fix": "Add proper stage index validation",
+        "location": "currentStage calculation",
+        "implementation": "Ensure stages[currentStageIndex] always returns a valid stage"
+      },
+      {
+        "priority": "MEDIUM",
+        "fix": "Add stage transition guards",
+        "implementation": "Prevent navigation to non-existent stages"
+      }
+    ],
+    "stateFlowDiagram": {
+      "current": {
+        "flow": "Stage 0 (intro) -> Button Click -> Attempts Stage 1 -> Falls back to Stage 0 or jumps to Final",
+        "result": "Infinite loop or premature completion"
+      },
+      "expected": {
+        "flow": "Stage 0 (intro) -> Stage 1 (PACE-P) -> Stage 2 (PACE-A) -> ... -> Stage 8 (Subject Lines) -> Final",
+        "result": "Complete learning journey"
+      }
+    }
+  },
+  "timestamp": "2025-07-07T16:45:00Z",
+  "swarmRole": "state-engineer",
+  "swarmId": "swarm-development-hierarchical-1751910015977"
+}
