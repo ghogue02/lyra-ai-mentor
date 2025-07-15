@@ -9,6 +9,8 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { ChevronLeft, ChevronRight, BookOpen, CheckCircle, Clock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { TypewriterText } from '@/components/lesson/TypewriterText';
+import { InteractiveElementRenderer } from '@/components/lesson/interactive/InteractiveElementRenderer';
 
 interface LessonData {
   id: number;
@@ -31,6 +33,25 @@ interface ContentBlock {
   metadata: any;
 }
 
+interface InteractiveElement {
+  id: number;
+  type: string;
+  title: string;
+  content: string;
+  configuration: any;
+  order_index: number;
+  is_visible: boolean;
+  is_active: boolean;
+  is_gated: boolean;
+}
+
+interface LessonItem {
+  id: number;
+  type: 'content' | 'interactive';
+  order_index: number;
+  data: ContentBlock | InteractiveElement;
+}
+
 interface LessonProgress {
   completed: boolean;
   progress_percentage: number;
@@ -45,9 +66,12 @@ export const Lesson = () => {
   
   const [lesson, setLesson] = useState<LessonData | null>(null);
   const [contentBlocks, setContentBlocks] = useState<ContentBlock[]>([]);
+  const [interactiveElements, setInteractiveElements] = useState<InteractiveElement[]>([]);
+  const [lessonItems, setLessonItems] = useState<LessonItem[]>([]);
   const [progress, setProgress] = useState<LessonProgress | null>(null);
   const [loading, setLoading] = useState(true);
-  const [currentBlockIndex, setCurrentBlockIndex] = useState(0);
+  const [currentItemIndex, setCurrentItemIndex] = useState(0);
+  const [elementProgress, setElementProgress] = useState<{[key: number]: boolean}>({});
 
   useEffect(() => {
     if (lessonId) {
@@ -90,6 +114,38 @@ export const Lesson = () => {
         console.error('Error fetching content blocks:', blocksError);
       }
 
+      // Fetch interactive elements
+      const { data: elementsData, error: elementsError } = await supabase
+        .from('interactive_elements')
+        .select('*')
+        .eq('lesson_id', parseInt(lessonId))
+        .eq('is_visible', true)
+        .eq('is_active', true)
+        .order('order_index');
+
+      if (elementsError) {
+        console.error('Error fetching interactive elements:', elementsError);
+      }
+
+      // Fetch interactive element progress if user is logged in
+      if (user && elementsData) {
+        const { data: progressData, error: progressError } = await supabase
+          .from('interactive_element_progress')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('lesson_id', parseInt(lessonId));
+
+        if (progressError) {
+          console.error('Error fetching element progress:', progressError);
+        } else {
+          const progressMap = progressData.reduce((acc, item) => {
+            acc[item.interactive_element_id] = item.completed;
+            return acc;
+          }, {} as {[key: number]: boolean});
+          setElementProgress(progressMap);
+        }
+      }
+
       // Fetch progress if user is logged in
       if (user) {
         const { data: progressData, error: progressError } = await supabase
@@ -108,6 +164,25 @@ export const Lesson = () => {
 
       setLesson(lessonData);
       setContentBlocks(blocksData || []);
+      setInteractiveElements(elementsData || []);
+      
+      // Combine and sort content blocks and interactive elements
+      const allItems: LessonItem[] = [
+        ...(blocksData || []).map(block => ({
+          id: block.id,
+          type: 'content' as const,
+          order_index: block.order_index,
+          data: block
+        })),
+        ...(elementsData || []).map(element => ({
+          id: element.id,
+          type: 'interactive' as const,
+          order_index: element.order_index,
+          data: element
+        }))
+      ].sort((a, b) => a.order_index - b.order_index);
+      
+      setLessonItems(allItems);
     } catch (error) {
       console.error('Error:', error);
       toast({
@@ -142,18 +217,41 @@ export const Lesson = () => {
     }
   };
 
-  const handleNextBlock = () => {
-    if (currentBlockIndex < contentBlocks.length - 1) {
-      const nextIndex = currentBlockIndex + 1;
-      setCurrentBlockIndex(nextIndex);
-      const progressPercentage = Math.round(((nextIndex + 1) / contentBlocks.length) * 100);
+  const handleNextItem = () => {
+    if (currentItemIndex < lessonItems.length - 1) {
+      const nextIndex = currentItemIndex + 1;
+      setCurrentItemIndex(nextIndex);
+      const progressPercentage = Math.round(((nextIndex + 1) / lessonItems.length) * 100);
       updateProgress(progressPercentage);
     }
   };
 
-  const handlePrevBlock = () => {
-    if (currentBlockIndex > 0) {
-      setCurrentBlockIndex(currentBlockIndex - 1);
+  const handlePrevItem = () => {
+    if (currentItemIndex > 0) {
+      setCurrentItemIndex(currentItemIndex - 1);
+    }
+  };
+
+  const handleElementComplete = async (elementId: number) => {
+    if (!user || !lessonId) return;
+
+    try {
+      await supabase
+        .from('interactive_element_progress')
+        .upsert({
+          user_id: user.id,
+          lesson_id: parseInt(lessonId),
+          interactive_element_id: elementId,
+          completed: true,
+          completed_at: new Date().toISOString()
+        });
+
+      setElementProgress(prev => ({
+        ...prev,
+        [elementId]: true
+      }));
+    } catch (error) {
+      console.error('Error updating element progress:', error);
     }
   };
 
@@ -193,9 +291,12 @@ export const Lesson = () => {
     );
   }
 
-  const currentBlock = contentBlocks[currentBlockIndex];
-  const progressPercentage = contentBlocks.length > 0 ? 
-    Math.round(((currentBlockIndex + 1) / contentBlocks.length) * 100) : 0;
+  const currentItem = lessonItems[currentItemIndex];
+  const progressPercentage = lessonItems.length > 0 ? 
+    Math.round(((currentItemIndex + 1) / lessonItems.length) * 100) : 0;
+
+  // Check if this is lesson 5 (Maya's lesson) for special layout
+  const isMayaLesson = lesson?.id === 5;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
@@ -247,51 +348,135 @@ export const Lesson = () => {
         </div>
 
         {/* Content */}
-        {contentBlocks.length > 0 ? (
-          <div className="max-w-4xl mx-auto">
-            <Card className="mb-6">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <BookOpen className="w-5 h-5" />
-                  {currentBlock?.title || `Section ${currentBlockIndex + 1}`}
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="prose prose-purple max-w-none">
-                  <div dangerouslySetInnerHTML={{ __html: currentBlock?.content || '' }} />
-                </div>
-              </CardContent>
-            </Card>
+        {lessonItems.length > 0 ? (
+          isMayaLesson ? (
+            /* Maya's Lesson - Split Screen Layout */
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
+              {/* Left Side - Maya's Story */}
+              <div className="space-y-6">
+                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
+                  <CardHeader>
+                    <CardTitle className="text-purple-800">Maya's Story</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    {currentItem?.type === 'content' ? (
+                      <div className="prose prose-purple max-w-none">
+                        <h3 className="text-lg font-semibold mb-3 text-purple-700">
+                          {(currentItem.data as ContentBlock).title}
+                        </h3>
+                        <TypewriterText
+                          text={(currentItem.data as ContentBlock).content}
+                          speed={20}
+                          className="text-gray-700 leading-relaxed"
+                        />
+                      </div>
+                    ) : (
+                      <div className="text-center py-8">
+                        <BookOpen className="w-12 h-12 text-purple-400 mx-auto mb-3" />
+                        <p className="text-purple-600">Interactive element active</p>
+                      </div>
+                    )}
+                  </CardContent>
+                </Card>
+              </div>
 
-            {/* Navigation */}
-            <div className="flex justify-between items-center">
-              <Button
-                variant="outline"
-                onClick={handlePrevBlock}
-                disabled={currentBlockIndex === 0}
-              >
-                <ChevronLeft className="w-4 h-4 mr-2" />
-                Previous
-              </Button>
-              
-              <span className="text-sm text-gray-600">
-                {currentBlockIndex + 1} of {contentBlocks.length}
-              </span>
-              
-              <Button
-                onClick={handleNextBlock}
-                disabled={currentBlockIndex === contentBlocks.length - 1}
-              >
-                Next
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
+              {/* Right Side - Interactive Elements */}
+              <div className="space-y-6">
+                {currentItem?.type === 'interactive' ? (
+                  <InteractiveElementRenderer
+                    element={currentItem.data as InteractiveElement}
+                    lessonContext={{
+                      chapterTitle: "AI for Your Daily Work",
+                      lessonTitle: lesson.title,
+                      content: "Maya's Email Assistant Journey"
+                    }}
+                    isElementCompleted={elementProgress[(currentItem.data as InteractiveElement).id] || false}
+                    onComplete={() => handleElementComplete((currentItem.data as InteractiveElement).id)}
+                  />
+                ) : (
+                  <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
+                    <CardContent className="py-8">
+                      <div className="text-center">
+                        <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <BookOpen className="w-8 h-8 text-cyan-600" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-cyan-800 mb-2">
+                          Continue Reading
+                        </h3>
+                        <p className="text-cyan-600">
+                          Follow Maya's journey with AI-powered email communication
+                        </p>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
             </div>
-          </div>
+          ) : (
+            /* Regular Lesson Layout */
+            <div className="max-w-4xl mx-auto">
+              <Card className="mb-6">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <BookOpen className="w-5 h-5" />
+                    {currentItem?.type === 'content' 
+                      ? (currentItem.data as ContentBlock).title || `Section ${currentItemIndex + 1}`
+                      : (currentItem.data as InteractiveElement).title || `Interactive ${currentItemIndex + 1}`
+                    }
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {currentItem?.type === 'content' ? (
+                    <div className="prose prose-purple max-w-none">
+                      <div dangerouslySetInnerHTML={{ __html: (currentItem.data as ContentBlock).content || '' }} />
+                    </div>
+                  ) : (
+                    <InteractiveElementRenderer
+                      element={currentItem.data as InteractiveElement}
+                      lessonContext={{
+                        chapterTitle: "Course Content",
+                        lessonTitle: lesson.title,
+                        content: "Interactive Learning"
+                      }}
+                      isElementCompleted={elementProgress[(currentItem.data as InteractiveElement).id] || false}
+                      onComplete={() => handleElementComplete((currentItem.data as InteractiveElement).id)}
+                    />
+                  )}
+                </CardContent>
+              </Card>
+            </div>
+          )
         ) : (
           <div className="text-center py-12">
             <BookOpen className="w-16 h-16 text-gray-400 mx-auto mb-4" />
             <h2 className="text-xl font-semibold text-gray-600 mb-2">No content available</h2>
             <p className="text-gray-500">This lesson is still being prepared.</p>
+          </div>
+        )}
+
+        {/* Navigation */}
+        {lessonItems.length > 0 && (
+          <div className="flex justify-between items-center mt-8 max-w-4xl mx-auto">
+            <Button
+              variant="outline"
+              onClick={handlePrevItem}
+              disabled={currentItemIndex === 0}
+            >
+              <ChevronLeft className="w-4 h-4 mr-2" />
+              Previous
+            </Button>
+            
+            <span className="text-sm text-gray-600">
+              {currentItemIndex + 1} of {lessonItems.length}
+            </span>
+            
+            <Button
+              onClick={handleNextItem}
+              disabled={currentItemIndex === lessonItems.length - 1}
+            >
+              Next
+              <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
         )}
       </div>
