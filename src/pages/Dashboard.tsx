@@ -8,7 +8,10 @@ import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { JourneyTab } from '@/components/dashboard/JourneyTab';
 import { ProfileTab } from '@/components/dashboard/ProfileTab';
 import { supabase } from '@/integrations/supabase/client';
-import { GraduationCap, UserCircle, Code2 } from 'lucide-react';
+import { GraduationCap, UserCircle, Code2, Package, Trophy } from 'lucide-react';
+import { MyToolkit } from '@/components/MyToolkit';
+import { ProgressDashboard } from '@/components/ProgressDashboard';
+import { ProgressProvider } from '@/contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { getDashboardRocketUrls } from '@/utils/supabaseIcons';
 import { useToast } from '@/hooks/use-toast';
@@ -171,8 +174,9 @@ export const Dashboard = () => {
   const rocketUrls = getDashboardRocketUrls();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
-      <Navbar showAuthButtons={false} onSignOut={signOut} />
+    <ProgressProvider>
+      <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+        <Navbar showAuthButtons={false} onSignOut={signOut} />
       
       {/* Header Section - Fixed spacing to prevent header overlap */}
       <section className="container mx-auto px-4 pt-40 pb-8">
@@ -225,13 +229,27 @@ export const Dashboard = () => {
 
         {/* Tabbed Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger 
               value="journey" 
               className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white data-[state=active]:shadow-md"
             >
               <GraduationCap className="w-4 h-4" />
               Your Learning Journey
+            </TabsTrigger>
+            <TabsTrigger 
+              value="progress" 
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+            >
+              <Trophy className="w-4 h-4" />
+              Progress & Badges
+            </TabsTrigger>
+            <TabsTrigger 
+              value="toolkit" 
+              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+            >
+              <Package className="w-4 h-4" />
+              My Toolkit
             </TabsTrigger>
             <TabsTrigger value="profile" className="flex items-center gap-2">
               <UserCircle className="w-4 h-4" />
@@ -248,6 +266,14 @@ export const Dashboard = () => {
               onboardingComplete={onboardingComplete}
               onChapterClick={handleChapterClick}
             />
+          </TabsContent>
+
+          <TabsContent value="progress" className="space-y-8">
+            <ProgressDashboard />
+          </TabsContent>
+
+          <TabsContent value="toolkit" className="space-y-8">
+            <MyToolkit />
           </TabsContent>
 
           <TabsContent value="profile" className="space-y-8">
@@ -312,6 +338,7 @@ export const Dashboard = () => {
         </Tabs>
       </section>
     </div>
+    </ProgressProvider>
   );
 };
 
