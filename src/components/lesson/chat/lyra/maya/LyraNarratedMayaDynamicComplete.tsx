@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
+import { AIEmailComposerRenderer } from '@/components/lesson/interactive/AIEmailComposerRenderer';
 
 /**
  * Enhanced Maya Component with Dynamic PACE Integration
@@ -28,6 +29,9 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
     generated: '', 
     aiPrompt: ''
   });
+  
+  // Interactive element completion state
+  const [isElementCompleted, setIsElementCompleted] = useState(false);
 
   // Detect mobile
   useEffect(() => {
@@ -74,6 +78,12 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           type: 'lyra' as const,
           content: 'Let\'s watch Maya apply this framework to a real scenario. She needs to write an email to her board members about a new community program.',
           delay: 2000
+        },
+        {
+          id: 'pace-3',
+          type: 'lyra' as const,
+          content: 'Use the interactive email composer on the right to help Maya craft her message. Start by describing the email situation Maya needs to address.',
+          delay: 4000
         }
       ]
     },
@@ -96,6 +106,43 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       ]
     }
   ];
+
+  // Configuration for the interactive email composer
+  const emailComposerElement = {
+    id: 1,
+    title: "Maya's Email Mastery Workshop",
+    content: "Help Maya craft professional emails using the PACE framework",
+    configuration: {
+      character: "Maya Rodriguez",
+      phases: [
+        {
+          title: "Context & Purpose",
+          description: "Describe the email situation Maya needs to address",
+          duration: "5 minutes"
+        },
+        {
+          title: "Audience Analysis", 
+          description: "Identify who Maya is writing to and what they need",
+          duration: "3 minutes"
+        },
+        {
+          title: "Execution",
+          description: "Review and refine Maya's AI-generated email",
+          duration: "7 minutes"
+        }
+      ],
+      timeSavings: {
+        before: "45 min",
+        after: "12 min",
+        metric: "73% time saved"
+      }
+    }
+  };
+
+  const handleEmailComposerComplete = async () => {
+    setIsElementCompleted(true);
+    setCurrentStageIndex(2); // Move to completion stage
+  };
 
   const currentStage = stages[currentStageIndex];
 
@@ -180,7 +227,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Panel - Interactive Tools */}
+        {/* Right Panel - Interactive Email Composer */}
         <div className={cn(
           "w-96 bg-white/90 backdrop-blur-sm border-l border-purple-100 p-6 overflow-y-auto",
           isMobile && "fixed inset-y-0 right-0 z-40 transform transition-transform",
@@ -188,45 +235,33 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
         )}>
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Maya's PACE Framework</h3>
-              <div className="space-y-4">
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-                  <h4 className="font-medium text-purple-900 mb-2">Purpose</h4>
-                  <p className="text-sm text-purple-700">What do you want to achieve with this email?</p>
-                </div>
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-                  <h4 className="font-medium text-purple-900 mb-2">Audience</h4>
-                  <p className="text-sm text-purple-700">Who are you writing to and what do they need?</p>
-                </div>
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-                  <h4 className="font-medium text-purple-900 mb-2">Context</h4>
-                  <p className="text-sm text-purple-700">What background information is important?</p>
-                </div>
-                <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg">
-                  <h4 className="font-medium text-purple-900 mb-2">Execute</h4>
-                  <p className="text-sm text-purple-700">Write and send with confidence!</p>
-                </div>
-              </div>
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Interactive Workshop</h3>
+              <AIEmailComposerRenderer
+                element={emailComposerElement}
+                isElementCompleted={isElementCompleted}
+                onComplete={handleEmailComposerComplete}
+              />
             </div>
 
-            <div className="p-4 bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg border border-green-200">
-              <h4 className="font-medium text-green-900 mb-2">Maya's Progress</h4>
+            {/* PACE Framework Quick Reference */}
+            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+              <h4 className="font-medium text-purple-900 mb-3">PACE Framework Quick Reference</h4>
               <div className="space-y-2">
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-800">Identified her purpose</span>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-purple-800"><strong>Purpose:</strong> What you want to achieve</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-800">Analyzed her audience</span>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-purple-800"><strong>Audience:</strong> Who you're writing to</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-800">Gathered context</span>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-purple-800"><strong>Context:</strong> Background information</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                  <span className="text-sm text-green-800">Executed successfully</span>
+                  <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
+                  <span className="text-sm text-purple-800"><strong>Execute:</strong> Write with confidence</span>
                 </div>
               </div>
             </div>
