@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
-import { MayaEmailComposer } from '@/components/interactive/MayaEmailComposer';
+import { InteractiveElementRenderer } from '@/components/lesson/interactive/InteractiveElementRenderer';
+import { PromptBuilder } from './PromptBuilder';
 import { TypewriterText } from '@/components/lesson/TypewriterText';
 
 /**
@@ -25,14 +26,17 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
   const [isMobile, setIsMobile] = useState(false);
   const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
   
-  // Journey state
+  // Journey state for advanced PACE integration
   const [mayaJourney, setMayaJourney] = useState({
     purpose: '', 
-    audience: '', 
+    selectedAudience: null, 
     tone: '', 
     generated: '', 
     aiPrompt: ''
   });
+  
+  // Dynamic path state for real-time prompt building
+  const [dynamicPath, setDynamicPath] = useState(null);
   
   // Interactive element completion state
   const [isElementCompleted, setIsElementCompleted] = useState(false);
@@ -383,40 +387,76 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Panel - Interactive Email Composer */}
+        {/* Right Panel - Split Interactive Workshop */}
         <div className={cn(
-          "w-96 bg-white/90 backdrop-blur-sm border-l border-purple-100 p-6 overflow-y-auto",
-          isMobile && "fixed inset-y-0 right-0 z-40 transform transition-transform",
+          "w-1/2 bg-white/90 backdrop-blur-sm border-l border-purple-100 overflow-y-auto flex flex-col",
+          isMobile && "fixed inset-y-0 right-0 z-40 transform transition-transform w-full",
           isMobile && !isMobilePanelOpen && "translate-x-full"
         )}>
-          <div className="space-y-6">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-4">Interactive Workshop</h3>
-              <MayaEmailComposer
-                onComplete={handleEmailComposerComplete}
-                lessonContext={lessonContext}
-              />
+          {/* Top Section: Interactive PACE Workshop */}
+          <div className="flex-1 p-6 border-b border-purple-100">
+            <div className="flex items-center gap-2 mb-4">
+              <Target className="w-5 h-5 text-purple-600" />
+              <h3 className="text-lg font-semibold text-gray-900">Interactive PACE Workshop</h3>
             </div>
+            
+            <InteractiveElementRenderer
+              element={{
+                id: 1,
+                type: 'ai_email_composer',
+                title: 'Maya\'s Email Workshop',
+                content: 'Practice the PACE framework with Maya\'s guidance',
+                configuration: {
+                  character: 'maya',
+                  framework: 'pace',
+                  showPromptBuilder: true
+                },
+                order_index: 1,
+                is_visible: true,
+                is_active: true,
+                is_gated: false
+              }}
+              lessonContext={lessonContext}
+              isElementCompleted={isElementCompleted}
+              onComplete={async () => {
+                handleEmailComposerComplete();
+              }}
+            />
+          </div>
+
+          {/* Bottom Section: Real-time AI Prompt Builder */}
+          <div className="p-6">
+            <div className="flex items-center gap-2 mb-4">
+              <Sparkles className="w-5 h-5 text-purple-600" />
+              <h3 className="text-lg font-semibold text-gray-900">AI Prompt Builder</h3>
+            </div>
+            
+            <PromptBuilder
+              mayaJourney={mayaJourney}
+              dynamicPath={dynamicPath}
+              currentStageIndex={currentStageIndex}
+              className="w-full"
+            />
 
             {/* PACE Framework Quick Reference */}
-            <div className="p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
-              <h4 className="font-medium text-purple-900 mb-3">PACE Framework Quick Reference</h4>
-              <div className="space-y-2">
+            <div className="mt-6 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border border-purple-200">
+              <h4 className="font-medium text-purple-900 mb-3">PACE Framework</h4>
+              <div className="grid grid-cols-2 gap-2">
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span className="text-sm text-purple-800"><strong>Purpose:</strong> What you want to achieve</span>
+                  <span className="text-xs text-purple-800"><strong>P</strong>urpose</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span className="text-sm text-purple-800"><strong>Audience:</strong> Who you're writing to</span>
+                  <span className="text-xs text-purple-800"><strong>A</strong>udience</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span className="text-sm text-purple-800"><strong>Context:</strong> Background information</span>
+                  <span className="text-xs text-purple-800"><strong>C</strong>ontent</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                  <span className="text-sm text-purple-800"><strong>Execute:</strong> Write with confidence</span>
+                  <span className="text-xs text-purple-800"><strong>E</strong>xecute</span>
                 </div>
               </div>
             </div>
