@@ -6,6 +6,7 @@ import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, FastForward }
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { LyraAvatar } from '@/components/LyraAvatar';
+// Fixed FastForward import issue
 
 // Import types from the Maya component
 interface MayaJourneyState {
