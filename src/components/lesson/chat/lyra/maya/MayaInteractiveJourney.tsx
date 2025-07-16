@@ -7,16 +7,10 @@ import { ChevronRight, Sparkles, Play } from 'lucide-react';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
-import ProgressiveChallenge from './ProgressiveChallenge';
+import HelpMayaFirstAttempt from './HelpMayaFirstAttempt';
 import GuidedPractice from './GuidedPractice';
-import SharedSuccess from './SharedSuccess';
+import MayaSuccessStory from './MayaSuccessStory';
 
-interface Challenge {
-  description: string;
-  context: string;
-  emotions: string[];
-  urgency: 'low' | 'medium' | 'high';
-}
 
 interface PACEFramework {
   Purpose: string;
@@ -25,50 +19,34 @@ interface PACEFramework {
   Engagement: string;
 }
 
-interface Result {
-  challenge: string;
-  pace: PACEFramework;
-  prompt: string;
-  generatedContent?: string;
-}
 
 type JourneyPhase = 
   | 'intro'
   | 'maya-introduction'
   | 'maya-struggle'
-  | 'challenge-connection'
-  | 'maya-failed-attempt'
-  | 'user-first-attempt'
+  | 'help-maya-first-attempt'
   | 'elena-introduction'
   | 'maya-pace-building'
-  | 'user-pace-building'
-  | 'shared-success'
+  | 'maya-success-story'
   | 'personal-toolkit';
 
 const MayaInteractiveJourney: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<JourneyPhase>('intro');
-  const [userChallenge, setUserChallenge] = useState<Challenge | null>(null);
-  const [userFirstAttempt, setUserFirstAttempt] = useState<string>('');
-  const [mayaResult, setMayaResult] = useState<Result | null>(null);
-  const [userResult, setUserResult] = useState<Result | null>(null);
+  const [mayaFirstAttempt, setMayaFirstAttempt] = useState<string>('');
+  const [mayaPaceResult, setMayaPaceResult] = useState<PACEFramework | null>(null);
+  const [mayaPrompt, setMayaPrompt] = useState<string>('');
 
   // Maya's predefined journey data
-  const mayaChallenge: Challenge = {
-    description: "I need to write an email to my manager about missing a critical project deadline",
-    context: "The whole team is waiting for my deliverables, and I'm worried about looking unprofessional or making excuses",
-    emotions: ['frustrated', 'anxious', 'overwhelmed'],
-    urgency: 'high'
+  const mayaChallenge = "I need to write an email to my manager about missing a critical project deadline";
+  
+  const mayaFinalPace: PACEFramework = {
+    Purpose: "Inform my manager about the delay while maintaining credibility and providing clear next steps",
+    Audience: "My direct manager who values transparency and solution-oriented communication",
+    Connection: "Acknowledge the impact, show accountability, and demonstrate my commitment to the team",
+    Engagement: "Provide specific recovery timeline, concrete actions, and request support if needed"
   };
 
-  const mayaPaceResult: Result = {
-    challenge: mayaChallenge.description,
-    pace: {
-      Purpose: "Inform my manager about the delay while maintaining credibility and providing clear next steps",
-      Audience: "My direct manager who values transparency and solution-oriented communication",
-      Connection: "Acknowledge the impact, show accountability, and demonstrate my commitment to the team",
-      Engagement: "Provide specific recovery timeline, concrete actions, and request support if needed"
-    },
-    prompt: `Write a professional email to my manager about missing a project deadline.
+  const mayaFinalPrompt = `Write a professional email to my manager about missing a project deadline.
 
 Purpose: Inform my manager about the delay while maintaining credibility and providing clear next steps
 Audience: My direct manager who values transparency and solution-oriented communication  
@@ -82,9 +60,7 @@ Please craft an email that:
 4. Includes a specific recovery plan with timelines
 5. Requests appropriate support or resources if needed
 
-Keep the tone professional but genuine, and focus on solutions rather than problems.`,
-    generatedContent: "Hi [Manager's Name],\n\nI wanted to reach out immediately regarding the project deliverables that were due today. I need to inform you that I will not be able to meet this deadline, and I take full responsibility for this delay.\n\nI understand this impacts the team's timeline and apologize for any inconvenience this may cause. Here's my plan to get back on track:\n\n• I will have the deliverables completed by [specific date]\n• I'm prioritizing this work above all other tasks\n• I've identified the bottlenecks and have a clear path forward\n\nIf there are any resources or support that could help expedite this, please let me know. I'm committed to ensuring this doesn't happen again.\n\nThank you for your understanding.\n\nBest regards,\nMaya"
-  };
+Keep the tone professional but genuine, and focus on solutions rather than problems.`;
 
   const narrativeMessages = {
     introduction: [
@@ -158,36 +134,18 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     ]
   };
 
-  const handleChallengeSubmit = (challenge: Challenge) => {
-    setUserChallenge(challenge);
-    setCurrentPhase('maya-failed-attempt');
-  };
-
-  const handleFirstAttempt = (attempt: string) => {
-    setUserFirstAttempt(attempt);
+  const handleMayaFirstAttempt = (attempt: string) => {
+    setMayaFirstAttempt(attempt);
     setCurrentPhase('elena-introduction');
   };
 
   const handleMayaPaceComplete = (pace: PACEFramework, prompt: string) => {
-    setMayaResult({
-      challenge: mayaChallenge.description,
-      pace,
-      prompt,
-      generatedContent: mayaPaceResult.generatedContent
-    });
-    setCurrentPhase('user-pace-building');
+    setMayaPaceResult(pace);
+    setMayaPrompt(prompt);
+    setCurrentPhase('maya-success-story');
   };
 
-  const handleUserPaceComplete = (pace: PACEFramework, prompt: string) => {
-    setUserResult({
-      challenge: userChallenge?.description || '',
-      pace,
-      prompt
-    });
-    setCurrentPhase('shared-success');
-  };
-
-  const handleSharedSuccessComplete = () => {
+  const handleMayaSuccessComplete = () => {
     setCurrentPhase('personal-toolkit');
   };
 
@@ -219,10 +177,10 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mb-8">
               {[
-                { title: 'Maya\'s Story', desc: 'Watch her 2-hour email battle', color: 'from-red-50 to-red-100' },
-                { title: 'Your Challenge', desc: 'Connect with your own situation', color: 'from-blue-50 to-blue-100' },
+                { title: 'Maya\'s Struggle', desc: 'Watch her 2-hour email battle', color: 'from-red-50 to-red-100' },
+                { title: 'Help Maya', desc: 'Guide her through AI prompting', color: 'from-blue-50 to-blue-100' },
                 { title: 'Learn PACE', desc: 'Master the framework together', color: 'from-green-50 to-green-100' },
-                { title: 'Build Together', desc: 'Create your personalized toolkit', color: 'from-purple-50 to-purple-100' }
+                { title: 'Maya\'s Success', desc: 'See her amazing transformation', color: 'from-purple-50 to-purple-100' }
               ].map((item, index) => (
                 <Card key={index} className={`bg-gradient-to-br ${item.color} border-0`}>
                   <CardContent className="p-4 text-center">
@@ -258,74 +216,23 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
         return (
           <NarrativeManager
             messages={narrativeMessages.struggle}
-            onComplete={() => setCurrentPhase('challenge-connection')}
+            onComplete={() => setCurrentPhase('help-maya-first-attempt')}
             autoAdvance={false}
           />
         );
 
-      case 'challenge-connection':
+      case 'help-maya-first-attempt':
         return (
           <InteractionGateway
-            title="Your Challenge Connection"
-            description="Maya's struggle sounds familiar, doesn't it? Let's identify your own communication challenge."
-            stage="reflection"
-            showEmotionalSupport={true}
-            supportMessage="Don't worry - you're not alone in this! Maya felt exactly the same way."
-          >
-            <ProgressiveChallenge
-              onChallengeSubmit={handleChallengeSubmit}
-              showComparison={true}
-              mayaChallenge={mayaChallenge}
-            />
-          </InteractionGateway>
-        );
-
-      case 'maya-failed-attempt':
-        return (
-          <NarrativeManager
-            messages={narrativeMessages.failedAttempt}
-            onComplete={() => setCurrentPhase('user-first-attempt')}
-            autoAdvance={false}
-          />
-        );
-
-      case 'user-first-attempt':
-        return (
-          <InteractionGateway
-            title="Your First Attempt"
-            description="Just like Maya, let's see what happens when you try a basic prompt with your challenge."
+            title="Help Maya with Her First Attempt"
+            description="Maya is about to try AI for the first time. Let's help her figure out what to ask for."
             stage="practice"
             showEmotionalSupport={true}
-            supportMessage="Remember, this is supposed to be imperfect - that's the whole point!"
+            supportMessage="Remember, Maya doesn't know about good prompting yet - she'll try something basic!"
           >
-            <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200">
-              <CardContent className="p-6">
-                <div className="space-y-4">
-                  <div>
-                    <h3 className="font-semibold mb-2">Try a basic prompt:</h3>
-                    <p className="text-sm text-gray-600 mb-4">
-                      Type a simple request like Maya did. Don't worry about making it perfect - we want to see what happens!
-                    </p>
-                    <div className="bg-white p-3 rounded-lg border">
-                      <input
-                        type="text"
-                        placeholder="e.g., 'Write an email about...'"
-                        className="w-full border-none outline-none"
-                        value={userFirstAttempt}
-                        onChange={(e) => setUserFirstAttempt(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <Button
-                    onClick={() => handleFirstAttempt(userFirstAttempt)}
-                    disabled={!userFirstAttempt.trim()}
-                    className="w-full"
-                  >
-                    See What Happens
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <HelpMayaFirstAttempt
+              onAttemptComplete={handleMayaFirstAttempt}
+            />
           </InteractionGateway>
         );
 
@@ -346,40 +253,20 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             stage="practice"
           >
             <GuidedPractice
-              challenge={mayaChallenge.description}
+              challenge={mayaChallenge}
               onPracticeComplete={handleMayaPaceComplete}
               showMayaExample={false}
             />
           </InteractionGateway>
         );
 
-      case 'user-pace-building':
+      case 'maya-success-story':
+        if (!mayaPaceResult || !mayaPrompt) return null;
         return (
-          <InteractionGateway
-            title="Build Your Own PACE Prompt"
-            description="Now it's your turn! Use the PACE framework to create your personalized prompt."
-            stage="practice"
-          >
-            <GuidedPractice
-              challenge={userChallenge?.description || ''}
-              onPracticeComplete={handleUserPaceComplete}
-              showMayaExample={true}
-              mayaExample={mayaResult ? {
-                challenge: mayaResult.challenge,
-                pace: mayaResult.pace,
-                prompt: mayaResult.prompt
-              } : undefined}
-            />
-          </InteractionGateway>
-        );
-
-      case 'shared-success':
-        if (!mayaResult || !userResult) return null;
-        return (
-          <SharedSuccess
-            mayaResult={mayaResult}
-            userResult={userResult}
-            onContinue={handleSharedSuccessComplete}
+          <MayaSuccessStory
+            mayaPaceResult={mayaPaceResult}
+            mayaPrompt={mayaPrompt}
+            onContinue={handleMayaSuccessComplete}
           />
         );
 
@@ -396,10 +283,10 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
               </div>
               
               <div>
-                <h2 className="text-3xl font-bold mb-4">Your Personal Toolkit Awaits!</h2>
+                <h2 className="text-3xl font-bold mb-4">Your AI Communication Toolkit!</h2>
                 <p className="text-xl text-gray-600 mb-8">
-                  You've completed Maya's journey and mastered the PACE framework. 
-                  Ready to build your personalized prompt engineering toolkit?
+                  By helping Maya master the PACE framework, you've learned how to create powerful AI prompts. 
+                  Ready to apply this knowledge to your own challenges?
                 </p>
               </div>
 
@@ -411,11 +298,11 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
                       <div className="space-y-2 text-left">
                         <div className="flex items-center gap-2">
                           <Badge className="bg-green-600">✓</Badge>
-                          <span>Connected with Maya's story</span>
+                          <span>Followed Maya's journey</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge className="bg-green-600">✓</Badge>
-                          <span>Identified your unique challenge</span>
+                          <span>Helped Maya solve her challenge</span>
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge className="bg-green-600">✓</Badge>
@@ -423,7 +310,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
                         </div>
                         <div className="flex items-center gap-2">
                           <Badge className="bg-green-600">✓</Badge>
-                          <span>Built your personalized prompt</span>
+                          <span>Witnessed Maya's transformation</span>
                         </div>
                       </div>
                     </div>
