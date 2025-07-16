@@ -12,7 +12,7 @@ serve(async (req) => {
   }
 
   try {
-    const { purpose, audience, selectedConsiderations, promptType } = await req.json();
+    const { purpose, audience, selectedConsiderations, promptType, userPrompt } = await req.json();
     
     const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
     if (!openAIApiKey) {
@@ -20,7 +20,7 @@ serve(async (req) => {
     }
 
     // Create basic vs comprehensive prompts
-    const basicPrompt = "Write a board email about summer program";
+    const basicPrompt = userPrompt || "Write an email about missing a deadline";
     
     const comprehensivePrompt = `You are Maya Rodriguez, Communications Director at Hope Valley Youth Center. Write a compelling board email about our summer program success.
 
@@ -66,7 +66,9 @@ Write this email as Maya would - passionate about the mission, knowledgeable abo
         messages: [
           {
             role: 'system',
-            content: 'You are an expert email writer helping Maya Rodriguez communicate effectively with her board.'
+            content: promptType === 'basic' 
+              ? 'You are a basic AI assistant. Generate a generic, impersonal email that lacks context and emotional connection. The email should be cold, brief, and unhelpful - typical of what someone gets with a very basic prompt.'
+              : 'You are an expert email writer helping Maya Rodriguez communicate effectively with her board.'
           },
           {
             role: 'user',

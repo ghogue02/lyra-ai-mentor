@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { MessageCircle, AlertCircle, Users, Target } from 'lucide-react';
+import { MessageCircle, AlertCircle, Users, Target, Loader2 } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface HelpMayaFirstAttemptProps {
   onAttemptComplete: (prompt: string) => void;
@@ -15,17 +16,47 @@ const HelpMayaFirstAttempt: React.FC<HelpMayaFirstAttemptProps> = ({
 }) => {
   const [userSuggestion, setUserSuggestion] = useState('');
   const [step, setStep] = useState<'instruction' | 'input' | 'result'>('instruction');
+  const [generatedEmail, setGeneratedEmail] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [showContinueButton, setShowContinueButton] = useState(false);
 
   const mayaChallenge = "I need to write an email to my manager about missing a critical project deadline";
+
+  const generateBasicEmail = async (prompt: string) => {
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('maya-prompt-builder', {
+        body: {
+          purpose: 'addressing a missed deadline',
+          audience: 'my manager',
+          selectedConsiderations: ['professional tone', 'accountability'],
+          promptType: 'basic',
+          userPrompt: prompt
+        }
+      });
+
+      if (error) throw error;
+      
+      setGeneratedEmail(data.email || 'Error generating email');
+    } catch (error) {
+      console.error('Error generating email:', error);
+      setGeneratedEmail('Sorry, I apologize for the delay. I will submit the project soon.');
+    } finally {
+      setIsGenerating(false);
+      // Show continue button after 5 seconds or when user finishes reading
+      setTimeout(() => setShowContinueButton(true), 5000);
+    }
+  };
 
   const handleSubmit = () => {
     if (userSuggestion.trim()) {
       setStep('result');
-      // After showing result, proceed to next phase
-      setTimeout(() => {
-        onAttemptComplete(userSuggestion);
-      }, 3000);
+      generateBasicEmail(userSuggestion);
     }
+  };
+
+  const handleContinue = () => {
+    onAttemptComplete(userSuggestion);
   };
 
   const renderStep = () => {
@@ -142,11 +173,17 @@ const HelpMayaFirstAttempt: React.FC<HelpMayaFirstAttemptProps> = ({
           <div className="space-y-6">
             <div className="text-center">
               <div className="w-16 h-16 bg-gradient-to-br from-red-500 to-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                <AlertCircle className="w-8 h-8 text-white" />
+                {isGenerating ? (
+                  <Loader2 className="w-8 h-8 text-white animate-spin" />
+                ) : (
+                  <AlertCircle className="w-8 h-8 text-white" />
+                )}
               </div>
-              <h3 className="text-xl font-bold mb-2">Maya's Result... Not Great</h3>
+              <h3 className="text-xl font-bold mb-2">
+                {isGenerating ? "Generating Maya's Email..." : "Maya's Result... Not Great"}
+              </h3>
               <p className="text-gray-600">
-                Let's see what happened when Maya tried her basic prompt
+                {isGenerating ? "The AI is working on Maya's basic prompt..." : "Let's see what happened when Maya tried her basic prompt"}
               </p>
             </div>
 
@@ -161,53 +198,59 @@ const HelpMayaFirstAttempt: React.FC<HelpMayaFirstAttemptProps> = ({
                 <div className="bg-gray-100 p-3 rounded-lg mb-4">
                   <p className="text-sm font-mono">"{userSuggestion}"</p>
                 </div>
-                <div className="space-y-4">
-                  <div>
-                    <h4 className="font-semibold text-sm mb-2">AI Generated Result:</h4>
-                    <div className="bg-white p-4 rounded-lg border">
-                      <p className="text-sm text-gray-700">
-                        Subject: Project Deadline Update
-                        <br /><br />
-                        Dear Manager,
-                        <br /><br />
-                        I am writing to inform you that I will not be able to meet the project deadline. I apologize for any inconvenience this may cause.
-                        <br /><br />
-                        Thank you for your understanding.
-                        <br /><br />
-                        Best regards,
-                        Maya
+                
+                {!isGenerating && (
+                  <div className="space-y-4">
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">AI Generated Result:</h4>
+                      <div className="bg-white p-4 rounded-lg border">
+                        <p className="text-sm text-gray-700 whitespace-pre-line">
+                          {generatedEmail}
+                        </p>
+                      </div>
+                    </div>
+                    
+                    <div className="bg-red-100 p-4 rounded-lg">
+                      <h4 className="font-semibold text-red-800 mb-2">😰 Maya's reaction:</h4>
+                      <p className="text-sm text-red-700">
+                        "This is terrible! It's so generic and cold. It doesn't explain WHY I'm late, what I'm doing about it, or show that I care about the team. My manager will think I don't take this seriously!"
                       </p>
                     </div>
-                  </div>
-                  
-                  <div className="bg-red-100 p-4 rounded-lg">
-                    <h4 className="font-semibold text-red-800 mb-2">😰 Maya's reaction:</h4>
-                    <p className="text-sm text-red-700">
-                      "This is terrible! It's so generic and cold. It doesn't explain WHY I'm late, what I'm doing about it, or show that I care about the team. My manager will think I don't take this seriously!"
-                    </p>
-                  </div>
 
-                  <div className="bg-yellow-100 p-4 rounded-lg">
-                    <h4 className="font-semibold text-yellow-800 mb-2">🤔 What went wrong:</h4>
-                    <div className="text-sm text-yellow-700 space-y-1">
-                      <p>• No context about Maya's specific situation</p>
-                      <p>• No information about her manager's communication style</p>
-                      <p>• No emotional connection or accountability</p>
-                      <p>• No specific next steps or solutions</p>
+                    <div className="bg-yellow-100 p-4 rounded-lg">
+                      <h4 className="font-semibold text-yellow-800 mb-2">🤔 What went wrong:</h4>
+                      <div className="text-sm text-yellow-700 space-y-1">
+                        <p>• No context about Maya's specific situation</p>
+                        <p>• No information about her manager's communication style</p>
+                        <p>• No emotional connection or accountability</p>
+                        <p>• No specific next steps or solutions</p>
+                      </div>
                     </div>
                   </div>
-                </div>
+                )}
               </CardContent>
             </Card>
 
-            <div className="text-center">
-              <Badge className="bg-blue-100 text-blue-800 mb-4">
-                Maya is learning that basic prompts give basic results...
-              </Badge>
-              <p className="text-sm text-gray-600">
-                Continuing in 3 seconds...
-              </p>
-            </div>
+            {!isGenerating && (
+              <div className="text-center space-y-4">
+                <Badge className="bg-blue-100 text-blue-800">
+                  Maya is learning that basic prompts give basic results...
+                </Badge>
+                
+                {showContinueButton ? (
+                  <Button
+                    onClick={handleContinue}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                  >
+                    Continue to Learn Better Prompting
+                  </Button>
+                ) : (
+                  <p className="text-sm text-gray-600">
+                    Take your time to read Maya's experience...
+                  </p>
+                )}
+              </div>
+            )}
           </div>
         );
 
