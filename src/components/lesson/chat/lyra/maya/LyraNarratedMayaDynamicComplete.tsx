@@ -179,7 +179,42 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       ]
     },
 
-    // Stage 2: Purpose Selection
+    // Stage 2: The Problem
+    {
+      id: 'problem',
+      title: 'The Communication Struggle',
+      component: (
+        <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="w-16 h-16 rounded-full bg-gradient-to-br from-red-400 to-orange-400 flex items-center justify-center mb-6 shadow-lg"
+          >
+            <Zap className="w-8 h-8 text-white" />
+          </motion.div>
+          <h2 className="text-2xl font-semibold mb-4">The Endless Cycle</h2>
+          <p className="text-gray-600 mb-8 max-w-md">
+            Sound familiar? You're not alone in this struggle.
+          </p>
+          <Button 
+            onClick={() => setCurrentStageIndex(2)}
+            className="bg-gradient-to-r from-orange-600 to-red-600 hover:from-orange-700 hover:to-red-700"
+          >
+            Continue <ChevronRight className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      ),
+      narrativeMessages: [
+        {
+          id: 'problem-1',
+          content: "Maya's cursor blinks mockingly. She's written three different openings and deleted them all. The board meeting is tomorrow morning, and she knows this update could influence their decision about next year's funding. The pressure mounts: Should she be formal? Casual? How much detail is too much?",
+          delay: 500,
+        }
+      ]
+    },
+
+    // Stage 3: Purpose Selection
     {
       id: 'purpose-dynamic',
       title: 'Choose Your Purpose',
@@ -211,7 +246,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
                 transition={{ delay: index * 0.1 }}
                 onClick={() => {
                   setMayaJourney(prev => ({ ...prev, purpose: purpose.id }));
-                  setCurrentStageIndex(2);
+                  setCurrentStageIndex(3);
                 }}
                 className={cn(
                   "p-6 rounded-xl border-2 text-left transition-all duration-300",
@@ -257,22 +292,108 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       ]
     },
 
-    // More stages would follow here...
+    // Stage 4: Audience Discovery
+    {
+      id: 'audience',
+      title: 'Understanding Your Audience',
+      component: (
+        <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="w-16 h-16 rounded-full bg-gradient-to-br from-blue-400 to-cyan-400 flex items-center justify-center mb-6 shadow-lg"
+          >
+            <Users className="w-8 h-8 text-white" />
+          </motion.div>
+          <h2 className="text-2xl font-semibold mb-4">Who Are You Writing To?</h2>
+          <p className="text-gray-600 mb-8 max-w-md">
+            Maya learned that knowing your audience changes everything.
+          </p>
+          <Button 
+            onClick={() => setCurrentStageIndex(4)}
+            className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700"
+          >
+            Continue <ChevronRight className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      ),
+      narrativeMessages: [
+        {
+          id: 'audience-1',
+          content: "Maya stops typing and thinks about her board members. There's Dr. Williams, who loves data and outcomes. Sarah, who joined because her daughter went through the program. And Marcus, the businessman who always asks about sustainability. Same information, but they each need to hear it differently.",
+          delay: 500,
+        }
+      ]
+    },
+
+    // Stage 5: Crafting the Message
+    {
+      id: 'crafting',
+      title: 'The PACE Framework',
+      component: (
+        <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="w-16 h-16 rounded-full bg-gradient-to-br from-green-400 to-emerald-400 flex items-center justify-center mb-6 shadow-lg"
+          >
+            <Lightbulb className="w-8 h-8 text-white" />
+          </motion.div>
+          <h2 className="text-2xl font-semibold mb-4">Putting It All Together</h2>
+          <p className="text-gray-600 mb-8 max-w-md">
+            Purpose + Audience + Connection + Engagement = PACE
+          </p>
+          <Button 
+            onClick={() => setCurrentStageIndex(5)}
+            className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+          >
+            Continue <ChevronRight className="w-4 h-4 ml-2" />
+          </Button>
+        </div>
+      ),
+      narrativeMessages: [
+        {
+          id: 'crafting-1',
+          content: "Maya takes a deep breath and starts writing with Elena's voice in her head: 'Start with why this matters to you.' She begins: 'Yesterday, I watched 12-year-old Jordan finally smile after weeks in our program. That's when I knew we had to tell you about the magic happening here.' The words flow naturally now.",
+          delay: 500,
+        }
+      ]
+    },
+
+    // Stage 6: Transformation Complete
     {
       id: 'completion',
       title: 'Your Perfect Email',
       component: (
         <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <motion.div 
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ duration: 0.6 }}
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center mb-6 shadow-lg"
+          >
+            <Star className="w-10 h-10 text-white" />
+          </motion.div>
           <h2 className="text-2xl font-semibold mb-4">Congratulations!</h2>
-          <p className="text-gray-600 mb-8">
+          <p className="text-gray-600 mb-8 max-w-md">
             You've completed Maya's PACE Framework journey.
           </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-sm text-gray-500 italic"
+          >
+            "From paralyzed to powerful in 6 simple steps"
+          </motion.div>
         </div>
       ),
       narrativeMessages: [
         {
           id: 'completion',
-          content: "Congratulations! You've experienced Maya's transformation firsthand. The PACE framework isn't just theory - it's a practical approach that has helped thousands of communicators find their voice and connect authentically with their audiences.",
+          content: "Congratulations! You've experienced Maya's transformation firsthand. The PACE framework isn't just theory - it's a practical approach that has helped thousands of communicators find their voice and connect authentically with their audiences. Maya's 3-hour struggle became a 20-minute masterpiece.",
           delay: 500,
         }
       ]
@@ -356,52 +477,63 @@ Let me show you exactly how this works through my own story...`,
   const totalStages = dynamicStages.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 flex">
       {/* Left Panel - Maya's Story */}
       <div className="lg:w-3/5 flex flex-col">
-        <Card className="flex-1 rounded-none border-0 bg-white shadow-lg">
-          <CardHeader className="border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
+        <Card className="flex-1 rounded-none border-0 bg-white shadow-xl">
+          <CardHeader className="border-b border-border bg-gradient-to-r from-purple-100 via-pink-100 to-blue-100">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-4">
                 <LyraAvatar 
-                  size="sm" 
+                  size="md" 
                   expression={lyraExpression}
-                  className="flex-shrink-0"
+                  className="flex-shrink-0 shadow-lg"
                 />
                 <div>
-                  <CardTitle className="text-2xl text-primary">Maya's Communication Journey</CardTitle>
+                  <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                    👋 Maya's Dynamic Communication Journey
+                  </CardTitle>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Discover the PACE Framework through Maya's personal story
+                    Complete Chapter 2 with Dynamic PACE
                   </p>
                 </div>
               </div>
-              {showSkipButton && (
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  onClick={skipTyping}
-                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-orange-500 hover:border-orange-600"
-                >
-                  <FastForward className="w-4 h-4 mr-2" />
-                  Fast Forward
-                </Button>
-              )}
+              <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-lg shadow-sm">
+                  <span className="text-sm font-medium text-purple-600">
+                    {currentStageIndex + 1}/{totalStages}
+                  </span>
+                  <Star className="w-4 h-4 text-yellow-500 fill-current" />
+                  <span className="text-sm text-green-600">0/5 skills</span>
+                </div>
+                {showSkipButton && (
+                  <Button 
+                    variant="outline" 
+                    size="sm" 
+                    onClick={skipTyping}
+                    className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-orange-500 hover:border-orange-600 shadow-lg"
+                  >
+                    <FastForward className="w-4 h-4 mr-2" />
+                    Fast Forward
+                  </Button>
+                )}
+              </div>
             </div>
           </CardHeader>
           
           {/* Progress indicator */}
-          <div className="mb-6">
-            <div className="flex items-center justify-between mb-2">
-              <span className="text-sm font-medium text-muted-foreground">
-                Stage {currentStageIndex + 1} of {totalStages}
+          <div className="px-8 pt-6 pb-4">
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-sm font-medium text-purple-600">
+                🌟 Lyra's Dynamic Journey Guidance
               </span>
               <span className="text-sm text-muted-foreground">
-                Maya's Story
+                Meeting Maya Rodriguez
               </span>
             </div>
-            <div className="w-full bg-muted rounded-full h-1.5">
+            <div className="w-full bg-gradient-to-r from-purple-100 to-pink-100 rounded-full h-2">
               <div 
-                className="bg-gradient-to-r from-primary to-primary/80 h-1.5 rounded-full transition-all duration-500 ease-out"
+                className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full transition-all duration-500 ease-out shadow-sm"
                 style={{ width: `${((currentStageIndex + 1) / totalStages) * 100}%` }}
               />
             </div>
@@ -410,12 +542,12 @@ Let me show you exactly how this works through my own story...`,
           <CardContent className="flex-1 p-8 space-y-6">
             {/* Story Content */}
             <div className="max-w-4xl mx-auto">
-              <div className="bg-gradient-to-br from-slate-50 to-white rounded-xl p-8 border border-slate-200 shadow-sm">
+              <div className="bg-gradient-to-br from-purple-50 to-pink-50 rounded-xl p-8 border border-purple-200 shadow-lg">
                 <div className="prose prose-lg max-w-none">
-                  <div className="text-slate-700 leading-relaxed whitespace-pre-line">
+                  <div className="text-slate-700 leading-relaxed whitespace-pre-line font-medium">
                     {displayedText}
                     {isTyping && (
-                      <span className="inline-block w-3 h-6 bg-primary ml-1 animate-pulse" />
+                      <span className="inline-block w-3 h-6 bg-purple-500 ml-1 animate-pulse rounded-sm" />
                     )}
                   </div>
                 </div>
