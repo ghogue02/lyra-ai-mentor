@@ -38,6 +38,15 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   const [showInteraction, setShowInteraction] = useState(false);
   const [currentInteraction, setCurrentInteraction] = useState<string | null>(null);
 
+  // Debug logging
+  console.log('NarrativeManager render:', {
+    currentMessageIndex,
+    isTyping,
+    showInteraction,
+    shouldShowBackButton: currentMessageIndex > 0,
+    messagesLength: messages.length
+  });
+
   const currentMessage = messages[currentMessageIndex];
   const isLastMessage = currentMessageIndex === messages.length - 1;
 
@@ -83,6 +92,12 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   }, [currentMessage, autoAdvance, isLastMessage]);
 
   const handleAdvance = () => {
+    console.log('handleAdvance called:', { 
+      currentMessageIndex, 
+      showInteraction, 
+      messagesLength: messages.length 
+    });
+    
     if (showInteraction) {
       setShowInteraction(false);
       setCurrentInteraction(null);
@@ -93,14 +108,22 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
 
     if (currentMessageIndex < messages.length - 1) {
+      console.log('Advancing to next message:', currentMessageIndex + 1);
       setCurrentMessageIndex(prev => prev + 1);
     } else if (onComplete) {
+      console.log('Completing narrative');
       onComplete();
     }
   };
 
   const handleGoBack = () => {
+    console.log('handleGoBack called:', { 
+      currentMessageIndex, 
+      canGoBack: currentMessageIndex > 0 
+    });
+    
     if (currentMessageIndex > 0) {
+      console.log('Going back to message:', currentMessageIndex - 1);
       setCurrentMessageIndex(prev => prev - 1);
     }
   };
