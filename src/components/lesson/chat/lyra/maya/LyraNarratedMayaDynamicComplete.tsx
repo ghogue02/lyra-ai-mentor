@@ -237,8 +237,8 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-2 gap-4 max-w-3xl mx-auto w-full">
-            {dynamicPurposes.map((purpose, index) => (
+          <div className="flex flex-wrap gap-3 max-w-3xl mx-auto justify-center">
+            {dynamicPurposes.slice(0, 2).map((purpose, index) => (
               <motion.button
                 key={purpose.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -249,23 +249,14 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
                   setCurrentStageIndex(3);
                 }}
                 className={cn(
-                  "p-6 rounded-xl border-2 text-left transition-all duration-300",
-                  "hover:border-purple-400 hover:shadow-lg hover:scale-105",
-                  "bg-white border-gray-200",
-                  mayaJourney.purpose === purpose.id && "border-purple-600 bg-purple-50"
+                  "flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-200 hover:shadow-sm",
+                  mayaJourney.purpose === purpose.id 
+                    ? "bg-primary text-primary-foreground border-primary" 
+                    : "bg-background hover:bg-muted/50 border-border"
                 )}
               >
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-lg bg-purple-100 text-purple-600">
-                    {purpose.icon}
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="font-semibold text-lg mb-1">{purpose.label}</h3>
-                    <p className="text-gray-600 text-sm mb-2">{purpose.description}</p>
-                    <p className="text-xs text-purple-600 italic mb-2">{purpose.contextHint}</p>
-                    <p className="text-xs text-purple-700 font-medium italic">Maya: "{purpose.mayaStory}"</p>
-                  </div>
-                </div>
+                <span className="text-current">{purpose.icon}</span>
+                <span className="text-sm font-medium">{purpose.label}</span>
               </motion.button>
             ))}
           </div>
