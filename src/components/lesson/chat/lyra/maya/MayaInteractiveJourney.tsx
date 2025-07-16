@@ -250,7 +250,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
           <NarrativeManager
             messages={narrativeMessages.introduction}
             onComplete={() => setCurrentPhase('maya-struggle')}
-            autoAdvance={true}
+            autoAdvance={false}
           />
         );
 
@@ -259,7 +259,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
           <NarrativeManager
             messages={narrativeMessages.struggle}
             onComplete={() => setCurrentPhase('challenge-connection')}
-            autoAdvance={true}
+            autoAdvance={false}
           />
         );
 
@@ -285,7 +285,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
           <NarrativeManager
             messages={narrativeMessages.failedAttempt}
             onComplete={() => setCurrentPhase('user-first-attempt')}
-            autoAdvance={true}
+            autoAdvance={false}
           />
         );
 
@@ -334,7 +334,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
           <NarrativeManager
             messages={narrativeMessages.elenaIntroduction}
             onComplete={() => setCurrentPhase('maya-pace-building')}
-            autoAdvance={true}
+            autoAdvance={false}
           />
         );
 

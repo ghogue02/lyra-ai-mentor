@@ -55,7 +55,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
 
   // Typing effect
   useEffect(() => {
-    if (!currentMessage) return;
+    if (!currentMessage?.content) return;
 
     setIsTyping(true);
     setDisplayedText('');
@@ -65,7 +65,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     
     const typingInterval = setInterval(() => {
       if (index < text.length) {
-        setDisplayedText(prev => prev + text[index]);
+        setDisplayedText(text.substring(0, index + 1));
         index++;
       } else {
         clearInterval(typingInterval);
