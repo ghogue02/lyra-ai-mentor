@@ -339,235 +339,111 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
         <div className="h-full flex flex-col p-6 space-y-6">
           <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border-l-4 border-purple-500">
             <h3 className="font-semibold text-purple-800 mb-2">Elena's Teaching Moment</h3>
-            <p className="text-sm text-green-700">
-              "Elena taught me PACE: Purpose (why this matters), Audience (who I'm writing to), Connection (how to relate), Engagement (what I want them to do)."
+            <p className="text-sm text-purple-700">
+              "Maya, your basic prompt failed because you gave the AI a destination without a map. 
+              Let me show you my PACE method - it's the difference between generic content and genuine connection."
             </p>
           </div>
 
-          {/* Phase 2: Interactive PACE Builder */}
-          <div className="flex-1 space-y-4">
-            <div className="grid grid-cols-4 gap-2 text-center">
-              <div className="font-semibold text-purple-600">P</div>
-              <div className="font-semibold text-blue-600">A</div>
-              <div className="font-semibold text-green-600">C</div>
-              <div className="font-semibold text-orange-600">E</div>
-            </div>
-
-            {/* Purpose Section */}
-            <div className="bg-purple-50 rounded-lg p-4">
-              <h4 className="font-semibold text-purple-800 mb-2">Purpose: Why does this matter?</h4>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  'Share exciting news', 'Celebrate success', 'Request support', 'Build connection'
-                ].map((purpose) => (
-                  <motion.button
-                    key={purpose}
-                    whileHover={{ scale: 1.05 }}
-                    onClick={() => setMayaJourney(prev => ({ ...prev, purpose }))}
-                    className={cn(
-                      "p-2 rounded text-sm transition-all",
-                      mayaJourney.purpose === purpose
-                        ? "bg-purple-500 text-white"
-                        : "bg-white hover:bg-purple-100"
-                    )}
-                  >
-                    {purpose}
-                  </motion.button>
-                ))}
-              </div>
-            </div>
-
-            {/* Connection Section */}
-            {mayaJourney.purpose && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-green-50 rounded-lg p-4"
-              >
-                <h4 className="font-semibold text-green-800 mb-2">Connection: How will you relate?</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    'Personal story', 'Shared values', 'Common goal', 'Mutual benefit'
-                  ].map((connection) => (
-                    <motion.button
-                      key={connection}
-                      whileHover={{ scale: 1.05 }}
-                      onClick={() => setMayaJourney(prev => ({ ...prev, tone: connection }))}
-                      className={cn(
-                        "p-2 rounded text-sm transition-all",
-                        mayaJourney.tone === connection
-                          ? "bg-green-500 text-white"
-                          : "bg-white hover:bg-green-100"
-                      )}
-                    >
-                      {connection}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Engagement Section */}
-            {mayaJourney.tone && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-orange-50 rounded-lg p-4"
-              >
-                <h4 className="font-semibold text-orange-800 mb-2">Engagement: What should they do?</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    'Reply with thoughts', 'Schedule a meeting', 'Share with others', 'Take action'
-                  ].map((engagement) => (
-                    <motion.button
-                      key={engagement}
-                      whileHover={{ scale: 1.05 }}
-                      onClick={() => setMayaJourney(prev => ({ ...prev, finalPrompt: engagement }))}
-                      className={cn(
-                        "p-2 rounded text-sm transition-all",
-                        mayaJourney.finalPrompt === engagement
-                          ? "bg-orange-500 text-white"
-                          : "bg-white hover:bg-orange-100"
-                      )}
-                    >
-                      {engagement}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Phase 3: Live Preview */}
-          {mayaJourney.purpose && mayaJourney.tone && mayaJourney.finalPrompt && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-white rounded-lg p-4 border-2 border-green-500 shadow-lg"
-            >
-              <h4 className="font-semibold text-green-800 mb-2">Your PACE Framework:</h4>
-              <div className="text-sm space-y-2">
-                <p><strong>Purpose:</strong> {mayaJourney.purpose}</p>
-                <p><strong>Audience:</strong> {mayaJourney.selectedAudience?.replace('_', ' ')}</p>
-                <p><strong>Connection:</strong> {mayaJourney.tone}</p>
-                <p><strong>Engagement:</strong> {mayaJourney.finalPrompt}</p>
-              </div>
-              <Button 
-                onClick={() => setCurrentStageIndex(5)}
-                className="mt-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-              >
-                Generate Your Perfect Email <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
-            </motion.div>
-          )}
+          <PromptLearning 
+            mayaJourney={mayaJourney}
+            onContinue={() => setCurrentStageIndex(5)}
+          />
         </div>
       ),
       narrativeMessages: [
         {
-          id: 'crafting-1',
-          content: "Maya takes a deep breath and starts writing with Elena's voice in her head: 'Start with why this matters to you.' She begins: 'Yesterday, I watched 12-year-old Jordan finally smile after weeks in our program. That's when I knew we had to tell you about the magic happening here.' The words flow naturally now.",
+          id: 'elena-masterclass-1',
+          content: "Maya remembers Elena Martinez, the communications consultant who visited last month. 'Maya,' Elena had said, 'you're not failing at communication - you're just starting with the wrong question. Instead of asking what to write, ask why it matters to you personally. Then let me teach you the PACE method that transforms everything.'",
           delay: 500,
         }
       ]
     },
 
-    // Stage 6: Complete Email Generator & Results
+    // Stage 6: The Dramatic Transformation
+    {
+      id: 'prompt-comparison',
+      title: 'The Transformation',
+      component: (
+        <div className="h-full flex flex-col p-6">
+          <PromptComparison 
+            purpose={mayaJourney.purpose}
+            audience={mayaJourney.selectedAudience}
+            selectedConsiderations={mayaJourney.selectedConsiderations}
+            onCompletion={() => setCurrentStageIndex(6)}
+          />
+        </div>
+      ),
+      narrativeMessages: [
+        {
+          id: 'prompt-comparison-1',
+          content: "Maya watches as Elena demonstrates both approaches side by side. The basic prompt generates generic, uninspiring content. But the PACE method... Maya's eyes widen as she sees the same information transformed into something powerful, personal, and persuasive. 'I can't believe this is the same information,' she whispers.",
+          delay: 500,
+        }
+      ]
+    },
+
+    // Stage 7: Final Success
     {
       id: 'completion',
-      title: 'Your Perfect Email',
+      title: 'Maya\'s Success Story',
       component: (
         <div className="h-full flex flex-col p-6 space-y-6">
-          {/* Phase 1: Story Hook */}
-          <div className="bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg p-4 border-l-4 border-purple-500">
-            <h3 className="font-semibold text-purple-800 mb-2">Maya's Transformation</h3>
-            <p className="text-sm text-purple-700">
-              "From 3 hours of struggle to 20 minutes of clarity. The PACE framework changed everything."
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border-l-4 border-green-500">
+            <h3 className="font-semibold text-green-800 mb-2">Maya's Complete Transformation</h3>
+            <p className="text-sm text-green-700">
+              "Three months later, my emails get 3x more responses. Board members schedule follow-up meetings. 
+              Donors want to get involved. Elena's PACE framework didn't just change my writing—it changed my entire approach to connection."
             </p>
           </div>
 
-          {/* Phase 2: Generated Email */}
-          <div className="flex-1 space-y-4">
-            <div className="bg-white rounded-lg border-2 border-purple-200 shadow-lg">
-              <div className="bg-gradient-to-r from-purple-100 to-pink-100 px-4 py-2 rounded-t-lg">
-                <h4 className="font-semibold text-purple-800">Your Generated Email</h4>
-              </div>
-              <div className="p-4 space-y-3">
-                <div className="border-b pb-2">
-                  <p className="font-semibold">Subject: Exciting Update from Our Summer Program</p>
+          <Card className="bg-gradient-to-r from-purple-50 to-pink-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Star className="w-5 h-5 text-purple-600" />
+                Your Journey Complete
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-purple-600">Before</div>
+                    <div className="text-sm text-gray-600">3 hours per email</div>
+                    <div className="text-sm text-gray-600">Generic content</div>
+                    <div className="text-sm text-gray-600">Low engagement</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">After</div>
+                    <div className="text-sm text-gray-600">20 minutes per email</div>
+                    <div className="text-sm text-gray-600">Personal connection</div>
+                    <div className="text-sm text-gray-600">3x more responses</div>
+                  </div>
                 </div>
-                <div className="text-sm space-y-2 text-gray-700">
-                  <p>Dear {mayaJourney.selectedAudience === 'dr_williams' ? 'Dr. Williams' : mayaJourney.selectedAudience === 'sarah_chen' ? 'Sarah' : mayaJourney.selectedAudience === 'marcus_torres' ? 'Marcus' : 'Board Members'},</p>
-                  
-                  <p>I wanted to share something that happened yesterday that perfectly captures why our summer program exceeded every expectation.</p>
-                  
-                  <p>Yesterday, I watched 12-year-old Jordan - who hadn't spoken in group activities for three weeks - finally open up and share his story with the other kids. In that moment, I saw the transformation we've been working toward all summer.</p>
-                  
-                  <p>Our program served 127 young people this summer, with 89% showing measurable improvements in confidence and social skills. But beyond the data, it's breakthrough moments like Jordan's that remind me why this work matters so deeply.</p>
-                  
-                  <p>I'd love to {mayaJourney.finalPrompt === 'Schedule a meeting' ? 'schedule time to share more details about our plans for next year' : 'hear your thoughts on how we can continue building on this incredible momentum'}.</p>
-                  
-                  <p>Thank you for believing in what we're building together.</p>
-                  
-                  <p>With gratitude,<br/>Maya Rodriguez<br/>Communications Director, Hope Valley Youth Center</p>
+                
+                <div className="text-center">
+                  <h4 className="font-semibold mb-2">You've mastered the PACE Framework:</h4>
+                  <div className="flex justify-center gap-4 text-sm">
+                    <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded">Purpose</span>
+                    <span className="px-3 py-1 bg-green-100 text-green-800 rounded">Audience</span>
+                    <span className="px-3 py-1 bg-purple-100 text-purple-800 rounded">Connection</span>
+                    <span className="px-3 py-1 bg-orange-100 text-orange-800 rounded">Engagement</span>
+                  </div>
                 </div>
               </div>
-            </div>
+            </CardContent>
+          </Card>
 
-            {/* Success Metrics */}
-            <div className="grid grid-cols-3 gap-4">
-              <div className="bg-green-50 rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-green-600">85%</div>
-                <div className="text-sm text-green-700">Engagement Rate</div>
-              </div>
-              <div className="bg-blue-50 rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-blue-600">2.3x</div>
-                <div className="text-sm text-blue-700">Response Rate</div>
-              </div>
-              <div className="bg-purple-50 rounded-lg p-3 text-center">
-                <div className="text-2xl font-bold text-purple-600">20min</div>
-                <div className="text-sm text-purple-700">Time Saved</div>
-              </div>
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-4 text-center">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <Star className="w-5 h-5 fill-current" />
+              <h4 className="font-semibold">Congratulations!</h4>
+              <Star className="w-5 h-5 fill-current" />
             </div>
-          </div>
-
-          {/* Phase 3: Actions */}
-          <div className="space-y-3">
-            <div className="flex gap-2">
-              <Button 
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `Subject: Exciting Update from Our Summer Program\n\nDear ${mayaJourney.selectedAudience === 'board' ? 'Board Members' : 'Friends'},\n\nI wanted to share something that happened yesterday that perfectly captures why our work matters so much.\n\nYesterday, I watched 12-year-old Jordan finally smile after weeks in our program. That moment reminded me why we do this work and why your support makes such a difference.\n\nOur summer program has now served 127 young people, with 89% showing measurable improvements in confidence and social skills. But beyond the numbers, it's moments like Jordan's smile that tell the real story.\n\nI'd love to ${mayaJourney.finalPrompt === 'Schedule a meeting' ? 'schedule a time to share more details' : 'hear your thoughts on how we can continue building on this success'}.\n\nThank you for being part of this journey.\n\nWith gratitude,\nMaya Rodriguez`
-                  );
-                }}
-                className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-              >
-                📋 Copy Email
-              </Button>
-              <Button 
-                onClick={() => setCurrentStageIndex(3)}
-                variant="outline"
-                className="hover:bg-purple-50"
-              >
-                🔄 Try Again
-              </Button>
-            </div>
-            
-            {/* Phase 4: Success Celebration */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.5 }}
-              className="bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg p-4 text-center"
-            >
-              <div className="flex items-center justify-center gap-2 mb-2">
-                <Star className="w-5 h-5 fill-current" />
-                <h4 className="font-semibold">Congratulations!</h4>
-                <Star className="w-5 h-5 fill-current" />
-              </div>
-              <p className="text-sm">
-                You've mastered the PACE Framework and transformed from overwhelmed to confident communicator - just like Maya!
-              </p>
-            </motion.div>
+            <p className="text-sm">
+              You've transformed from overwhelmed to confident communicator - just like Maya! 
+              Every email you write now has the power to create genuine connections.
+            </p>
           </div>
         </div>
       ),
