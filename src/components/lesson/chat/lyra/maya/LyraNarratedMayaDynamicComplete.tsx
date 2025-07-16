@@ -443,7 +443,7 @@ Let me show you exactly how this works through my own story...`,
     
     const typeWriter = () => {
       if (index < text.length) {
-        setDisplayedText(prev => prev + text.charAt(index));
+        setDisplayedText(text.substring(0, index + 1));
         index++;
         typingRef.current = setTimeout(typeWriter, typeSpeed);
       } else {
@@ -487,11 +487,12 @@ Let me show you exactly how this works through my own story...`,
                 <LyraAvatar 
                   size="md" 
                   expression={lyraExpression}
+                  withWave={false}
                   className="flex-shrink-0 shadow-lg"
                 />
                 <div>
                   <CardTitle className="text-2xl bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-                    👋 Maya's Dynamic Communication Journey
+                    Maya's Dynamic Communication Journey
                   </CardTitle>
                   <p className="text-sm text-muted-foreground mt-1">
                     Complete Chapter 2 with Dynamic PACE
