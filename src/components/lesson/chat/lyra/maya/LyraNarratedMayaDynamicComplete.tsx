@@ -2,35 +2,28 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, FastForward } from 'lucide-react';
+import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, FastForward, Mail, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { LyraAvatar } from '@/components/LyraAvatar';
-// Fixed FastForward import issue
 
-// Import types from the Maya component
+// ============= HYBRID STORAGE APPROACH =============
+// Core storyline hardcoded for consistency, structured for reusability
+
 interface MayaJourneyState {
   purpose: string;
   audience: string;
   tone: string;
   generated: string;
-  aiPrompt: string;
-  audienceContext: string;
-  situationDetails: string;
-  finalPrompt: string;
   selectedConsiderations: string[];
   selectedAudience: string;
-  adaptedTone: string;
-  toneConfidence: number;
-  templateCategory: string;
-  customTemplate: string;
-  savedTemplates: string[];
-  conversationScenario: string;
-  empathyResponse: string;
-  resolutionStrategy: string;
-  subjectStrategy: string;
-  testedSubjects: string[];
-  finalSubject: string;
+  finalPrompt: string;
+  paceFramework: {
+    purpose: string;
+    audience: string;
+    connection: string;
+    engagement: string;
+  };
 }
 
 interface StoryPhase {
@@ -38,6 +31,28 @@ interface StoryPhase {
   content: string;
   delay?: number;
 }
+
+// ============= MAYA'S STORYLINE MODULES =============
+// Character-specific content that flows naturally
+
+const MAYA_CHARACTER = {
+  name: "Maya Rodriguez",
+  role: "Communications Director",
+  organization: "Hope Valley Youth Center",
+  challenge: "Board email about summer program success",
+  mentor: "Elena Martinez",
+  transformation: "From 3-hour struggle to 20-minute clarity"
+};
+
+const MAYA_STORYLINE = {
+  problem: "It's 9 PM on a Wednesday. Maya Rodriguez stares at her laptop screen, cursor blinking in an empty email draft. She's been trying to write a board update for two hours. Tomorrow's board meeting could determine next year's funding, and she knows this email needs to be perfect.",
+  
+  mentorIntroduction: "Maya remembers Elena Martinez, the communications consultant who visited last month. Elena had said something that stuck: 'Maya, you're not failing at communication - you're just starting with the wrong question. Instead of asking what to write, ask why it matters to you personally.'",
+  
+  breakthrough: "Maya takes a deep breath and starts with Elena's question: 'Why does this matter to me?' Suddenly, she sees Jordan's face - the shy 12-year-old who finally smiled after weeks in their program. That's her why. That's where she needs to start.",
+  
+  transformation: "Three months later, Maya's emails are getting 3x more responses. Board members ask follow-up questions. Donors schedule meetings. Parents send thank-you notes. Elena's PACE framework didn't just change Maya's writing - it changed her entire approach to connection."
+};
 
 const LyraNarratedMayaDynamicComplete: React.FC = () => {
   const [currentStageIndex, setCurrentStageIndex] = useState(0);
@@ -50,75 +65,51 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
     audience: '',
     tone: '',
     generated: '',
-    aiPrompt: '',
-    audienceContext: '',
-    situationDetails: '',
-    finalPrompt: '',
     selectedConsiderations: [],
     selectedAudience: '',
-    adaptedTone: '',
-    toneConfidence: 0,
-    templateCategory: '',
-    customTemplate: '',
-    savedTemplates: [],
-    conversationScenario: '',
-    empathyResponse: '',
-    resolutionStrategy: '',
-    subjectStrategy: '',
-    testedSubjects: [],
-    finalSubject: ''
+    finalPrompt: '',
+    paceFramework: {
+      purpose: '',
+      audience: '',
+      connection: '',
+      engagement: ''
+    }
   });
   const typingRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Maya's Story-Driven Purpose Options
-  const dynamicPurposes = [
+  // Maya's Board Email Scenario - Specific Purpose Options
+  const mayaBoardEmailPurposes = [
     {
-      id: 'inform_educate',
-      label: 'Share important news',
-      description: 'You have updates that will help people understand what\'s happening',
-      icon: <Lightbulb className="w-5 h-5" />,
-      contextHint: 'Perfect for program updates, policy changes, or helpful information',
-      mayaStory: 'When families understand what\'s happening, they feel more connected and confident. I\'ve learned that clear communication builds trust.'
-    },
-    {
-      id: 'persuade_convince',
-      label: 'Invite someone to support',
-      description: 'You want to show someone how they can make a meaningful difference',
-      icon: <Target className="w-5 h-5" />,
-      contextHint: 'Ideal for funding requests, volunteer recruitment, or advocacy',
-      mayaStory: 'The best invitations don\'t feel like asking - they feel like opening a door to something meaningful that people want to join.'
-    },
-    {
-      id: 'build_relationships',
-      label: 'Build a stronger connection',
-      description: 'You want to deepen a relationship that matters to your mission',
-      icon: <Heart className="w-5 h-5" />,
-      contextHint: 'Great for welcoming new supporters or strengthening existing partnerships',
-      mayaStory: 'Great relationships grow from genuine care. When you tend them like a garden, beautiful things bloom unexpectedly.'
-    },
-    {
-      id: 'solve_problems',
-      label: 'Help someone who\'s worried',
-      description: 'Someone has concerns that are keeping them up at night',
-      icon: <Zap className="w-5 h-5" />,
-      contextHint: 'Best for addressing concerns, resolving conflicts, or providing reassurance',
-      mayaStory: 'Those late-night calls from worried parents taught me that people need both a listening ear and a clear path forward.'
-    },
-    {
-      id: 'request_support',
-      label: 'Ask for help you need',
-      description: 'You need support and want to show exactly how someone can help',
-      icon: <Users className="w-5 h-5" />,
-      contextHint: 'Effective for volunteer recruitment, resource requests, or collaboration',
-      mayaStory: 'People really do want to help - they\'re just waiting for someone to show them how their contribution will make a difference.'
-    },
-    {
-      id: 'inspire_motivate',
-      label: 'Share exciting progress',
-      description: 'You have wins and achievements that will make people smile',
+      id: 'celebrate_success',
+      label: 'Celebrate program success',
+      description: 'Share the incredible wins from the summer program',
       icon: <Star className="w-5 h-5" />,
-      contextHint: 'Powerful for celebrating milestones, sharing success stories, or motivating teams',
-      mayaStory: 'Nothing beats sharing wins! These victories belong to everyone who believed in us - they made it possible.'
+      contextHint: 'Perfect for Maya\'s board email about program achievements',
+      mayaStory: 'When I saw Jordan finally smile after weeks in our program, I knew we had something special to celebrate with the board.'
+    },
+    {
+      id: 'request_continued_support',
+      label: 'Request continued funding',
+      description: 'Show the board why this program deserves ongoing investment',
+      icon: <Target className="w-5 h-5" />,
+      contextHint: 'Ideal for Maya\'s funding conversation with the board',
+      mayaStory: 'Numbers tell one story, but real transformation happens in moments like Jordan\'s breakthrough - that\'s what I need to share.'
+    },
+    {
+      id: 'build_board_connection',
+      label: 'Strengthen board relationships',
+      description: 'Help board members feel personally connected to the impact',
+      icon: <Heart className="w-5 h-5" />,
+      contextHint: 'Great for Maya\'s relationship-building with board members',
+      mayaStory: 'Dr. Williams cares about data, but Sarah joined because of her daughter\'s experience. I need to speak to both hearts.'
+    },
+    {
+      id: 'inspire_future_vision',
+      label: 'Inspire future possibilities',
+      description: 'Paint a picture of what\'s possible with continued support',
+      icon: <Lightbulb className="w-5 h-5" />,
+      contextHint: 'Perfect for Maya\'s vision-casting to the board',
+      mayaStory: 'If 127 kids can transform in one summer, imagine what we could do with year-round programming. That\'s the vision I need to share.'
     }
   ];
 
@@ -173,7 +164,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       narrativeMessages: [
         {
           id: 'intro-maya-1',
-          content: "It's 7 PM on a Thursday. Maya Rodriguez stares at her laptop screen, cursor blinking in an empty email draft. She's been trying to write a simple board update for three hours. The youth summer program just launched successfully, but somehow she can't find the words to capture the magic of what happened.",
+          content: MAYA_STORYLINE.problem,
           delay: 500,
         }
       ]
@@ -208,7 +199,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       narrativeMessages: [
         {
           id: 'problem-1',
-          content: "Maya's cursor blinks mockingly. She's written three different openings and deleted them all. The board meeting is tomorrow morning, and she knows this update could influence their decision about next year's funding. The pressure mounts: Should she be formal? Casual? How much detail is too much?",
+          content: MAYA_STORYLINE.mentorIntroduction,
           delay: 500,
         }
       ]
@@ -238,7 +229,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           </motion.div>
 
           <div className="flex flex-wrap gap-3 max-w-3xl mx-auto justify-center">
-            {dynamicPurposes.map((purpose, index) => (
+            {mayaBoardEmailPurposes.map((purpose, index) => (
               <motion.button
                 key={purpose.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -277,7 +268,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       narrativeMessages: [
         {
           id: 'purpose-dynamic-1',
-          content: "During a particularly frustrating grant application process, Maya's mentor Elena asked her a simple question: 'Maya, why does this grant matter to you personally?' That question changed everything. Maya realized she'd been starting with WHAT - the grant details - instead of WHY - the impact on families.",
+          content: MAYA_STORYLINE.breakthrough,
           delay: 500,
         }
       ]
@@ -299,17 +290,15 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
 
           {/* Phase 2: Interactive Building */}
           <div className="flex-1 space-y-4">
-            <h3 className="font-semibold text-lg">Who are you writing to?</h3>
+            <h3 className="font-semibold text-lg">Maya's specific board members - who resonates with you?</h3>
             
-            {/* Audience Selection Cards */}
+            {/* Maya's Board Members - Specific to her scenario */}
             <div className="grid grid-cols-1 gap-3">
               {[
-                { id: 'board', label: 'Board Members', icon: '👥', desc: 'Decision makers who need strategic insights' },
-                { id: 'donors', label: 'Donors & Supporters', icon: '💝', desc: 'People who care about impact and outcomes' },
-                { id: 'volunteers', label: 'Volunteers', icon: '🤝', desc: 'Team members who want to feel appreciated' },
-                { id: 'staff', label: 'Staff & Colleagues', icon: '👨‍💼', desc: 'Internal team needing updates and motivation' },
-                { id: 'families', label: 'Families & Clients', icon: '👪', desc: 'People directly affected by your work' },
-                { id: 'community', label: 'Community Leaders', icon: '🏛️', desc: 'Local influencers and partners' }
+                { id: 'dr_williams', label: 'Dr. Williams (Board Chair)', icon: '📊', desc: 'Data-driven physician who loves metrics and outcomes' },
+                { id: 'sarah_chen', label: 'Sarah Chen (Parent Rep)', icon: '💝', desc: 'Mom whose daughter was in the program - cares about personal stories' },
+                { id: 'marcus_torres', label: 'Marcus Torres (Business)', icon: '🏢', desc: 'Local business owner focused on sustainability and ROI' },
+                { id: 'combined_board', label: 'The Full Board', icon: '👥', desc: 'All board members together - needs balanced messaging' }
               ].map((audience) => (
                 <motion.button
                   key={audience.id}
@@ -571,19 +560,19 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
                   <p className="font-semibold">Subject: Exciting Update from Our Summer Program</p>
                 </div>
                 <div className="text-sm space-y-2 text-gray-700">
-                  <p>Dear {mayaJourney.selectedAudience === 'board' ? 'Board Members' : 'Friends'},</p>
+                  <p>Dear {mayaJourney.selectedAudience === 'dr_williams' ? 'Dr. Williams' : mayaJourney.selectedAudience === 'sarah_chen' ? 'Sarah' : mayaJourney.selectedAudience === 'marcus_torres' ? 'Marcus' : 'Board Members'},</p>
                   
-                  <p>I wanted to share something that happened yesterday that perfectly captures why our work matters so much.</p>
+                  <p>I wanted to share something that happened yesterday that perfectly captures why our summer program exceeded every expectation.</p>
                   
-                  <p>Yesterday, I watched 12-year-old Jordan finally smile after weeks in our program. That moment reminded me why we do this work and why your support makes such a difference.</p>
+                  <p>Yesterday, I watched 12-year-old Jordan - who hadn't spoken in group activities for three weeks - finally open up and share his story with the other kids. In that moment, I saw the transformation we've been working toward all summer.</p>
                   
-                  <p>Our summer program has now served 127 young people, with 89% showing measurable improvements in confidence and social skills. But beyond the numbers, it's moments like Jordan's smile that tell the real story.</p>
+                  <p>Our program served 127 young people this summer, with 89% showing measurable improvements in confidence and social skills. But beyond the data, it's breakthrough moments like Jordan's that remind me why this work matters so deeply.</p>
                   
-                  <p>I'd love to {mayaJourney.finalPrompt === 'Schedule a meeting' ? 'schedule a time to share more details' : 'hear your thoughts on how we can continue building on this success'}.</p>
+                  <p>I'd love to {mayaJourney.finalPrompt === 'Schedule a meeting' ? 'schedule time to share more details about our plans for next year' : 'hear your thoughts on how we can continue building on this incredible momentum'}.</p>
                   
-                  <p>Thank you for being part of this journey.</p>
+                  <p>Thank you for believing in what we're building together.</p>
                   
-                  <p>With gratitude,<br/>Maya Rodriguez</p>
+                  <p>With gratitude,<br/>Maya Rodriguez<br/>Communications Director, Hope Valley Youth Center</p>
                 </div>
               </div>
             </div>
@@ -649,7 +638,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       narrativeMessages: [
         {
           id: 'completion',
-          content: "Congratulations! You've experienced Maya's transformation firsthand. The PACE framework isn't just theory - it's a practical approach that has helped thousands of communicators find their voice and connect authentically with their audiences. Maya's 3-hour struggle became a 20-minute masterpiece.",
+          content: MAYA_STORYLINE.transformation,
           delay: 500,
         }
       ]
