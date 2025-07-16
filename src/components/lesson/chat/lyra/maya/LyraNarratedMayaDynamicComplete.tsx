@@ -2,9 +2,10 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
-import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, SkipForward } from 'lucide-react';
+import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, FastForward } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
+import { LyraAvatar } from '@/components/LyraAvatar';
 
 // Import types from the Maya component
 interface MayaJourneyState {
@@ -42,6 +43,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showSkipButton, setShowSkipButton] = useState(false);
+  const [lyraExpression, setLyraExpression] = useState<'default' | 'thinking' | 'celebrating' | 'helping' | 'loading'>('default');
   const [mayaJourney, setMayaJourney] = useState<MayaJourneyState>({
     purpose: '',
     audience: '',
@@ -359,21 +361,28 @@ Let me show you exactly how this works through my own story...`,
         <Card className="flex-1 rounded-none border-0 bg-white shadow-lg">
           <CardHeader className="border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
             <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-2xl text-primary">Maya's Communication Journey</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Discover the PACE Framework through Maya's personal story
-                </p>
+              <div className="flex items-center gap-3">
+                <LyraAvatar 
+                  size="sm" 
+                  expression={lyraExpression}
+                  className="flex-shrink-0"
+                />
+                <div>
+                  <CardTitle className="text-2xl text-primary">Maya's Communication Journey</CardTitle>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Discover the PACE Framework through Maya's personal story
+                  </p>
+                </div>
               </div>
               {showSkipButton && (
                 <Button 
                   variant="outline" 
                   size="sm" 
                   onClick={skipTyping}
-                  className="hover:bg-primary/10"
+                  className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-orange-500 hover:border-orange-600"
                 >
-                  <SkipForward className="w-4 h-4 mr-2" />
-                  Skip Animation
+                  <FastForward className="w-4 h-4 mr-2" />
+                  Fast Forward
                 </Button>
               )}
             </div>
