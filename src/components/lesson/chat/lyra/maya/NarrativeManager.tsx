@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, Clock, AlertCircle, Lightbulb } from 'lucide-react';
+import { ChevronRight, ChevronLeft, Clock, AlertCircle, Lightbulb } from 'lucide-react';
 
 interface NarrativeMessage {
   id: string;
@@ -99,6 +99,12 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   };
 
+  const handleGoBack = () => {
+    if (currentMessageIndex > 0) {
+      setCurrentMessageIndex(prev => prev - 1);
+    }
+  };
+
   const getEmotionIcon = (emotion: string) => {
     switch (emotion) {
       case 'frustrated':
@@ -188,21 +194,30 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
         )}
       </AnimatePresence>
 
-      {/* Continue Button */}
+      {/* Navigation Buttons */}
       {!isTyping && !showInteraction && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-6 text-center"
+          className="mt-6 flex justify-center gap-4"
         >
+          {currentMessageIndex > 0 && (
+            <Button
+              onClick={handleGoBack}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+              size="lg"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </Button>
+          )}
+          
           <Button
             onClick={handleAdvance}
             className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             size="lg"
           >
-            {isLastMessage ? 'Continue Your Journey' : 'Continue'}
-            <ChevronRight className="w-5 h-5 ml-2" />
+            <ChevronRight className="w-5 h-5" />
           </Button>
         </motion.div>
       )}
