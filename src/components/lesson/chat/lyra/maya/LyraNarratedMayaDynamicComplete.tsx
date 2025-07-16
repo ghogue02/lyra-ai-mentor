@@ -238,7 +238,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           </motion.div>
 
           <div className="flex flex-wrap gap-3 max-w-3xl mx-auto justify-center">
-            {dynamicPurposes.slice(0, 2).map((purpose, index) => (
+            {dynamicPurposes.map((purpose, index) => (
               <motion.button
                 key={purpose.id}
                 initial={{ opacity: 0, y: 20 }}
