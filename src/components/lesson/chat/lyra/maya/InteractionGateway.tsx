@@ -31,52 +31,62 @@ const InteractionGateway: React.FC<InteractionGatewayProps> = ({
       case 'reflection':
         return <Heart className="w-5 h-5 text-pink-600" />;
       case 'input':
-        return <MessageSquare className="w-5 h-5 text-blue-600" />;
+        return <MessageSquare className="w-5 h-5 text-primary" />;
       case 'practice':
-        return <Lightbulb className="w-5 h-5 text-yellow-600" />;
+        return <Lightbulb className="w-5 h-5 text-emerald-600" />;
       case 'comparison':
-        return <ChevronRight className="w-5 h-5 text-green-600" />;
+        return <ChevronRight className="w-5 h-5 text-blue-600" />;
       default:
-        return <MessageSquare className="w-5 h-5 text-purple-600" />;
+        return <MessageSquare className="w-5 h-5 text-primary" />;
     }
   };
 
   const getStageColor = () => {
     switch (stage) {
       case 'reflection':
-        return 'from-pink-50 to-rose-50 border-pink-200';
+        return 'bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200/50';
       case 'input':
-        return 'from-blue-50 to-cyan-50 border-blue-200';
+        return 'bg-gradient-to-br from-brand-purple-light to-brand-cyan-light border-primary/20';
       case 'practice':
-        return 'from-yellow-50 to-amber-50 border-yellow-200';
+        return 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200/50';
       case 'comparison':
-        return 'from-green-50 to-emerald-50 border-green-200';
+        return 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200/50';
       default:
-        return 'from-purple-50 to-pink-50 border-purple-200';
+        return 'bg-gradient-to-br from-brand-purple-light to-brand-cyan-light border-primary/20';
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="max-w-4xl mx-auto px-6 py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.3 }}
+        className="animate-scale-in"
       >
-        <Card className={`bg-gradient-to-r ${getStageColor()}`}>
-          <CardHeader>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                {getStageIcon()}
-                <CardTitle className="text-xl">{title}</CardTitle>
+        <Card className={`${getStageColor()} shadow-lg hover:shadow-xl transition-all duration-300 border-2 rounded-xl`}>
+          <CardHeader className="pb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-4">
+                <div className="p-2 bg-white/20 rounded-lg backdrop-blur-sm">
+                  {getStageIcon()}
+                </div>
+                <CardTitle className="text-2xl font-bold text-gray-900 tracking-tight">
+                  {title}
+                </CardTitle>
               </div>
-              <Badge variant="outline" className="bg-white/80">
+              <Badge 
+                variant="outline" 
+                className="bg-white/90 text-primary border-primary/30 font-medium px-3 py-1 shadow-sm"
+              >
                 Interactive
               </Badge>
             </div>
-            <p className="text-gray-600 mt-2">{description}</p>
+            <p className="text-gray-700 text-lg leading-relaxed font-medium">
+              {description}
+            </p>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pt-0">
             {children}
           </CardContent>
         </Card>
@@ -89,24 +99,24 @@ const InteractionGateway: React.FC<InteractionGatewayProps> = ({
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
-            transition={{ delay: 0.3 }}
-            className="mt-6"
+            transition={{ delay: 0.3, duration: 0.3 }}
+            className="mt-8"
           >
-            <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Heart className="w-4 h-4 text-purple-600" />
+            <Card className="bg-gradient-to-br from-brand-purple-light to-brand-cyan-light border-primary/20 shadow-md rounded-xl">
+              <CardContent className="p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm">
+                    <Heart className="w-5 h-5 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-sm text-gray-700">
+                    <p className="text-gray-700 font-medium leading-relaxed">
                       {supportMessage}
                     </p>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => setShowSupport(false)}
-                      className="mt-2 text-purple-600 hover:text-purple-700"
+                      className="mt-3 text-primary hover:text-primary/80 hover:bg-primary/5 font-medium"
                     >
                       Got it, thanks!
                     </Button>
