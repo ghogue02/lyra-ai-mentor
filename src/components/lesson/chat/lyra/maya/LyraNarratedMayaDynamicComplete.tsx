@@ -194,7 +194,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
             <Zap className="w-8 h-8 text-white" />
           </motion.div>
           <h2 className="text-2xl font-semibold mb-4">The Endless Cycle</h2>
-          <p className="text-gray-600 mb-8 max-w-md">
+          <p className="text-muted-foreground mb-8 max-w-md">
             Sound familiar? You're not alone in this struggle.
           </p>
           <Button 
