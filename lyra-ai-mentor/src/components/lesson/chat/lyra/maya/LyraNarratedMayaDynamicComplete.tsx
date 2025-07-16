@@ -5,7 +5,8 @@ import { Button } from '@/components/ui/button';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import { useAuth } from '@/contexts/AuthContext';
-import { AccessibilityProvider, SkipLink, LiveRegion } from '@/components/accessibility/AccessibilityProvider';
+import { MayaEmailComposer } from '@/components/interactive/MayaEmailComposer';
+import { TypewriterText } from '@/components/lesson/TypewriterText';
 import '@/styles/minimal-ui.css';
 import '@/styles/accessibility.css';
 import '@/styles/maya-journey-layout.css';
@@ -320,36 +321,54 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
             {/* Lyra's Enhanced Narrative Panel */}
             <div className="flex flex-col bg-white overflow-hidden flex-1">
               <motion.div 
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.3 }}
-                className="p-4 border-b bg-gradient-to-r from-purple-50 to-cyan-50"
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                className="p-6 border-b bg-gradient-to-r from-purple-100/80 to-indigo-100/80"
               >
-                <h2 className="font-medium text-purple-900 flex items-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  Lyra's Dynamic Journey Guidance
-                </h2>
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                    <Sparkles className="w-4 h-4 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-purple-900">Maya's Story</h2>
+                    <p className="text-sm text-purple-700/80">Learning through real experiences</p>
+                  </div>
+                </div>
               </motion.div>
-              <div ref={chatRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+              <div ref={chatRef} className="flex-1 overflow-y-auto p-6 space-y-6">
                 {visibleMessages.map((message) => (
-                  <div key={message.id}>
-                    <div className="flex gap-3">
-                      <LyraAvatar size="sm" expression={lyraExpression} animated={isTyping === message.id} />
-                      <div className="flex-1">
-                        <div className={getMessageStyles(message.context)}>
+                  <motion.div 
+                    key={message.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="flex gap-4">
+                      <div className="flex-shrink-0">
+                        <LyraAvatar 
+                          size="md" 
+                          expression={lyraExpression} 
+                          animated={isTyping === message.id} 
+                        />
+                      </div>
+                      <div className="flex-1 space-y-3">
+                        <div className={cn(
+                          getMessageStyles(message.context),
+                          "p-4 rounded-xl bg-gradient-to-br from-purple-50 to-indigo-50 border border-purple-100/50 shadow-sm"
+                        )}>
                           <div className={getTextStyles(message.context)}>
-                            {typedContent[message.id] || ''}
-                            {isTyping === message.id && (
-                              <span className={getCursorStyles(message.context)} />
-                            )}
+                            <TypewriterText
+                              text={message.content}
+                              speed={25}
+                              className="leading-relaxed"
+                              startDelay={message.id === visibleMessages[0]?.id ? 500 : 0}
+                            />
                           </div>
                         </div>
-                        
-                        {/* Show animation indicator if this message triggered an animation */}
-                        {/* Animation button removed - pure storytelling focus */}
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -357,49 +376,111 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
 
           {/* Column 2: Interactive Content Panel (Desktop - 50%) */}
           <div className={cn(
-            "h-screen flex flex-col bg-gradient-to-br from-purple-50/50 to-pink-50/50 overflow-hidden",
+            "h-screen flex flex-col bg-gradient-to-br from-purple-50/30 to-indigo-50/30 overflow-hidden",
             isMobile && "hidden"
           )}>
+            {/* Enhanced Header with Better Styling */}
             <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
-              className="p-4 border-b bg-white/80 backdrop-blur-sm"
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="p-6 border-b bg-white/90 backdrop-blur-md shadow-sm"
             >
-              <h2 className="font-medium flex items-center gap-2">
-                <Target className="w-4 h-4 text-purple-600" />
-                {currentStage.title}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center">
+                    <Target className="w-5 h-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-semibold text-gray-900">Interactive Workshop</h2>
+                    <p className="text-sm text-gray-600">{currentStage.title}</p>
+                  </div>
+                </div>
                 {isLoadingDynamic && (
-                  <span className="ml-2 text-sm text-purple-600 flex items-center gap-1">
+                  <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="flex items-center gap-2 px-3 py-2 bg-purple-100 rounded-full"
+                  >
                     <motion.div 
                       animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                      transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
                     >
-                      <Sparkles className="w-3 h-3" />
+                      <Sparkles className="w-4 h-4 text-purple-600" />
                     </motion.div>
-                    Generating dynamic choices...
-                  </span>
+                    <span className="text-sm font-medium text-purple-700">
+                      Generating personalized choices...
+                    </span>
+                  </motion.div>
                 )}
-              </h2>
+              </div>
             </motion.div>
+
+            {/* Enhanced Content Area with Better Layout */}
             <div className="flex-1 overflow-hidden relative">
-              {/* Animation panel removed - pure storytelling focus */}
-              
-              <div className="h-full overflow-y-auto transition-all duration-300">
-                <div className="space-y-4">
-                  {currentStage.component}
+              <div className="h-full overflow-y-auto">
+                <div className="p-6 space-y-6">
+                  {/* Main Interactive Component with Better Styling */}
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.4 }}
+                    className="bg-white rounded-xl shadow-sm border border-gray-200/50 overflow-hidden"
+                  >
+                    <MayaEmailComposer
+                      onComplete={(data) => {
+                        console.log('Maya Email Composer completed:', data);
+                      }}
+                      lessonContext={{
+                        chapterId: 2,
+                        lessonId: 5,
+                        userId: user?.id,
+                        currentStage: currentStageIndex,
+                        mayaJourney
+                      }}
+                    />
+                  </motion.div>
                   
-                  {/* Prompt Builder - Shows starting from step 2 */}
-                  {currentStageIndex >= 1 && (
-                    <div className="px-4 pb-4">
-                      <PromptBuilder
-                        mayaJourney={mayaJourney}
-                        dynamicPath={dynamicPath}
-                        currentStageIndex={currentStageIndex}
-                        className="mt-4"
-                      />
-                    </div>
-                  )}
+                  {/* Enhanced Prompt Builder - Shows from step 2 with better integration */}
+                  <AnimatePresence>
+                    {currentStageIndex >= 1 && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -30, scale: 0.95 }}
+                        transition={{ 
+                          delay: 0.6, 
+                          duration: 0.5,
+                          type: "spring",
+                          damping: 20
+                        }}
+                        className="relative"
+                      >
+                        {/* Animated Connection Line */}
+                        <motion.div
+                          initial={{ height: 0 }}
+                          animate={{ height: "24px" }}
+                          transition={{ delay: 0.8, duration: 0.3 }}
+                          className="w-px bg-gradient-to-b from-purple-300 to-transparent absolute left-6 -top-6 z-10"
+                        />
+                        
+                        {/* Connection Dot */}
+                        <motion.div
+                          initial={{ scale: 0 }}
+                          animate={{ scale: 1 }}
+                          transition={{ delay: 1, duration: 0.2 }}
+                          className="w-3 h-3 bg-purple-400 rounded-full absolute left-5 -top-7 z-10"
+                        />
+                        
+                        <PromptBuilder
+                          mayaJourney={mayaJourney}
+                          dynamicPath={dynamicPath}
+                          currentStageIndex={currentStageIndex}
+                          className="relative z-0"
+                        />
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
                 </div>
               </div>
             </div>
