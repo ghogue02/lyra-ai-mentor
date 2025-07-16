@@ -6,6 +6,8 @@ import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, FastForward, 
 import { cn } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import { LyraAvatar } from '@/components/LyraAvatar';
+import PromptLearning from './PromptLearning';
+import PromptComparison from './PromptComparison';
 
 // ============= HYBRID STORAGE APPROACH =============
 // Core storyline hardcoded for consistency, structured for reusability
@@ -134,10 +136,10 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
               <Heart className="w-10 h-10 text-white" />
             </motion.div>
           </motion.div>
-          <h2 className="text-2xl font-semibold mb-4">Maya's Story Becomes Your Journey</h2>
+          <h2 className="text-2xl font-semibold mb-4">Maya's Prompt Engineering Journey</h2>
           <p className="text-gray-600 mb-8 max-w-md">
-            From overwhelmed nonprofit communicator to confident storyteller<br/>
-            <span className="text-purple-600 font-semibold">The PACE Approach that changes everything</span>
+            From basic prompts to PACE mastery<br/>
+            <span className="text-purple-600 font-semibold">Learn the method that transforms everything</span>
           </p>
           <motion.div
             initial={{ opacity: 0 }}
@@ -145,7 +147,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
             transition={{ delay: 0.5 }}
             className="text-sm text-gray-500 italic mb-4"
           >
-            "47 unread emails • 3 hours on one draft • Sound familiar?"
+            "Bad prompts = Generic results • Good prompts = Genuine connection"
           </motion.div>
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -205,10 +207,10 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       ]
     },
 
-    // Stage 3: Purpose Selection
+    // Stage 3: Quick Setup for Prompt Demo
     {
-      id: 'purpose-dynamic',
-      title: 'Choose Your Purpose',
+      id: 'setup',
+      title: 'Maya\'s Board Email Challenge',
       component: (
         <div className="flex flex-col h-full p-8">
           <motion.div
@@ -218,191 +220,125 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
             className="text-center mb-8"
           >
             <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-              What do you want to accomplish?
+              Maya's Challenge: Board Email Success
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto mb-3">
-              Elena's question changed Maya's life: "Why does this matter to YOU personally?"
+              Maya needs to write a board email about her summer program's success. 
+              127 kids participated, incredible transformations happened, and funding depends on this email.
             </p>
             <p className="text-sm text-purple-600 font-medium italic">
-              Your purpose isn't hidden. It's just buried under 'supposed to' and 'should'.
+              Watch how prompt engineering transforms the exact same information into completely different results.
             </p>
           </motion.div>
 
-          <div className="flex flex-wrap gap-3 max-w-3xl mx-auto justify-center">
-            {mayaBoardEmailPurposes.map((purpose, index) => (
-              <motion.button
-                key={purpose.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                onClick={() => {
-                  setMayaJourney(prev => ({ ...prev, purpose: purpose.id }));
-                  setCurrentStageIndex(3);
-                }}
-                className={cn(
-                  "flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-200 hover:shadow-sm",
-                  mayaJourney.purpose === purpose.id 
-                    ? "bg-primary text-primary-foreground border-primary" 
-                    : "bg-background hover:bg-muted/50 border-border"
-                )}
-              >
-                <span className="text-current">{purpose.icon}</span>
-                <span className="text-sm font-medium">{purpose.label}</span>
-              </motion.button>
-            ))}
+          {/* Quick Setup */}
+          <div className="max-w-2xl mx-auto space-y-4">
+            <Card>
+              <CardHeader>
+                <CardTitle>Maya's Context (Pre-filled for demo)</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <Target className="w-4 h-4 text-blue-600" />
+                  <span className="text-sm"><strong>Purpose:</strong> Celebrate success & secure funding</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Users className="w-4 h-4 text-green-600" />
+                  <span className="text-sm"><strong>Audience:</strong> Board members (mixed motivations)</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Heart className="w-4 h-4 text-purple-600" />
+                  <span className="text-sm"><strong>Key Info:</strong> 127 kids, Jordan's transformation story</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Button 
+              onClick={() => {
+                setMayaJourney(prev => ({ 
+                  ...prev, 
+                  purpose: 'celebrate_success',
+                  selectedAudience: 'combined_board',
+                  selectedConsiderations: ['Impact stories', 'Data & metrics', 'Future vision']
+                }));
+                setCurrentStageIndex(3);
+              }}
+              className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+            >
+              See Maya's First Attempt <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
           </div>
-
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.8 }}
-            className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200 max-w-2xl mx-auto"
-          >
-            <p className="text-sm text-blue-800">
-              <strong>💡 Maya's Tip:</strong> Your choice here shapes everything that follows. Each purpose 
-              opens different audience options and content approaches - just like Maya learned!
-            </p>
-          </motion.div>
         </div>
       ),
       narrativeMessages: [
         {
-          id: 'purpose-dynamic-1',
-          content: MAYA_STORYLINE.breakthrough,
+          id: 'setup-1',
+          content: "Maya faces every communicator's nightmare: a blank page, a critical audience, and a ticking clock. She has all the information - 127 kids in the program, incredible success stories like Jordan's transformation, and board members who need to feel confident about continued funding. But how do you turn information into inspiration?",
           delay: 500,
         }
       ]
     },
 
-    // Stage 4: Interactive Audience Builder
+    // Stage 4: Maya's Failed Prompt Attempt
     {
-      id: 'audience',
-      title: 'Choose Your Audience',
+      id: 'maya-basic-prompt',
+      title: 'Maya\'s First Attempt',
       component: (
         <div className="h-full flex flex-col p-6 space-y-6">
-          {/* Phase 1: Story Hook */}
-          <div className="bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg p-4 border-l-4 border-blue-500">
-            <h3 className="font-semibold text-blue-800 mb-2">Maya's Realization</h3>
-            <p className="text-sm text-blue-700">
-              "I realized I was writing the same email to everyone. Dr. Williams needs data, Sarah needs personal connection, Marcus needs business impact."
+          <div className="bg-gradient-to-r from-red-50 to-orange-50 rounded-lg p-4 border-l-4 border-red-500">
+            <h3 className="font-semibold text-red-800 mb-2">Maya's Frustration</h3>
+            <p className="text-sm text-red-700">
+              "I've been staring at this blank email for two hours. Maybe I'll just ask the AI to write a board email about our summer program success. That should work, right?"
             </p>
           </div>
 
-          {/* Phase 2: Interactive Building */}
-          <div className="flex-1 space-y-4">
-            <h3 className="font-semibold text-lg">Maya's specific board members - who resonates with you?</h3>
-            
-            {/* Maya's Board Members - Specific to her scenario */}
-            <div className="grid grid-cols-1 gap-3">
-              {[
-                { id: 'dr_williams', label: 'Dr. Williams (Board Chair)', icon: '📊', desc: 'Data-driven physician who loves metrics and outcomes' },
-                { id: 'sarah_chen', label: 'Sarah Chen (Parent Rep)', icon: '💝', desc: 'Mom whose daughter was in the program - cares about personal stories' },
-                { id: 'marcus_torres', label: 'Marcus Torres (Business)', icon: '🏢', desc: 'Local business owner focused on sustainability and ROI' },
-                { id: 'combined_board', label: 'The Full Board', icon: '👥', desc: 'All board members together - needs balanced messaging' }
-              ].map((audience) => (
-                <motion.button
-                  key={audience.id}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setMayaJourney(prev => ({ ...prev, selectedAudience: audience.id }));
-                  }}
-                  className={cn(
-                    "p-4 rounded-lg border-2 text-left transition-all hover:shadow-md",
-                    mayaJourney.selectedAudience === audience.id
-                      ? "border-blue-500 bg-blue-50"
-                      : "border-gray-200 hover:border-blue-300"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{audience.icon}</span>
-                    <div>
-                      <h4 className="font-semibold">{audience.label}</h4>
-                      <p className="text-sm text-gray-600">{audience.desc}</p>
-                    </div>
-                  </div>
-                </motion.button>
-              ))}
-            </div>
-
-            {/* Audience Profiling Interface */}
-            {mayaJourney.selectedAudience && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-gray-50 rounded-lg p-4 space-y-3"
-              >
-                <h4 className="font-semibold">What motivates them most?</h4>
-                <div className="grid grid-cols-2 gap-2">
-                  {[
-                    'Impact stories', 'Data & metrics', 'Personal connection', 'Future vision',
-                    'Recognition', 'Problem-solving', 'Community benefit', 'Growth opportunities'
-                  ].map((motivation) => (
-                    <motion.button
-                      key={motivation}
-                      whileHover={{ scale: 1.05 }}
-                      onClick={() => {
-                        setMayaJourney(prev => ({
-                          ...prev,
-                          selectedConsiderations: prev.selectedConsiderations.includes(motivation)
-                            ? prev.selectedConsiderations.filter(c => c !== motivation)
-                            : [...prev.selectedConsiderations, motivation]
-                        }));
-                      }}
-                      className={cn(
-                        "p-2 rounded text-sm transition-all",
-                        mayaJourney.selectedConsiderations.includes(motivation)
-                          ? "bg-blue-500 text-white"
-                          : "bg-white hover:bg-blue-50"
-                      )}
-                    >
-                      {motivation}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-          </div>
-
-          {/* Phase 3: Preview & Navigation */}
-          {mayaJourney.selectedAudience && mayaJourney.selectedConsiderations.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="bg-green-50 rounded-lg p-4 border-l-4 border-green-500"
-            >
-              <h4 className="font-semibold text-green-800 mb-2">Perfect! Your email will be tailored for:</h4>
-              <p className="text-sm text-green-700">
-                {mayaJourney.selectedAudience.replace('_', ' ')} who value {mayaJourney.selectedConsiderations.join(', ')}
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-lg text-red-600">Maya's Basic Prompt</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="bg-red-50 p-4 rounded-lg mb-4">
+                <p className="text-sm font-mono text-red-800">
+                  "Write a board email about summer program"
+                </p>
+              </div>
+              <p className="text-muted-foreground mb-4">
+                This is exactly what Maya typed. Simple, direct, but missing so much context...
               </p>
               <Button 
                 onClick={() => setCurrentStageIndex(4)}
-                className="mt-3 bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                className="bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-700 hover:to-orange-700"
               >
-                Build Your PACE Message <ChevronRight className="w-4 h-4 ml-2" />
+                See What Happened <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
-            </motion.div>
-          )}
+            </CardContent>
+          </Card>
+
+          <div className="bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-500">
+            <h4 className="font-semibold text-yellow-800 mb-2">Coming Up Next</h4>
+            <p className="text-sm text-yellow-700">
+              You'll see exactly what Maya's basic prompt generated, then learn Elena's PACE method that transforms everything.
+            </p>
+          </div>
         </div>
       ),
       narrativeMessages: [
         {
-          id: 'audience-1',
-          content: "Maya stops typing and thinks about her board members. There's Dr. Williams, who loves data and outcomes. Sarah, who joined because her daughter went through the program. And Marcus, the businessman who always asks about sustainability. Same information, but they each need to hear it differently.",
+          id: 'maya-basic-1',
+          content: "Maya rubs her temples. It's 9 PM and she's been staring at a blank email draft for two hours. Tomorrow's board meeting could determine next year's funding. She decides to try something new - maybe AI can help. 'I'll just ask it to write a board email about our summer program,' she thinks. 'How hard can it be?'",
           delay: 500,
         }
       ]
     },
 
-    // Stage 5: Dynamic PACE Framework Constructor
+    // Stage 5: Elena's Prompt Engineering Masterclass
     {
-      id: 'crafting',
-      title: 'Build Your PACE Message',
+      id: 'elena-masterclass',
+      title: 'Elena\'s PACE Method',
       component: (
         <div className="h-full flex flex-col p-6 space-y-6">
-          {/* Phase 1: Story Hook */}
-          <div className="bg-gradient-to-r from-green-50 to-emerald-50 rounded-lg p-4 border-l-4 border-green-500">
-            <h3 className="font-semibold text-green-800 mb-2">Maya's Breakthrough</h3>
+          <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border-l-4 border-purple-500">
+            <h3 className="font-semibold text-purple-800 mb-2">Elena's Teaching Moment</h3>
             <p className="text-sm text-green-700">
               "Elena taught me PACE: Purpose (why this matters), Audience (who I'm writing to), Connection (how to relate), Engagement (what I want them to do)."
             </p>
