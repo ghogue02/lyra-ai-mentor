@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { MessageCircle, AlertCircle, Users, Target, Loader2 } from 'lucide-react';
+import { MessageCircle, AlertCircle, Users, Target, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface HelpMayaFirstAttemptProps {
@@ -238,12 +238,20 @@ const HelpMayaFirstAttempt: React.FC<HelpMayaFirstAttemptProps> = ({
                 </Badge>
                 
                 {showContinueButton ? (
-                  <Button
-                    onClick={handleContinue}
-                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-                  >
-                    Continue to Learn Better Prompting
-                  </Button>
+                  <div className="flex justify-center gap-4">
+                    <Button
+                      onClick={() => setStep('input')}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      onClick={handleContinue}
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </div>
                 ) : (
                   <p className="text-sm text-gray-600">
                     Take your time to read Maya's experience...
