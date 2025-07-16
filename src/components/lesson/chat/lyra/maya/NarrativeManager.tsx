@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -23,6 +23,8 @@ interface NarrativeManagerProps {
     content: React.ReactNode;
   }[];
   autoAdvance?: boolean;
+  phaseId?: string; // For state persistence
+  onReset?: () => void;
 }
 
 const NarrativeManager: React.FC<NarrativeManagerProps> = ({
@@ -30,22 +32,70 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   onComplete,
   onInteractionPoint,
   interactionPoints = [],
-  autoAdvance = false
+  autoAdvance = false,
+  phaseId = 'default',
+  onReset
 }) => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showInteraction, setShowInteraction] = useState(false);
   const [currentInteraction, setCurrentInteraction] = useState<string | null>(null);
+  const [isStuck, setIsStuck] = useState(false);
+  const completionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const stuckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Debug logging
-  console.log('NarrativeManager render:', {
-    currentMessageIndex,
-    isTyping,
-    showInteraction,
-    shouldShowBackButton: currentMessageIndex > 0,
-    messagesLength: messages.length
-  });
+  // State persistence
+  useEffect(() => {
+    const savedState = sessionStorage.getItem(`narrative-${phaseId}`);
+    if (savedState) {
+      try {
+        const parsed = JSON.parse(savedState);
+        setCurrentMessageIndex(parsed.currentMessageIndex || 0);
+      } catch (error) {
+        console.warn('Failed to parse saved narrative state:', error);
+      }
+    }
+  }, [phaseId]);
+
+  useEffect(() => {
+    const stateToSave = {
+      currentMessageIndex,
+      timestamp: Date.now()
+    };
+    sessionStorage.setItem(`narrative-${phaseId}`, JSON.stringify(stateToSave));
+  }, [currentMessageIndex, phaseId]);
+
+  // Debug logging with stuck detection
+  useEffect(() => {
+    console.log('NarrativeManager render:', {
+      currentMessageIndex,
+      isTyping,
+      showInteraction,
+      shouldShowBackButton: currentMessageIndex > 0,
+      messagesLength: messages.length,
+      phaseId
+    });
+
+    // Clear previous timeout
+    if (stuckTimeoutRef.current) {
+      clearTimeout(stuckTimeoutRef.current);
+    }
+
+    // If we're on the last message and not typing, start stuck detection
+    if (currentMessageIndex === messages.length - 1 && !isTyping && !showInteraction) {
+      stuckTimeoutRef.current = setTimeout(() => {
+        setIsStuck(true);
+        console.warn('Narrative appears to be stuck, enabling reset option');
+      }, 5000); // 5 seconds on last message = stuck
+    }
+
+    return () => {
+      if (stuckTimeoutRef.current) {
+        clearTimeout(stuckTimeoutRef.current);
+      }
+    };
+  }, [currentMessageIndex, isTyping, showInteraction, messages.length, phaseId]);
 
   const currentMessage = messages[currentMessageIndex];
   const isLastMessage = currentMessageIndex === messages.length - 1;
@@ -98,6 +148,8 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       messagesLength: messages.length 
     });
     
+    setIsStuck(false); // Reset stuck state on interaction
+    
     if (showInteraction) {
       setShowInteraction(false);
       setCurrentInteraction(null);
@@ -112,7 +164,16 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       setCurrentMessageIndex(prev => prev + 1);
     } else if (onComplete) {
       console.log('Completing narrative');
-      onComplete();
+      
+      // Clear any existing timeout
+      if (completionTimeoutRef.current) {
+        clearTimeout(completionTimeoutRef.current);
+      }
+      
+      // Delay completion slightly to prevent race conditions
+      completionTimeoutRef.current = setTimeout(() => {
+        onComplete();
+      }, 100);
     }
   };
 
@@ -122,11 +183,42 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       canGoBack: currentMessageIndex > 0 
     });
     
+    setIsStuck(false); // Reset stuck state on interaction
+    
     if (currentMessageIndex > 0) {
       console.log('Going back to message:', currentMessageIndex - 1);
       setCurrentMessageIndex(prev => prev - 1);
     }
   };
+
+  const handleReset = () => {
+    console.log('Resetting narrative manager');
+    setCurrentMessageIndex(0);
+    setDisplayedText('');
+    setIsTyping(false);
+    setShowInteraction(false);
+    setCurrentInteraction(null);
+    setIsStuck(false);
+    
+    // Clear session storage for this phase
+    sessionStorage.removeItem(`narrative-${phaseId}`);
+    
+    if (onReset) {
+      onReset();
+    }
+  };
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
+    return () => {
+      if (completionTimeoutRef.current) {
+        clearTimeout(completionTimeoutRef.current);
+      }
+      if (stuckTimeoutRef.current) {
+        clearTimeout(stuckTimeoutRef.current);
+      }
+    };
+  }, []);
 
   const getEmotionIcon = (emotion: string) => {
     switch (emotion) {
@@ -242,6 +334,18 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
           >
             <ChevronRight className="w-4 h-4 text-gray-600" />
           </Button>
+
+          {/* Reset button when stuck */}
+          {isStuck && (
+            <Button
+              onClick={handleReset}
+              variant="outline"
+              size="sm"
+              className="ml-2 text-amber-600 border-amber-200 hover:bg-amber-50"
+            >
+              Reset
+            </Button>
+          )}
         </motion.div>
       )}
     </div>

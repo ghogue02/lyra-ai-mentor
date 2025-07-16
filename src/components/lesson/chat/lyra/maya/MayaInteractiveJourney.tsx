@@ -4,12 +4,14 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Sparkles, Play } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
 import HelpMayaFirstAttempt from './HelpMayaFirstAttempt';
 import GuidedPractice from './GuidedPractice';
 import MayaSuccessStory from './MayaSuccessStory';
+import GlobalNavigation, { JourneyPhase } from './GlobalNavigation';
 
 
 interface PACEFramework {
@@ -20,21 +22,13 @@ interface PACEFramework {
 }
 
 
-type JourneyPhase = 
-  | 'intro'
-  | 'maya-introduction'
-  | 'maya-struggle'
-  | 'help-maya-first-attempt'
-  | 'elena-introduction'
-  | 'maya-pace-building'
-  | 'maya-success-story'
-  | 'personal-toolkit';
-
 const MayaInteractiveJourney: React.FC = () => {
+  const navigate = useNavigate();
   const [currentPhase, setCurrentPhase] = useState<JourneyPhase>('intro');
   const [mayaFirstAttempt, setMayaFirstAttempt] = useState<string>('');
   const [mayaPaceResult, setMayaPaceResult] = useState<PACEFramework | null>(null);
   const [mayaPrompt, setMayaPrompt] = useState<string>('');
+  const [isStuck, setIsStuck] = useState(false);
 
   // Maya's predefined journey data
   const mayaChallenge = "I need to write an email to my manager about missing a critical project deadline";
@@ -149,6 +143,34 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     setCurrentPhase('personal-toolkit');
   };
 
+  const handlePhaseChange = (phase: JourneyPhase) => {
+    setCurrentPhase(phase);
+    setIsStuck(false);
+    
+    // Clear session storage for phase transitions
+    sessionStorage.removeItem(`narrative-${phase}`);
+  };
+
+  const handleExit = () => {
+    navigate('/dashboard');
+  };
+
+  const handleGlobalReset = () => {
+    // Clear all session storage for this journey
+    const keys = Object.keys(sessionStorage);
+    keys.forEach(key => {
+      if (key.startsWith('narrative-')) {
+        sessionStorage.removeItem(key);
+      }
+    });
+    
+    setCurrentPhase('intro');
+    setMayaFirstAttempt('');
+    setMayaPaceResult(null);
+    setMayaPrompt('');
+    setIsStuck(false);
+  };
+
   const renderPhase = () => {
     switch (currentPhase) {
       case 'intro':
@@ -209,6 +231,8 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             messages={narrativeMessages.introduction}
             onComplete={() => setCurrentPhase('maya-struggle')}
             autoAdvance={false}
+            phaseId="maya-introduction"
+            onReset={handleGlobalReset}
           />
         );
 
@@ -218,6 +242,8 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             messages={narrativeMessages.struggle}
             onComplete={() => setCurrentPhase('help-maya-first-attempt')}
             autoAdvance={false}
+            phaseId="maya-struggle"
+            onReset={handleGlobalReset}
           />
         );
 
@@ -242,6 +268,8 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             messages={narrativeMessages.elenaIntroduction}
             onComplete={() => setCurrentPhase('maya-pace-building')}
             autoAdvance={false}
+            phaseId="elena-introduction"
+            onReset={handleGlobalReset}
           />
         );
 
@@ -365,6 +393,17 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+      {/* Global Navigation - only show after intro */}
+      {currentPhase !== 'intro' && (
+        <GlobalNavigation
+          currentPhase={currentPhase}
+          onPhaseChange={handlePhaseChange}
+          onExit={handleExit}
+          isStuck={isStuck}
+          onReset={handleGlobalReset}
+        />
+      )}
+      
       <div className="container mx-auto py-8">
         <AnimatePresence mode="wait">
           <motion.div
