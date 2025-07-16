@@ -1,2 +1,2 @@
-// Re-export the new hybrid approach component
-export { default } from './maya/HybridMayaDemo';
+// Re-export the new progressive integration approach
+export { default } from './maya/MayaInteractiveJourney';
