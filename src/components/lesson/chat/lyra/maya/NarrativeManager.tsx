@@ -200,24 +200,24 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
-          className="mt-6 flex justify-center gap-4"
+          className="mt-6 flex justify-center gap-3"
         >
           {currentMessageIndex > 0 && (
             <Button
               onClick={handleGoBack}
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-              size="lg"
+              className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm"
+              size="icon"
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-4 h-4 text-gray-600" />
             </Button>
           )}
           
           <Button
             onClick={handleAdvance}
-            className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
-            size="lg"
+            className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm"
+            size="icon"
           >
-            <ChevronRight className="w-5 h-5" />
+            <ChevronRight className="w-4 h-4 text-gray-600" />
           </Button>
         </motion.div>
       )}
