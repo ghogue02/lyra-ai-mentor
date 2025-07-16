@@ -56,76 +56,42 @@ const PurposeSelectionComponent: React.FC<{
     {
       id: 'share-news',
       title: 'Share important news',
-      description: 'Update your team or contacts about significant developments',
       icon: Lightbulb,
-      examples: ['Product launch', 'Company updates', 'Policy changes']
     },
     {
       id: 'invite-support',
       title: 'Invite someone to support',
-      description: 'Ask for help, collaboration, or participation',
       icon: Target,
-      examples: ['Meeting requests', 'Project collaboration', 'Event invitations']
     }
   ];
 
   return (
-    <div className="space-y-4">
-      <p className="text-sm text-muted-foreground mb-4">
+    <div className="space-y-3">
+      <p className="text-sm text-muted-foreground">
         Select the primary purpose of your communication:
       </p>
       
-      <div className="grid grid-cols-1 gap-4">
+      <div className="flex gap-3">
         {purposes.map((purpose) => {
           const IconComponent = purpose.icon;
           const isSelected = selectedPurpose === purpose.id;
           
           return (
-            <Card 
+            <button
               key={purpose.id}
-              className={`cursor-pointer transition-all duration-200 hover:shadow-md ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-full border transition-all duration-200 hover:shadow-sm ${
                 isSelected 
-                  ? 'ring-2 ring-primary bg-primary/5' 
-                  : 'hover:bg-muted/50'
+                  ? 'bg-primary text-primary-foreground border-primary' 
+                  : 'bg-background hover:bg-muted/50 border-border'
               }`}
               onClick={() => onPurposeSelect(purpose.id)}
             >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-lg ${
-                      isSelected 
-                        ? 'bg-primary/10 text-primary' 
-                        : 'bg-muted text-muted-foreground'
-                    }`}>
-                      <IconComponent className="h-4 w-4" />
-                    </div>
-                    <CardTitle className="text-lg">{purpose.title}</CardTitle>
-                  </div>
-                  {isSelected && (
-                    <CheckCircle2 className="h-5 w-5 text-primary" />
-                  )}
-                </div>
-              </CardHeader>
-              
-              <CardContent className="pt-0">
-                <p className="text-sm text-muted-foreground mb-3">
-                  {purpose.description}
-                </p>
-                
-                <div className="space-y-1">
-                  <p className="text-xs font-medium text-muted-foreground">Examples:</p>
-                  <ul className="text-xs text-muted-foreground space-y-1">
-                    {purpose.examples.map((example, index) => (
-                      <li key={index} className="flex items-center gap-2">
-                        <div className="w-1 h-1 bg-muted-foreground rounded-full" />
-                        {example}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </CardContent>
-            </Card>
+              <IconComponent className="h-4 w-4" />
+              <span className="text-sm font-medium">{purpose.title}</span>
+              {isSelected && (
+                <CheckCircle2 className="h-4 w-4 ml-1" />
+              )}
+            </button>
           );
         })}
       </div>
