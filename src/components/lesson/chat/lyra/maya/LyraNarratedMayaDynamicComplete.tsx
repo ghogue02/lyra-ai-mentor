@@ -1,426 +1,440 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { FastForward, Volume2, MessageCircle, Star, FileText, Shield, Menu, X, Eye, Target, Sparkles, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { LyraAvatar } from '@/components/LyraAvatar';
+import { Separator } from '@/components/ui/separator';
+import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, SkipForward } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuth } from '@/contexts/AuthContext';
-import { InteractiveElementRenderer } from '@/components/lesson/interactive/InteractiveElementRenderer';
-import { TypewriterText } from '@/components/lesson/TypewriterText';
-import { supabase } from '@/integrations/supabase/client';
+import { motion } from 'framer-motion';
 
-/**
- * Enhanced Maya Component with Dynamic PACE Integration
- * Loads content from database and provides real interactive elements
- */
+// Import types from the Maya component
+interface MayaJourneyState {
+  purpose: string;
+  audience: string;
+  tone: string;
+  generated: string;
+  aiPrompt: string;
+  audienceContext: string;
+  situationDetails: string;
+  finalPrompt: string;
+  selectedConsiderations: string[];
+  selectedAudience: string;
+  adaptedTone: string;
+  toneConfidence: number;
+  templateCategory: string;
+  customTemplate: string;
+  savedTemplates: string[];
+  conversationScenario: string;
+  empathyResponse: string;
+  resolutionStrategy: string;
+  subjectStrategy: string;
+  testedSubjects: string[];
+  finalSubject: string;
+}
+
+interface StoryPhase {
+  id: string;
+  content: string;
+  delay?: number;
+}
+
 const LyraNarratedMayaDynamicComplete: React.FC = () => {
-  // Core state management
   const [currentStageIndex, setCurrentStageIndex] = useState(0);
-  const [isTyping, setIsTyping] = useState<string | null>(null);
-  const [lyraExpression, setLyraExpression] = useState<'default' | 'thinking' | 'celebrating' | 'helping'>('default');
-  const [canFastForward, setCanFastForward] = useState(false);
-  const [fastForwardMode, setFastForwardMode] = useState(false);
-  
-  // Mobile responsiveness state
-  const [isMobile, setIsMobile] = useState(false);
-  const [isMobilePanelOpen, setIsMobilePanelOpen] = useState(false);
-  
-  // Database content state
-  const [contentBlocks, setContentBlocks] = useState([]);
-  const [interactiveElements, setInteractiveElements] = useState([]);
-  const [loading, setLoading] = useState(true);
-  
-  // Interactive element completion state
-  const [isElementCompleted, setIsElementCompleted] = useState(false);
+  const [displayedText, setDisplayedText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
+  const [showSkipButton, setShowSkipButton] = useState(false);
+  const [mayaJourney, setMayaJourney] = useState<MayaJourneyState>({
+    purpose: '',
+    audience: '',
+    tone: '',
+    generated: '',
+    aiPrompt: '',
+    audienceContext: '',
+    situationDetails: '',
+    finalPrompt: '',
+    selectedConsiderations: [],
+    selectedAudience: '',
+    adaptedTone: '',
+    toneConfidence: 0,
+    templateCategory: '',
+    customTemplate: '',
+    savedTemplates: [],
+    conversationScenario: '',
+    empathyResponse: '',
+    resolutionStrategy: '',
+    subjectStrategy: '',
+    testedSubjects: [],
+    finalSubject: ''
+  });
+  const typingRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Load content from database
+  // Maya's Story-Driven Purpose Options
+  const dynamicPurposes = [
+    {
+      id: 'inform_educate',
+      label: 'Share important news',
+      description: 'You have updates that will help people understand what\'s happening',
+      icon: <Lightbulb className="w-5 h-5" />,
+      contextHint: 'Perfect for program updates, policy changes, or helpful information',
+      mayaStory: 'When families understand what\'s happening, they feel more connected and confident. I\'ve learned that clear communication builds trust.'
+    },
+    {
+      id: 'persuade_convince',
+      label: 'Invite someone to support',
+      description: 'You want to show someone how they can make a meaningful difference',
+      icon: <Target className="w-5 h-5" />,
+      contextHint: 'Ideal for funding requests, volunteer recruitment, or advocacy',
+      mayaStory: 'The best invitations don\'t feel like asking - they feel like opening a door to something meaningful that people want to join.'
+    },
+    {
+      id: 'build_relationships',
+      label: 'Build a stronger connection',
+      description: 'You want to deepen a relationship that matters to your mission',
+      icon: <Heart className="w-5 h-5" />,
+      contextHint: 'Great for welcoming new supporters or strengthening existing partnerships',
+      mayaStory: 'Great relationships grow from genuine care. When you tend them like a garden, beautiful things bloom unexpectedly.'
+    },
+    {
+      id: 'solve_problems',
+      label: 'Help someone who\'s worried',
+      description: 'Someone has concerns that are keeping them up at night',
+      icon: <Zap className="w-5 h-5" />,
+      contextHint: 'Best for addressing concerns, resolving conflicts, or providing reassurance',
+      mayaStory: 'Those late-night calls from worried parents taught me that people need both a listening ear and a clear path forward.'
+    },
+    {
+      id: 'request_support',
+      label: 'Ask for help you need',
+      description: 'You need support and want to show exactly how someone can help',
+      icon: <Users className="w-5 h-5" />,
+      contextHint: 'Effective for volunteer recruitment, resource requests, or collaboration',
+      mayaStory: 'People really do want to help - they\'re just waiting for someone to show them how their contribution will make a difference.'
+    },
+    {
+      id: 'inspire_motivate',
+      label: 'Share exciting progress',
+      description: 'You have wins and achievements that will make people smile',
+      icon: <Star className="w-5 h-5" />,
+      contextHint: 'Powerful for celebrating milestones, sharing success stories, or motivating teams',
+      mayaStory: 'Nothing beats sharing wins! These victories belong to everyone who believed in us - they made it possible.'
+    }
+  ];
+
+  // Create dynamic stages
+  const dynamicStages = [
+    // Stage 1: Introduction
+    {
+      id: 'intro',
+      title: 'Meeting Maya Rodriguez',
+      component: (
+        <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <motion.div 
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
+            className="w-20 h-20 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center mb-6 shadow-lg"
+          >
+            <motion.div
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Heart className="w-10 h-10 text-white" />
+            </motion.div>
+          </motion.div>
+          <h2 className="text-2xl font-semibold mb-4">Maya's Story Becomes Your Journey</h2>
+          <p className="text-gray-600 mb-8 max-w-md">
+            From overwhelmed nonprofit communicator to confident storyteller<br/>
+            <span className="text-purple-600 font-semibold">The PACE Approach that changes everything</span>
+          </p>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="text-sm text-gray-500 italic mb-4"
+          >
+            "47 unread emails • 3 hours on one draft • Sound familiar?"
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
+          >
+            <Button 
+              onClick={() => setCurrentStageIndex(1)}
+              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200"
+            >
+              Begin Your Journey <ChevronRight className="w-4 h-4 ml-2" />
+            </Button>
+          </motion.div>
+        </div>
+      ),
+      narrativeMessages: [
+        {
+          id: 'intro-maya-1',
+          content: "It's 7 PM on a Thursday. Maya Rodriguez stares at her laptop screen, cursor blinking in an empty email draft. She's been trying to write a simple board update for three hours. The youth summer program just launched successfully, but somehow she can't find the words to capture the magic of what happened.",
+          delay: 500,
+        }
+      ]
+    },
+
+    // Stage 2: Purpose Selection
+    {
+      id: 'purpose-dynamic',
+      title: 'Choose Your Purpose',
+      component: (
+        <div className="flex flex-col h-full p-8">
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-8"
+          >
+            <h2 className="text-3xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+              What do you want to accomplish?
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto mb-3">
+              Elena's question changed Maya's life: "Why does this matter to YOU personally?"
+            </p>
+            <p className="text-sm text-purple-600 font-medium italic">
+              Your purpose isn't hidden. It's just buried under 'supposed to' and 'should'.
+            </p>
+          </motion.div>
+
+          <div className="grid grid-cols-2 gap-4 max-w-3xl mx-auto w-full">
+            {dynamicPurposes.map((purpose, index) => (
+              <motion.button
+                key={purpose.id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                onClick={() => {
+                  setMayaJourney(prev => ({ ...prev, purpose: purpose.id }));
+                  setCurrentStageIndex(2);
+                }}
+                className={cn(
+                  "p-6 rounded-xl border-2 text-left transition-all duration-300",
+                  "hover:border-purple-400 hover:shadow-lg hover:scale-105",
+                  "bg-white border-gray-200",
+                  mayaJourney.purpose === purpose.id && "border-purple-600 bg-purple-50"
+                )}
+              >
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-lg bg-purple-100 text-purple-600">
+                    {purpose.icon}
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="font-semibold text-lg mb-1">{purpose.label}</h3>
+                    <p className="text-gray-600 text-sm mb-2">{purpose.description}</p>
+                    <p className="text-xs text-purple-600 italic mb-2">{purpose.contextHint}</p>
+                    <p className="text-xs text-purple-700 font-medium italic">Maya: "{purpose.mayaStory}"</p>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
+          </div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.8 }}
+            className="mt-8 p-4 bg-blue-50 rounded-lg border border-blue-200 max-w-2xl mx-auto"
+          >
+            <p className="text-sm text-blue-800">
+              <strong>💡 Maya's Tip:</strong> Your choice here shapes everything that follows. Each purpose 
+              opens different audience options and content approaches - just like Maya learned!
+            </p>
+          </motion.div>
+        </div>
+      ),
+      narrativeMessages: [
+        {
+          id: 'purpose-dynamic-1',
+          content: "During a particularly frustrating grant application process, Maya's mentor Elena asked her a simple question: 'Maya, why does this grant matter to you personally?' That question changed everything. Maya realized she'd been starting with WHAT - the grant details - instead of WHY - the impact on families.",
+          delay: 500,
+        }
+      ]
+    },
+
+    // More stages would follow here...
+    {
+      id: 'completion',
+      title: 'Your Perfect Email',
+      component: (
+        <div className="flex flex-col items-center justify-center h-full text-center p-8">
+          <h2 className="text-2xl font-semibold mb-4">Congratulations!</h2>
+          <p className="text-gray-600 mb-8">
+            You've completed Maya's PACE Framework journey.
+          </p>
+        </div>
+      ),
+      narrativeMessages: [
+        {
+          id: 'completion',
+          content: "Congratulations! You've experienced Maya's transformation firsthand. The PACE framework isn't just theory - it's a practical approach that has helped thousands of communicators find their voice and connect authentically with their audiences.",
+          delay: 500,
+        }
+      ]
+    }
+  ];
+
+  // Current stage and narrative messages
+  const currentStage = dynamicStages[currentStageIndex];
+  const currentNarrativeMessage = currentStage?.narrativeMessages?.[0];
+
+  // Story phases based on the current narrative message
+  const storyPhases: StoryPhase[] = currentNarrativeMessage ? [
+    {
+      id: currentStage.id,
+      content: currentNarrativeMessage.content,
+      delay: currentNarrativeMessage.delay || 2000
+    }
+  ] : [
+    {
+      id: 'intro',
+      content: `Hi there! I'm Maya Rodriguez, a communications strategist who's helped hundreds of professionals transform their email presence. Today, I want to share something personal with you.
+
+Five years ago, I was that person who would stare at a blank email for 20 minutes, second-guessing every word. I'd write, delete, rewrite, and still hit send feeling uncertain. Sound familiar?
+
+The breakthrough came when I realized that great communication isn't about perfect words—it's about understanding your purpose, knowing your audience, and having a clear strategy. That's when I developed what I call the PACE framework.
+
+Let me show you exactly how this works through my own story...`,
+      delay: 2000
+    }
+  ];
+
+  // Initialize with the first stage
   useEffect(() => {
-    const loadContent = async () => {
-      try {
-        // Load content blocks for lesson 5 (Maya's story)
-        const { data: blocks, error: blocksError } = await supabase
-          .from('content_blocks')
-          .select('*')
-          .eq('lesson_id', 5)
-          .eq('is_active', true)
-          .eq('is_visible', true)
-          .order('order_index');
+    if (currentStage?.narrativeMessages?.[0]) {
+      startTyping(currentStage.narrativeMessages[0].content);
+    }
+  }, [currentStageIndex]);
 
-        if (blocksError) throw blocksError;
-
-        // Load interactive elements for lesson 5
-        const { data: elements, error: elementsError } = await supabase
-          .from('interactive_elements')
-          .select('*')
-          .eq('lesson_id', 5)
-          .eq('is_active', true)
-          .eq('is_visible', true)
-          .order('order_index');
-
-        if (elementsError) throw elementsError;
-
-        setContentBlocks(blocks || []);
-        setInteractiveElements(elements || []);
-        setLoading(false);
-      } catch (error) {
-        console.error('Error loading content:', error);
-        setLoading(false);
+  // Typewriter effect
+  const startTyping = (text: string) => {
+    setDisplayedText('');
+    setIsTyping(true);
+    setShowSkipButton(true);
+    
+    let index = 0;
+    const typeSpeed = 30; // milliseconds per character
+    
+    const typeWriter = () => {
+      if (index < text.length) {
+        setDisplayedText(prev => prev + text.charAt(index));
+        index++;
+        typingRef.current = setTimeout(typeWriter, typeSpeed);
+      } else {
+        setIsTyping(false);
+        setShowSkipButton(false);
       }
     };
-
-    loadContent();
-  }, []);
-
-  // Detect mobile
-  useEffect(() => {
-    const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
-    };
-    checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
-  }, []);
-
-  // Convert database content to story stages
-  const stages = contentBlocks.map((block, index) => ({
-    id: `stage-${index}`,
-    title: block.title || `Maya's Journey - Phase ${index + 1}`,
-    subtitle: `Phase ${index + 1} of ${contentBlocks.length}`,
-    content: block.content,
-    metadata: block.metadata
-  }));
-
-  // Handle message progression
-  const handleNextMessage = () => {
-    if (currentStageIndex < stages.length - 1) {
-      setCurrentStageIndex(currentStageIndex + 1);
-    }
-  };
-
-  const handleFastForward = () => {
-    setFastForwardMode(true);
-    if (currentStageIndex < stages.length - 1) {
-      setCurrentStageIndex(stages.length - 1);
-    }
-  };
-
-  // Auto-progression for stages  
-  useEffect(() => {
-    if (fastForwardMode || stages.length === 0) return;
     
-    const timer = setTimeout(() => {
-      if (currentStageIndex < stages.length - 1) {
-        setCurrentStageIndex(currentStageIndex + 1);
+    typeWriter();
+  };
+
+  const skipTyping = () => {
+    if (typingRef.current) {
+      clearTimeout(typingRef.current);
+    }
+    setDisplayedText(currentNarrativeMessage?.content || storyPhases[0].content);
+    setIsTyping(false);
+    setShowSkipButton(false);
+  };
+
+  // Cleanup effect
+  useEffect(() => {
+    return () => {
+      if (typingRef.current) {
+        clearTimeout(typingRef.current);
       }
-    }, 12000); // Time to read current content
-    
-    return () => clearTimeout(timer);
-  }, [currentStageIndex, fastForwardMode, stages]);
+    };
+  }, []);
 
-  // Enable fast forward after first message
-  useEffect(() => {
-    setCanFastForward(currentStageIndex > 0 || stages.length > 1);
-  }, [currentStageIndex, stages]);
-
-  // Handle email composer completion
-  const handleEmailComposerComplete = () => {
-    setIsElementCompleted(true);
-    if (currentStageIndex < stages.length - 1) {
-      setCurrentStageIndex(currentStageIndex + 1);
-    }
-  };
-
-  const currentStage = stages[currentStageIndex];
-  
-  // Get interactive elements for right panel
-  const emailComposer = interactiveElements.find(el => el.type === 'ai_email_composer');
-  const promptBuilder = interactiveElements.find(el => el.type === 'prompt_builder');
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600 mx-auto mb-4"></div>
-          <p className="text-purple-600">Loading Maya's story...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!currentStage) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-purple-600">No content available</p>
-        </div>
-      </div>
-    );
-  }
+  const currentPhase = storyPhases[0];
+  const totalStages = dynamicStages.length;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-indigo-50 to-cyan-50 relative overflow-hidden">
-      {/* Mobile Menu Toggle */}
-      {isMobile && (
-        <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          onClick={() => setIsMobilePanelOpen(!isMobilePanelOpen)}
-          className="fixed top-4 right-4 z-50 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white rounded-full p-3 shadow-xl transition-all duration-300"
-        >
-          {isMobilePanelOpen ? <X className="w-6 h-6" /> : <Target className="w-6 h-6" />}
-        </motion.button>
-      )}
-
-      {/* Main Two-Panel Layout */}
-      <div className="flex h-screen">
-        {/* Left Panel - Maya's Story with Streaming Text */}
-        <div className="flex-1 flex flex-col border-r border-purple-200/60">
-          {/* Story Header with Progress */}
-          <div className="bg-white/90 backdrop-blur-md border-b border-purple-100 p-6 shadow-sm">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <LyraAvatar size="md" expression={lyraExpression} animated />
-                <div>
-                  <h1 className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-indigo-700 bg-clip-text text-transparent">
-                    Maya's Email Mastery
-                  </h1>
-                  <p className="text-muted-foreground">Master the PACE Framework through Maya's journey</p>
-                </div>
-              </div>
-              
-              {/* Phase Progress Indicator */}
-              <div className="flex items-center gap-3 px-4 py-2 bg-gradient-to-r from-purple-100 to-indigo-100 rounded-full">
-                <span className="text-sm font-medium text-purple-700">
-                  {currentStage.subtitle || `Phase ${currentStageIndex + 1} of ${stages.length}`}
-                </span>
-                <div className="flex gap-1">
-                  {stages.map((_, index) => (
-                    <div
-                      key={index}
-                      className={cn(
-                        "w-2 h-2 rounded-full transition-all duration-300",
-                        index <= currentStageIndex 
-                          ? "bg-gradient-to-r from-purple-500 to-indigo-500" 
-                          : "bg-gray-300"
-                      )}
-                    />
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Maya's Story Area with Streaming Text */}
-          <div className="flex-1 p-8 overflow-y-auto relative">
-            {/* Skip Animation Button */}
-            {canFastForward && !fastForwardMode && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="absolute top-6 right-6 z-30"
-              >
-                <Button
-                  onClick={handleFastForward}
-                  variant="outline"
-                  size="sm"
-                  className="bg-white/95 backdrop-blur-md border-purple-300 text-purple-700 hover:bg-purple-50 shadow-lg hover:shadow-xl transition-all duration-300"
-                >
-                  <FastForward className="w-4 h-4 mr-2" />
-                  Skip Animation
-                </Button>
-              </motion.div>
-            )}
-
-            <div className="max-w-4xl mx-auto space-y-8">
-              <motion.div
-                key={currentStageIndex}
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, ease: "easeOut" }}
-                className="relative"
-              >
-                {/* Stage Card with Enhanced Design */}
-                <Card className="bg-white/95 backdrop-blur-sm shadow-xl border-0 overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 to-indigo-500/5" />
-                  <CardHeader className="relative bg-gradient-to-r from-purple-50 to-indigo-50 border-b border-purple-100">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <CardTitle className="text-2xl font-bold bg-gradient-to-r from-purple-700 to-indigo-700 bg-clip-text text-transparent">
-                          {currentStage.title}
-                        </CardTitle>
-                        {currentStage.subtitle && (
-                          <p className="text-sm text-purple-600 font-medium mt-1">{currentStage.subtitle}</p>
-                        )}
-                      </div>
-                      {currentStageIndex >= 2 && (
-                        <div className="flex items-center gap-2 px-3 py-1.5 bg-gradient-to-r from-green-100 to-emerald-100 rounded-full">
-                          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-                          <span className="text-xs font-medium text-green-700">Interactive Mode</span>
-                        </div>
-                      )}
-                    </div>
-                  </CardHeader>
-                  
-                  <CardContent className="relative p-8 space-y-8">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.5, ease: "easeOut" }}
-                      className="flex items-start gap-6"
-                    >
-                      <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                      >
-                        <LyraAvatar size="md" expression="helping" animated />
-                      </motion.div>
-                      <div className="flex-1">
-                        <motion.div
-                          initial={{ opacity: 0, x: 30 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: 0.4 }}
-                          className="relative bg-gradient-to-br from-purple-50 via-white to-indigo-50 rounded-2xl p-6 shadow-md border border-purple-100/50"
-                        >
-                          <div className="absolute -left-3 top-6 w-0 h-0 border-t-[10px] border-t-transparent border-b-[10px] border-b-transparent border-r-[12px] border-r-purple-100" />
-                          {!fastForwardMode ? (
-                            <TypewriterText
-                              text={currentStage.content}
-                              speed={25}
-                              className="text-gray-800 leading-relaxed font-medium"
-                              onComplete={() => setIsTyping(null)}
-                            />
-                          ) : (
-                            <p className="text-gray-800 leading-relaxed font-medium">{currentStage.content}</p>
-                          )}
-                        </motion.div>
-                      </div>
-                    </motion.div>
-
-                    {/* Progress to next stage button */}
-                    {currentStageIndex < stages.length - 1 && (
-                      <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 1.5 }}
-                        className="flex justify-center pt-6"
-                      >
-                        <Button
-                          onClick={handleNextMessage}
-                          className="bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white shadow-lg hover:shadow-xl transition-all duration-300"
-                        >
-                          Continue Maya's Journey
-                          <ChevronRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </motion.div>
-                    )}
-                  </CardContent>
-                </Card>
-              </motion.div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right Panel - Split Interactive Section */}
-        <div className={cn(
-          "w-full transition-all duration-300 bg-white border-l border-purple-200/60 flex flex-col",
-          isMobile ? (isMobilePanelOpen ? "fixed inset-0 z-40" : "hidden") : "flex-1"
-        )}>
-          {/* Interactive Panel Header */}
-          <div className="bg-gradient-to-r from-indigo-50 to-purple-50 border-b border-purple-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 flex">
+      {/* Left Panel - Maya's Story */}
+      <div className="lg:w-3/5 flex flex-col">
+        <Card className="flex-1 rounded-none border-0 bg-white shadow-lg">
+          <CardHeader className="border-b border-border bg-gradient-to-r from-primary/5 to-primary/10">
             <div className="flex items-center justify-between">
               <div>
-                <h2 className="text-xl font-bold bg-gradient-to-r from-indigo-700 to-purple-700 bg-clip-text text-transparent">
-                  Interactive PACE Workshop
-                </h2>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Follow Maya's journey with real AI tools
+                <CardTitle className="text-2xl text-primary">Maya's Communication Journey</CardTitle>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Discover the PACE Framework through Maya's personal story
                 </p>
               </div>
-              {isMobile && (
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMobilePanelOpen(false)}
-                  className="text-purple-600"
+              {showSkipButton && (
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  onClick={skipTyping}
+                  className="hover:bg-primary/10"
                 >
-                  <X className="w-5 h-5" />
+                  <SkipForward className="w-4 h-4 mr-2" />
+                  Skip Animation
                 </Button>
               )}
             </div>
-          </div>
-
-          {/* Split Content Area */}
-          <div className="flex-1 flex flex-col min-h-0">
-            {/* Top Section: Email Composer Interactive Element */}
-            <div className="flex-1 border-b border-purple-100 overflow-y-auto">
-              {emailComposer ? (
-                <InteractiveElementRenderer
-                  element={emailComposer}
-                  lessonContext={{
-                    chapterTitle: "Maya's Email Mastery",
-                    lessonTitle: "PACE Framework in Action",
-                    content: "Help Maya craft the perfect response using AI"
-                  }}
-                  isElementCompleted={false}
-                  onComplete={async () => {
-                    console.log('Email composer completed');
-                    setIsElementCompleted(true);
-                  }}
-                />
-              ) : (
-                <Card className="h-full bg-gradient-to-br from-white to-indigo-50/30 border-indigo-200 shadow-lg">
-                  <CardHeader className="bg-gradient-to-r from-indigo-100 to-purple-100 border-b border-indigo-200">
-                    <CardTitle className="flex items-center gap-3 text-indigo-700">
-                      <Target className="w-5 h-5" />
-                      Loading Workshop...
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-indigo-600 mx-auto mb-2"></div>
-                      <p className="text-indigo-600 text-sm">Preparing interactive elements...</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+          </CardHeader>
+          
+          {/* Progress indicator */}
+          <div className="mb-6">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-sm font-medium text-muted-foreground">
+                Stage {currentStageIndex + 1} of {totalStages}
+              </span>
+              <span className="text-sm text-muted-foreground">
+                Maya's Story
+              </span>
             </div>
-
-            {/* Bottom Section: Prompt Builder Interactive Element */}
-            <div className="flex-1 overflow-y-auto">
-              {promptBuilder ? (
-                <InteractiveElementRenderer
-                  element={promptBuilder}
-                  lessonContext={{
-                    chapterTitle: "Maya's Email Mastery", 
-                    lessonTitle: "AI Prompt Building",
-                    content: "Learn Maya's prompt building technique"
-                  }}
-                  isElementCompleted={false}
-                  onComplete={async () => {
-                    console.log('Prompt builder completed');
-                  }}
-                />
-              ) : (
-                <Card className="h-full bg-gradient-to-br from-white to-purple-50/30 border-purple-200 shadow-lg">
-                  <CardHeader className="bg-gradient-to-r from-purple-100 to-indigo-100 border-b border-purple-200">
-                    <CardTitle className="flex items-center gap-3 text-purple-700">
-                      <MessageCircle className="w-5 h-5" />
-                      AI Prompt Builder
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-6 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600 mx-auto mb-2"></div>
-                      <p className="text-purple-600 text-sm">Loading prompt builder...</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              )}
+            <div className="w-full bg-muted rounded-full h-1.5">
+              <div 
+                className="bg-gradient-to-r from-primary to-primary/80 h-1.5 rounded-full transition-all duration-500 ease-out"
+                style={{ width: `${((currentStageIndex + 1) / totalStages) * 100}%` }}
+              />
             </div>
           </div>
-        </div>
+          
+          <CardContent className="flex-1 p-8 space-y-6">
+            {/* Story Content */}
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-gradient-to-br from-slate-50 to-white rounded-xl p-8 border border-slate-200 shadow-sm">
+                <div className="prose prose-lg max-w-none">
+                  <div className="text-slate-700 leading-relaxed whitespace-pre-line">
+                    {displayedText}
+                    {isTyping && (
+                      <span className="inline-block w-3 h-6 bg-primary ml-1 animate-pulse" />
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      <Separator orientation="vertical" className="h-full" />
+
+      {/* Right Panel - Interactive Workshop */}
+      <div className="lg:w-2/5 bg-card border-l border-border flex flex-col">
+        <CardHeader className="border-b border-border">
+          <div className="flex items-center justify-between">
+            <CardTitle className="text-lg">{currentStage?.title || 'Interactive Workshop'}</CardTitle>
+            <div className="text-sm text-muted-foreground">
+              Stage {currentStageIndex + 1} of {totalStages}
+            </div>
+          </div>
+        </CardHeader>
+        
+        <CardContent className="flex-1 p-6 overflow-y-auto">
+          {currentStage?.component || (
+            <div className="text-center text-muted-foreground">
+              <p>Workshop will begin soon...</p>
+            </div>
+          )}
+        </CardContent>
       </div>
     </div>
   );
