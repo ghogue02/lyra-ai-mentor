@@ -308,6 +308,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             title="Master the PACE Framework"
             description="Now let's put Elena's teaching into practice. Build Maya's perfect prompt using the PACE framework."
             stage="practice"
+            showHeader={false}
           >
             <GuidedPractice
               challenge={mayaChallenge}

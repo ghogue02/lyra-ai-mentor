@@ -11,6 +11,7 @@ interface InteractionGatewayProps {
   children: React.ReactNode;
   onComplete?: () => void;
   stage?: 'reflection' | 'input' | 'practice' | 'comparison';
+  showHeader?: boolean;
 }
 
 const InteractionGateway: React.FC<InteractionGatewayProps> = ({
@@ -18,7 +19,8 @@ const InteractionGateway: React.FC<InteractionGatewayProps> = ({
   description,
   children,
   onComplete,
-  stage = 'input'
+  stage = 'input',
+  showHeader = true
 }) => {
 
   const getStageIcon = () => {
@@ -94,32 +96,36 @@ const InteractionGateway: React.FC<InteractionGatewayProps> = ({
             {/* Content */}
             <div className="relative z-10 p-8">
               {/* Header Section */}
-              <div className="flex items-start gap-6 mb-8">
-                {/* Stage Icon */}
-                <div className="relative">
-                  <div className={`w-16 h-16 rounded-2xl glass-effect flex items-center justify-center ${stageConfig.glow} shadow-lg`}>
-                    {getStageIcon()}
+              {showHeader && (
+                <div className="flex items-start gap-6 mb-8">
+                  {/* Stage Icon */}
+                  <div className="relative">
+                    <div className={`w-16 h-16 rounded-2xl glass-effect flex items-center justify-center ${stageConfig.glow} shadow-lg`}>
+                      {getStageIcon()}
+                    </div>
+                    <div className="absolute -top-1 -right-1">
+                      <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+                    </div>
                   </div>
-                  <div className="absolute -top-1 -right-1">
-                    <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+                  
+                  {/* Title & Description */}
+                  <div className="flex-1 space-y-3">
+                    <h1 className="text-3xl font-bold text-foreground tracking-tight leading-tight">
+                      {title}
+                    </h1>
+                    <p className="text-muted-foreground text-lg leading-relaxed font-medium">
+                      {description}
+                    </p>
                   </div>
                 </div>
-                
-                {/* Title & Description */}
-                <div className="flex-1 space-y-3">
-                  <h1 className="text-3xl font-bold text-foreground tracking-tight leading-tight">
-                    {title}
-                  </h1>
-                  <p className="text-muted-foreground text-lg leading-relaxed font-medium">
-                    {description}
-                  </p>
-                </div>
-              </div>
+              )}
               
               {/* Interactive Content */}
               <div className="relative">
                 {/* Subtle divider */}
-                <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mb-6" />
+                {showHeader && (
+                  <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mb-6" />
+                )}
                 
                 {/* Content Container */}
                 <div className="space-y-6">
