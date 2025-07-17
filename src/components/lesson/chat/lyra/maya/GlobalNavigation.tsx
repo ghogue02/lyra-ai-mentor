@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, Home, RotateCcw, AlertTriangle } from 'lucide-react';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 export type JourneyPhase = 
   | 'intro'
@@ -51,8 +52,9 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
   isStuck = false,
   onReset
 }) => {
-  const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+  const [isScrolledToTop, setIsScrolledToTop] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const isMobile = useIsMobile();
 
   const currentIndex = phaseOrder.indexOf(currentPhase);
   const canGoBack = currentIndex > 0;
@@ -64,16 +66,18 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
   const displayIndex = userFacingIndex >= 0 ? userFacingIndex + 1 : 1;
   const totalDisplaySteps = userFacingPhases.length;
 
-  // Scroll detection for mobile
+  // Scroll detection for mobile only
   useEffect(() => {
+    if (!isMobile) return;
+    
     const handleScroll = () => {
       const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-      setIsScrolledToTop(scrollTop < 100); // Show navigation when scrolled to top (within 100px)
+      setIsScrolledToTop(scrollTop <= 10); // Show navigation when scrolled very close to top
     };
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [isMobile]);
 
   const handleGoBack = () => {
     if (canGoBack) {
@@ -82,96 +86,105 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
     }
   };
 
-  const shouldShowNavigation = isHovered || isScrolledToTop;
+  const shouldShowNavigation = (!isMobile && isHovered) || (isMobile && isScrolledToTop);
 
   return (
-    <motion.div
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      exit={{ y: -100, opacity: 0 }}
-      className="sticky top-0 z-50"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      <Card className={`bg-white/95 backdrop-blur-sm border-b shadow-sm transform transition-transform duration-300 ease-in-out ${
-        shouldShowNavigation ? 'translate-y-0' : '-translate-y-full'
-      }`}>
-        <CardContent className="p-4">
-        <div className="flex items-center justify-between">
-          {/* Left side - Back button and breadcrumb */}
-          <div className="flex items-center gap-4">
-            {canGoBack && (
+    <>
+      {/* Invisible hover zone for desktop */}
+      {!isMobile && (
+        <div 
+          className="fixed top-0 left-0 w-full h-16 z-40 pointer-events-auto"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        />
+      )}
+      
+      <motion.div
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{ y: -100, opacity: 0 }}
+        className="sticky top-0 z-50"
+      >
+        <Card className={`bg-white/95 backdrop-blur-sm border-b shadow-sm transform transition-transform duration-300 ease-in-out ${
+          shouldShowNavigation ? 'translate-y-0' : '-translate-y-full'
+        }`}>
+          <CardContent className="p-4">
+          <div className="flex items-center justify-between">
+            {/* Left side - Back button and breadcrumb */}
+            <div className="flex items-center gap-4">
+              {canGoBack && (
+                <Button
+                  onClick={handleGoBack}
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Back
+                </Button>
+              )}
+              
+              <div className="flex items-center gap-2">
+                <Badge variant="outline" className="text-xs">
+                  {displayIndex} / {totalDisplaySteps}
+                </Badge>
+                <span className="text-sm font-medium text-gray-700">
+                  {phaseLabels[currentPhase]}
+                </span>
+              </div>
+            </div>
+
+            {/* Center - Progress bar */}
+            <div className="flex-1 max-w-md mx-8">
+              <div className="w-full bg-gray-200 rounded-full h-2">
+                <motion.div
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
+                  initial={{ width: 0 }}
+                  animate={{ width: `${progress}%` }}
+                  transition={{ duration: 0.5 }}
+                />
+              </div>
+            </div>
+
+            {/* Right side - Action buttons */}
+            <div className="flex items-center gap-2">
+              {isStuck && onReset && (
+                <Button
+                  onClick={onReset}
+                  variant="outline"
+                  size="sm"
+                  className="flex items-center gap-2 text-amber-600 border-amber-200 hover:bg-amber-50"
+                >
+                  <AlertTriangle className="w-4 h-4" />
+                  Reset Section
+                </Button>
+              )}
+              
               <Button
-                onClick={handleGoBack}
-                variant="ghost"
+                onClick={() => onPhaseChange('intro')}
+                variant="outline"
                 size="sm"
                 className="flex items-center gap-2"
               >
-                <ChevronLeft className="w-4 h-4" />
-                Back
+                <RotateCcw className="w-4 h-4" />
+                Restart
               </Button>
-            )}
-            
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="text-xs">
-                {displayIndex} / {totalDisplaySteps}
-              </Badge>
-              <span className="text-sm font-medium text-gray-700">
-                {phaseLabels[currentPhase]}
-              </span>
-            </div>
-          </div>
-
-          {/* Center - Progress bar */}
-          <div className="flex-1 max-w-md mx-8">
-            <div className="w-full bg-gray-200 rounded-full h-2">
-              <motion.div
-                className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.5 }}
-              />
-            </div>
-          </div>
-
-          {/* Right side - Action buttons */}
-          <div className="flex items-center gap-2">
-            {isStuck && onReset && (
+              
               <Button
-                onClick={onReset}
+                onClick={onExit}
                 variant="outline"
                 size="sm"
-                className="flex items-center gap-2 text-amber-600 border-amber-200 hover:bg-amber-50"
+                className="flex items-center gap-2"
               >
-                <AlertTriangle className="w-4 h-4" />
-                Reset Section
+                <Home className="w-4 h-4" />
+                Exit
               </Button>
-            )}
-            
-            <Button
-              onClick={() => onPhaseChange('intro')}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <RotateCcw className="w-4 h-4" />
-              Restart
-            </Button>
-            
-            <Button
-              onClick={onExit}
-              variant="outline"
-              size="sm"
-              className="flex items-center gap-2"
-            >
-              <Home className="w-4 h-4" />
-              Exit
-            </Button>
+            </div>
           </div>
-        </div>
-      </CardContent>
-    </Card>
-    </motion.div>
+        </CardContent>
+      </Card>
+      </motion.div>
+    </>
   );
 };
 export default GlobalNavigation;
