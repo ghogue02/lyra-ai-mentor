@@ -8,7 +8,7 @@ import { useNavigate } from 'react-router-dom';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
-import HelpMayaFirstAttempt from './HelpMayaFirstAttempt';
+// Removed HelpMayaFirstAttempt - streamlined flow goes directly to PACE framework
 import GuidedPractice from './GuidedPractice';
 import MayaSuccessStory from './MayaSuccessStory';
 import GlobalNavigation, { JourneyPhase } from './GlobalNavigation';
@@ -25,7 +25,6 @@ interface PACEFramework {
 const MayaInteractiveJourney: React.FC = () => {
   const navigate = useNavigate();
   const [currentPhase, setCurrentPhase] = useState<JourneyPhase>('intro');
-  const [mayaFirstAttempt, setMayaFirstAttempt] = useState<string>('');
   const [mayaPaceResult, setMayaPaceResult] = useState<PACEFramework | null>(null);
   const [mayaPrompt, setMayaPrompt] = useState<string>('');
   const [isStuck, setIsStuck] = useState(false);
@@ -127,10 +126,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     }
   ];
 
-  const handleMayaFirstAttempt = (attempt: string) => {
-    setMayaFirstAttempt(attempt);
-    setCurrentPhase('elena-introduction');
-  };
+  // Removed redundant first attempt phase - flow goes directly to Elena introduction
 
   const handleMayaPaceComplete = (pace: PACEFramework, prompt: string) => {
     setMayaPaceResult(pace);
@@ -164,7 +160,6 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     });
     
     setCurrentPhase('intro');
-    setMayaFirstAttempt('');
     setMayaPaceResult(null);
     setMayaPrompt('');
     setIsStuck(false);
@@ -189,81 +184,103 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
               </motion.div>
             </motion.div>
             
-            <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-5xl font-bold mb-6 brand-gradient-text">
               Maya's Interactive Journey
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl">
+            <p className="text-xl text-muted-foreground mb-8 max-w-3xl font-medium leading-relaxed">
               Follow Maya's transformation from communication struggle to prompt engineering mastery - and discover your own path along the way.
             </p>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mb-8">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8">
               {[
-                { title: 'Maya\'s Struggle', desc: 'Watch her 2-hour email battle', color: 'from-red-50 to-red-100' },
-                { title: 'Help Maya', desc: 'Guide her through AI prompting', color: 'from-blue-50 to-blue-100' },
-                { title: 'Learn PACE', desc: 'Master the framework together', color: 'from-green-50 to-green-100' },
-                { title: 'Maya\'s Success', desc: 'See her amazing transformation', color: 'from-purple-50 to-purple-100' }
+                { title: 'Maya\'s Struggle', desc: 'Experience her communication challenge', color: 'from-primary/10 to-primary/5', icon: '😤' },
+                { title: 'Meet Elena', desc: 'Discover the PACE framework', color: 'from-emerald-500/10 to-emerald-500/5', icon: '✨' },
+                { title: 'Maya\'s Success', desc: 'Witness her transformation', color: 'from-brand-cyan/10 to-brand-cyan/5', icon: '🚀' }
               ].map((item, index) => (
-                <Card key={index} className={`bg-gradient-to-br ${item.color} border-0`}>
-                  <CardContent className="p-4 text-center">
-                    <Badge className="mb-2">{index + 1}</Badge>
-                    <h3 className="font-semibold text-sm mb-1">{item.title}</h3>
-                    <p className="text-xs text-gray-600">{item.desc}</p>
-                  </CardContent>
-                </Card>
+                <div key={index} className="relative group">
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
+                  <div className="relative premium-card interactive-hover brand-shadow-md">
+                    <div className="absolute inset-0 brand-gradient-glow rounded-2xl" />
+                    <div className="relative z-10 p-6 text-center">
+                      <div className="text-3xl mb-3">{item.icon}</div>
+                      <Badge variant="secondary" className="mb-3">{index + 1}</Badge>
+                      <h3 className="font-bold text-lg mb-2 text-foreground">{item.title}</h3>
+                      <p className="text-sm text-muted-foreground">{item.desc}</p>
+                    </div>
+                  </div>
+                </div>
               ))}
             </div>
             
-            <Button
-              onClick={() => setCurrentPhase('maya-introduction')}
-              size="lg"
-              className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 transform hover:scale-105 transition-all duration-200"
-            >
-              <Play className="w-5 h-5 mr-2" />
-              Begin Maya's Journey
-            </Button>
+            <div className="relative group">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-brand-cyan/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+              <Button
+                onClick={() => setCurrentPhase('maya-introduction')}
+                size="lg"
+                className="relative premium-button-primary text-lg px-8 py-4 font-semibold interactive-hover brand-shadow-md"
+              >
+                <Play className="w-5 h-5 mr-2" />
+                Begin Maya's Journey
+              </Button>
+            </div>
           </div>
         );
 
       case 'maya-introduction':
         return (
-          <NarrativeManager
-            messages={unifiedNarrativeMessages}
-            onComplete={() => setCurrentPhase('help-maya-first-attempt')}
-            autoAdvance={false}
-            phaseId="maya-narrative"
-            onReset={handleGlobalReset}
-          />
-        );
-
-      case 'help-maya-first-attempt':
-        return (
-          <InteractionGateway
-            title="Help Maya with Her First Attempt"
-            description="Maya is about to try AI for the first time. Let's help her figure out what to ask for."
-            stage="practice"
-          >
-            <HelpMayaFirstAttempt
-              onAttemptComplete={handleMayaFirstAttempt}
-            />
-          </InteractionGateway>
+          <div className="max-w-6xl mx-auto">
+            <div className="relative">
+              {/* Premium backdrop */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-brand-cyan/5 to-primary/5 rounded-3xl blur-2xl opacity-80" />
+              
+              {/* Main content container */}
+              <div className="relative premium-card brand-shadow-glow">
+                <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
+                
+                <div className="relative z-10 p-8">
+                  <NarrativeManager
+                    messages={unifiedNarrativeMessages}
+                    onComplete={() => setCurrentPhase('elena-introduction')}
+                    autoAdvance={false}
+                    phaseId="maya-narrative"
+                    onReset={handleGlobalReset}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         );
 
       case 'elena-introduction':
         return (
-          <NarrativeManager
-            messages={elenaIntroductionMessages}
-            onComplete={() => setCurrentPhase('maya-pace-building')}
-            autoAdvance={false}
-            phaseId="elena-introduction"
-            onReset={handleGlobalReset}
-          />
+          <div className="max-w-6xl mx-auto">
+            <div className="relative">
+              {/* Premium backdrop with different gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 via-teal-500/5 to-emerald-500/5 rounded-3xl blur-2xl opacity-80" />
+              
+              {/* Main content container */}
+              <div className="relative premium-card brand-shadow-glow">
+                <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
+                
+                <div className="relative z-10 p-8">
+                  <NarrativeManager
+                    messages={elenaIntroductionMessages}
+                    onComplete={() => setCurrentPhase('maya-pace-building')}
+                    autoAdvance={false}
+                    phaseId="elena-introduction"
+                    onReset={handleGlobalReset}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
         );
 
       case 'maya-pace-building':
         return (
           <InteractionGateway
-            title="Help Maya Build Her PACE Prompt"
-            description="Now that you understand the PACE framework, let's help Maya build her solution step by step."
+            title="Master the PACE Framework"
+            description="Now let's put Elena's teaching into practice. Build Maya's perfect prompt using the PACE framework."
             stage="practice"
           >
             <GuidedPractice
@@ -378,7 +395,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50">
+    <div className="min-h-screen bg-surface-primary">
       {/* Global Navigation - only show after intro */}
       {currentPhase !== 'intro' && (
         <GlobalNavigation
