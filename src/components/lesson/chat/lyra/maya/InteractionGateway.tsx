@@ -10,8 +10,6 @@ interface InteractionGatewayProps {
   description: string;
   children: React.ReactNode;
   onComplete?: () => void;
-  showEmotionalSupport?: boolean;
-  supportMessage?: string;
   stage?: 'reflection' | 'input' | 'practice' | 'comparison';
 }
 
@@ -20,11 +18,8 @@ const InteractionGateway: React.FC<InteractionGatewayProps> = ({
   description,
   children,
   onComplete,
-  showEmotionalSupport = false,
-  supportMessage = "You're doing great! This is exactly what Maya went through.",
   stage = 'input'
 }) => {
-  const [showSupport, setShowSupport] = useState(showEmotionalSupport);
 
   const getStageIcon = () => {
     switch (stage) {
@@ -135,63 +130,6 @@ const InteractionGateway: React.FC<InteractionGatewayProps> = ({
           </div>
         </div>
       </motion.div>
-
-      {/* Enhanced Emotional Support */}
-      <AnimatePresence>
-        {showSupport && (
-          <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
-            transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
-            className="mt-8"
-          >
-            <div className="relative">
-              {/* Support Card Glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-brand-cyan/10 to-primary/20 rounded-3xl blur-xl opacity-60" />
-              
-              {/* Support Card */}
-              <div className="relative premium-card brand-shadow-md">
-                <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
-                
-                <div className="relative z-10 p-6">
-                  <div className="flex items-start gap-4">
-                    {/* Maya Avatar */}
-                    <MayaCharacter 
-                      mood="encouraging" 
-                      size="md" 
-                      showSparkles={true}
-                      className="mb-2"
-                    />
-                    
-                    {/* Support Message */}
-                    <div className="flex-1 space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-primary">Maya's Support</span>
-                          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                        </div>
-                        <p className="text-foreground/90 font-medium leading-relaxed text-lg">
-                          {supportMessage}
-                        </p>
-                      </div>
-                      
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => setShowSupport(false)}
-                        className="text-primary hover:text-primary/80 hover:bg-primary/10 font-semibold rounded-xl transition-all duration-300 px-4 py-2"
-                      >
-                        Got it, thanks! ✨
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
     </div>
   );
 };
