@@ -28,6 +28,23 @@ const MayaInteractiveJourney: React.FC = () => {
   const [mayaPaceResult, setMayaPaceResult] = useState<PACEFramework | null>(null);
   const [mayaPrompt, setMayaPrompt] = useState<string>('');
   const [isStuck, setIsStuck] = useState(false);
+  const [sessionStartTime] = useState(Date.now());
+
+  // Clear any stale state from previous sessions on mount
+  React.useEffect(() => {
+    const clearStaleState = () => {
+      // Clear all Maya journey related sessionStorage
+      const keys = Object.keys(sessionStorage);
+      keys.forEach(key => {
+        if (key.startsWith('narrative-') || key.startsWith('maya-')) {
+          sessionStorage.removeItem(key);
+        }
+      });
+    };
+
+    clearStaleState();
+    console.log('Fresh Maya journey session started');
+  }, []);
 
   // Maya's predefined journey data
   const mayaChallenge = "I need to write an email to my manager about missing a critical project deadline";
@@ -139,10 +156,11 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
   };
 
   const handlePhaseChange = (phase: JourneyPhase) => {
+    console.log('Phase change requested:', phase);
     setCurrentPhase(phase);
     setIsStuck(false);
     
-    // Clear session storage for phase transitions
+    // Clear session storage for the target phase to ensure clean start
     sessionStorage.removeItem(`narrative-${phase}`);
   };
 
@@ -151,18 +169,26 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
   };
 
   const handleGlobalReset = () => {
-    // Clear all session storage for this journey
+    console.log('Performing global reset');
+    
+    // Clear ALL Maya journey related state from sessionStorage
     const keys = Object.keys(sessionStorage);
     keys.forEach(key => {
-      if (key.startsWith('narrative-')) {
+      if (key.startsWith('narrative-') || key.startsWith('maya-') || key.startsWith('journey-')) {
         sessionStorage.removeItem(key);
       }
     });
     
+    // Reset all component state
     setCurrentPhase('intro');
     setMayaPaceResult(null);
     setMayaPrompt('');
     setIsStuck(false);
+    
+    // Force a brief loading state to ensure clean reset
+    setTimeout(() => {
+      console.log('Global reset complete');
+    }, 100);
   };
 
   const renderPhase = () => {

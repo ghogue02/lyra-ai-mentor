@@ -45,15 +45,26 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   const completionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const stuckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // State persistence
+  // State persistence - only restore if within same session (< 5 minutes old)
   useEffect(() => {
     const savedState = sessionStorage.getItem(`narrative-${phaseId}`);
     if (savedState) {
       try {
         const parsed = JSON.parse(savedState);
-        setCurrentMessageIndex(parsed.currentMessageIndex || 0);
+        const timeSinceStore = Date.now() - (parsed.timestamp || 0);
+        const maxAge = 5 * 60 * 1000; // 5 minutes
+        
+        // Only restore if state is recent (same session)
+        if (timeSinceStore < maxAge && parsed.currentMessageIndex !== undefined) {
+          console.log('Restoring narrative state for', phaseId, 'at index', parsed.currentMessageIndex);
+          setCurrentMessageIndex(parsed.currentMessageIndex);
+        } else {
+          console.log('Clearing stale narrative state for', phaseId);
+          sessionStorage.removeItem(`narrative-${phaseId}`);
+        }
       } catch (error) {
         console.warn('Failed to parse saved narrative state:', error);
+        sessionStorage.removeItem(`narrative-${phaseId}`);
       }
     }
   }, [phaseId]);
@@ -192,7 +203,9 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   };
 
   const handleReset = () => {
-    console.log('Resetting narrative manager');
+    console.log('Resetting narrative manager for phase:', phaseId);
+    
+    // Reset all component state
     setCurrentMessageIndex(0);
     setDisplayedText('');
     setIsTyping(false);
@@ -203,6 +216,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     // Clear session storage for this phase
     sessionStorage.removeItem(`narrative-${phaseId}`);
     
+    // Call parent reset if provided
     if (onReset) {
       onReset();
     }
