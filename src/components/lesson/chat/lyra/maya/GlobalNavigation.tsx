@@ -54,6 +54,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
 }) => {
   const [isScrolledToTop, setIsScrolledToTop] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
+  const [hideTimeout, setHideTimeout] = useState<NodeJS.Timeout | null>(null);
   const isMobile = useIsMobile();
 
   const currentIndex = phaseOrder.indexOf(currentPhase);
@@ -86,24 +87,69 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
     }
   };
 
+  const handleMouseEnter = () => {
+    if (hideTimeout) {
+      clearTimeout(hideTimeout);
+      setHideTimeout(null);
+    }
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    const timeout = setTimeout(() => {
+      setIsHovered(false);
+    }, 300); // 300ms delay before hiding
+    setHideTimeout(timeout);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+      }
+    };
+  }, [hideTimeout]);
+
   const shouldShowNavigation = (!isMobile && isHovered) || (isMobile && isScrolledToTop);
 
   return (
     <>
-      {/* Invisible hover zone for desktop */}
+      {/* Visual indicator - subtle edge hint */}
+      {!isMobile && !shouldShowNavigation && (
+        <div 
+          className="fixed top-0 left-0 w-full h-0.5 bg-gradient-to-r from-purple-500 to-pink-500 z-30 opacity-50"
+          onMouseEnter={handleMouseEnter}
+        />
+      )}
+      
+      {/* Larger hover zone for desktop */}
       {!isMobile && (
         <div 
-          className="fixed top-0 left-0 w-full h-16 z-40 pointer-events-auto"
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+          className="fixed top-0 left-0 w-full h-8 z-40 pointer-events-auto"
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         />
+      )}
+      
+      {/* Fallback trigger - small always-visible button */}
+      {!isMobile && !shouldShowNavigation && (
+        <Button
+          onClick={() => setIsHovered(true)}
+          variant="ghost"
+          size="sm"
+          className="fixed top-2 right-4 z-45 opacity-30 hover:opacity-100 transition-opacity duration-200"
+        >
+          <ChevronLeft className="w-4 h-4 rotate-90" />
+        </Button>
       )}
       
       <motion.div
         initial={{ y: -100, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         exit={{ y: -100, opacity: 0 }}
-        className="sticky top-0 z-50"
+        className="fixed top-0 left-0 w-full z-50"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
       >
         <Card className={`bg-white/95 backdrop-blur-sm border-b shadow-sm transform transition-transform duration-300 ease-in-out ${
           shouldShowNavigation ? 'translate-y-0' : '-translate-y-full'
