@@ -56,77 +56,76 @@ Please craft an email that:
 
 Keep the tone professional but genuine, and focus on solutions rather than problems.`;
 
-  const narrativeMessages = {
-    introduction: [
-      {
-        id: 'intro-1',
-        content: "Hi! I'm Maya, and I want to share something that changed how I communicate forever.",
-        emotion: 'hopeful' as const,
-        showAvatar: true
-      },
-      {
-        id: 'intro-2',
-        content: "Just last month, I was struggling with the same communication challenges you might be facing right now.",
-        emotion: 'neutral' as const
-      },
-      {
-        id: 'intro-3',
-        content: "But then I discovered something that transformed not just my emails, but my entire approach to AI-powered communication.",
-        emotion: 'excited' as const
-      }
-    ],
-    struggle: [
-      {
-        id: 'struggle-1',
-        content: "Picture this: It's 9 PM, and I'm still staring at a blank email. I've been trying to write this message for TWO HOURS.",
-        emotion: 'frustrated' as const
-      },
-      {
-        id: 'struggle-2',
-        content: "The deadline I missed was embarrassing enough. But trying to explain it to my manager? That felt impossible.",
-        emotion: 'worried' as const
-      },
-      {
-        id: 'struggle-3',
-        content: "I kept starting over, deleting everything, feeling more anxious with each attempt. Sound familiar?",
-        emotion: 'anxious' as const
-      }
-    ],
-    failedAttempt: [
-      {
-        id: 'failed-1',
-        content: "So I tried using AI. I typed: 'Write an email about missing a deadline' and hit enter.",
-        emotion: 'hopeful' as const
-      },
-      {
-        id: 'failed-2',
-        content: "The result was generic, robotic, and completely wrong for my situation. It made me sound like I didn't care at all.",
-        emotion: 'disappointed' as const
-      },
-      {
-        id: 'failed-3',
-        content: "That's when I realized: the problem wasn't the AI. It was how I was asking for help.",
-        emotion: 'thoughtful' as const
-      }
-    ],
-    elenaIntroduction: [
-      {
-        id: 'elena-1',
-        content: "That's when I met Elena, my AI communication coach. She taught me something called the PACE framework.",
-        emotion: 'excited' as const
-      },
-      {
-        id: 'elena-2',
-        content: "She explained that great prompts aren't just requests - they're conversations. They need Purpose, Audience, Connection, and Engagement.",
-        emotion: 'enlightened' as const
-      },
-      {
-        id: 'elena-3',
-        content: "Within 20 minutes of learning PACE, I had created a prompt that generated exactly what I needed.",
-        emotion: 'amazed' as const
-      }
-    ]
-  };
+  // Combined narrative messages for unified experience
+  const unifiedNarrativeMessages = [
+    // Introduction
+    {
+      id: 'intro-1',
+      content: "Hi! I'm Maya, and I want to share something that changed how I communicate forever.",
+      emotion: 'hopeful' as const,
+      showAvatar: true
+    },
+    {
+      id: 'intro-2',
+      content: "Just last month, I was struggling with the same communication challenges you might be facing right now.",
+      emotion: 'neutral' as const
+    },
+    {
+      id: 'intro-3',
+      content: "But then I discovered something that transformed not just my emails, but my entire approach to AI-powered communication.",
+      emotion: 'excited' as const
+    },
+    // Maya's Struggle
+    {
+      id: 'struggle-1',
+      content: "Picture this: It's 9 PM, and I'm still staring at a blank email. I've been trying to write this message for TWO HOURS.",
+      emotion: 'frustrated' as const
+    },
+    {
+      id: 'struggle-2',
+      content: "The deadline I missed was embarrassing enough. But trying to explain it to my manager? That felt impossible.",
+      emotion: 'worried' as const
+    },
+    {
+      id: 'struggle-3',
+      content: "I kept starting over, deleting everything, feeling more anxious with each attempt. Sound familiar?",
+      emotion: 'anxious' as const
+    },
+    // Failed AI Attempt
+    {
+      id: 'failed-1',
+      content: "So I tried using AI. I typed: 'Write an email about missing a deadline' and hit enter.",
+      emotion: 'hopeful' as const
+    },
+    {
+      id: 'failed-2',
+      content: "The result was generic, robotic, and completely wrong for my situation. It made me sound like I didn't care at all.",
+      emotion: 'disappointed' as const
+    },
+    {
+      id: 'failed-3',
+      content: "That's when I realized: the problem wasn't the AI. It was how I was asking for help.",
+      emotion: 'thoughtful' as const
+    }
+  ];
+
+  const elenaIntroductionMessages = [
+    {
+      id: 'elena-1',
+      content: "That's when I met Elena, my AI communication coach. She taught me something called the PACE framework.",
+      emotion: 'excited' as const
+    },
+    {
+      id: 'elena-2',
+      content: "She explained that great prompts aren't just requests - they're conversations. They need Purpose, Audience, Connection, and Engagement.",
+      emotion: 'enlightened' as const
+    },
+    {
+      id: 'elena-3',
+      content: "Within 20 minutes of learning PACE, I had created a prompt that generated exactly what I needed.",
+      emotion: 'amazed' as const
+    }
+  ];
 
   const handleMayaFirstAttempt = (attempt: string) => {
     setMayaFirstAttempt(attempt);
@@ -228,21 +227,10 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
       case 'maya-introduction':
         return (
           <NarrativeManager
-            messages={narrativeMessages.introduction}
-            onComplete={() => setCurrentPhase('maya-struggle')}
-            autoAdvance={false}
-            phaseId="maya-introduction"
-            onReset={handleGlobalReset}
-          />
-        );
-
-      case 'maya-struggle':
-        return (
-          <NarrativeManager
-            messages={narrativeMessages.struggle}
+            messages={unifiedNarrativeMessages}
             onComplete={() => setCurrentPhase('help-maya-first-attempt')}
             autoAdvance={false}
-            phaseId="maya-struggle"
+            phaseId="maya-narrative"
             onReset={handleGlobalReset}
           />
         );
@@ -265,7 +253,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
       case 'elena-introduction':
         return (
           <NarrativeManager
-            messages={narrativeMessages.elenaIntroduction}
+            messages={elenaIntroductionMessages}
             onComplete={() => setCurrentPhase('maya-pace-building')}
             autoAdvance={false}
             phaseId="elena-introduction"

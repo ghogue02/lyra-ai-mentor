@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -25,7 +25,7 @@ interface GlobalNavigationProps {
 
 const phaseLabels: Record<JourneyPhase, string> = {
   'intro': 'Introduction',
-  'maya-introduction': 'Meet Maya',
+  'maya-introduction': 'Maya\'s Story',
   'maya-struggle': 'Maya\'s Challenge',
   'help-maya-first-attempt': 'Help Maya (First Try)',
   'elena-introduction': 'Meet Elena',
@@ -37,7 +37,6 @@ const phaseLabels: Record<JourneyPhase, string> = {
 const phaseOrder: JourneyPhase[] = [
   'intro',
   'maya-introduction',
-  'maya-struggle',
   'help-maya-first-attempt',
   'elena-introduction',
   'maya-pace-building',
@@ -52,9 +51,29 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
   isStuck = false,
   onReset
 }) => {
+  const [isScrolledToTop, setIsScrolledToTop] = useState(true);
+  const [isHovered, setIsHovered] = useState(false);
+
   const currentIndex = phaseOrder.indexOf(currentPhase);
   const canGoBack = currentIndex > 0;
-  const progress = ((currentIndex + 1) / phaseOrder.length) * 100;
+  
+  // Exclude 'intro' from user-facing progress calculations
+  const userFacingPhases = phaseOrder.filter(phase => phase !== 'intro') as Exclude<JourneyPhase, 'intro'>[];
+  const userFacingIndex = currentPhase === 'intro' ? -1 : userFacingPhases.indexOf(currentPhase as Exclude<JourneyPhase, 'intro'>);
+  const progress = userFacingIndex >= 0 ? ((userFacingIndex + 1) / userFacingPhases.length) * 100 : 0;
+  const displayIndex = userFacingIndex >= 0 ? userFacingIndex + 1 : 1;
+  const totalDisplaySteps = userFacingPhases.length;
+
+  // Scroll detection for mobile
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+      setIsScrolledToTop(scrollTop < 100); // Show navigation when scrolled to top (within 100px)
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleGoBack = () => {
     if (canGoBack) {
@@ -63,9 +82,21 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
     }
   };
 
+  const shouldShowNavigation = isHovered || isScrolledToTop;
+
   return (
-    <Card className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b shadow-sm">
-      <CardContent className="p-4">
+    <motion.div
+      initial={{ y: -100, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: -100, opacity: 0 }}
+      className="sticky top-0 z-50"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <Card className={`bg-white/95 backdrop-blur-sm border-b shadow-sm transform transition-transform duration-300 ease-in-out ${
+        shouldShowNavigation ? 'translate-y-0' : '-translate-y-full'
+      }`}>
+        <CardContent className="p-4">
         <div className="flex items-center justify-between">
           {/* Left side - Back button and breadcrumb */}
           <div className="flex items-center gap-4">
@@ -83,7 +114,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
             
             <div className="flex items-center gap-2">
               <Badge variant="outline" className="text-xs">
-                {currentIndex + 1} / {phaseOrder.length}
+                {displayIndex} / {totalDisplaySteps}
               </Badge>
               <span className="text-sm font-medium text-gray-700">
                 {phaseLabels[currentPhase]}
@@ -140,7 +171,7 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
         </div>
       </CardContent>
     </Card>
+    </motion.div>
   );
 };
-
 export default GlobalNavigation;
