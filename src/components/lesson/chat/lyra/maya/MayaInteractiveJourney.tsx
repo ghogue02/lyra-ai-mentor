@@ -242,7 +242,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             description="Maya is about to try AI for the first time. Let's help her figure out what to ask for."
             stage="practice"
             showEmotionalSupport={true}
-            supportMessage="Remember, Maya doesn't know about good prompting yet - she'll try something basic!"
+            supportMessage="Like many of us when we first start with AI, Maya will begin with a simple approach - let's see how we can help her improve!"
           >
             <HelpMayaFirstAttempt
               onAttemptComplete={handleMayaFirstAttempt}
