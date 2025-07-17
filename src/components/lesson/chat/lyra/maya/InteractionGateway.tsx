@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-
-import { Heart, MessageSquare, ChevronRight, Lightbulb } from 'lucide-react';
+import { Heart, MessageSquare, ChevronRight, Lightbulb, Sparkles } from 'lucide-react';
+import MayaCharacter from './MayaCharacter';
+import PremiumCard from '@/components/ui/premium-card';
 
 interface InteractionGatewayProps {
   title: string;
@@ -29,95 +29,166 @@ const InteractionGateway: React.FC<InteractionGatewayProps> = ({
   const getStageIcon = () => {
     switch (stage) {
       case 'reflection':
-        return <Heart className="w-5 h-5 text-pink-600" />;
+        return <Heart className="w-6 h-6 text-pink-500" />;
       case 'input':
-        return <MessageSquare className="w-5 h-5 text-primary" />;
+        return <MessageSquare className="w-6 h-6 text-primary" />;
       case 'practice':
-        return <Lightbulb className="w-5 h-5 text-emerald-600" />;
+        return <Lightbulb className="w-6 h-6 text-emerald-500" />;
       case 'comparison':
-        return <ChevronRight className="w-5 h-5 text-blue-600" />;
+        return <ChevronRight className="w-6 h-6 text-blue-500" />;
       default:
-        return <MessageSquare className="w-5 h-5 text-primary" />;
+        return <MessageSquare className="w-6 h-6 text-primary" />;
     }
   };
 
-  const getStageColor = () => {
+  const getStageConfig = () => {
     switch (stage) {
       case 'reflection':
-        return 'bg-gradient-to-br from-pink-50 to-rose-50 border-pink-200/30 hover:border-pink-300/40';
+        return {
+          gradient: 'from-pink-500/10 via-rose-500/5 to-pink-500/10',
+          accent: 'text-pink-500',
+          glow: 'shadow-pink-500/20'
+        };
       case 'input':
-        return 'bg-gradient-to-br from-brand-purple-light to-brand-cyan-light border-primary/20 hover:border-primary/30';
+        return {
+          gradient: 'from-primary/10 via-brand-cyan/5 to-primary/10',
+          accent: 'text-primary',
+          glow: 'shadow-primary/20'
+        };
       case 'practice':
-        return 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-200/30 hover:border-emerald-300/40';
+        return {
+          gradient: 'from-emerald-500/10 via-teal-500/5 to-emerald-500/10',
+          accent: 'text-emerald-500',
+          glow: 'shadow-emerald-500/20'
+        };
       case 'comparison':
-        return 'bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200/30 hover:border-blue-300/40';
+        return {
+          gradient: 'from-blue-500/10 via-indigo-500/5 to-blue-500/10',
+          accent: 'text-blue-500',
+          glow: 'shadow-blue-500/20'
+        };
       default:
-        return 'bg-gradient-to-br from-brand-purple-light to-brand-cyan-light border-primary/20 hover:border-primary/30';
+        return {
+          gradient: 'from-primary/10 via-brand-cyan/5 to-primary/10',
+          accent: 'text-primary',
+          glow: 'shadow-primary/20'
+        };
     }
   };
+
+  const stageConfig = getStageConfig();
 
   return (
     <div className="max-w-4xl mx-auto px-6 py-8">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
         className="animate-scale-in"
       >
-        <Card className={`${getStageColor()} shadow-lg hover:shadow-xl transition-all duration-300 border-2 rounded-2xl overflow-hidden`}>
-          <CardHeader className="pb-6">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="p-3 bg-white/30 rounded-xl backdrop-blur-sm shadow-sm">
-                {getStageIcon()}
+        {/* Premium Main Container */}
+        <div className="relative">
+          {/* Glow Effect Background */}
+          <div className={`absolute inset-0 bg-gradient-to-br ${stageConfig.gradient} rounded-3xl blur-xl opacity-50`} />
+          
+          {/* Main Content Card */}
+          <div className="relative premium-card interactive-hover brand-shadow-md">
+            {/* Gradient Overlay */}
+            <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
+            
+            {/* Content */}
+            <div className="relative z-10 p-8">
+              {/* Header Section */}
+              <div className="flex items-start gap-6 mb-8">
+                {/* Stage Icon */}
+                <div className="relative">
+                  <div className={`w-16 h-16 rounded-2xl glass-effect flex items-center justify-center ${stageConfig.glow} shadow-lg`}>
+                    {getStageIcon()}
+                  </div>
+                  <div className="absolute -top-1 -right-1">
+                    <Sparkles className="w-5 h-5 text-primary animate-pulse" />
+                  </div>
+                </div>
+                
+                {/* Title & Description */}
+                <div className="flex-1 space-y-3">
+                  <h1 className="text-3xl font-bold text-foreground tracking-tight leading-tight">
+                    {title}
+                  </h1>
+                  <p className="text-muted-foreground text-lg leading-relaxed font-medium">
+                    {description}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1">
-                <CardTitle className="text-2xl font-bold text-foreground tracking-tight mb-2">
-                  {title}
-                </CardTitle>
-                <p className="text-muted-foreground text-base leading-relaxed">
-                  {description}
-                </p>
+              
+              {/* Interactive Content */}
+              <div className="relative">
+                {/* Subtle divider */}
+                <div className="w-full h-px bg-gradient-to-r from-transparent via-border to-transparent mb-6" />
+                
+                {/* Content Container */}
+                <div className="space-y-6">
+                  {children}
+                </div>
               </div>
             </div>
-          </CardHeader>
-          <CardContent className="pt-0">
-            {children}
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </motion.div>
 
-      {/* Emotional Support */}
+      {/* Enhanced Emotional Support */}
       <AnimatePresence>
         {showSupport && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ delay: 0.3, duration: 0.3 }}
+            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            transition={{ delay: 0.3, duration: 0.4, ease: "easeOut" }}
             className="mt-8"
           >
-            <Card className="bg-gradient-to-br from-brand-purple-light to-brand-cyan-light border-primary/20 shadow-md rounded-2xl overflow-hidden">
-              <CardContent className="p-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center flex-shrink-0 shadow-sm">
-                    <Heart className="w-6 h-6 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-foreground/90 font-medium leading-relaxed">
-                      {supportMessage}
-                    </p>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => setShowSupport(false)}
-                      className="mt-4 text-primary hover:text-primary/80 hover:bg-primary/10 font-medium rounded-xl transition-all duration-200"
-                    >
-                      Got it, thanks!
-                    </Button>
+            <div className="relative">
+              {/* Support Card Glow */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-brand-cyan/10 to-primary/20 rounded-3xl blur-xl opacity-60" />
+              
+              {/* Support Card */}
+              <div className="relative premium-card brand-shadow-md">
+                <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
+                
+                <div className="relative z-10 p-6">
+                  <div className="flex items-start gap-4">
+                    {/* Maya Avatar */}
+                    <MayaCharacter 
+                      mood="encouraging" 
+                      size="md" 
+                      showSparkles={true}
+                      className="mb-2"
+                    />
+                    
+                    {/* Support Message */}
+                    <div className="flex-1 space-y-4">
+                      <div className="space-y-2">
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-semibold text-primary">Maya's Support</span>
+                          <div className="w-2 h-2 bg-primary rounded-full animate-pulse" />
+                        </div>
+                        <p className="text-foreground/90 font-medium leading-relaxed text-lg">
+                          {supportMessage}
+                        </p>
+                      </div>
+                      
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => setShowSupport(false)}
+                        className="text-primary hover:text-primary/80 hover:bg-primary/10 font-semibold rounded-xl transition-all duration-300 px-4 py-2"
+                      >
+                        Got it, thanks! ✨
+                      </Button>
+                    </div>
                   </div>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

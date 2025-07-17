@@ -65,11 +65,19 @@ export default {
 				},
 				'brand-purple': {
 					DEFAULT: 'hsl(var(--brand-purple))',
-					light: 'hsl(var(--brand-purple-light))'
+					light: 'hsl(var(--brand-purple-light))',
+					muted: 'hsl(var(--brand-purple-muted))'
 				},
 				'brand-cyan': {
 					DEFAULT: 'hsl(var(--brand-cyan))',
-					light: 'hsl(var(--brand-cyan-light))'
+					light: 'hsl(var(--brand-cyan-light))',
+					muted: 'hsl(var(--brand-cyan-muted))'
+				},
+				surface: {
+					primary: 'hsl(var(--surface-primary))',
+					secondary: 'hsl(var(--surface-secondary))',
+					accent: 'hsl(var(--surface-accent))',
+					muted: 'hsl(var(--surface-muted))'
 				}
 			},
 			borderRadius: {
