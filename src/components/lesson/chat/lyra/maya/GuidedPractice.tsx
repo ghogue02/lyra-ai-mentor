@@ -51,10 +51,10 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       description: 'What specific outcome do you want to achieve?',
       placeholder: 'e.g., "I want to inform my team about project delays while maintaining their confidence and providing clear next steps"',
       examples: [
-        'Inform and reassure',
-        'Persuade and motivate',
-        'Explain and clarify',
-        'Request and justify'
+        'I want to inform my team about project delays while maintaining their confidence and providing clear recovery steps',
+        'I want to persuade stakeholders to approve additional budget by demonstrating clear ROI and risk mitigation',
+        'I want to explain technical concepts to non-technical clients while ensuring they feel informed and confident',
+        'I want to request deadline extensions from my manager while showing accountability and alternative solutions'
       ]
     },
     {
@@ -66,10 +66,10 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       description: 'Who exactly are you communicating with?',
       placeholder: 'e.g., "My direct manager and team members who are expecting deliverables this week"',
       examples: [
-        'Busy executives',
-        'Technical team members',
-        'External clients',
-        'Concerned stakeholders'
+        'Busy executives who need quick decisions and focus primarily on business impact and bottom-line results',
+        'Technical team members who appreciate detailed specifications and prefer thorough analysis before implementation',
+        'External clients who value transparency and need reassurance about project progress and deliverable quality',
+        'Concerned stakeholders who are invested in project success and need regular updates to maintain confidence'
       ]
     },
     {
@@ -81,10 +81,10 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       description: 'How should you connect emotionally and build rapport?',
       placeholder: 'e.g., "Acknowledge their concerns, show accountability, and demonstrate that I understand the impact"',
       examples: [
-        'Show empathy and understanding',
-        'Acknowledge their expertise',
-        'Demonstrate shared values',
-        'Build trust and credibility'
+        'Show empathy by acknowledging their concerns and demonstrating that I understand the impact on their work',
+        'Acknowledge their expertise by referencing their past successes and asking for their insights on solutions',
+        'Demonstrate shared values by emphasizing our common goals and commitment to delivering quality results',
+        'Build trust by being transparent about challenges, taking accountability, and showing consistent follow-through'
       ]
     },
     {
@@ -96,10 +96,10 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       description: 'How will you make it compelling and actionable?',
       placeholder: 'e.g., "Use clear structure, specific timelines, and end with concrete next steps they can take"',
       examples: [
-        'Clear call-to-action',
-        'Specific examples',
-        'Compelling benefits',
-        'Easy next steps'
+        'End with a clear call-to-action that specifies exactly what I need from them and by when',
+        'Include specific examples and concrete data points that make the situation tangible and relatable',
+        'Highlight compelling benefits that directly address their priorities and show clear value proposition',
+        'Provide easy next steps with specific timelines and clear ownership to ensure smooth execution'
       ]
     }
   ];
