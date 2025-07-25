@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { ToolkitService } from '@/services/toolkitService';
 import { useToast } from '@/hooks/use-toast';
+import { useJourneyProgress } from '@/hooks/useJourneyProgress';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
@@ -35,6 +36,22 @@ const MayaInteractiveJourney: React.FC = () => {
   const [isStuck, setIsStuck] = useState(false);
   const [sessionStartTime] = useState(Date.now());
   const [isUnlockingToolkit, setIsUnlockingToolkit] = useState(false);
+
+  const {
+    isStarted,
+    isCompleted,
+    currentPhase: journeyPhase,
+    progressPercentage,
+    startJourney,
+    nextPhase,
+    completeJourney,
+    scoreContent,
+    currentScore,
+    scoring
+  } = useJourneyProgress({ 
+    journeyKey: 'maya-pace-framework',
+    autoStart: true 
+  });
 
   // Clear any stale state from previous sessions on mount
   React.useEffect(() => {
@@ -210,30 +227,47 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     try {
       setIsUnlockingToolkit(true);
       
-      // Unlock journey-specific toolkit items with user's PACE result
-      await ToolkitService.unlockJourneyRewards(
-        user.id, 
-        'maya-pace',
-        {
-          paceFramework: mayaPaceResult,
-          generatedPrompt: mayaPrompt,
-          completedAt: new Date().toISOString()
-        }
-      );
+      // Score the final PACE framework if available
+      let finalScore = currentScore?.overall_score;
+      if (!finalScore && mayaPaceResult) {
+        const scoreResult = await scoreContent(mayaPaceResult);
+        finalScore = scoreResult?.overall_score;
+      }
 
-      toast({
-        title: "Toolkit Unlocked! 🎉",
-        description: "Your journey templates and personalized PACE framework have been added to your toolkit.",
-        variant: "default"
-      });
+      // Complete the journey with scoring
+      const success = await completeJourney({
+        paceFramework: mayaPaceResult,
+        generatedPrompt: mayaPrompt,
+        completedAt: new Date().toISOString()
+      }, finalScore);
 
-      // Navigate to toolkit to show the unlocked items
-      navigate('/toolkit');
+      if (success) {
+        // Unlock journey-specific toolkit items
+        await ToolkitService.unlockJourneyRewards(
+          user.id, 
+          'maya-pace',
+          {
+            paceFramework: mayaPaceResult,
+            generatedPrompt: mayaPrompt,
+            score: finalScore,
+            completedAt: new Date().toISOString()
+          }
+        );
+
+        toast({
+          title: "Journey Complete! 🎉",
+          description: `Your PACE framework mastery templates have been added to your toolkit.${finalScore ? ` Score: ${Math.round(finalScore)}%` : ''}`,
+          variant: "default"
+        });
+
+        // Navigate to toolkit to show the unlocked items
+        navigate('/toolkit');
+      }
     } catch (error) {
-      console.error('Error unlocking toolkit:', error);
+      console.error('Error completing journey:', error);
       toast({
         title: "Error",
-        description: "Failed to unlock toolkit items. Please try again.",
+        description: "Failed to complete journey. Please try again.",
         variant: "destructive"
       });
     } finally {
@@ -398,6 +432,35 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
                 </p>
               </div>
 
+              {/* Progress indicator */}
+              {progressPercentage > 0 && (
+                <div className="bg-gray-50 p-4 rounded-lg mb-6">
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="font-medium">Journey Progress</span>
+                    <span className="text-primary">{progressPercentage}%</span>
+                  </div>
+                  <div className="w-full bg-gray-200 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-purple-600 to-blue-600 h-2 rounded-full transition-all duration-300"
+                      style={{ width: `${progressPercentage}%` }}
+                    />
+                  </div>
+                </div>
+              )}
+
+              {/* Score display */}
+              {currentScore && (
+                <div className="bg-green-50 p-4 rounded-lg border border-green-200 mb-6">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-green-800">Framework Score</span>
+                    <span className="text-green-600 font-bold">{Math.round(currentScore.overall_score)}%</span>
+                  </div>
+                  {currentScore.feedback && (
+                    <p className="text-sm text-green-700 mt-2">{currentScore.feedback}</p>
+                  )}
+                </div>
+              )}
+
               <Card className="bg-gradient-to-r from-green-50 to-emerald-50 border-green-200">
                 <CardContent className="p-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -457,11 +520,14 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
                 </Button>
                 <Button
                   onClick={handleBuildToolkit}
-                  disabled={isUnlockingToolkit}
+                  disabled={isUnlockingToolkit || scoring}
                   size="lg"
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700 disabled:opacity-50"
                 >
-                  {isUnlockingToolkit ? 'Unlocking...' : 'Build My Toolkit'}
+                  {isCompleted ? '✅ Journey Complete!' : 
+                   scoring ? '📊 Scoring...' : 
+                   isUnlockingToolkit ? 'Unlocking...' : 
+                   'Complete Journey & Build Toolkit'}
                 </Button>
               </div>
             </motion.div>

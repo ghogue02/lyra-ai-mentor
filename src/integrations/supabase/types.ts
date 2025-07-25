@@ -347,6 +347,63 @@ export type Database = {
           },
         ]
       }
+      journey_definitions: {
+        Row: {
+          badge_requirements: Json | null
+          category: string
+          character_name: string
+          created_at: string
+          description: string
+          difficulty_level: string
+          estimated_duration: number | null
+          id: string
+          is_active: boolean
+          journey_key: string
+          metadata: Json | null
+          name: string
+          scoring_criteria: Json | null
+          scoring_enabled: boolean
+          total_phases: number
+          updated_at: string
+        }
+        Insert: {
+          badge_requirements?: Json | null
+          category?: string
+          character_name: string
+          created_at?: string
+          description: string
+          difficulty_level?: string
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean
+          journey_key: string
+          metadata?: Json | null
+          name: string
+          scoring_criteria?: Json | null
+          scoring_enabled?: boolean
+          total_phases?: number
+          updated_at?: string
+        }
+        Update: {
+          badge_requirements?: Json | null
+          category?: string
+          character_name?: string
+          created_at?: string
+          description?: string
+          difficulty_level?: string
+          estimated_duration?: number | null
+          id?: string
+          is_active?: boolean
+          journey_key?: string
+          metadata?: Json | null
+          name?: string
+          scoring_criteria?: Json | null
+          scoring_enabled?: boolean
+          total_phases?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       lesson_progress: {
         Row: {
           chapter_completed: boolean | null
@@ -839,6 +896,71 @@ export type Database = {
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_journey_progress: {
+        Row: {
+          completed_at: string | null
+          completion_data: Json | null
+          created_at: string
+          current_phase: number
+          id: string
+          is_completed: boolean
+          journey_id: string
+          journey_key: string
+          last_accessed_at: string
+          overall_score: number | null
+          phase_data: Json | null
+          phase_scores: Json | null
+          started_at: string
+          total_phases: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          completion_data?: Json | null
+          created_at?: string
+          current_phase?: number
+          id?: string
+          is_completed?: boolean
+          journey_id: string
+          journey_key: string
+          last_accessed_at?: string
+          overall_score?: number | null
+          phase_data?: Json | null
+          phase_scores?: Json | null
+          started_at?: string
+          total_phases?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          completion_data?: Json | null
+          created_at?: string
+          current_phase?: number
+          id?: string
+          is_completed?: boolean
+          journey_id?: string
+          journey_key?: string
+          last_accessed_at?: string
+          overall_score?: number | null
+          phase_data?: Json | null
+          phase_scores?: Json | null
+          started_at?: string
+          total_phases?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_journey_progress_journey_id_fkey"
+            columns: ["journey_id"]
+            isOneToOne: false
+            referencedRelation: "journey_definitions"
             referencedColumns: ["id"]
           },
         ]
