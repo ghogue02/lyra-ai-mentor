@@ -30,7 +30,7 @@ const Chapter2Hub: React.FC = () => {
       title: 'PACE Framework Foundation',
       description: 'Master the core framework: Purpose → Audience → Context → Execute',
       icon: <Target className="w-6 h-6" />,
-      route: '/lyra-maya-demo',
+      route: '/chapter/2/interactive/maya-pace',
       estimated_time: '12 min',
       difficulty: 'Beginner',
       completed: true, // Already implemented
@@ -217,7 +217,7 @@ const Chapter2Hub: React.FC = () => {
           </p>
           <div className="mt-6">
             <Button 
-              onClick={() => navigate('/lyra-maya-demo')}
+              onClick={() => navigate('/chapter/2/interactive/maya-pace')}
               className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
             >
               Start with PACE Framework

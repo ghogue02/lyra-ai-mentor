@@ -4,7 +4,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
@@ -13,7 +13,7 @@ import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ContentLab from "./pages/ContentLab";
 import Lesson from "./pages/Lesson";
-import LyraNarratedMayaDemo from "./pages/LyraNarratedMayaDemo";
+import InteractiveJourney from "./pages/InteractiveJourney";
 import Chapter2Hub from "./pages/Chapter2Hub";
 import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
 
@@ -56,6 +56,7 @@ const App = () => {
                   </ProtectedRoute>
                 } 
               />
+              {/* Chapter routes - Chapter 2 has custom hub, others use generic overview */}
               <Route 
                 path="/chapter/2" 
                 element={
@@ -72,13 +73,19 @@ const App = () => {
                   </ProtectedRoute>
                 } 
               />
+              {/* New scalable interactive journey route */}
               <Route 
-                path="/lyra-maya-demo" 
+                path="/chapter/:chapterId/interactive/:journeyId" 
                 element={
                   <ProtectedRoute>
-                    <LyraNarratedMayaDemo />
+                    <InteractiveJourney />
                   </ProtectedRoute>
                 } 
+              />
+              {/* Redirect legacy Maya demo route to new structure */}
+              <Route 
+                path="/lyra-maya-demo" 
+                element={<Navigate to="/chapter/2/interactive/maya-pace" replace />} 
               />
               <Route 
                 path="/chapter/:chapterId/lesson/:lessonId" 
