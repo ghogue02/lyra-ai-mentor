@@ -42,18 +42,18 @@ const MAYA_CHARACTER = {
   role: "Communications Director",
   organization: "Hope Valley Youth Center",
   challenge: "Board email about summer program success",
-  mentor: "Elena Martinez",
+  mentor: "Lyra Martinez",
   transformation: "From 3-hour struggle to 20-minute clarity"
 };
 
 const MAYA_STORYLINE = {
   problem: "It's 9 PM on a Wednesday. Maya Rodriguez stares at her laptop screen, cursor blinking in an empty email draft. She's been trying to write a board update for two hours. Tomorrow's board meeting could determine next year's funding, and she knows this email needs to be perfect.",
   
-  mentorIntroduction: "Maya remembers Elena Martinez, the communications consultant who visited last month. Elena had said something that stuck: 'Maya, you're not failing at communication - you're just starting with the wrong question. Instead of asking what to write, ask why it matters to you personally.'",
+  mentorIntroduction: "Maya remembers Lyra Martinez, the communications consultant who visited last month. Lyra had said something that stuck: 'Maya, you're not failing at communication - you're just starting with the wrong question. Instead of asking what to write, ask why it matters to you personally.'",
   
-  breakthrough: "Maya takes a deep breath and starts with Elena's question: 'Why does this matter to me?' Suddenly, she sees Jordan's face - the shy 12-year-old who finally smiled after weeks in their program. That's her why. That's where she needs to start.",
+  breakthrough: "Maya takes a deep breath and starts with Lyra's question: 'Why does this matter to me?' Suddenly, she sees Jordan's face - the shy 12-year-old who finally smiled after weeks in their program. That's her why. That's where she needs to start.",
   
-  transformation: "Three months later, Maya's emails are getting 3x more responses. Board members ask follow-up questions. Donors schedule meetings. Parents send thank-you notes. Elena's PACE framework didn't just change Maya's writing - it changed her entire approach to connection."
+  transformation: "Three months later, Maya's emails are getting 3x more responses. Board members ask follow-up questions. Donors schedule meetings. Parents send thank-you notes. Lyra's PACE framework didn't just change Maya's writing - it changed her entire approach to connection."
 };
 
 const LyraNarratedMayaDynamicComplete: React.FC = () => {
@@ -317,7 +317,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
           <div className="bg-yellow-50 rounded-lg p-4 border-l-4 border-yellow-500">
             <h4 className="font-semibold text-yellow-800 mb-2">Coming Up Next</h4>
             <p className="text-sm text-yellow-700">
-              You'll see exactly what Maya's basic prompt generated, then learn Elena's PACE method that transforms everything.
+              You'll see exactly what Maya's basic prompt generated, then learn Lyra's PACE method that transforms everything.
             </p>
           </div>
         </div>
@@ -338,7 +338,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       component: (
         <div className="h-full flex flex-col p-6 space-y-6">
           <div className="bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg p-4 border-l-4 border-purple-500">
-            <h3 className="font-semibold text-purple-800 mb-2">Elena's Teaching Moment</h3>
+            <h3 className="font-semibold text-purple-800 mb-2">Lyra's Teaching Moment</h3>
             <p className="text-sm text-purple-700">
               "Maya, your basic prompt failed because you gave the AI a destination without a map. 
               Let me show you my PACE method - it's the difference between generic content and genuine connection."
@@ -354,7 +354,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       narrativeMessages: [
         {
           id: 'elena-masterclass-1',
-          content: "Maya remembers Elena Martinez, the communications consultant who visited last month. 'Maya,' Elena had said, 'you're not failing at communication - you're just starting with the wrong question. Instead of asking what to write, ask why it matters to you personally. Then let me teach you the PACE method that transforms everything.'",
+          content: "Maya remembers Lyra Martinez, the communications consultant who visited last month. 'Maya,' Lyra had said, 'you're not failing at communication - you're just starting with the wrong question. Instead of asking what to write, ask why it matters to you personally. Then let me teach you the PACE method that transforms everything.'",
           delay: 500,
         }
       ]
@@ -377,7 +377,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
       narrativeMessages: [
         {
           id: 'prompt-comparison-1',
-          content: "Maya watches as Elena demonstrates both approaches side by side. The basic prompt generates generic, uninspiring content. But the PACE method... Maya's eyes widen as she sees the same information transformed into something powerful, personal, and persuasive. 'I can't believe this is the same information,' she whispers.",
+          content: "Maya watches as Lyra demonstrates both approaches side by side. The basic prompt generates generic, uninspiring content. But the PACE method... Maya's eyes widen as she sees the same information transformed into something powerful, personal, and persuasive. 'I can't believe this is the same information,' she whispers.",
           delay: 500,
         }
       ]
@@ -393,7 +393,7 @@ const LyraNarratedMayaDynamicComplete: React.FC = () => {
             <h3 className="font-semibold text-green-800 mb-2">Maya's Complete Transformation</h3>
             <p className="text-sm text-green-700">
               "Three months later, my emails get 3x more responses. Board members schedule follow-up meetings. 
-              Donors want to get involved. Elena's PACE framework didn't just change my writing—it changed my entire approach to connection."
+              Donors want to get involved. Lyra's PACE framework didn't just change my writing—it changed my entire approach to connection."
             </p>
           </div>
 

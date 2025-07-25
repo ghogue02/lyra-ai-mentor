@@ -99,7 +99,7 @@ const HybridMayaDemo: React.FC = () => {
       setCoachingFeedback(data.coaching);
       
       toast({
-        title: "Elena's Feedback",
+        title: "Lyra's Feedback",
         description: "Your AI coach has provided personalized guidance.",
       });
     } catch (error) {
@@ -153,7 +153,7 @@ const HybridMayaDemo: React.FC = () => {
                     <Users className="w-5 h-5 text-green-600" />
                     <h3 className="font-semibold">AI Coaching</h3>
                   </div>
-                  <p className="text-sm text-gray-600">Get personalized feedback from Elena</p>
+                  <p className="text-sm text-gray-600">Get personalized feedback from Lyra</p>
                 </CardContent>
               </Card>
               <Card className="bg-gradient-to-br from-purple-50 to-pink-50">
@@ -267,7 +267,7 @@ const HybridMayaDemo: React.FC = () => {
               </div>
               <h2 className="text-2xl font-bold mb-2">Your Prompt is Ready!</h2>
               <p className="text-gray-600">
-                Test it, iterate it, and perfect it with Elena's guidance.
+                Test it, iterate it, and perfect it with Lyra's guidance.
               </p>
             </motion.div>
 
@@ -291,7 +291,7 @@ const HybridMayaDemo: React.FC = () => {
                       variant="outline"
                       className="text-purple-600 border-purple-300"
                     >
-                      Get Elena's Feedback
+                      Get Lyra's Feedback
                     </Button>
                     <Button 
                       onClick={() => setCurrentStage('toolkit')}
@@ -308,7 +308,7 @@ const HybridMayaDemo: React.FC = () => {
                   <CardHeader>
                     <CardTitle className="text-purple-800 flex items-center gap-2">
                       <Heart className="w-5 h-5" />
-                      Elena's Coaching
+                      Lyra's Coaching
                     </CardTitle>
                   </CardHeader>
                   <CardContent>

@@ -163,7 +163,7 @@ Structure the response with clear sections and make it actionable.`;
           <div>
             <h3 className="text-2xl font-bold mb-2">Let's Build Your PACE Prompt</h3>
             <p className="text-gray-600">
-              Just like Elena taught Maya, we'll work through each element of the PACE framework to create your perfect prompt.
+              Just like Lyra taught Maya, we'll work through each element of the PACE framework to create your perfect prompt.
             </p>
           </div>
           <div className="bg-purple-50 p-4 rounded-lg">

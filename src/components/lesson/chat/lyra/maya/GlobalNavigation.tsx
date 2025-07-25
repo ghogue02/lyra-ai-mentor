@@ -29,7 +29,7 @@ const phaseLabels: Record<JourneyPhase, string> = {
   'maya-introduction': 'Maya\'s Story',
   'maya-struggle': 'Maya\'s Challenge',
   'help-maya-first-attempt': 'Help Maya (First Try)',
-  'elena-introduction': 'Meet Elena',
+  'elena-introduction': 'Meet Lyra',
   'maya-pace-building': 'Building PACE',
   'maya-success-story': 'Maya\'s Success',
   'personal-toolkit': 'Your Toolkit'

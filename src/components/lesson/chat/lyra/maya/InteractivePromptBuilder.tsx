@@ -170,7 +170,7 @@ Make it personal, specific, and actionable.
         </div>
         <h2 className="text-2xl font-bold mb-2">Interactive Prompt Builder</h2>
         <p className="text-gray-600">
-          Build your PACE framework step by step. Elena will guide you through each section.
+          Build your PACE framework step by step. Lyra will guide you through each section.
         </p>
       </motion.div>
 
@@ -264,7 +264,7 @@ Make it personal, specific, and actionable.
                   onClick={() => onCoachingRequest(paceFramework[currentSection])}
                   className="text-purple-600 border-purple-300"
                 >
-                  Get Elena's Feedback
+                  Get Lyra's Feedback
                 </Button>
               )}
               

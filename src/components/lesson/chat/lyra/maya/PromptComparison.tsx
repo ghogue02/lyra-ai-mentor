@@ -105,7 +105,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
         <CardContent>
           <p className="text-muted-foreground mb-4">
             "I couldn't believe it. The same information, but the difference was night and day. 
-            Elena's PACE method didn't just change my email—it changed how I think about every communication."
+            Lyra's PACE method didn't just change my email—it changed how I think about every communication."
           </p>
           <div className="flex items-center gap-2 text-sm text-green-600">
             <CheckCircle className="w-4 h-4" />
@@ -164,7 +164,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-green-600">
                   <CheckCircle className="w-5 h-5" />
-                  Elena's PACE Method
+                  Lyra's PACE Method
                 </CardTitle>
                 <Badge className="bg-green-100 text-green-800">Comprehensive Prompt</Badge>
               </CardHeader>
@@ -228,7 +228,7 @@ const PromptComparison: React.FC<PromptComparisonProps> = ({
           <CardContent>
             <p className="text-muted-foreground mb-4">
               "Three months later, my emails get 3x more responses. Board members schedule follow-up meetings. 
-              Donors want to get involved. Elena's PACE framework didn't just change my writing—it changed my entire approach to connection."
+              Donors want to get involved. Lyra's PACE framework didn't just change my writing—it changed my entire approach to connection."
             </p>
             <Button 
               onClick={onCompletion}

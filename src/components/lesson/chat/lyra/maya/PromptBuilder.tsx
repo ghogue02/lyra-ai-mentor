@@ -121,7 +121,7 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg text-green-600">Elena's PACE Method</CardTitle>
+            <CardTitle className="text-lg text-green-600">Lyra's PACE Method</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground mb-4">
@@ -138,7 +138,7 @@ const PromptBuilder: React.FC<PromptBuilderProps> = ({
                   Generating...
                 </>
               ) : (
-                'Try Elena\'s PACE Prompt'
+                'Try Lyra\'s PACE Prompt'
               )}
             </Button>
           </CardContent>

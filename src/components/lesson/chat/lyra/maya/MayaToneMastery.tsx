@@ -102,7 +102,7 @@ const MayaToneMastery: React.FC = () => {
   const elenaToneGuidanceMessages = [
     {
       id: 'elena-tone-1',
-      content: "Elena helped me understand that tone isn't just HOW you say something - it's the bridge between your message and your audience's heart.",
+      content: "Lyra helped me understand that tone isn't just HOW you say something - it's the bridge between your message and your audience's heart.",
       emotion: 'enlightened' as const
     },
     {
@@ -237,7 +237,7 @@ const MayaToneMastery: React.FC = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8">
               {[
                 { title: 'Tone Dilemma', desc: 'Same message, wrong reactions', color: 'from-pink-500/10 to-pink-500/5', icon: '😤' },
-                { title: 'Elena\'s Guidance', desc: 'Discover tone adaptation secrets', color: 'from-emerald-500/10 to-emerald-500/5', icon: '🎯' },
+                { title: 'Lyra\'s Guidance', desc: 'Discover tone adaptation secrets', color: 'from-emerald-500/10 to-emerald-500/5', icon: '🎯' },
                 { title: 'Multi-Audience Success', desc: 'Master tone for any audience', color: 'from-brand-cyan/10 to-brand-cyan/5', icon: '🚀' }
               ].map((item, index) => (
                 <div key={index} className="relative group">

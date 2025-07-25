@@ -88,7 +88,7 @@ const ChallengeDefinition: React.FC<ChallengeDefinitionProps> = ({ onChallengeSu
     },
     {
       title: "What Type of Communication?",
-      subtitle: "This helps me tailor Maya's story and Elena's coaching to your specific format",
+      subtitle: "This helps me tailor Maya's story and Lyra's coaching to your specific format",
       content: (
         <div className="grid gap-3">
           {communicationTypes.map((type) => (
@@ -146,7 +146,7 @@ const ChallengeDefinition: React.FC<ChallengeDefinitionProps> = ({ onChallengeSu
     },
     {
       title: "What's at Stake?",
-      subtitle: "This helps Elena understand the importance and urgency of your challenge",
+      subtitle: "This helps Lyra understand the importance and urgency of your challenge",
       content: (
         <div className="space-y-4">
           <div>
@@ -204,7 +204,7 @@ const ChallengeDefinition: React.FC<ChallengeDefinitionProps> = ({ onChallengeSu
         </div>
         <h2 className="text-2xl font-bold mb-2">Define Your Challenge</h2>
         <p className="text-gray-600">
-          Maya's story will adapt to match your specific communication challenge, and Elena will provide personalized coaching.
+          Maya's story will adapt to match your specific communication challenge, and Lyra will provide personalized coaching.
         </p>
       </motion.div>
 

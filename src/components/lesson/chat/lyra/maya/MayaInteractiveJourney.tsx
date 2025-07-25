@@ -151,7 +151,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
   const elenaIntroductionMessages = [
     {
       id: 'elena-1',
-      content: "That's when I met Elena, my AI communication coach. She taught me something called the PACE framework.",
+      content: "That's when I met Lyra, my AI communication coach. She taught me something called the PACE framework.",
       emotion: 'excited' as const
     },
     {
@@ -304,7 +304,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8">
               {[
                 { title: 'Maya\'s Struggle', desc: 'Experience her communication challenge', color: 'from-primary/10 to-primary/5', icon: '😤' },
-                { title: 'Meet Elena', desc: 'Discover the PACE framework', color: 'from-emerald-500/10 to-emerald-500/5', icon: '✨' },
+                { title: 'Meet Lyra', desc: 'Discover the PACE framework', color: 'from-emerald-500/10 to-emerald-500/5', icon: '✨' },
                 { title: 'Maya\'s Success', desc: 'Witness her transformation', color: 'from-brand-cyan/10 to-brand-cyan/5', icon: '🚀' }
               ].map((item, index) => (
                 <div key={index} className="relative group">
@@ -390,7 +390,7 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
         return (
           <InteractionGateway
             title="Master the PACE Framework"
-            description="Now let's put Elena's teaching into practice. Build Maya's perfect prompt using the PACE framework."
+            description="Now let's put Lyra's teaching into practice. Build Maya's perfect prompt using the PACE framework."
             stage="practice"
             showHeader={false}
           >
