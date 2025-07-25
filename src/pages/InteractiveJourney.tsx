@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import MayaInteractiveJourney from '@/components/lesson/chat/lyra/maya/MayaInteractiveJourney';
+import MayaToneMastery from '@/components/lesson/chat/lyra/maya/MayaToneMastery';
 
 // Journey configuration registry
 const journeyRegistry = {
@@ -9,6 +10,12 @@ const journeyRegistry = {
     characterId: 'maya',
     title: 'Maya\'s PACE Framework Journey',
     description: 'Master AI communication through Maya\'s transformation'
+  },
+  'maya-tone-mastery': {
+    component: MayaToneMastery,
+    characterId: 'maya',
+    title: 'Maya\'s Tone Mastery Workshop',
+    description: 'Master tone adaptation with Maya Rodriguez'
   }
   // Future journeys can be added here:
   // 'sofia-voice': { component: SofiaVoiceJourney, characterId: 'sofia', ... }

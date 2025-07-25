@@ -41,7 +41,7 @@ const Chapter2Hub: React.FC = () => {
       title: 'Tone Mastery Workshop',
       description: 'Adapt your voice for different audiences with confidence and authenticity',
       icon: <Heart className="w-6 h-6" />,
-      route: '/chapter/2/lesson/5/tone-mastery',
+      route: '/chapter/2/interactive/maya-tone-mastery',
       estimated_time: '15 min',
       difficulty: 'Intermediate',
       completed: true,
