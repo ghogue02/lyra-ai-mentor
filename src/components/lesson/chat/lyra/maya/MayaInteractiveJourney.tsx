@@ -304,16 +304,22 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8">
               {[
-                { title: 'Maya\'s Struggle', desc: 'Experience her communication challenge', color: 'from-primary/10 to-primary/5', icon: '😤' },
-                { title: 'Meet Lyra', desc: 'Discover the PACE framework', color: 'from-emerald-500/10 to-emerald-500/5', icon: '✨' },
-                { title: 'Maya\'s Success', desc: 'Witness her transformation', color: 'from-brand-cyan/10 to-brand-cyan/5', icon: '🚀' }
+                { title: 'Maya\'s Struggle', desc: 'Experience her communication challenge', color: 'from-primary/10 to-primary/5', animation: 'lyra-lightly-thinking.mp4', fallback: '😤' },
+                { title: 'Meet Lyra', desc: 'Discover the PACE framework', color: 'from-emerald-500/10 to-emerald-500/5', animation: 'lyra-smile-circle-handshake.mp4', fallback: '✨' },
+                { title: 'Maya\'s Success', desc: 'Witness her transformation', color: 'from-brand-cyan/10 to-brand-cyan/5', animation: 'lyra-celebration.mp4', fallback: '🚀' }
               ].map((item, index) => (
                 <div key={index} className="relative group">
                   <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
                   <div className="relative premium-card interactive-hover brand-shadow-md">
                     <div className="absolute inset-0 brand-gradient-glow rounded-2xl" />
                     <div className="relative z-10 p-6 text-center">
-                      <div className="text-3xl mb-3">{item.icon}</div>
+                      <div className="w-12 h-12 mx-auto mb-3">
+                        <VideoAnimation
+                          src={getAnimationUrl(item.animation)}
+                          fallbackIcon={<span className="text-3xl">{item.fallback}</span>}
+                          className="w-full h-full"
+                        />
+                      </div>
                       <Badge variant="secondary" className="mb-3">{index + 1}</Badge>
                       <h3 className="font-bold text-lg mb-2 text-foreground">{item.title}</h3>
                       <p className="text-sm text-muted-foreground">{item.desc}</p>
