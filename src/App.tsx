@@ -12,13 +12,6 @@ import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 import ContentLab from "./pages/ContentLab";
-import ShowcasePage from "./pages/ShowcasePage";
-import AITestingPage from "./pages/AITestingPage";
-import InteractiveElementsPage from "./pages/InteractiveElementsPage";
-import AIRefinePage from "./pages/AIRefinePage";
-import AIPlaygroundPage from "./pages/AIPlaygroundPage";
-import JourneyShowcasePage from "./pages/JourneyShowcasePage";
-import SkillsDashboardPage from "./pages/SkillsDashboardPage";
 import Lesson from "./pages/Lesson";
 import LyraNarratedMayaDemo from "./pages/LyraNarratedMayaDemo";
 import Chapter2Hub from "./pages/Chapter2Hub";
@@ -51,62 +44,6 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <ContentLab />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/showcase" 
-                element={
-                  <ProtectedRoute>
-                    <ShowcasePage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/ai-testing" 
-                element={
-                  <ProtectedRoute>
-                    <AITestingPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/interactive-elements" 
-                element={
-                  <ProtectedRoute>
-                    <InteractiveElementsPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/ai-refine" 
-                element={
-                  <ProtectedRoute>
-                    <AIRefinePage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/ai-playground" 
-                element={
-                  <ProtectedRoute>
-                    <AIPlaygroundPage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/journey-showcase" 
-                element={
-                  <ProtectedRoute>
-                    <JourneyShowcasePage />
-                  </ProtectedRoute>
-                } 
-              />
-              <Route 
-                path="/skills-dashboard" 
-                element={
-                  <ProtectedRoute>
-                    <SkillsDashboardPage />
                   </ProtectedRoute>
                 } 
               />
