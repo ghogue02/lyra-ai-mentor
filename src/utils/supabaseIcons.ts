@@ -235,6 +235,13 @@ export const getNavbarIconUrl = (type: keyof typeof SUPABASE_ICONS.navbar): stri
 };
 
 /**
+ * Get animation URL from the animations folder
+ */
+export const getAnimationUrl = (animationName: string): string => {
+  return getSupabaseIconUrl(`animations/${animationName}`);
+};
+
+/**
  * Get role-specific messaging
  */
 export const getRoleMessaging = (role: string) => {

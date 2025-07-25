@@ -9,6 +9,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ToolkitService } from '@/services/toolkitService';
 import { useToast } from '@/hooks/use-toast';
 import { useJourneyProgress } from '@/hooks/useJourneyProgress';
+import VideoAnimation from '@/components/ui/VideoAnimation';
+import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
@@ -284,14 +286,13 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-              className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center mb-8 shadow-lg"
+              className="w-24 h-24 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center mb-8 shadow-lg overflow-hidden"
             >
-              <motion.div
-                animate={{ scale: [1, 1.1, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Sparkles className="w-12 h-12 text-white" />
-              </motion.div>
+              <VideoAnimation
+                src={getAnimationUrl('lyra-brightidea.mp4')}
+                fallbackIcon={<Sparkles className="w-12 h-12 text-white" />}
+                className="w-full h-full"
+              />
             </motion.div>
             
             <h1 className="text-5xl font-bold mb-6 brand-gradient-text">
