@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Briefcase, Users, Heart, Volume2, CheckCircle, Target, MessageSquare } from 'lucide-react';
+import IndividualAudienceSuccess from './IndividualAudienceSuccess';
 
 interface ToneAdaptedPACE {
   Purpose: string;
@@ -39,7 +40,7 @@ const ToneGuidedPractice: React.FC<ToneGuidedPracticeProps> = ({
   challenge,
   onPracticeComplete
 }) => {
-  const [currentStep, setCurrentStep] = useState<'intro' | 'audience-selection' | 'tone-building' | 'comparison' | 'review'>('intro');
+  const [currentStep, setCurrentStep] = useState<'intro' | 'audience-selection' | 'tone-building' | 'individual-success' | 'comparison' | 'review'>('intro');
   const [selectedAudience, setSelectedAudience] = useState<AudienceType>('board');
   const [audienceProgress, setAudienceProgress] = useState<Set<AudienceType>>(new Set());
   const [toneResults, setToneResults] = useState<Partial<Record<AudienceType, ToneAdaptedPACE>>>({});
@@ -163,13 +164,20 @@ Structure the response appropriately for the ${selectedAudience} audience.`;
     setAudienceProgress(newProgress);
 
     setIsGenerating(false);
+    setCurrentStep('individual-success');
+  };
 
+  const handleIndividualSuccessContinue = () => {
     // Check if all audiences are complete
-    if (newProgress.size === 3) {
+    if (audienceProgress.size === 3) {
       setCurrentStep('review');
     } else {
       setCurrentStep('audience-selection');
     }
+  };
+
+  const handleViewAllResults = () => {
+    setCurrentStep('comparison');
   };
 
   const handleComplete = () => {
@@ -268,19 +276,39 @@ Structure the response appropriately for the ${selectedAudience} audience.`;
           </div>
 
           {audienceProgress.size > 0 && (
-            <div className="text-center">
-              <p className="text-sm text-gray-600 mb-4">
+            <div className="text-center space-y-4">
+              <p className="text-sm text-gray-600">
                 Progress: {audienceProgress.size} of 3 audiences completed
               </p>
-              {audienceProgress.size === 3 && (
-                <Button
-                  onClick={() => setCurrentStep('review')}
-                  size="lg"
-                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
-                >
-                  Review All Messages
-                </Button>
-              )}
+              
+              <div className="bg-gray-200 rounded-full h-2 max-w-xs mx-auto">
+                <div 
+                  className="bg-gradient-to-r from-green-500 to-emerald-500 h-2 rounded-full transition-all duration-500"
+                  style={{ width: `${(audienceProgress.size / 3) * 100}%` }}
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                {audienceProgress.size >= 2 && (
+                  <Button
+                    onClick={() => setCurrentStep('comparison')}
+                    variant="outline"
+                    size="lg"
+                  >
+                    Compare Completed ({audienceProgress.size})
+                  </Button>
+                )}
+                
+                {audienceProgress.size === 3 && (
+                  <Button
+                    onClick={() => setCurrentStep('review')}
+                    size="lg"
+                    className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                  >
+                    View Final Results
+                  </Button>
+                )}
+              </div>
             </div>
           )}
         </div>
@@ -392,6 +420,113 @@ Structure the response appropriately for the ${selectedAudience} audience.`;
           >
             {isGenerating ? 'Generating Tone-Adapted Message...' : `Complete ${config.title} Message`}
           </Button>
+        </div>
+      );
+    }
+
+    if (currentStep === 'individual-success') {
+      const currentResult = toneResults[selectedAudience];
+      const currentPrompt = generatedPrompts[selectedAudience];
+      
+      if (!currentResult || !currentPrompt) return null;
+      
+      return (
+        <IndividualAudienceSuccess
+          audienceType={selectedAudience}
+          result={currentResult}
+          prompt={currentPrompt}
+          onContinue={handleIndividualSuccessContinue}
+          onViewAllResults={audienceProgress.size >= 2 ? handleViewAllResults : undefined}
+          completedCount={audienceProgress.size}
+          totalCount={3}
+        />
+      );
+    }
+
+    if (currentStep === 'comparison') {
+      return (
+        <div className="space-y-6">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-4">
+              <CheckCircle className="w-8 h-8 text-white" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Compare Your Tone Adaptations</h3>
+            <p className="text-gray-600">See how the same message was adapted for different audiences.</p>
+            
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <Badge variant="secondary">
+                {audienceProgress.size} of 3 completed
+              </Badge>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {(Object.keys(audienceConfigs) as AudienceType[]).map((audienceType) => {
+              const config = audienceConfigs[audienceType];
+              const Icon = config.icon;
+              const isCompleted = audienceProgress.has(audienceType);
+              const result = toneResults[audienceType];
+              
+              if (!isCompleted || !result) {
+                return (
+                  <Card key={audienceType} className="opacity-50">
+                    <CardContent className="p-6 text-center">
+                      <Icon className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+                      <h4 className="font-bold text-gray-500">{config.title}</h4>
+                      <p className="text-sm text-gray-400">Not completed yet</p>
+                    </CardContent>
+                  </Card>
+                );
+              }
+              
+              return (
+                <Card key={audienceType} className={`bg-gradient-to-r ${config.bgColor} border-2 border-green-200`}>
+                  <CardContent className="p-6">
+                    <div className="text-center mb-4">
+                      <div className={`w-12 h-12 bg-gradient-to-br ${config.color} rounded-full flex items-center justify-center mx-auto mb-3`}>
+                        <Icon className="w-6 h-6 text-white" />
+                      </div>
+                      <h4 className="font-bold">{config.title}</h4>
+                      <Badge variant="secondary" className="mt-1">{config.tone} tone</Badge>
+                    </div>
+                    
+                    <div className="space-y-3 text-sm">
+                      <div>
+                        <strong>Purpose:</strong>
+                        <p className="text-gray-700 mt-1">{result.Purpose}</p>
+                      </div>
+                      <div>
+                        <strong>Connection:</strong>
+                        <p className="text-gray-700 mt-1">{result.Connection}</p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          <div className="text-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+              <Button
+                variant="outline"
+                onClick={() => setCurrentStep('audience-selection')}
+                size="lg"
+              >
+                Continue Practice
+              </Button>
+              
+              {audienceProgress.size === 3 && (
+                <Button
+                  onClick={() => setCurrentStep('review')}
+                  size="lg"
+                  className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                >
+                  Complete Workshop
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
       );
     }
