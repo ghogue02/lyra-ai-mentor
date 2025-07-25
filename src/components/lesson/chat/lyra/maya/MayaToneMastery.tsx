@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Sparkles, Play, Volume2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { ToolkitService } from '@/services/toolkitService';
+import { useToast } from '@/hooks/use-toast';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
@@ -36,9 +39,12 @@ type ToneMasteryPhase = 'intro' | 'maya-tone-challenge' | 'elena-tone-guidance' 
 
 const MayaToneMastery: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<ToneMasteryPhase>('intro');
   const [toneResult, setToneResult] = useState<MultiAudienceToneResult | null>(null);
   const [sessionStartTime] = useState(Date.now());
+  const [isUnlockingToolkit, setIsUnlockingToolkit] = useState(false);
 
   // Clear any stale state from previous sessions on mount
   React.useEffect(() => {
@@ -156,6 +162,50 @@ const MayaToneMastery: React.FC = () => {
     setTimeout(() => {
       console.log('Tone mastery global reset complete');
     }, 100);
+  };
+
+  const handleBuildToolkit = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to unlock your toolkit items.",
+        variant: "default"
+      });
+      return;
+    }
+
+    try {
+      setIsUnlockingToolkit(true);
+      
+      // Unlock journey-specific toolkit items with user's tone mastery result
+      await ToolkitService.unlockJourneyRewards(
+        user.id, 
+        'maya-tone-mastery',
+        {
+          toneResults: toneResult,
+          completedAt: new Date().toISOString(),
+          audiencesCompleted: ['board', 'staff', 'community']
+        }
+      );
+
+      toast({
+        title: "Tone Toolkit Unlocked! 🎉",
+        description: "Your tone mastery templates and multi-audience guides have been added to your toolkit.",
+        variant: "default"
+      });
+
+      // Navigate to toolkit to show the unlocked items
+      navigate('/toolkit');
+    } catch (error) {
+      console.error('Error unlocking tone toolkit:', error);
+      toast({
+        title: "Error",
+        description: "Failed to unlock toolkit items. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUnlockingToolkit(false);
+    }
   };
 
   const renderPhase = () => {
@@ -370,11 +420,12 @@ const MayaToneMastery: React.FC = () => {
                   Experience Again
                 </Button>
                 <Button
-                  onClick={() => navigate('/chapter/2')}
+                  onClick={handleBuildToolkit}
+                  disabled={isUnlockingToolkit}
                   size="lg"
                   className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
                 >
-                  Continue Learning
+                  {isUnlockingToolkit ? 'Unlocking...' : 'Build My Toolkit'}
                 </Button>
               </div>
             </motion.div>

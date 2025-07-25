@@ -174,7 +174,7 @@ export class ToolkitService {
       .select()
       .eq('user_id', userId)
       .eq('toolkit_item_id', itemId)
-      .single();
+      .maybeSingle();
 
     if (existing) {
       // Already unlocked, return existing record
@@ -297,5 +297,100 @@ export class ToolkitService {
       ...item,
       user_unlock: item.user_unlock?.[0] || null
     }));
+  }
+
+  // Unlock journey-specific toolkit items
+  static async unlockJourneyRewards(userId: string, journeyId: 'maya-pace' | 'maya-tone-mastery', userContent?: any): Promise<void> {
+    try {
+      // Get journey-specific toolkit items
+      const { data: items, error } = await supabase
+        .from('toolkit_items')
+        .select('id, name, metadata')
+        .eq('is_active', true)
+        .contains('metadata', { journey_id: journeyId });
+
+      if (error) {
+        console.error('Error fetching journey items:', error);
+        throw error;
+      }
+
+      // Unlock each journey item
+      for (const item of items || []) {
+        await this.unlockToolkitItem(userId, item.id);
+      }
+
+      // If user content is provided, create personalized template
+      if (userContent) {
+        await this.createPersonalizedTemplate(userId, journeyId, userContent);
+      }
+
+      console.log(`Unlocked ${items?.length || 0} toolkit items for journey: ${journeyId}`);
+    } catch (error) {
+      console.error('Error unlocking journey rewards:', error);
+      throw error;
+    }
+  }
+
+  // Create personalized template from user's journey work
+  static async createPersonalizedTemplate(userId: string, journeyId: string, userContent: any): Promise<void> {
+    try {
+      // Get personalized templates category
+      const { data: category, error: categoryError } = await supabase
+        .from('toolkit_categories')
+        .select('id')
+        .eq('category_key', 'personalized-templates')
+        .maybeSingle();
+
+      if (categoryError || !category) {
+        console.error('Error fetching personalized templates category:', categoryError);
+        return; // Don't throw, just skip personalized template creation
+      }
+
+      // Create personalized template name
+      const templateName = journeyId === 'maya-pace' 
+        ? 'My PACE Framework Template'
+        : 'My Tone Mastery Template';
+
+      // Check if template already exists
+      const { data: existing } = await supabase
+        .from('toolkit_items')
+        .select('id')
+        .eq('name', templateName)
+        .eq('category_id', category.id)
+        .maybeSingle();
+
+      if (existing) {
+        console.log('Personalized template already exists');
+        return;
+      }
+
+      // Create personalized template
+      const { error } = await supabase
+        .from('toolkit_items')
+        .insert({
+          name: templateName,
+          category_id: category.id,
+          description: `Your personalized template created from completing ${journeyId === 'maya-pace' ? 'Maya\'s PACE Framework Journey' : 'Maya\'s Tone Mastery Workshop'}.`,
+          file_type: 'personalized_template',
+          is_new: true,
+          is_featured: false,
+          is_premium: false,
+          is_active: true,
+          metadata: {
+            journey_id: journeyId,
+            created_by: userId,
+            user_content: userContent,
+            created_at: new Date().toISOString()
+          }
+        });
+
+      if (error) {
+        console.error('Error creating personalized template:', error);
+      } else {
+        console.log(`Created personalized template: ${templateName}`);
+      }
+    } catch (error) {
+      console.error('Error creating personalized template:', error);
+    }
   }
 }

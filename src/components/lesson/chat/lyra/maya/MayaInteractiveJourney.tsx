@@ -5,6 +5,9 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, Sparkles, Play } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+import { ToolkitService } from '@/services/toolkitService';
+import { useToast } from '@/hooks/use-toast';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
@@ -24,11 +27,14 @@ interface PACEFramework {
 
 const MayaInteractiveJourney: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<JourneyPhase>('intro');
   const [mayaPaceResult, setMayaPaceResult] = useState<PACEFramework | null>(null);
   const [mayaPrompt, setMayaPrompt] = useState<string>('');
   const [isStuck, setIsStuck] = useState(false);
   const [sessionStartTime] = useState(Date.now());
+  const [isUnlockingToolkit, setIsUnlockingToolkit] = useState(false);
 
   // Clear any stale state from previous sessions on mount
   React.useEffect(() => {
@@ -189,6 +195,50 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     setTimeout(() => {
       console.log('Global reset complete');
     }, 100);
+  };
+
+  const handleBuildToolkit = async () => {
+    if (!user) {
+      toast({
+        title: "Sign in required",
+        description: "Please sign in to unlock your toolkit items.",
+        variant: "default"
+      });
+      return;
+    }
+
+    try {
+      setIsUnlockingToolkit(true);
+      
+      // Unlock journey-specific toolkit items with user's PACE result
+      await ToolkitService.unlockJourneyRewards(
+        user.id, 
+        'maya-pace',
+        {
+          paceFramework: mayaPaceResult,
+          generatedPrompt: mayaPrompt,
+          completedAt: new Date().toISOString()
+        }
+      );
+
+      toast({
+        title: "Toolkit Unlocked! 🎉",
+        description: "Your journey templates and personalized PACE framework have been added to your toolkit.",
+        variant: "default"
+      });
+
+      // Navigate to toolkit to show the unlocked items
+      navigate('/toolkit');
+    } catch (error) {
+      console.error('Error unlocking toolkit:', error);
+      toast({
+        title: "Error",
+        description: "Failed to unlock toolkit items. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUnlockingToolkit(false);
+    }
   };
 
   const renderPhase = () => {
@@ -406,10 +456,12 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
                   Experience Again
                 </Button>
                 <Button
+                  onClick={handleBuildToolkit}
+                  disabled={isUnlockingToolkit}
                   size="lg"
                   className="bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
                 >
-                  Build My Toolkit
+                  {isUnlockingToolkit ? 'Unlocking...' : 'Build My Toolkit'}
                 </Button>
               </div>
             </motion.div>
