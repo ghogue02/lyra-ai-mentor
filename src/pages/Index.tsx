@@ -23,15 +23,15 @@ const Index = () => {
           {/* Hero Animation - Lyra landing page animation */}
           <div className="mb-12 flex justify-center">
             <VideoAnimation
-              src={getAnimationUrl('lyra-landing-page.mp4')}
+              src={getAnimationUrl('lyra-rocket.mp4')}
               fallbackIcon={
                 <img 
                   src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
                   alt="Lyra AI Mentor - Your intelligent learning companion" 
-                  className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain" 
+                  className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 object-contain" 
                 />
               }
-              className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80"
+              className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96"
               context="ui"
               autoPlay={true}
               loop={true}
