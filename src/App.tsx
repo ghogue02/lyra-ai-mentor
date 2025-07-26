@@ -15,8 +15,12 @@ import NotFound from "./pages/NotFound";
 import ContentLab from "./pages/ContentLab";
 import Lesson from "./pages/Lesson";
 import InteractiveJourney from "./pages/InteractiveJourney";
-import Chapter2Hub from "./pages/Chapter2Hub";
 import Chapter1Hub from "./pages/Chapter1Hub";
+import Chapter2Hub from "./pages/Chapter2Hub";
+import Chapter3Hub from "./pages/Chapter3Hub";
+import Chapter4Hub from "./pages/Chapter4Hub";
+import Chapter5Hub from "./pages/Chapter5Hub";
+import Chapter6Hub from "./pages/Chapter6Hub";
 import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
 
 const queryClient = new QueryClient();
@@ -80,6 +84,38 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <Chapter2Hub />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/3" 
+                element={
+                  <ProtectedRoute>
+                    <Chapter3Hub />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/4" 
+                element={
+                  <ProtectedRoute>
+                    <Chapter4Hub />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/5" 
+                element={
+                  <ProtectedRoute>
+                    <Chapter5Hub />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/6" 
+                element={
+                  <ProtectedRoute>
+                    <Chapter6Hub />
                   </ProtectedRoute>
                 } 
               />
