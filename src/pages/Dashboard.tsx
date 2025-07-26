@@ -141,8 +141,8 @@ export const Dashboard = () => {
         console.log(`Navigating to Chapter 1 Overview`);
         navigate(`/chapter/1`);
       } else if (chapterId === 2) {
-        console.log(`Navigating to Chapter 2 Hub`);
-        navigate(`/chapter/2`);
+        console.log(`Navigating to Maya PACE Framework`);
+        navigate(`/chapter/2/interactive/maya-pace`);
       } else {
         console.log(`Navigating to Chapter ${chapterId}, Lesson ${lessons[0].id}`);
         navigate(`/chapter/${chapterId}/lesson/${lessons[0].id}`);
