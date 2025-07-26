@@ -5,6 +5,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, Home, RotateCcw, AlertTriangle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import AnimatedProgress from '@/components/ui/AnimatedProgress';
 
 export type JourneyPhase = 
   | 'intro'
@@ -180,16 +181,13 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
               </div>
             </div>
 
-            {/* Center - Progress bar */}
+            {/* Center - Animated Progress bar */}
             <div className="flex-1 max-w-md mx-8">
-              <div className="w-full bg-gray-200 rounded-full h-2">
-                <motion.div
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 h-2 rounded-full"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${progress}%` }}
-                  transition={{ duration: 0.5 }}
-                />
-              </div>
+              <AnimatedProgress
+                value={progress}
+                size="sm"
+                showAnimation={true}
+              />
             </div>
 
             {/* Right side - Action buttons */}

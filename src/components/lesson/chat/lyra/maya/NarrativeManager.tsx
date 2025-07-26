@@ -4,6 +4,7 @@ import { LyraAvatar } from '@/components/LyraAvatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ChevronRight, ChevronLeft, Clock, AlertCircle, Lightbulb } from 'lucide-react';
+import VideoAnimation from '@/components/ui/VideoAnimation';
 
 interface NarrativeMessage {
   id: string;
@@ -264,6 +265,28 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   };
 
+  const getAnimationUrl = (filename: string) => {
+    return `https://zkwwjzbrygxqrfxkxozk.supabase.co/storage/v1/object/public/app-icons/animations/${filename}`;
+  };
+
+  const getLyraEmotionAnimation = (emotion: string) => {
+    switch (emotion) {
+      case 'excited':
+      case 'amazed':
+        return 'lyra-excited-discovery.mp4';
+      case 'hopeful':
+      case 'enlightened':
+        return 'lyra-encouraging-gesture.mp4';
+      case 'thoughtful':
+        return 'lyra-thoughtful-pause.mp4';
+      case 'frustrated':
+      case 'disappointed':
+        return 'lyra-gentle-correction.mp4';
+      default:
+        return 'lyra-nodding-approval.mp4';
+    }
+  };
+
   if (!currentMessage) return null;
 
   return (
@@ -280,10 +303,14 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 {currentMessage.showAvatar !== false && (
-                  <LyraAvatar 
-                    size="md" 
-                    className="flex-shrink-0"
-                  />
+                  <div className="w-12 h-12 flex-shrink-0">
+                    <VideoAnimation
+                      src={getAnimationUrl(getLyraEmotionAnimation(currentMessage.emotion || 'neutral'))}
+                      fallbackIcon={<LyraAvatar size="md" />}
+                      className="w-full h-full"
+                      context="character"
+                    />
+                  </div>
                 )}
                 
                 <div className="flex-1 min-h-[60px]">

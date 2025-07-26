@@ -13,6 +13,8 @@ interface VideoAnimationProps {
   preload?: 'auto' | 'metadata' | 'none';
   onError?: () => void;
   onLoad?: () => void;
+  trigger?: 'hover' | 'visible' | 'always';
+  context?: 'progress' | 'character' | 'ui' | 'celebration';
 }
 
 const VideoAnimation: React.FC<VideoAnimationProps> = ({
@@ -25,7 +27,9 @@ const VideoAnimation: React.FC<VideoAnimationProps> = ({
   playsInline = true,
   preload = 'metadata',
   onError,
-  onLoad
+  onLoad,
+  trigger = 'always',
+  context = 'ui'
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isLoaded, setIsLoaded] = useState(false);

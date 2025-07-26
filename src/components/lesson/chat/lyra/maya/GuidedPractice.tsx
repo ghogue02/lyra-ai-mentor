@@ -6,6 +6,11 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Lightbulb, Target, Users, Heart, Zap, CheckCircle, AlertCircle } from 'lucide-react';
+import VideoAnimation from '@/components/ui/VideoAnimation';
+
+const getAnimationUrl = (filename: string) => {
+  return `https://zkwwjzbrygxqrfxkxozk.supabase.co/storage/v1/object/public/app-icons/animations/${filename}`;
+};
 
 interface PACEFramework {
   Purpose: string;
@@ -46,6 +51,7 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       key: 'Purpose' as keyof PACEFramework,
       title: 'Purpose',
       icon: Target,
+      animation: 'pace-purpose-icon.mp4',
       color: 'text-blue-600',
       bgColor: 'from-blue-50 to-blue-100',
       description: 'What specific outcome do you want to achieve?',
@@ -61,6 +67,7 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       key: 'Audience' as keyof PACEFramework,
       title: 'Audience',
       icon: Users,
+      animation: 'pace-audience-icon.mp4',
       color: 'text-green-600',
       bgColor: 'from-green-50 to-green-100',
       description: 'Who exactly are you communicating with?',
@@ -76,6 +83,7 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       key: 'Connection' as keyof PACEFramework,
       title: 'Connection',
       icon: Heart,
+      animation: 'pace-connection-icon.mp4',
       color: 'text-pink-600',
       bgColor: 'from-pink-50 to-pink-100',
       description: 'How should you connect emotionally and build rapport?',
@@ -91,6 +99,7 @@ const GuidedPractice: React.FC<GuidedPracticeProps> = ({
       key: 'Engagement' as keyof PACEFramework,
       title: 'Engagement',
       icon: Zap,
+      animation: 'pace-engagement-icon.mp4',
       color: 'text-purple-600',
       bgColor: 'from-purple-50 to-purple-100',
       description: 'How will you make it compelling and actionable?',
@@ -269,8 +278,13 @@ Structure the response with clear sections and make it actionable.`;
     return (
       <div className="space-y-6">
         <div className="text-center">
-          <div className={`w-16 h-16 bg-gradient-to-br ${stepData.bgColor.replace('50', '500').replace('100', '600')} rounded-full flex items-center justify-center mx-auto mb-4`}>
-            <StepIcon className="w-8 h-8 text-white" />
+          <div className={`w-16 h-16 bg-gradient-to-br ${stepData.bgColor.replace('50', '500').replace('100', '600')} rounded-full flex items-center justify-center mx-auto mb-4 overflow-hidden`}>
+            <VideoAnimation
+              src={getAnimationUrl(stepData.animation)}
+              fallbackIcon={<StepIcon className="w-8 h-8 text-white" />}
+              className="w-full h-full"
+              context="ui"
+            />
           </div>
           <h3 className="text-xl font-bold mb-2">{stepData.title}</h3>
           <p className="text-gray-600">{stepData.description}</p>

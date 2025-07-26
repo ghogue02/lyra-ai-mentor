@@ -10,6 +10,7 @@ import { ToolkitService } from '@/services/toolkitService';
 import { useToast } from '@/hooks/use-toast';
 import { useJourneyProgress } from '@/hooks/useJourneyProgress';
 import VideoAnimation from '@/components/ui/VideoAnimation';
+import AnimatedCheckmark from '@/components/ui/AnimatedCheckmark';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 import NarrativeManager from './NarrativeManager';
@@ -120,7 +121,8 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     {
       id: 'struggle-1',
       content: "Picture this: It's 9 PM, and I'm still staring at a blank email. I've been trying to write this message for TWO HOURS.",
-      emotion: 'frustrated' as const
+      emotion: 'frustrated' as const,
+      mayaAnimation: 'maya-struggling-typing.mp4'
     },
     {
       id: 'struggle-2',
@@ -146,7 +148,8 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     {
       id: 'failed-3',
       content: "That's when I realized: the problem wasn't the AI. It was how I was asking for help.",
-      emotion: 'thoughtful' as const
+      emotion: 'thoughtful' as const,
+      mayaAnimation: 'maya-lightbulb-moment.mp4'
     }
   ];
 
@@ -164,7 +167,8 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
     {
       id: 'elena-3',
       content: "Within 20 minutes of learning PACE, I had created a prompt that generated exactly what I needed.",
-      emotion: 'amazed' as const
+      emotion: 'amazed' as const,
+      mayaAnimation: 'maya-confident-typing.mp4'
     }
   ];
 
@@ -427,8 +431,13 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
               animate={{ opacity: 1, y: 0 }}
               className="space-y-8"
             >
-              <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto">
-                <Sparkles className="w-12 h-12 text-white" />
+              <div className="w-24 h-24 bg-gradient-to-br from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto overflow-hidden">
+                <VideoAnimation
+                  src={getAnimationUrl('level-up-animation.mp4')}
+                  fallbackIcon={<Sparkles className="w-12 h-12 text-white" />}
+                  className="w-full h-full"
+                  context="celebration"
+                />
               </div>
               
               <div>
