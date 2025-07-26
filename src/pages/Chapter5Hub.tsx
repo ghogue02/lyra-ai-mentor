@@ -51,7 +51,7 @@ const Chapter5Hub: React.FC = () => {
       title: 'Automation Planning Lab',
       description: 'Create step-by-step implementation roadmaps with AI guidance',
       icon: <GitBranch className="w-6 h-6" />,
-      route: '/chapter/5/interactive/automation-planning',
+      route: '/chapter/5/rachel-automation-vision',
       estimated_time: '20 min',
       difficulty: 'Intermediate',
       completed: false,
@@ -62,7 +62,7 @@ const Chapter5Hub: React.FC = () => {
       title: 'Change Management Mastery',
       description: 'Lead organizational transformation with AI-powered communication',
       icon: <Repeat className="w-6 h-6" />,
-      route: '/chapter/5/interactive/change-management',
+      route: '/chapter/5/rachel-workflow-designer',
       estimated_time: '18 min',
       difficulty: 'Intermediate',
       completed: false,
@@ -73,8 +73,19 @@ const Chapter5Hub: React.FC = () => {
       title: 'Scaling Systems Strategy',
       description: 'Build a comprehensive AI automation ecosystem for your organization',
       icon: <Cpu className="w-6 h-6" />,
-      route: '/chapter/5/interactive/scaling-systems',
+      route: '/chapter/5/rachel-process-transformer',
       estimated_time: '25 min',
+      difficulty: 'Advanced',
+      completed: false,
+      unlocked: true
+    },
+    {
+      id: 'ecosystem-builder',
+      title: 'Ecosystem Builder',
+      description: 'Create comprehensive AI ecosystem for lasting organizational transformation',
+      icon: <Settings className="w-6 h-6" />,
+      route: '/chapter/5/rachel-ecosystem-builder',
+      estimated_time: '28 min',
       difficulty: 'Advanced',
       completed: false,
       unlocked: true
@@ -219,7 +230,7 @@ const Chapter5Hub: React.FC = () => {
           </p>
           <div className="mt-6">
             <Button 
-              onClick={() => navigate('/chapter/5/interactive/rachel-automation-vision')}
+              onClick={() => navigate('/chapter/5/rachel-automation-vision')}
               className="bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700"
             >
               Meet Rachel & Envision Automation

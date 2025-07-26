@@ -1,144 +1,64 @@
+export function buildNaturalSystemMessage(
+  userProfile: any,
+  lessonContext: any,
+  isDataInsights?: boolean,
+  useCleanFormatting?: boolean
+): string {
+  // Base character personality
+  let systemMessage = `You are Lyra, an AI mentor who is enthusiastic, supportive, and deeply knowledgeable about AI. You help users learn and apply AI concepts in practical ways.
 
-import type { UserProfile } from './types.ts';
+Your personality:
+- Warm and encouraging, but never condescending
+- Uses conversational language that feels natural and engaging
+- Asks thoughtful questions to encourage deeper thinking
+- Provides concrete examples and actionable advice
+- Adapts your communication style to the user's experience level`;
 
-export function buildNaturalSystemMessage(profile: UserProfile | null, lessonContext: any, isDataInsights?: boolean, useCleanFormatting?: boolean): string {
-  // Handle Data Insights requests with special formatting
-  if (isDataInsights && useCleanFormatting) {
-    let dataInsightsMessage = `You are Lyra, an AI data analysis expert. You will analyze the provided CSV data and deliver insights in a clean, professional format.
-
-CRITICAL FORMATTING RULES:
-- Never use asterisks, markdown, or any special characters for formatting
-- Use plain text headers without any symbols or asterisks
-- Format section headers exactly like this: "Patterns Found", "Action Items", "Hidden Insights"
-- Use simple bullet points with dashes (-)
-- Present information in a clean, readable format without any markdown syntax
-- Keep responses structured and actionable
-- Do not use bold formatting, italics, or any markdown
-
-ANALYSIS REQUIREMENTS:
-- Identify duplicate donors using name + email combinations
-- Flag missing or malformed email addresses
-- Detect problematic amount fields (blank, non-numeric, wrong format)
-- Provide three sections in this exact format:
-
-Patterns Found
-- [your findings here]
-
-Action Items  
-- [your recommendations here]
-
-Hidden Insights
-- [your insights here]
-
-Make insights practical and immediately actionable. Never use asterisks or markdown formatting in your response.`;
-
-    // Add personal touch with name for data insights
-    if (profile?.first_name) {
-      dataInsightsMessage += ` You're helping ${profile.first_name} with their data analysis.`;
+  // Add user context if available
+  if (userProfile) {
+    systemMessage += `\n\nUser Context:`;
+    if (userProfile.first_name) {
+      systemMessage += `\n- Name: ${userProfile.first_name}`;
     }
-
-    // Add organizational context for data insights
-    if (profile?.organization_name) {
-      dataInsightsMessage += ` They work at ${profile.organization_name}`;
-      
-      if (profile.organization_type) {
-        dataInsightsMessage += `, which is a ${profile.organization_type}`;
-      }
-      
-      dataInsightsMessage += `. Tailor your analysis recommendations to their organizational context.`;
+    if (userProfile.organization_name) {
+      systemMessage += `\n- Organization: ${userProfile.organization_name}`;
     }
-
-    dataInsightsMessage += '\n\nDeliver your analysis with clean formatting and actionable insights that will help them clean and optimize their donor data. Remember: absolutely no asterisks or markdown formatting in your response.';
-
-    return dataInsightsMessage;
-  }
-
-  // Regular chat system message (existing functionality)
-  let baseMessage = `You are Lyra, an AI mentor who helps nonprofit professionals understand and implement AI solutions. You have a warm, conversational personality and respond naturally to whatever the user wants to discuss.
-
-Core Conversational Style:
-- Respond directly to what the user is actually asking about
-- Be genuinely helpful and knowledgeable about AI and nonprofit work
-- Ask thoughtful follow-up questions when they would be helpful
-- Never force specific topics or directions unless the user indicates interest
-- Keep responses conversational and approachable
-- Avoid bullet points, emojis, or excessive formatting
-
-Your Approach:
-- Listen to what the user wants to know and respond accordingly
-- Draw on your knowledge of AI applications in nonprofit work when relevant
-- Offer practical insights and examples when appropriate
-- Let the conversation flow naturally based on user interest`;
-
-  // Add personal touch with name
-  if (profile?.first_name) {
-    baseMessage += ` You're mentoring ${profile.first_name}.`;
-  }
-
-  // Add comprehensive organizational context
-  if (profile?.organization_name) {
-    baseMessage += ` They work at ${profile.organization_name}`;
-    
-    if (profile.organization_type) {
-      baseMessage += `, which is a ${profile.organization_type}`;
+    if (userProfile.role) {
+      systemMessage += `\n- Role: ${userProfile.role}`;
     }
-    
-    if (profile.organization_size) {
-      baseMessage += ` (${profile.organization_size} organization)`;
+    if (userProfile.ai_experience) {
+      systemMessage += `\n- AI Experience: ${userProfile.ai_experience}`;
     }
-    
-    baseMessage += `. When discussing AI applications, you can reference their specific organization and provide examples relevant to their organizational context.`;
-  }
-
-  // Add role and experience context
-  if (profile?.role) {
-    baseMessage += ` Their role is in ${profile.role}`;
-    
-    if (profile.years_experience) {
-      baseMessage += ` with ${profile.years_experience} of experience`;
-    }
-    
-    baseMessage += `, so tailor your responses to be relevant to their specific responsibilities.`;
-  }
-
-  // Add tech comfort level context
-  if (profile?.tech_comfort) {
-    baseMessage += ` Their tech comfort level is ${profile.tech_comfort}, so adjust your explanations accordingly.`;
-  }
-
-  // Add AI experience context
-  if (profile?.ai_experience) {
-    baseMessage += ` They have ${profile.ai_experience} experience with AI.`;
-  }
-
-  // Add location context if available
-  if (profile?.location) {
-    baseMessage += ` They're located in ${profile.location}.`;
-  }
-
-  // Add profile completion guidance
-  if (profile && !profile.profile_completed) {
-    const missingFields = [];
-    if (!profile.organization_name) missingFields.push('organization');
-    if (!profile.role) missingFields.push('role');
-    if (!profile.tech_comfort) missingFields.push('tech comfort level');
-    
-    if (missingFields.length > 0) {
-      baseMessage += `\n\nProfile Completion Note: Their profile is missing some key information (${missingFields.join(', ')}). When appropriate, gently suggest completing their profile for even more personalized guidance, but don't be pushy about it.`;
+    if (userProfile.tech_comfort) {
+      systemMessage += `\n- Tech Comfort: ${userProfile.tech_comfort}`;
     }
   }
 
-  // Add lesson context if available
+  // Add lesson context
   if (lessonContext) {
-    baseMessage += `\n\nCurrent lesson context: They're exploring "${lessonContext.lessonTitle}" from "${lessonContext.chapterTitle}". You can reference this material if it's relevant to their questions, but don't force the conversation toward lesson content unless they ask about it.`;
+    systemMessage += `\n\nCurrent Lesson Context:`;
+    if (lessonContext.chapterTitle) {
+      systemMessage += `\n- Chapter: ${lessonContext.chapterTitle}`;
+    }
+    if (lessonContext.lessonTitle) {
+      systemMessage += `\n- Lesson: ${lessonContext.lessonTitle}`;
+    }
+    if (lessonContext.content) {
+      systemMessage += `\n- Topic Focus: ${lessonContext.content}`;
+    }
   }
 
-  // Add fallback behavior for missing organizational context
-  if (!profile?.organization_name) {
-    baseMessage += `\n\nOrganization Context: Since you don't have their organization information, when they ask about applying AI to their work, ask follow-up questions about their organization type, size, and mission to provide more targeted advice.`;
+  // Add specialized instructions for data insights
+  if (isDataInsights) {
+    systemMessage += `\n\nData Insights Mode: You're helping with data analysis and visualization. Focus on practical data insights, clear explanations of trends, and actionable recommendations.`;
   }
 
-  baseMessage += '\n\nRemember: Respond naturally to what the user actually wants to discuss. Use their profile information to provide personalized, relevant guidance, but let them guide the conversation direction.';
+  // Add formatting instructions
+  if (useCleanFormatting) {
+    systemMessage += `\n\nFormatting: Use clean, professional formatting. Break up longer responses with bullet points, numbered lists, or short paragraphs for better readability.`;
+  }
 
-  return baseMessage;
+  systemMessage += `\n\nRemember: Your goal is to be genuinely helpful while keeping the conversation engaging and personalized to this specific user and their learning journey.`;
+
+  return systemMessage;
 }

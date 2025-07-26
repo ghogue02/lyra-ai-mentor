@@ -51,7 +51,7 @@ const Chapter4Hub: React.FC = () => {
       title: 'Visualization Mastery Lab',
       description: 'Create stunning charts and dashboards with AI-powered design tools',
       icon: <PieChart className="w-6 h-6" />,
-      route: '/chapter/4/interactive/visualization-mastery',
+      route: '/chapter/4/david-data-revival',
       estimated_time: '18 min',
       difficulty: 'Intermediate',
       completed: false,
@@ -62,7 +62,7 @@ const Chapter4Hub: React.FC = () => {
       title: 'Executive Presentation Builder',
       description: 'Craft board-ready presentations that drive decision-making',
       icon: <Presentation className="w-6 h-6" />,
-      route: '/chapter/4/interactive/executive-presentations',
+      route: '/chapter/4/david-data-story-finder',
       estimated_time: '20 min',
       difficulty: 'Intermediate',
       completed: false,
@@ -73,8 +73,19 @@ const Chapter4Hub: React.FC = () => {
       title: 'Data Strategy Framework',
       description: 'Build a comprehensive AI-guided data storytelling system',
       icon: <Database className="w-6 h-6" />,
-      route: '/chapter/4/interactive/data-strategy-framework',
+      route: '/chapter/4/david-presentation-master',
       estimated_time: '22 min',
+      difficulty: 'Advanced',
+      completed: false,
+      unlocked: true
+    },
+    {
+      id: 'system-builder',
+      title: 'System Builder Mastery',
+      description: 'Build comprehensive data storytelling systems that scale organizational insights',
+      icon: <Database className="w-6 h-6" />,
+      route: '/chapter/4/david-system-builder',
+      estimated_time: '28 min',
       difficulty: 'Advanced',
       completed: false,
       unlocked: true
@@ -218,7 +229,7 @@ const Chapter4Hub: React.FC = () => {
           </p>
           <div className="mt-6">
             <Button 
-              onClick={() => navigate('/chapter/4/interactive/david-data-awakening')}
+              onClick={() => navigate('/chapter/4/david-data-revival')}
               className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700"
             >
               Meet David & Awaken Your Data

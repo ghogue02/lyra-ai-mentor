@@ -51,7 +51,7 @@ const Chapter6Hub: React.FC = () => {
       title: 'Transformation Planning Lab',
       description: 'Design comprehensive change management strategies with AI guidance',
       icon: <Lightbulb className="w-6 h-6" />,
-      route: '/chapter/6/interactive/transformation-planning',
+      route: '/chapter/6/alex-change-strategy',
       estimated_time: '22 min',
       difficulty: 'Intermediate',
       completed: false,
@@ -62,7 +62,7 @@ const Chapter6Hub: React.FC = () => {
       title: 'Team Alignment Mastery',
       description: 'Unite your organization around AI adoption with communication tools',
       icon: <Users className="w-6 h-6" />,
-      route: '/chapter/6/interactive/team-alignment',
+      route: '/chapter/6/alex-vision-builder',
       estimated_time: '20 min',
       difficulty: 'Advanced',
       completed: false,
@@ -73,8 +73,19 @@ const Chapter6Hub: React.FC = () => {
       title: 'Future Leadership Strategy',
       description: 'Build a sustainable AI-powered organizational roadmap for lasting impact',
       icon: <Rocket className="w-6 h-6" />,
-      route: '/chapter/6/interactive/future-leadership',
+      route: '/chapter/6/alex-roadmap-creator',
       estimated_time: '25 min',
+      difficulty: 'Advanced',
+      completed: false,
+      unlocked: true
+    },
+    {
+      id: 'leadership-framework',
+      title: 'Leadership Framework Mastery',
+      description: 'Develop comprehensive AI leadership skills for lasting organizational transformation',
+      icon: <Crown className="w-6 h-6" />,
+      route: '/chapter/6/alex-leadership-framework',
+      estimated_time: '28 min',
       difficulty: 'Advanced',
       completed: false,
       unlocked: true
@@ -218,7 +229,7 @@ const Chapter6Hub: React.FC = () => {
           </p>
           <div className="mt-6">
             <Button 
-              onClick={() => navigate('/chapter/6/interactive/alex-leadership-challenges')}
+              onClick={() => navigate('/chapter/6/alex-change-strategy')}
               className="bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700"
             >
               Meet Alex & Begin Leadership Journey

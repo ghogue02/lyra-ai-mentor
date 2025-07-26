@@ -25,57 +25,46 @@ const Chapter3Hub: React.FC = () => {
   // Sofia's storytelling journey micro-lessons
   const microLessons: MicroLesson[] = [
     {
-      id: 'sofia-story-discovery',
-      title: 'Meet Sofia & Story Discovery',
+      id: 'mission-story-creator',
+      title: 'Mission Story Creator',
       description: 'Discover your organization\'s unique narrative voice with Sofia Martinez',
       icon: <Sparkles className="w-6 h-6" />,
-      route: '/chapter/3/interactive/sofia-story-discovery',
+      route: '/chapter/3/sofia-mission-story-creator',
       estimated_time: '12 min',
       difficulty: 'Beginner',
       completed: false,
       unlocked: true
     },
     {
-      id: 'narrative-structure',
-      title: 'Narrative Structure Workshop',
+      id: 'voice-discovery',
+      title: 'Voice Discovery Workshop',
       description: 'Master the art of compelling storytelling with AI-powered story building',
       icon: <Palette className="w-6 h-6" />,
-      route: '/chapter/3/interactive/narrative-structure',
+      route: '/chapter/3/sofia-voice-discovery',
       estimated_time: '15 min',
       difficulty: 'Beginner',
       completed: false,
       unlocked: true
     },
     {
-      id: 'visual-storytelling',
-      title: 'Visual Storytelling Lab',
+      id: 'story-breakthrough',
+      title: 'Story Breakthrough Lab',
       description: 'Create stunning presentations with AI-generated visual assets',
       icon: <Video className="w-6 h-6" />,
-      route: '/chapter/3/interactive/visual-storytelling',
+      route: '/chapter/3/sofia-story-breakthrough',
       estimated_time: '18 min',
       difficulty: 'Intermediate',
       completed: false,
       unlocked: true
     },
     {
-      id: 'audience-connection',
-      title: 'Audience Connection Mastery',
+      id: 'impact-scaling',
+      title: 'Impact Scaling Mastery',
       description: 'Use AI to analyze and connect with different audience types',
       icon: <Users className="w-6 h-6" />,
-      route: '/chapter/3/interactive/audience-connection',
+      route: '/chapter/3/sofia-impact-scaling',
       estimated_time: '16 min',
       difficulty: 'Intermediate',
-      completed: false,
-      unlocked: true
-    },
-    {
-      id: 'impact-amplification',
-      title: 'Impact Amplification Strategy',
-      description: 'Scale your stories across multiple channels with AI content tools',
-      icon: <Mic className="w-6 h-6" />,
-      route: '/chapter/3/interactive/impact-amplification',
-      estimated_time: '20 min',
-      difficulty: 'Advanced',
       completed: false,
       unlocked: true
     }
@@ -218,7 +207,7 @@ const Chapter3Hub: React.FC = () => {
           </p>
           <div className="mt-6">
             <Button 
-              onClick={() => navigate('/chapter/3/interactive/sofia-story-discovery')}
+              onClick={() => navigate('/chapter/3/sofia-mission-story-creator')}
               className="bg-gradient-to-r from-rose-600 to-purple-600 hover:from-rose-700 hover:to-purple-700"
             >
               Meet Sofia & Discover Your Story
