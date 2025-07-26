@@ -18,7 +18,11 @@ export const MinimalHeader = () => {
   const { user, signOut } = useAuth();
 
   const handleHomeClick = () => {
-    navigate('/');
+    if (user) {
+      navigate('/dashboard');
+    } else {
+      navigate('/auth');
+    }
   };
 
   const handleSignIn = () => {
