@@ -2,17 +2,47 @@
 import { corsHeaders } from './cors.ts';
 import type { StreamChunk } from './types.ts';
 
-const openAIApiKey = Deno.env.get('OPENAI_API_KEY');
+const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
+
+// Character-specific model mapping for cost optimization
+const CHARACTER_MODELS = {
+  'lyra': 'anthropic/claude-sonnet-4',
+  'rachel': 'anthropic/claude-sonnet-4',
+  'sofia': 'google/gemini-2.5-flash',
+  'david': 'google/gemini-2.5-flash',
+  'alex': 'google/gemini-2.5-flash',
+  'default': 'google/gemini-2.5-flash' // Cost-effective fallback
+};
+
+function detectCharacterFromMessages(messages: any[]): string {
+  const systemMessage = messages.find(msg => msg.role === 'system')?.content || '';
+  const userMessages = messages.filter(msg => msg.role === 'user').map(msg => msg.content).join(' ').toLowerCase();
+  
+  if (systemMessage.toLowerCase().includes('lyra') || userMessages.includes('lyra')) return 'lyra';
+  if (systemMessage.toLowerCase().includes('sofia') || userMessages.includes('sofia')) return 'sofia';
+  if (systemMessage.toLowerCase().includes('david') || userMessages.includes('david')) return 'david';
+  if (systemMessage.toLowerCase().includes('rachel') || userMessages.includes('rachel')) return 'rachel';
+  if (systemMessage.toLowerCase().includes('alex') || userMessages.includes('alex')) return 'alex';
+  
+  return 'default';
+}
 
 export async function createOpenAIStreamingResponse(messages: any[]): Promise<Response> {
-  const response = await fetch('https://api.openai.com/v1/chat/completions', {
+  const character = detectCharacterFromMessages(messages);
+  const model = CHARACTER_MODELS[character];
+  
+  console.log(`Using model ${model} for character ${character}`);
+  
+  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
-      'Authorization': `Bearer ${openAIApiKey}`,
+      'Authorization': `Bearer ${openRouterApiKey}`,
       'Content-Type': 'application/json',
+      'HTTP-Referer': 'https://lovable.dev',
+      'X-Title': 'Lovable AI Learning Platform'
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model,
       messages,
       max_tokens: 500,
       temperature: 0.8,
@@ -21,7 +51,9 @@ export async function createOpenAIStreamingResponse(messages: any[]): Promise<Re
   });
 
   if (!response.ok) {
-    throw new Error(`OpenAI API error: ${response.status}`);
+    const errorText = await response.text();
+    console.error(`OpenRouter API error: ${response.status} - ${errorText}`);
+    throw new Error(`OpenRouter API error: ${response.status}`);
   }
 
   return createStreamingResponse(response);
