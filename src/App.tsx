@@ -16,6 +16,7 @@ import ContentLab from "./pages/ContentLab";
 import Lesson from "./pages/Lesson";
 import InteractiveJourney from "./pages/InteractiveJourney";
 import Chapter2Hub from "./pages/Chapter2Hub";
+import Chapter1Hub from "./pages/Chapter1Hub";
 import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
 
 const queryClient = new QueryClient();
@@ -65,7 +66,15 @@ const App = () => {
                   </ProtectedRoute>
                 } 
               />
-              {/* Chapter routes - Chapter 2 has custom hub, others use generic overview */}
+              {/* Chapter routes - Chapters 1 and 2 have custom hubs, others use generic overview */}
+              <Route 
+                path="/chapter/1" 
+                element={
+                  <ProtectedRoute>
+                    <Chapter1Hub />
+                  </ProtectedRoute>
+                } 
+              />
               <Route 
                 path="/chapter/2" 
                 element={
