@@ -46,12 +46,6 @@ export const Navbar = ({
                 className="w-12 h-12 object-contain rounded-lg"
               />
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent">
-                AI Learning Hub
-              </h1>
-              <p className="text-xs text-gray-600">For Non-Profit Professionals</p>
-            </div>
           </div>
 
           {/* Auth Actions */}

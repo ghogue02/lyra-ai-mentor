@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
-import { Navbar } from '@/components/Navbar';
+import { MinimalHeader } from '@/components/MinimalHeader';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { JourneyTab } from '@/components/dashboard/JourneyTab';
@@ -181,7 +181,7 @@ export const Dashboard = () => {
   return (
     <ProgressProvider>
       <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
-        <Navbar showAuthButtons={false} onSignOut={signOut} />
+        <MinimalHeader />
       
       {/* Header Section - Fixed spacing to prevent header overlap */}
       <section className="container mx-auto px-4 pt-40 pb-8">
@@ -218,7 +218,6 @@ export const Dashboard = () => {
           firstName={profile?.first_name}
           userName={userName || ''}
           onboardingComplete={onboardingComplete}
-          onSignOut={handleSignOut}
         />
 
         {/* Onboarding Progress */}
