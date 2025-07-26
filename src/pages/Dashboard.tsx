@@ -136,8 +136,11 @@ export const Dashboard = () => {
         }
       }
 
-      // Navigate to chapter overview (Chapter 2 has special hub)
-      if (chapterId === 2) {
+      // Navigate to chapter overview (Chapters 1 and 2 have special handling)
+      if (chapterId === 1) {
+        console.log(`Navigating to Chapter 1 Overview`);
+        navigate(`/chapter/1`);
+      } else if (chapterId === 2) {
         console.log(`Navigating to Chapter 2 Hub`);
         navigate(`/chapter/2`);
       } else {
