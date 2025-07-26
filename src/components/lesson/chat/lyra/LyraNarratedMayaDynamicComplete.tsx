@@ -1,2 +1,2 @@
-// Re-export the new progressive integration approach
-export { default } from './maya/MayaInteractiveJourney';
+// Re-export the Lyra Introduction Journey for Chapter 1
+export { default } from './LyraIntroductionJourney';

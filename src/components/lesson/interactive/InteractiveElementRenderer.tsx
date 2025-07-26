@@ -11,6 +11,7 @@ import { AIDreamTeamRenderer } from './AIDreamTeamRenderer';
 import { AIPromptPracticeRenderer } from './AIPromptPracticeRenderer';
 import { AICommunicationSimRenderer } from './AICommunicationSimRenderer';
 import { AISuccessVisualizerRenderer } from './AISuccessVisualizerRenderer';
+import LyraIntroductionJourney from '../chat/lyra/LyraIntroductionJourney';
 
 interface InteractiveElement {
   id: number;
@@ -53,6 +54,13 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   onComplete
 }) => {
   const renderElement = () => {
+    // Special routing for Chapter 1 - Lyra Introduction Journey
+    if (lessonContext?.chapterTitle === "Chapter 1" || 
+        lessonContext?.lessonTitle?.includes("Hello, I'm Lyra") ||
+        element.type === 'lyra_introduction') {
+      return <LyraIntroductionJourney />;
+    }
+
     switch (element.type) {
       case 'lyra_chat':
         return (
