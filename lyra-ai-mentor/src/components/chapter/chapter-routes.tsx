@@ -1,6 +1,13 @@
 import { Routes, Route } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 import { ChapterOverview } from './ChapterOverview';
 import { Lesson } from '@/pages/Lesson';
+import { Navbar } from '@/components/Navbar';
+import { LessonNavigator } from './LessonNavigator';
+import LyraIntroductionJourney from '@/components/lesson/chat/lyra/LyraIntroductionJourney';
 
 /**
  * Chapter Routing Configuration
@@ -28,6 +35,7 @@ export const ChapterRoutes = () => {
 
 const ChapterOverviewPage = () => {
   const { chapterId } = useParams();
+  const { user } = useAuth();
   const [chapter, setChapter] = useState(null);
   const [lessons, setLessons] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -131,6 +139,7 @@ const ChapterOverviewPage = () => {
 
 const ChapterLessonPage = () => {
   const { chapterId, lessonId } = useParams();
+  const { user } = useAuth();
   const navigate = useNavigate();
   
   // Special handling for Chapter 1 - render LyraIntroductionJourney directly
@@ -195,12 +204,3 @@ const ChapterLessonPage = () => {
     </div>
   );
 };
-
-// Update imports needed
-import { useParams, useNavigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { useAuth } from '@/contexts/AuthContext';
-import { Navbar } from '@/components/Navbar';
-import { LessonNavigator } from './LessonNavigator';
-import LyraIntroductionJourney from '@/components/lesson/chat/lyra/LyraIntroductionJourney';
