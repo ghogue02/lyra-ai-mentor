@@ -13,7 +13,8 @@ import { MyToolkit } from '@/components/MyToolkit';
 import { ProgressDashboard } from '@/components/ProgressDashboard';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
-import { getDashboardRocketUrls } from '@/utils/supabaseIcons';
+import { getAnimationUrl } from '@/utils/supabaseIcons';
+import VideoAnimation from '@/components/ui/VideoAnimation';
 import { useToast } from '@/hooks/use-toast';
 
 interface UserProfile {
@@ -176,8 +177,6 @@ export const Dashboard = () => {
   const onboardingComplete = profile?.first_chapter_started && profile?.first_chapter_completed;
   const userName = profile?.first_name && profile?.last_name ? `${profile.first_name} ${profile.last_name}` : user?.email;
 
-  const rocketUrls = getDashboardRocketUrls();
-
   return (
     <ProgressProvider>
       <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
@@ -187,30 +186,20 @@ export const Dashboard = () => {
       <section className="container mx-auto px-4 pt-40 pb-8">
         {/* Animated Rocket - Larger and more prominent */}
         <div className="mb-12 flex justify-center">
-          <video 
-            className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 object-contain"
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            onError={(e) => {
-              console.error('Video failed to load, showing fallback image');
-              const target = e.currentTarget;
-              target.style.display = 'none';
-              const fallbackImg = target.nextElementSibling as HTMLImageElement;
-              if (fallbackImg) fallbackImg.style.display = 'block';
-            }}
-          >
-            <source src={rocketUrls.mp4} type="video/mp4" />
-            <source src={rocketUrls.gif} type="image/gif" />
-            Your browser does not support the video tag.
-          </video>
-          <img 
-            src={rocketUrls.fallback}
-            alt="AI Learning Journey Rocket"
-            className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 object-contain"
-            style={{ display: 'none' }}
+          <VideoAnimation
+            src={getAnimationUrl('lyra-rocket.mp4')}
+            fallbackIcon={
+              <img 
+                src={getAnimationUrl('lyra-rocket.mp4')} 
+                alt="AI Learning Journey Rocket" 
+                className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 object-contain" 
+              />
+            }
+            className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112"
+            context="ui"
+            autoPlay={true}
+            loop={true}
+            muted={true}
           />
         </div>
 

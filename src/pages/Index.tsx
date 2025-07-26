@@ -23,7 +23,7 @@ const Index = () => {
           {/* Hero Animation - Lyra landing page animation */}
           <div className="mb-12 flex justify-center">
             <VideoAnimation
-              src={getAnimationUrl('lyra-rocket.mp4')}
+              src={getAnimationUrl('lyra-landing-page.mp4')}
               fallbackIcon={
                 <img 
                   src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
