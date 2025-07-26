@@ -4,6 +4,13 @@ import { AIEmailComposerRenderer } from './AIEmailComposerRenderer';
 import { PromptBuilderRenderer } from './PromptBuilderRenderer';
 import { CalloutBoxRenderer } from './CalloutBoxRenderer';
 import { KnowledgeCheckRenderer } from './KnowledgeCheckRenderer';
+import { AIPersonalityQuizRenderer } from './AIPersonalityQuizRenderer';
+import { AIAvatarCreatorRenderer } from './AIAvatarCreatorRenderer';
+import { AIMottoGeneratorRenderer } from './AIMottoGeneratorRenderer';
+import { AIDreamTeamRenderer } from './AIDreamTeamRenderer';
+import { AIPromptPracticeRenderer } from './AIPromptPracticeRenderer';
+import { AICommunicationSimRenderer } from './AICommunicationSimRenderer';
+import { AISuccessVisualizerRenderer } from './AISuccessVisualizerRenderer';
 
 interface InteractiveElement {
   id: number;
@@ -89,6 +96,69 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       case 'knowledge_check':
         return (
           <KnowledgeCheckRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={onComplete}
+          />
+        );
+
+      case 'ai_personality_quiz':
+        return (
+          <AIPersonalityQuizRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={onComplete}
+          />
+        );
+
+      case 'ai_avatar_creator':
+        return (
+          <AIAvatarCreatorRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={onComplete}
+          />
+        );
+
+      case 'ai_motto_generator':
+        return (
+          <AIMottoGeneratorRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={onComplete}
+          />
+        );
+
+      case 'ai_dream_team':
+        return (
+          <AIDreamTeamRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={onComplete}
+          />
+        );
+
+      case 'ai_prompt_practice':
+        return (
+          <AIPromptPracticeRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={onComplete}
+          />
+        );
+
+      case 'ai_communication_sim':
+        return (
+          <AICommunicationSimRenderer
+            element={element}
+            isElementCompleted={isElementCompleted}
+            onComplete={onComplete}
+          />
+        );
+
+      case 'ai_success_visualizer':
+        return (
+          <AISuccessVisualizerRenderer
             element={element}
             isElementCompleted={isElementCompleted}
             onComplete={onComplete}
