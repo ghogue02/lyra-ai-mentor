@@ -80,7 +80,14 @@ export const Dashboard = () => {
     // All chapters are unlocked for testing
     // No locking logic required
 
-    // Check if the chapter has lessons
+    // Handle Chapter 2 special case first (Maya journey doesn't need lessons)
+    if (chapterId === 2) {
+      console.log(`Navigating to Maya PACE Framework`);
+      navigate(`/chapter/2/interactive/maya-pace`);
+      return;
+    }
+
+    // Check if the chapter has lessons (for all other chapters)
     try {
       console.log(`Checking lessons for Chapter ${chapterId}...`);
       const { data: lessons, error } = await supabase
@@ -136,13 +143,10 @@ export const Dashboard = () => {
         }
       }
 
-      // Navigate to chapter overview (Chapters 1 and 2 have special handling)
+      // Navigate to chapter overview (Chapter 1 has special handling)
       if (chapterId === 1) {
         console.log(`Navigating to Chapter 1 Overview`);
         navigate(`/chapter/1`);
-      } else if (chapterId === 2) {
-        console.log(`Navigating to Maya PACE Framework`);
-        navigate(`/chapter/2/interactive/maya-pace`);
       } else {
         console.log(`Navigating to Chapter ${chapterId}, Lesson ${lessons[0].id}`);
         navigate(`/chapter/${chapterId}/lesson/${lessons[0].id}`);
