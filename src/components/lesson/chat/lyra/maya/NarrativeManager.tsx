@@ -303,7 +303,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
             <CardContent className="p-6">
               <div className="flex items-start gap-4">
                 {currentMessage.showAvatar !== false && (
-                  <div className="w-12 h-12 flex-shrink-0">
+                  <div className="w-20 h-20 flex-shrink-0">
                     <VideoAnimation
                       src={getAnimationUrl(getLyraEmotionAnimation(currentMessage.emotion || 'neutral'))}
                       fallbackIcon={<LyraAvatar size="md" />}
