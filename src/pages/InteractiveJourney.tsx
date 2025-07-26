@@ -4,6 +4,9 @@ import MayaInteractiveJourney from '@/components/lesson/chat/lyra/maya/MayaInter
 import MayaToneMastery from '@/components/lesson/chat/lyra/maya/MayaToneMastery';
 import LyraFoundationsJourney from '@/components/lesson/chat/lyra/LyraFoundationsJourney';
 import { LyraUnderstandingAIModelsLesson } from '@/components/lesson/LyraUnderstandingAIModelsLesson';
+import { LyraPromptingFundamentalsLesson } from '@/components/lesson/LyraPromptingFundamentalsLesson';
+import { LyraAIEthicsLesson } from '@/components/lesson/LyraAIEthicsLesson';
+import { LyraAIToolkitSetupLesson } from '@/components/lesson/LyraAIToolkitSetupLesson';
 import SofiaStorytellingJourney from '@/components/lesson/chat/sofia/SofiaStorytellingJourney';
 import DavidDataJourney from '@/components/lesson/chat/david/DavidDataJourney';
 import RachelAutomationJourney from '@/components/lesson/chat/rachel/RachelAutomationJourney';
@@ -22,6 +25,24 @@ const journeyRegistry = {
     characterId: 'lyra',
     title: 'Understanding AI Models',
     description: 'Learn to choose the right AI model for different tasks'
+  },
+  'prompting-fundamentals': {
+    component: LyraPromptingFundamentalsLesson,
+    characterId: 'lyra',
+    title: 'AI Prompting Fundamentals',
+    description: 'Master the art of communicating with AI'
+  },
+  'ai-ethics': {
+    component: LyraAIEthicsLesson,
+    characterId: 'lyra',
+    title: 'AI Ethics for Nonprofits',
+    description: 'Navigate responsible AI use in mission-driven work'
+  },
+  'ai-toolkit-setup': {
+    component: LyraAIToolkitSetupLesson,
+    characterId: 'lyra',
+    title: 'Setting Up Your AI Toolkit',
+    description: 'Build your personalized AI workspace'
   },
   'maya-pace': {
     component: MayaInteractiveJourney,
