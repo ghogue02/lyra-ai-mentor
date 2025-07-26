@@ -80,48 +80,21 @@ export const Dashboard = () => {
     // All chapters are unlocked for testing
     // No locking logic required
 
-    // Handle Chapter 2 special case first (Maya journey doesn't need lessons)
-    if (chapterId === 2) {
-      console.log(`Navigating to Maya PACE Framework`);
-      navigate(`/chapter/2/interactive/maya-pace`);
-      return;
-    }
+    // Direct navigation to character journeys for all chapters
+    const chapterRoutes = {
+      1: '/chapter/1/interactive/lyra-foundations',
+      2: '/chapter/2/interactive/maya-pace',
+      3: '/chapter/3/interactive/sofia-storytelling',
+      4: '/chapter/4/interactive/david-data',
+      5: '/chapter/5/interactive/rachel-automation',
+      6: '/chapter/6/interactive/alex-leadership'
+    };
 
-    // Check if the chapter has lessons (for all other chapters)
-    try {
-      console.log(`Checking lessons for Chapter ${chapterId}...`);
-      const { data: lessons, error } = await supabase
-        .from('lessons')
-        .select('id, title, order_index')
-        .eq('chapter_id', chapterId)
-        .eq('is_published', true)
-        .order('order_index');
+    const route = chapterRoutes[chapterId as keyof typeof chapterRoutes];
+    
+    if (route) {
+      console.log(`Navigating to Chapter ${chapterId} character journey: ${route}`);
       
-      console.log(`Found lessons for Chapter ${chapterId}:`, lessons);
-      
-      if (lessons && lessons.length > 0) {
-        console.log(`First lesson for Chapter ${chapterId}:`, lessons[0]);
-      }
-
-      if (error) {
-        console.error('Error checking lessons:', error);
-        toast({
-          title: "Error",
-          description: "Failed to load chapter content.",
-          variant: "destructive"
-        });
-        return;
-      }
-
-      if (!lessons || lessons.length === 0) {
-        toast({
-          title: "Chapter Not Ready",
-          description: "This chapter is still being prepared. Check back soon!",
-          variant: "default"
-        });
-        return;
-      }
-
       // Mark first chapter as started if clicking on Chapter 1
       if (chapterId === 1 && !profile.first_chapter_started) {
         try {
@@ -142,21 +115,14 @@ export const Dashboard = () => {
           console.error('Error updating chapter progress:', error);
         }
       }
-
-      // Navigate to chapter overview (Chapter 1 has special handling)
-      if (chapterId === 1) {
-        console.log(`Navigating to Chapter 1 Overview`);
-        navigate(`/chapter/1`);
-      } else {
-        console.log(`Navigating to Chapter ${chapterId}, Lesson ${lessons[0].id}`);
-        navigate(`/chapter/${chapterId}/lesson/${lessons[0].id}`);
-      }
-    } catch (error) {
-      console.error('Error:', error);
+      
+      navigate(route);
+    } else {
+      console.log(`Chapter ${chapterId} not configured yet`);
       toast({
-        title: "Error",
-        description: "Something went wrong. Please try again.",
-        variant: "destructive"
+        title: "Chapter not ready",
+        description: `Chapter ${chapterId} content is coming soon! We're working hard to bring you amazing learning experiences.`,
+        variant: "default",
       });
     }
   };
