@@ -6,9 +6,9 @@ import { MinimalHeader } from '@/components/MinimalHeader';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { JourneyTab } from '@/components/dashboard/JourneyTab';
-import { ProfileTab } from '@/components/dashboard/ProfileTab';
+
 import { supabase } from '@/integrations/supabase/client';
-import { GraduationCap, UserCircle, Code2, Package, Trophy } from 'lucide-react';
+import { GraduationCap, Code2, Package, Trophy } from 'lucide-react';
 import { MyToolkit } from '@/components/MyToolkit';
 import { ProgressDashboard } from '@/components/ProgressDashboard';
 import { ProgressProvider } from '@/contexts/ProgressContext';
@@ -222,7 +222,7 @@ export const Dashboard = () => {
 
         {/* Tabbed Interface */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-3 mb-8">
             <TabsTrigger 
               value="journey" 
               className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white data-[state=active]:shadow-md"
@@ -244,10 +244,6 @@ export const Dashboard = () => {
               <Package className="w-4 h-4" />
               My Toolkit
             </TabsTrigger>
-            <TabsTrigger value="profile" className="flex items-center gap-2">
-              <UserCircle className="w-4 h-4" />
-              Profile & Personalization
-            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="journey" className="space-y-8">
@@ -263,10 +259,6 @@ export const Dashboard = () => {
 
           <TabsContent value="toolkit" className="space-y-8">
             <MyToolkit />
-          </TabsContent>
-
-          <TabsContent value="profile" className="space-y-8">
-            <ProfileTab />
           </TabsContent>
         </Tabs>
       </section>

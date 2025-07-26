@@ -34,7 +34,7 @@ export const ProfileCompletionReminder: React.FC<ProfileCompletionReminderProps>
   const hasOrgInfo = userProfile.organization_name || userProfile.organization_type;
 
   const handleCompleteProfile = () => {
-    navigate('/dashboard?tab=profile');
+    navigate('/profile');
   };
 
   if (compact) {

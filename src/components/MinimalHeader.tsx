@@ -83,6 +83,10 @@ export const MinimalHeader = () => {
                     <LayoutDashboard className="mr-2 h-4 w-4" />
                     Dashboard
                   </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => navigate('/profile')} className="cursor-pointer text-foreground hover:bg-accent">
+                    <Settings className="mr-2 h-4 w-4" />
+                    Profile & Settings
+                  </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-destructive hover:bg-destructive hover:text-destructive-foreground">
                     <LogOut className="mr-2 h-4 w-4" />
