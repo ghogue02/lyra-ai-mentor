@@ -4,9 +4,10 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PersonalizationFlow } from '@/components/PersonalizationFlow';
 import { Navbar } from '@/components/Navbar';
+import VideoAnimation from '@/components/ui/VideoAnimation';
 import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { getSupabaseIconUrl, getFeatureIconUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
+import { getSupabaseIconUrl, getFeatureIconUrl, getAnimationUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
 const Index = () => {
   const [showPersonalization, setShowPersonalization] = useState(false);
   const navigate = useNavigate();
@@ -16,12 +17,26 @@ const Index = () => {
   return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar showAuthButtons={true} />
       
-      {/* Hero Section - Significantly increased mobile padding to prevent header overlap */}
-      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-80 sm:pt-88 lg:pt-96 pb-8 sm:pb-16">
+      {/* Hero Section - Optimized spacing for better visual balance */}
+      <section className="container mx-auto spacing-mobile spacing-mobile-y pt-24 sm:pt-32 lg:pt-40 pb-8 sm:pb-16">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Hero Image - Larger and more prominent */}
+          {/* Hero Animation - Lyra landing page animation */}
           <div className="mb-12 flex justify-center">
-            <img src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} alt="AI Learning Platform" className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain" />
+            <VideoAnimation
+              src={getAnimationUrl('lyra-landing-page.mp4')}
+              fallbackIcon={
+                <img 
+                  src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
+                  alt="Lyra AI Mentor - Your intelligent learning companion" 
+                  className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80 object-contain" 
+                />
+              }
+              className="w-64 h-64 sm:w-72 sm:h-72 md:w-80 md:h-80"
+              context="ui"
+              autoPlay={true}
+              loop={true}
+              muted={true}
+            />
           </div>
 
           <Badge className="mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 to-cyan-500 text-white px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium">
