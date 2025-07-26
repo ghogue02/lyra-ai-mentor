@@ -133,9 +133,17 @@ const ChapterLessonPage = () => {
   const { chapterId, lessonId } = useParams();
   const navigate = useNavigate();
   
-  // The existing Lesson component can handle the lesson display
-  // We just need to add the LessonNavigator
+  // Special handling for Chapter 1 - render LyraIntroductionJourney directly
+  if (chapterId === '1') {
+    return (
+      <div>
+        <Navbar />
+        <LyraIntroductionJourney />
+      </div>
+    );
+  }
   
+  // For other chapters, use the regular lesson flow
   const [lessons, setLessons] = useState([]);
   
   useEffect(() => {
@@ -195,3 +203,4 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navbar } from '@/components/Navbar';
 import { LessonNavigator } from './LessonNavigator';
+import LyraIntroductionJourney from '@/components/lesson/chat/lyra/LyraIntroductionJourney';
