@@ -3,6 +3,7 @@ import { useParams, Navigate } from 'react-router-dom';
 import MayaInteractiveJourney from '@/components/lesson/chat/lyra/maya/MayaInteractiveJourney';
 import MayaToneMastery from '@/components/lesson/chat/lyra/maya/MayaToneMastery';
 import LyraFoundationsJourney from '@/components/lesson/chat/lyra/LyraFoundationsJourney';
+import { LyraUnderstandingAIModelsLesson } from '@/components/lesson/LyraUnderstandingAIModelsLesson';
 import SofiaStorytellingJourney from '@/components/lesson/chat/sofia/SofiaStorytellingJourney';
 import DavidDataJourney from '@/components/lesson/chat/david/DavidDataJourney';
 import RachelAutomationJourney from '@/components/lesson/chat/rachel/RachelAutomationJourney';
@@ -15,6 +16,12 @@ const journeyRegistry = {
     characterId: 'lyra',
     title: 'Lyra\'s AI Foundations Journey',
     description: 'Start your AI journey with Lyra as your guide'
+  },
+  'understanding-models': {
+    component: LyraUnderstandingAIModelsLesson,
+    characterId: 'lyra',
+    title: 'Understanding AI Models',
+    description: 'Learn to choose the right AI model for different tasks'
   },
   'maya-pace': {
     component: MayaInteractiveJourney,
