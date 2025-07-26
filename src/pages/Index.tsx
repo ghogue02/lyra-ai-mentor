@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PersonalizationFlow } from '@/components/PersonalizationFlow';
-import { Navbar } from '@/components/Navbar';
+import { MinimalHeader } from '@/components/MinimalHeader';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { LogIn } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +15,7 @@ const Index = () => {
     return <PersonalizationFlow onComplete={() => setShowPersonalization(false)} />;
   }
   return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
-      <Navbar showAuthButtons={true} />
+      <MinimalHeader />
       
       {/* Hero Section - Optimized spacing for better visual balance */}
       <section className="container mx-auto spacing-mobile spacing-mobile-y pt-24 sm:pt-32 lg:pt-40 pb-8 sm:pb-16">
