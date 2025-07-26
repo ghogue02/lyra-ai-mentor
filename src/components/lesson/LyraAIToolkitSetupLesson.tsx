@@ -9,6 +9,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { useNavigate } from 'react-router-dom';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 interface ToolCategory {
   id: string;
@@ -201,6 +202,12 @@ export const LyraAIToolkitSetupLesson: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-cyan-50">
+      <MicroLessonNavigator 
+        chapterNumber={1}
+        chapterTitle="Chapter 1: AI Foundations"
+        lessonTitle="Setting Up Your AI Toolkit"
+        characterName="Lyra"
+      />
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <motion.div

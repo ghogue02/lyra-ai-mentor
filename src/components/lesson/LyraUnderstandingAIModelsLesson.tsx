@@ -7,6 +7,8 @@ import { ArrowLeft, CheckCircle, Award } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { UnderstandingAIModels } from './interactive/UnderstandingAIModels';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+
 export const LyraUnderstandingAIModelsLesson: React.FC = () => {
   const navigate = useNavigate();
   const { toast } = useToast();

@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { useNavigate } from 'react-router-dom';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 interface EthicsScenario {
   id: string;

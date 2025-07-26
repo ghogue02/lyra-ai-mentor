@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { useNavigate } from 'react-router-dom';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 export const LyraPromptingFundamentalsLesson: React.FC = () => {
   const navigate = useNavigate();
@@ -98,6 +99,12 @@ export const LyraPromptingFundamentalsLesson: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-white to-purple-50">
+      <MicroLessonNavigator 
+        chapterNumber={1}
+        chapterTitle="Chapter 1: AI Foundations"
+        lessonTitle="AI Prompting Fundamentals"
+        characterName="Lyra"
+      />
       <div className="max-w-4xl mx-auto p-6">
         {/* Header */}
         <motion.div
@@ -349,12 +356,6 @@ export const LyraPromptingFundamentalsLesson: React.FC = () => {
                     </div>
                     
                     <div className="flex gap-4 justify-center">
-                      <Button 
-                        onClick={() => navigate('/chapter/1')}
-                        variant="outline"
-                      >
-                        Back to Chapter 1
-                      </Button>
                       <Button 
                         onClick={() => navigate('/chapter/1/interactive/understanding-models')}
                         className="bg-cyan-600 hover:bg-cyan-700"
