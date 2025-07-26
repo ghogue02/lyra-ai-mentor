@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { PersonalizationFlow } from '@/components/PersonalizationFlow';
 import { MinimalHeader } from '@/components/MinimalHeader';
 import VideoAnimation from '@/components/ui/VideoAnimation';
-import { LogIn } from 'lucide-react';
+
 import { useNavigate } from 'react-router-dom';
 import { getSupabaseIconUrl, getFeatureIconUrl, getAnimationUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
 const Index = () => {
@@ -51,15 +51,9 @@ const Index = () => {
             Transform your impact with AI-powered workflows. Learn practical tools, navigate ethics, and boost your mission—all with your personal AI mentor, Lyra.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-stretch sm:items-center mb-8 sm:mb-12">
+          <div className="flex justify-center mb-8 sm:mb-12">
             <Button size="lg" className="mobile-button bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105" onClick={() => setShowPersonalization(true)}>
               Start Your AI Journey
-            </Button>
-            
-            <Button variant="outline" size="lg" onClick={() => navigate('/auth')} className="mobile-button flex items-center justify-center gap-2 px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg">
-              <LogIn className="w-4 h-4 sm:w-5 sm:h-5" />
-              <span className="hidden xs:inline">Already have an account?</span>
-              <span className="xs:hidden">Sign In</span>
             </Button>
           </div>
           
