@@ -80,14 +80,14 @@ export const Dashboard = () => {
     // All chapters are unlocked for testing
     // No locking logic required
 
-    // Navigate to chapter hubs for Chapters 1 and 2, direct to character journeys for others
+    // Navigate to chapter hubs for all chapters
     const chapterRoutes = {
       1: '/chapter/1',
       2: '/chapter/2',
-      3: '/chapter/3/interactive/sofia-storytelling',
-      4: '/chapter/4/interactive/david-data',
-      5: '/chapter/5/interactive/rachel-automation',
-      6: '/chapter/6/interactive/alex-leadership'
+      3: '/chapter/3',
+      4: '/chapter/4',
+      5: '/chapter/5',
+      6: '/chapter/6'
     };
 
     const route = chapterRoutes[chapterId as keyof typeof chapterRoutes];
