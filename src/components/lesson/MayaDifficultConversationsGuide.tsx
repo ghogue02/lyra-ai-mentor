@@ -190,38 +190,45 @@ const MayaDifficultConversationsGuide: React.FC = () => {
         </p>
 
         {/* 3-Step Journey Preview */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <AlertTriangle className="w-8 h-8 text-red-600" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
+          {[
+            { title: 'Maya\'s Communication Crisis', desc: 'When tough conversations went wrong', color: 'from-red-500/10 to-red-500/5', animation: 'maya-conversation-struggle.mp4', fallback: '⚠️' },
+            { title: 'Discover Empathy Framework', desc: 'Learn authentic connection principles', color: 'from-purple-500/10 to-purple-500/5', animation: 'maya-empathy-breakthrough.mp4', fallback: '💡' },
+            { title: 'Maya\'s Trust Building', desc: 'Transform conflicts into connections', color: 'from-green-500/10 to-green-500/5', animation: 'maya-trust-success.mp4', fallback: '✓' }
+          ].map((item, index) => (
+            <div key={index} className="relative group">
+              <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
+              <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                <div className="p-6 text-center">
+                  <div className="w-12 h-12 mx-auto mb-3">
+                    <VideoAnimation
+                      src={getAnimationUrl(item.animation)}
+                      fallbackIcon={<span className="text-3xl">{item.fallback}</span>}
+                      className="w-full h-full"
+                      context="character"
+                    />
+                  </div>
+                  <Badge variant="secondary" className="mb-3">{index + 1}</Badge>
+                  <h3 className="font-bold text-lg mb-2 text-gray-900">{item.title}</h3>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </div>
+              </div>
             </div>
-            <h3 className="text-lg font-semibold mb-2">1. Maya's Communication Crisis</h3>
-            <p className="text-gray-600">When tough conversations went wrong</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Lightbulb className="w-8 h-8 text-purple-600" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">2. Discover Empathy Framework</h3>
-            <p className="text-gray-600">Learn authentic connection principles</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <CheckCircle className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">3. Maya's Trust Building</h3>
-            <p className="text-gray-600">Transform conflicts into connections</p>
-          </div>
+          ))}
         </div>
 
         {/* Begin Button */}
-        <Button 
-          onClick={() => setCurrentPhase('narrative')}
-          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 text-lg"
-        >
-          <Play className="w-5 h-5 mr-2" />
-          Begin Maya's Conversation Journey
-        </Button>
+        <div className="relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+          <Button 
+            onClick={() => setCurrentPhase('narrative')}
+            size="lg"
+            className="relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Play className="w-5 h-5 mr-2" />
+            Begin Maya's Conversation Journey
+          </Button>
+        </div>
       </div>
     </motion.div>
   );

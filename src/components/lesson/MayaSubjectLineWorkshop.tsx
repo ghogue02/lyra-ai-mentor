@@ -245,38 +245,45 @@ const MayaSubjectLineWorkshop: React.FC = () => {
         </p>
 
         {/* 3-Step Journey Preview */}
-        <div className="grid md:grid-cols-3 gap-8 mb-12">
-          <div className="text-center">
-            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Mail className="w-8 h-8 text-gray-600" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
+          {[
+            { title: 'Maya\'s Email Invisibility', desc: 'When important emails went unread', color: 'from-gray-500/10 to-gray-500/5', animation: 'maya-inbox-ignore.mp4', fallback: '📧' },
+            { title: 'Psychology Principles', desc: 'Learn what makes people click', color: 'from-purple-500/10 to-purple-500/5', animation: 'maya-psychology-discovery.mp4', fallback: '🧠' },
+            { title: 'Maya\'s Open Rate Success', desc: 'From 12% to 34% open rates', color: 'from-green-500/10 to-green-500/5', animation: 'maya-metrics-triumph.mp4', fallback: '📈' }
+          ].map((item, index) => (
+            <div key={index} className="relative group">
+              <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
+              <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                <div className="p-6 text-center">
+                  <div className="w-12 h-12 mx-auto mb-3">
+                    <VideoAnimation
+                      src={getAnimationUrl(item.animation)}
+                      fallbackIcon={<span className="text-3xl">{item.fallback}</span>}
+                      className="w-full h-full"
+                      context="character"
+                    />
+                  </div>
+                  <Badge variant="secondary" className="mb-3">{index + 1}</Badge>
+                  <h3 className="font-bold text-lg mb-2 text-gray-900">{item.title}</h3>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </div>
+              </div>
             </div>
-            <h3 className="text-lg font-semibold mb-2">1. Maya's Email Invisibility</h3>
-            <p className="text-gray-600">When important emails went unread</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <Brain className="w-8 h-8 text-purple-600" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">2. Psychology Principles</h3>
-            <p className="text-gray-600">Learn what makes people click</p>
-          </div>
-          <div className="text-center">
-            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <TrendingUp className="w-8 h-8 text-green-600" />
-            </div>
-            <h3 className="text-lg font-semibold mb-2">3. Maya's Open Rate Success</h3>
-            <p className="text-gray-600">From 12% to 34% open rates</p>
-          </div>
+          ))}
         </div>
 
         {/* Begin Button */}
-        <Button 
-          onClick={() => setCurrentPhase('narrative')}
-          className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white px-8 py-3 text-lg"
-        >
-          <Play className="w-5 h-5 mr-2" />
-          Begin Maya's Subject Line Journey
-        </Button>
+        <div className="relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-pink-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+          <Button 
+            onClick={() => setCurrentPhase('narrative')}
+            size="lg"
+            className="relative bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Play className="w-5 h-5 mr-2" />
+            Begin Maya's Subject Line Journey
+          </Button>
+        </div>
       </div>
     </motion.div>
   );
