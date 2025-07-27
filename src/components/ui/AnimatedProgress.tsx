@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import VideoAnimation from './VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 
 const getAnimationUrl = (filename: string) => {
   return `https://zkwwjzbrygxqrfxkxozk.supabase.co/storage/v1/object/public/app-icons/animations/${filename}`;
@@ -40,7 +40,7 @@ const AnimatedProgress: React.FC<AnimatedProgressProps> = ({
         >
           {showAnimation && percentage > 0 && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 -mr-3">
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl('progress-bar-filling.mp4')}
                 fallbackIcon={<div className="w-2 h-2 bg-primary rounded-full animate-pulse" />}
                 className="w-full h-full"

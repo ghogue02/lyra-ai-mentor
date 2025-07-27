@@ -4,7 +4,7 @@ import { X } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import { cn } from "@/lib/utils"
 import { BrandedIcon } from "./BrandedIcon"
-import VideoAnimation from "./VideoAnimation"
+import { OptimizedVideoAnimation } from "../performance/OptimizedVideoAnimation"
 import { getAnimationUrl } from "@/utils/supabaseIcons"
 
 const BrandedDialog = DialogPrimitive.Root
@@ -82,7 +82,7 @@ const BrandedDialogContent = React.forwardRef<
             className="flex justify-center -mt-2"
           >
             <div className="w-16 h-16 mb-4">
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl('dialog-header-glow.mp4')}
                 fallbackIcon={
                   <BrandedIcon 

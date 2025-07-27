@@ -1,7 +1,7 @@
 import React from 'react';
 import { LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import VideoAnimation from './VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl, getSupabaseIconUrl } from '@/utils/supabaseIcons';
 
 interface BrandedIconProps {
@@ -74,7 +74,7 @@ export const BrandedIcon: React.FC<BrandedIconProps> = ({
   if (variant === 'animated') {
     return (
       <div className={cn(sizeClasses[size], className)}>
-        <VideoAnimation
+        <OptimizedVideoAnimation
           src={getAnimationUrl(iconConfig.animated)}
           fallbackIcon={
             FallbackIcon ? (

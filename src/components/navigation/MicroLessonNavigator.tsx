@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, BookOpen, Trophy } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
-import VideoAnimation from '@/components/ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface MicroLessonNavigatorProps {
@@ -137,7 +137,7 @@ export const MicroLessonNavigator: React.FC<MicroLessonNavigatorProps> = ({
                 
                 <div className="hidden sm:flex items-center gap-3">
                   <div className="w-5 h-5">
-                    <VideoAnimation
+                    <OptimizedVideoAnimation
                       src={getAnimationUrl('chapter-progress-glow.mp4')}
                       fallbackIcon={<BookOpen className="w-5 h-5 text-muted-foreground" />}
                       className="w-full h-full"
@@ -147,7 +147,7 @@ export const MicroLessonNavigator: React.FC<MicroLessonNavigatorProps> = ({
                   <Badge variant="secondary" className="text-xs flex items-center gap-1">
                     Chapter {chapterNumber}
                     {showCelebration && (
-                      <VideoAnimation
+                      <OptimizedVideoAnimation
                         src={getAnimationUrl('mini-celebration.mp4')}
                         fallbackIcon={<Trophy className="w-3 h-3" />}
                         className="w-3 h-3"

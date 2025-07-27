@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Clock, Trophy, Target } from 'lucide-react';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
-import VideoAnimation from '@/components/ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface LessonProgressProps {
@@ -73,7 +73,7 @@ const LessonProgressComponent: React.FC<LessonProgressProps> = ({
         <div className="flex items-center gap-3 p-4 bg-gradient-to-r from-primary/5 to-brand-cyan/5 rounded-lg border border-primary/10">
           {characterName && showAnimation && (
             <div className="w-8 h-8">
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl(`${characterName.toLowerCase()}-avatar.mp4`)}
                 fallbackIcon={
                   <BrandedIcon 
@@ -113,7 +113,7 @@ const LessonProgressComponent: React.FC<LessonProgressProps> = ({
             }
           >
             {progressData.contentComplete && showAnimation ? (
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl('content-complete-check.mp4')}
                 fallbackIcon={<CheckCircle className="w-3 h-3" />}
                 className="w-3 h-3"
@@ -144,7 +144,7 @@ const LessonProgressComponent: React.FC<LessonProgressProps> = ({
             }
           >
             {progressData.chatComplete && showAnimation ? (
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl('chat-complete-check.mp4')}
                 fallbackIcon={<CheckCircle className="w-3 h-3" />}
                 className="w-3 h-3"
@@ -172,7 +172,7 @@ const LessonProgressComponent: React.FC<LessonProgressProps> = ({
           >
             <Badge className="bg-blue-100 text-blue-700 flex items-center gap-2 px-3 py-2">
               {showAnimation ? (
-                <VideoAnimation
+                <OptimizedVideoAnimation
                   src={getAnimationUrl('chapter-complete-trophy.mp4')}
                   fallbackIcon={<Trophy className="w-3 h-3" />}
                   className="w-3 h-3"
@@ -199,7 +199,7 @@ const LessonProgressComponent: React.FC<LessonProgressProps> = ({
             <div className="flex items-center gap-4">
               {showAnimation && (
                 <div className="w-12 h-12">
-                  <VideoAnimation
+                  <OptimizedVideoAnimation
                     src={getAnimationUrl('chapter-complete-celebration.mp4')}
                     fallbackIcon={
                       <BrandedIcon 

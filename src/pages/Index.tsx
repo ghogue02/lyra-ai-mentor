@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PersonalizationFlow } from '@/components/PersonalizationFlow';
 import { MinimalHeader } from '@/components/MinimalHeader';
-import VideoAnimation from '@/components/ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '@/components/performance/OptimizedVideoAnimation';
 
 import { useNavigate } from 'react-router-dom';
 import { getSupabaseIconUrl, getFeatureIconUrl, getAnimationUrl, SUPABASE_ICONS } from '@/utils/supabaseIcons';
@@ -22,7 +22,7 @@ const Index = () => {
         <div className="text-center max-w-4xl mx-auto">
           {/* Hero Animation - Lyra landing page animation */}
           <div className="mb-12 flex justify-center">
-            <VideoAnimation
+            <OptimizedVideoAnimation
               src={getAnimationUrl('lyra-landing-page.mp4')}
               fallbackIcon={
                 <img 

@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import VideoAnimation from '@/components/ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl, getSupabaseIconUrl } from '@/utils/supabaseIcons';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
 
@@ -50,7 +50,7 @@ export const LessonCompletionScreen: React.FC<LessonCompletionScreenProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center justify-center gap-3">
             <div className="w-12 h-12">
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl(`${characterType}-celebration.mp4`)}
                 fallbackIcon={
                   <BrandedIcon 

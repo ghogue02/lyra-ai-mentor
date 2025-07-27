@@ -3,7 +3,7 @@ import { Button, ButtonProps } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from './BrandedIcon';
-import VideoAnimation from './VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface BrandedButtonProps extends ButtonProps {
@@ -44,7 +44,7 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
       )}
       
       {icon && !loading && showAnimation && (
-        <VideoAnimation
+        <OptimizedVideoAnimation
           src={getAnimationUrl(`button-${icon}.mp4`)}
           fallbackIcon={
             <BrandedIcon 

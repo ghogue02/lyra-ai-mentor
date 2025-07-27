@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
-import VideoAnimation from './VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 
 const getAnimationUrl = (filename: string) => {
   return `https://zkwwjzbrygxqrfxkxozk.supabase.co/storage/v1/object/public/app-icons/animations/${filename}`;
@@ -47,7 +47,7 @@ const AnimatedCheckmark: React.FC<AnimatedCheckmarkProps> = ({
       className={`${sizeClasses[size]} ${className}`}
     >
       {showAnimation ? (
-        <VideoAnimation
+        <OptimizedVideoAnimation
           src={getAnimationUrl('completion-checkmark.mp4')}
           fallbackIcon={<CheckCircle className="w-full h-full text-green-500" />}
           className="w-full h-full"

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import VideoAnimation from './VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 import { BrandedIcon } from './BrandedIcon';
 
@@ -98,7 +98,7 @@ export const ProgressCelebration: React.FC<ProgressCelebrationProps> = ({
               transition={{ delay: 0.2, type: "spring", stiffness: 400 }}
               className="w-24 h-24 mx-auto mb-6"
             >
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl(config.animation)}
                 fallbackIcon={
                   <BrandedIcon 
@@ -146,7 +146,7 @@ export const ProgressCelebration: React.FC<ProgressCelebrationProps> = ({
                   transition={{ type: "spring", stiffness: 300 }}
                   className="w-16 h-16 mx-auto"
                 >
-                  <VideoAnimation
+                  <OptimizedVideoAnimation
                     src={getAnimationUrl(`${characterType}-celebration.mp4`)}
                     fallbackIcon={
                       <BrandedIcon 

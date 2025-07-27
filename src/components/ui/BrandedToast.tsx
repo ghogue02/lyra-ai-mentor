@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, AlertCircle, Info, XCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from './BrandedIcon';
-import VideoAnimation from './VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface BrandedToastProps {
@@ -95,7 +95,7 @@ export const BrandedToast: React.FC<BrandedToastProps> = ({
         className="flex-shrink-0 w-6 h-6 mt-0.5"
       >
         {showAnimation ? (
-          <VideoAnimation
+          <OptimizedVideoAnimation
             src={getAnimationUrl(config.animation)}
             fallbackIcon={
               <BrandedIcon 

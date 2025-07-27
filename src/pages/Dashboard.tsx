@@ -14,7 +14,7 @@ import { ProgressDashboard } from '@/components/ProgressDashboard';
 import { ProgressProvider } from '@/contexts/ProgressContext';
 import { useNavigate } from 'react-router-dom';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
-import VideoAnimation from '@/components/ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '@/components/performance/OptimizedVideoAnimation';
 import { useToast } from '@/hooks/use-toast';
 
 interface UserProfile {
@@ -159,7 +159,7 @@ export const Dashboard = () => {
       <section className="container mx-auto px-4 pt-40 pb-8">
         {/* Animated Rocket - Larger and more prominent */}
         <div className="mb-12 flex justify-center">
-          <VideoAnimation
+          <OptimizedVideoAnimation
             src={getAnimationUrl('lyra-rocket.mp4')}
             fallbackIcon={
               <img 

@@ -4,7 +4,7 @@ import { CheckCircle, Clock, Lock, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from '../ui/BrandedIcon';
 import { InteractiveCard } from '../ui/InteractiveCard';
-import VideoAnimation from '../ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface MicroLessonCardProps {
@@ -116,7 +116,7 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
             <div className="flex items-center gap-2">
               <div className="w-6 h-6">
                 {showAnimation ? (
-                  <VideoAnimation
+                  <OptimizedVideoAnimation
                     src={getAnimationUrl(`${characterName.toLowerCase()}-avatar.mp4`)}
                     fallbackIcon={
                       <BrandedIcon 
@@ -177,7 +177,7 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
             transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
             className="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-2 rounded-lg border border-green-200"
           >
-            <VideoAnimation
+            <OptimizedVideoAnimation
               src={getAnimationUrl('micro-lesson-complete.mp4')}
               fallbackIcon={<CheckCircle className="w-4 h-4" />}
               className="w-4 h-4"
