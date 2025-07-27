@@ -13,24 +13,11 @@ const CHARACTER_MODELS = {
   'default': 'openai/gpt-4o-mini' // Cost-effective fallback
 };
 
-function detectCharacterFromMessages(messages: any[]): string {
-  const systemMessage = messages.find(msg => msg.role === 'system')?.content || '';
-  const userMessages = messages.filter(msg => msg.role === 'user').map(msg => msg.content).join(' ').toLowerCase();
+export async function createOpenAIStreamingResponse(messages: any[], character?: string): Promise<Response> {
+  const detectedCharacter = character || 'default';
+  const model = CHARACTER_MODELS[detectedCharacter];
   
-  if (systemMessage.toLowerCase().includes('lyra') || userMessages.includes('lyra')) return 'lyra';
-  if (systemMessage.toLowerCase().includes('sofia') || userMessages.includes('sofia')) return 'sofia';
-  if (systemMessage.toLowerCase().includes('david') || userMessages.includes('david')) return 'david';
-  if (systemMessage.toLowerCase().includes('rachel') || userMessages.includes('rachel')) return 'rachel';
-  if (systemMessage.toLowerCase().includes('alex') || userMessages.includes('alex')) return 'alex';
-  
-  return 'default';
-}
-
-export async function createOpenAIStreamingResponse(messages: any[]): Promise<Response> {
-  const character = detectCharacterFromMessages(messages);
-  const model = CHARACTER_MODELS[character];
-  
-  console.log(`Using model ${model} for character ${character}`);
+  console.log(`Using model ${model} for character ${detectedCharacter}`);
   
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',

@@ -2,8 +2,15 @@ export function buildNaturalSystemMessage(
   userProfile: any,
   lessonContext: any,
   isDataInsights?: boolean,
-  useCleanFormatting?: boolean
+  useCleanFormatting?: boolean,
+  character?: string,
+  originalSystemMessage?: string
 ): string {
+  // For model comparison, preserve the original simple system message
+  if (lessonContext?.modelComparison && originalSystemMessage) {
+    return originalSystemMessage;
+  }
+
   // Base character personality
   let systemMessage = `You are Lyra, an AI mentor who is enthusiastic, supportive, and deeply knowledgeable about AI. You help users learn and apply AI concepts in practical ways.
 
