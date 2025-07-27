@@ -9,6 +9,9 @@ import { Label } from '@/components/ui/label';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import VideoAnimation from '@/components/ui/VideoAnimation';
+import AnimatedCheckmark from '@/components/ui/AnimatedCheckmark';
+import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface EthicsScenario {
   id: string;
@@ -186,7 +189,15 @@ export const LyraAIEthicsLesson: React.FC = () => {
           className="text-center mb-8"
         >
           <div className="flex items-center justify-center gap-4 mb-4">
-            <LyraAvatar size="md" expression="thinking" animated />
+            <div className="w-16 h-16">
+              <VideoAnimation
+                src={getAnimationUrl('lyra-shield.mp4')}
+                fallbackIcon={<Shield className="w-16 h-16 text-primary" />}
+                className="w-full h-full"
+                context="ui"
+                loop={true}
+              />
+            </div>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">AI Ethics for Nonprofits</h1>
               <p className="text-lg text-gray-600">Navigate responsible AI use in mission-driven work</p>
@@ -225,7 +236,15 @@ export const LyraAIEthicsLesson: React.FC = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-purple-600" />
+                    <div className="w-5 h-5">
+                      <VideoAnimation
+                        src={getAnimationUrl('lyra-thinking.mp4')}
+                        fallbackIcon={<Shield className="w-5 h-5 text-purple-600" />}
+                        className="w-full h-full"
+                        context="ui"
+                        loop={true}
+                      />
+                    </div>
                     Four Core Ethical Principles for Nonprofit AI
                   </CardTitle>
                   <CardDescription>
@@ -283,7 +302,15 @@ export const LyraAIEthicsLesson: React.FC = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center justify-between">
                     <span className="flex items-center gap-2">
-                      <AlertTriangle className="w-5 h-5 text-purple-600" />
+                      <div className="w-5 h-5">
+                        <VideoAnimation
+                          src={getAnimationUrl('lyra-thinking.mp4')}
+                          fallbackIcon={<AlertTriangle className="w-5 h-5 text-purple-600" />}
+                          className="w-full h-full"
+                          context="ui"
+                          loop={true}
+                        />
+                      </div>
                       Ethical Scenario {currentScenario + 1} of {ethicsScenarios.length}
                     </span>
                     <Badge variant="outline">{ethicsScenarios[currentScenario].principle}</Badge>
@@ -336,13 +363,48 @@ export const LyraAIEthicsLesson: React.FC = () => {
                             }`}
                           >
                             <div className="flex items-start gap-2">
-                              <Badge variant={
-                                option.ethical === 'good' ? 'default' :
-                                option.ethical === 'concerning' ? 'secondary' : 'destructive'
-                              }>
-                                {option.ethical === 'good' ? 'Ethical' :
-                                 option.ethical === 'concerning' ? 'Concerning' : 'Problematic'}
-                              </Badge>
+                              <div className="flex items-center gap-2">
+                                {option.ethical === 'good' && (
+                                  <div className="w-5 h-5">
+                                    <VideoAnimation
+                                      src={getAnimationUrl('lyra-nodding-approval.mp4')}
+                                      fallbackIcon={<CheckCircle className="w-5 h-5 text-green-600" />}
+                                      className="w-full h-full"
+                                      context="ui"
+                                      loop={false}
+                                    />
+                                  </div>
+                                )}
+                                {option.ethical === 'concerning' && (
+                                  <div className="w-5 h-5">
+                                    <VideoAnimation
+                                      src={getAnimationUrl('lyra-gentle-correction.mp4')}
+                                      fallbackIcon={<AlertTriangle className="w-5 h-5 text-yellow-600" />}
+                                      className="w-full h-full"
+                                      context="ui"
+                                      loop={false}
+                                    />
+                                  </div>
+                                )}
+                                {option.ethical === 'problematic' && (
+                                  <div className="w-5 h-5">
+                                    <VideoAnimation
+                                      src={getAnimationUrl('lyra-gentle-correction.mp4')}
+                                      fallbackIcon={<AlertTriangle className="w-5 h-5 text-red-600" />}
+                                      className="w-full h-full"
+                                      context="ui"
+                                      loop={false}
+                                    />
+                                  </div>
+                                )}
+                                <Badge variant={
+                                  option.ethical === 'good' ? 'default' :
+                                  option.ethical === 'concerning' ? 'secondary' : 'destructive'
+                                }>
+                                  {option.ethical === 'good' ? 'Ethical' :
+                                   option.ethical === 'concerning' ? 'Concerning' : 'Problematic'}
+                                </Badge>
+                              </div>
                               <div className="flex-1">
                                 <p className="text-sm font-medium">{option.text}</p>
                                 <p className="text-xs text-gray-600 mt-1">{option.explanation}</p>
@@ -374,7 +436,15 @@ export const LyraAIEthicsLesson: React.FC = () => {
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center justify-center gap-2">
-                    <CheckCircle className="w-6 h-6 text-green-600" />
+                    <div className="w-12 h-12">
+                      <VideoAnimation
+                        src={getAnimationUrl('lyra-celebration.mp4')}
+                        fallbackIcon={<CheckCircle className="w-12 h-12 text-green-600" />}
+                        className="w-full h-full"
+                        context="celebration"
+                        loop={false}
+                      />
+                    </div>
                     You're Now an AI Ethics Champion!
                   </CardTitle>
                 </CardHeader>
@@ -396,10 +466,11 @@ export const LyraAIEthicsLesson: React.FC = () => {
                             }>
                               Scenario {index + 1}
                             </Badge>
-                            <span className="text-xs">
-                              {result.ethical === 'good' ? '✅' : 
-                               result.ethical === 'concerning' ? '⚠️' : '❌'}
-                            </span>
+                            <AnimatedCheckmark
+                              isCompleted={result.ethical === 'good'}
+                              size="sm"
+                              showAnimation={true}
+                            />
                           </div>
                         ))}
                       </div>
