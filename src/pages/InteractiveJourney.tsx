@@ -2,6 +2,9 @@ import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import MayaInteractiveJourney from '@/components/lesson/chat/lyra/maya/MayaInteractiveJourney';
 import MayaToneMastery from '@/components/lesson/chat/lyra/maya/MayaToneMastery';
+import MayaTemplateLibraryBuilder from '@/components/lesson/MayaTemplateLibraryBuilder';
+import MayaDifficultConversationsGuide from '@/components/lesson/MayaDifficultConversationsGuide';
+import MayaSubjectLineWorkshop from '@/components/lesson/MayaSubjectLineWorkshop';
 import LyraFoundationsJourney from '@/components/lesson/chat/lyra/LyraFoundationsJourney';
 import { LyraUnderstandingAIModelsLesson } from '@/components/lesson/LyraUnderstandingAIModelsLesson';
 import { LyraPromptingFundamentalsLesson } from '@/components/lesson/LyraPromptingFundamentalsLesson';
@@ -73,6 +76,24 @@ const journeyRegistry = {
     characterId: 'maya',
     title: 'Maya\'s Tone Mastery Workshop',
     description: 'Master tone adaptation with Maya Rodriguez'
+  },
+  'template-library': {
+    component: MayaTemplateLibraryBuilder,
+    characterId: 'maya',
+    title: 'Maya\'s Template Library Builder',
+    description: 'Create reusable email templates for organizational efficiency'
+  },
+  'difficult-conversations': {
+    component: MayaDifficultConversationsGuide,
+    characterId: 'maya',
+    title: 'Maya\'s Difficult Conversations Guide',
+    description: 'Handle challenging communications with empathy and skill'
+  },
+  'subject-workshop': {
+    component: MayaSubjectLineWorkshop,
+    characterId: 'maya',
+    title: 'Maya\'s Subject Line Workshop',
+    description: 'Craft compelling email openings that get opened and read'
   },
   'sofia-storytelling': {
     component: SofiaStorytellingJourney,

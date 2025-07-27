@@ -34,7 +34,7 @@ const Chapter2Hub: React.FC = () => {
       difficulty: 'Intermediate' as const,
       completed: true,
       unlocked: true,
-      route: '/chapter/2/lesson/5/template-library'
+      route: '/chapter/2/interactive/template-library'
     },
     {
       id: 'difficult-conversations',
@@ -45,7 +45,7 @@ const Chapter2Hub: React.FC = () => {
       difficulty: 'Advanced' as const,
       completed: true,
       unlocked: true,
-      route: '/chapter/2/lesson/5/difficult-conversations'
+      route: '/chapter/2/interactive/difficult-conversations'
     },
     {
       id: 'subject-workshop',
@@ -56,7 +56,7 @@ const Chapter2Hub: React.FC = () => {
       difficulty: 'Intermediate' as const,
       completed: true,
       unlocked: true,
-      route: '/chapter/2/lesson/5/subject-workshop'
+      route: '/chapter/2/interactive/subject-workshop'
     }
   ];
 
