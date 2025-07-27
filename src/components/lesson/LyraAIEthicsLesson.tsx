@@ -12,6 +12,8 @@ import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigat
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import AnimatedCheckmark from '@/components/ui/AnimatedCheckmark';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { LessonCompletionScreen } from '@/components/lesson/LessonCompletionScreen';
+import { EthicsScorecard } from '@/components/lesson/EthicsScorecard';
 
 interface EthicsScenario {
   id: string;
@@ -426,74 +428,27 @@ export const LyraAIEthicsLesson: React.FC = () => {
 
           {/* Step 3: Completion */}
           {currentStep === 2 && (
-            <motion.div
-              key="completion"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              className="text-center space-y-6"
-            >
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center justify-center gap-2">
-                    <div className="w-12 h-12">
-                      <VideoAnimation
-                        src={getAnimationUrl('lyra-celebration.mp4')}
-                        fallbackIcon={<CheckCircle className="w-12 h-12 text-green-600" />}
-                        className="w-full h-full"
-                        context="celebration"
-                        loop={false}
-                      />
-                    </div>
-                    You're Now an AI Ethics Champion!
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <p className="text-gray-600">
-                      You've navigated complex ethical scenarios and understand how to use AI responsibly 
-                      in nonprofit work. You're ready to be an ethical AI leader in your organization.
-                    </p>
-                    
-                    <div className="bg-gradient-to-r from-purple-100 to-blue-100 p-6 rounded-lg">
-                      <h3 className="font-semibold mb-3">Your Ethics Scorecard:</h3>
-                      <div className="grid grid-cols-2 gap-4 text-sm">
-                        {scenarioResults.map((result, index) => (
-                          <div key={index} className="flex items-center gap-2">
-                            <Badge variant={
-                              result.ethical === 'good' ? 'default' :
-                              result.ethical === 'concerning' ? 'secondary' : 'destructive'
-                            }>
-                              Scenario {index + 1}
-                            </Badge>
-                            <AnimatedCheckmark
-                              isCompleted={result.ethical === 'good'}
-                              size="sm"
-                              showAnimation={true}
-                            />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    <div className="flex gap-4 justify-center">
-                      <Button 
-                        onClick={() => navigate('/chapter/1')}
-                        variant="outline"
-                      >
-                        Back to Chapter 1
-                      </Button>
-                      <Button 
-                        onClick={() => navigate('/chapter/1/interactive/ai-toolkit-setup')}
-                        className="bg-purple-600 hover:bg-purple-700"
-                      >
-                        Next: Set Up Your AI Toolkit
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
+            <>
+              <LessonCompletionScreen
+                title="You're Now an AI Ethics Champion!"
+                description="You've navigated complex ethical scenarios and understand how to use AI responsibly in nonprofit work. You're ready to be an ethical AI leader in your organization."
+                characterType="lyra"
+                achievementType="ethics"
+                backRoute="/chapter/1"
+                nextRoute="/chapter/1/interactive/ai-toolkit-setup"
+                nextButtonText="Next: Set Up Your AI Toolkit"
+                showScorecard={false}
+              />
+              <div className="mt-6">
+                <EthicsScorecard 
+                  results={scenarioResults.map((result, index) => ({
+                    ...result,
+                    principle: ethicsScenarios[index]?.principle || 'General Ethics'
+                  }))}
+                  showDetails={true}
+                />
+              </div>
+            </>
           )}
         </AnimatePresence>
       </div>
