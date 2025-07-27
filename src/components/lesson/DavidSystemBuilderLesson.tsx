@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { useLyraChat } from "@/hooks/useLyraChat";
 import { MessageSquare, Settings, Workflow, Zap } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { MicroLessonNavigator } from "@/components/navigation/MicroLessonNavigator";
 
 const DavidSystemBuilderLesson: React.FC = () => {
   const [currentDataFlow, setCurrentDataFlow] = useState('');
@@ -51,8 +52,14 @@ Create a comprehensive system that transforms David's organization into a data s
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-primary/10 p-6">
-      <div className="max-w-6xl mx-auto">
+    <div className="min-h-screen bg-gradient-to-br from-background via-secondary/20 to-primary/10">
+      <MicroLessonNavigator 
+        chapterNumber={4}
+        chapterTitle="Chapter 4: Data Storytelling & Impact Analysis"
+        lessonTitle="David's Data Storytelling System"
+        characterName="David"
+      />
+      <div className="max-w-6xl mx-auto p-6">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <Avatar className="h-16 w-16">
