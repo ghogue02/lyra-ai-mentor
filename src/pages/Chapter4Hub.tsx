@@ -96,6 +96,7 @@ const Chapter4Hub: React.FC = () => {
       description="Follow David Chen as he transforms from spreadsheet overwhelm to data storytelling mastery. Each micro-lesson builds on his journey at Riverside Children's Foundation, showing you AI-powered techniques for turning complex data into compelling impact narratives."
       characterName="David"
       characterType="david"
+      bgGradient="from-blue-50 via-white to-cyan-50"
       microLessons={microLessons}
       completionRoute="/chapter/4/interactive/david-data"
     />

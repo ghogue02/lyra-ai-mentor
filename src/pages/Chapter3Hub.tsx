@@ -68,6 +68,7 @@ const Chapter3Hub: React.FC = () => {
       description="Follow Sofia Martinez as she transforms from basic communications to compelling storytelling mastery. Each micro-lesson builds on her journey at Hope Gardens Community Center, showing you AI-powered techniques for crafting narratives that move hearts and minds."
       characterName="Sofia"
       characterType="sofia"
+      bgGradient="from-rose-50 via-white to-purple-50"
       microLessons={microLessons}
       completionRoute="/chapter/3/interactive/sofia-storytelling"
     />

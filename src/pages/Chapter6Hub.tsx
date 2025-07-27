@@ -7,7 +7,7 @@ const Chapter6Hub: React.FC = () => {
       id: 'alex-leadership-challenges',
       title: 'Meet Alex & Leadership Challenges',
       description: 'Navigate the complexities of leading AI transformation in nonprofits',
-      iconType: 'mission',
+      iconType: 'mission' as const,
       route: '/chapter/6/interactive/alex-leadership-challenges',
       estimated_time: '15 min',
       difficulty: 'Beginner' as const,
@@ -21,7 +21,7 @@ const Chapter6Hub: React.FC = () => {
       id: 'vision-building',
       title: 'Vision Building Workshop',
       description: 'Create compelling AI transformation visions with strategic facilitation',
-      iconType: 'achievement',
+      iconType: 'achievement' as const,
       route: '/chapter/6/interactive/vision-building',
       estimated_time: '18 min',
       difficulty: 'Intermediate' as const,
@@ -35,7 +35,7 @@ const Chapter6Hub: React.FC = () => {
       id: 'transformation-planning',
       title: 'Transformation Planning Lab',
       description: 'Design comprehensive change management strategies with AI guidance',
-      iconType: 'growth',
+      iconType: 'growth' as const,
       route: '/chapter/6/alex-change-strategy',
       estimated_time: '22 min',
       difficulty: 'Intermediate' as const,
@@ -49,7 +49,7 @@ const Chapter6Hub: React.FC = () => {
       id: 'team-alignment',
       title: 'Team Alignment Mastery',
       description: 'Unite your organization around AI adoption with communication tools',
-      iconType: 'network',
+      iconType: 'network' as const,
       route: '/chapter/6/alex-vision-builder',
       estimated_time: '20 min',
       difficulty: 'Advanced' as const,
@@ -63,7 +63,7 @@ const Chapter6Hub: React.FC = () => {
       id: 'future-leadership',
       title: 'Future Leadership Strategy',
       description: 'Build a sustainable AI-powered organizational roadmap for lasting impact',
-      iconType: 'achievement',
+      iconType: 'achievement' as const,
       route: '/chapter/6/alex-roadmap-creator',
       estimated_time: '25 min',
       difficulty: 'Advanced' as const,
@@ -77,7 +77,7 @@ const Chapter6Hub: React.FC = () => {
       id: 'leadership-framework',
       title: 'Leadership Framework Mastery',
       description: 'Develop comprehensive AI leadership skills for lasting organizational transformation',
-      iconType: 'mission',
+      iconType: 'mission' as const,
       route: '/chapter/6/alex-leadership-framework',
       estimated_time: '28 min',
       difficulty: 'Advanced' as const,
@@ -96,6 +96,7 @@ const Chapter6Hub: React.FC = () => {
       description="Follow Alex Rivera as they lead their organization through comprehensive AI transformation. Each micro-lesson builds on their journey at National Advocacy Coalition, showing you proven strategies for building vision, managing change, and creating sustainable AI adoption that amplifies your nonprofit's mission."
       characterName="Alex"
       characterType="alex"
+      bgGradient="from-indigo-50 via-white to-violet-50"
       microLessons={microLessons}
       completionRoute="/chapter/6/interactive/alex-leadership"
     />
