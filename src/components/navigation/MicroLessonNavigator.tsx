@@ -3,21 +3,32 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ChevronLeft, BookOpen } from 'lucide-react';
+import { ChevronLeft, BookOpen, Trophy } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { BrandedIcon } from '@/components/ui/BrandedIcon';
+import VideoAnimation from '@/components/ui/VideoAnimation';
+import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface MicroLessonNavigatorProps {
   chapterNumber: number;
   chapterTitle: string;
   lessonTitle: string;
   characterName?: string;
+  progress?: number;
+  totalLessons?: number;
+  completedLessons?: number;
+  showCelebration?: boolean;
 }
 
 export const MicroLessonNavigator: React.FC<MicroLessonNavigatorProps> = ({
   chapterNumber,
   chapterTitle,
   lessonTitle,
-  characterName
+  characterName,
+  progress = 0,
+  totalLessons,
+  completedLessons,
+  showCelebration = false
 }) => {
   const navigate = useNavigate();
   const [isScrolledToTop, setIsScrolledToTop] = useState(false);
@@ -124,14 +135,41 @@ export const MicroLessonNavigator: React.FC<MicroLessonNavigatorProps> = ({
                 
                 <div className="hidden sm:block text-muted-foreground">|</div>
                 
-                <div className="hidden sm:flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-muted-foreground" />
-                  <Badge variant="secondary" className="text-xs">
+                <div className="hidden sm:flex items-center gap-3">
+                  <div className="w-5 h-5">
+                    <VideoAnimation
+                      src={getAnimationUrl('chapter-progress-glow.mp4')}
+                      fallbackIcon={<BookOpen className="w-5 h-5 text-muted-foreground" />}
+                      className="w-full h-full"
+                      context="ui"
+                    />
+                  </div>
+                  <Badge variant="secondary" className="text-xs flex items-center gap-1">
                     Chapter {chapterNumber}
+                    {showCelebration && (
+                      <VideoAnimation
+                        src={getAnimationUrl('mini-celebration.mp4')}
+                        fallbackIcon={<Trophy className="w-3 h-3" />}
+                        className="w-3 h-3"
+                        context="celebration"
+                      />
+                    )}
                   </Badge>
                   {characterName && (
-                    <Badge variant="outline" className="text-xs">
+                    <Badge variant="outline" className="text-xs flex items-center gap-1">
+                      <div className="w-3 h-3">
+                        <BrandedIcon 
+                          type="achievement" 
+                          variant="static" 
+                          size="sm"
+                        />
+                      </div>
                       {characterName}
+                    </Badge>
+                  )}
+                  {totalLessons && completedLessons !== undefined && (
+                    <Badge variant="secondary" className="text-xs">
+                      {completedLessons}/{totalLessons} Complete
                     </Badge>
                   )}
                 </div>
