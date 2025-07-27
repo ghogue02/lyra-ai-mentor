@@ -13,6 +13,8 @@ import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -66,13 +68,38 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
     }
   ];
 
-  const narrativeContent = [
-    "Remember how I was struggling with email overwhelm?",
-    "Well, after mastering the PACE framework, I realized I was still reinventing the wheel every day.",
-    "I was writing similar emails from scratch - donor thank-yous, volunteer updates, program announcements.",
-    "That's when I discovered the power of smart templates with AI assistance.",
-    "Now I have a library of 15 templates that handle 80% of my communications.",
-    "What used to take 4 hours now takes 45 minutes. Let me show you how I built it."
+  const narrativeMessages = [
+    {
+      id: '1',
+      content: "Remember how I was struggling with email overwhelm?",
+      emotion: 'frustrated' as const,
+      showAvatar: true
+    },
+    {
+      id: '2', 
+      content: "Well, after mastering the PACE framework, I realized I was still reinventing the wheel every day.",
+      emotion: 'thoughtful' as const
+    },
+    {
+      id: '3',
+      content: "I was writing similar emails from scratch - donor thank-yous, volunteer updates, program announcements.",
+      emotion: 'frustrated' as const
+    },
+    {
+      id: '4',
+      content: "That's when I discovered the power of smart templates with AI assistance.",
+      emotion: 'excited' as const
+    },
+    {
+      id: '5',
+      content: "Now I have a library of 15 templates that handle 80% of my communications.",
+      emotion: 'hopeful' as const
+    },
+    {
+      id: '6',
+      content: "What used to take 4 hours now takes 45 minutes. Let me show you how I built it.",
+      emotion: 'enlightened' as const
+    }
   ];
 
   const generateTemplate = async () => {
@@ -151,12 +178,12 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
         {/* Maya Avatar */}
         <div className="w-24 h-24 mx-auto mb-8">
           <VideoAnimation
-            src={getAnimationUrl('lyra-brightidea.mp4')}
+            src={getAnimationUrl('maya-friendly-wave.mp4')}
             fallbackIcon={<div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center">
               👋
             </div>}
             className="w-full h-full rounded-full"
-            context="ui"
+            context="character"
             loop={true}
           />
         </div>
@@ -212,41 +239,25 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
       animate={{ opacity: 1, x: 0 }}
       className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6"
     >
-      <div className="max-w-4xl mx-auto">
+      <MicroLessonNavigator
+        chapterNumber={2}
+        chapterTitle="Maya's Communication Mastery"
+        lessonTitle="Template Library Builder"
+        characterName="Maya"
+        progress={33}
+      />
+      
+      <div className="max-w-4xl mx-auto pt-20">
         <div className="mb-8">
           <Progress value={33} className="h-2 mb-4" />
           <p className="text-sm text-gray-600">Maya's Story • Step 1 of 3</p>
         </div>
 
-        <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-          <CardContent className="p-8">
-            <div className="flex items-start gap-4">
-              <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center flex-shrink-0">
-                👋
-              </div>
-              <div className="flex-1">
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-lg font-medium">Maya</span>
-                  <Badge className="bg-green-100 text-green-800">Hope Gardens Community Center</Badge>
-                </div>
-                
-                <div className="space-y-4 text-gray-700 leading-relaxed">
-                  {narrativeContent.map((line, index) => (
-                    <motion.p
-                      key={index}
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ delay: index * 0.8 }}
-                      className="text-lg"
-                    >
-                      {line}
-                    </motion.p>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <NarrativeManager
+          messages={narrativeMessages}
+          onComplete={() => setCurrentPhase('workshop')}
+          phaseId="maya-template-narrative"
+        />
 
         <div className="text-center mt-8">
           <Button 
@@ -267,7 +278,15 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
       animate={{ opacity: 1, x: 0 }}
       className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6"
     >
-      <div className="max-w-6xl mx-auto">
+      <MicroLessonNavigator
+        chapterNumber={2}
+        chapterTitle="Maya's Communication Mastery"
+        lessonTitle="Template Library Builder"
+        characterName="Maya"
+        progress={66 + (currentStep / 4) * 34}
+      />
+      
+      <div className="max-w-6xl mx-auto pt-20">
         {/* Header */}
         <div className="mb-8">
           <Progress value={66 + (currentStep / 4) * 34} className="h-2 mb-4" />
