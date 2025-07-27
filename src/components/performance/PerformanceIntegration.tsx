@@ -144,46 +144,8 @@ OptimizedAssetLoader.displayName = 'OptimizedAssetLoader';
 
 // Performance monitoring component for development
 const PerformanceMonitor: React.FC = memo(() => {
-  const [metrics, setMetrics] = React.useState<{
-    renderCount: number;
-    lastRenderTime: number;
-    averageRenderTime: number;
-  }>({
-    renderCount: 0,
-    lastRenderTime: 0,
-    averageRenderTime: 0
-  });
-
-  React.useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return;
-
-    const startTime = performance.now();
-    
-    // Use a ref to track renders to avoid infinite loops
-    const endTime = performance.now();
-    const renderTime = endTime - startTime;
-    
-    setMetrics(prev => {
-      const newCount = prev.renderCount + 1;
-      const newAverage = (prev.averageRenderTime * prev.renderCount + renderTime) / newCount;
-      
-      return {
-        renderCount: newCount,
-        lastRenderTime: renderTime,
-        averageRenderTime: newAverage
-      };
-    });
-  }, []); // Empty dependency array to prevent infinite loop
-
-  if (process.env.NODE_ENV !== 'development') return null;
-
-  return (
-    <div className="fixed bottom-4 right-4 bg-black/80 text-white p-2 rounded text-xs font-mono z-50">
-      <div>Renders: {metrics.renderCount}</div>
-      <div>Last: {metrics.lastRenderTime.toFixed(2)}ms</div>
-      <div>Avg: {metrics.averageRenderTime.toFixed(2)}ms</div>
-    </div>
-  );
+  // Disabled in development to remove notifications
+  return null;
 });
 
 PerformanceMonitor.displayName = 'PerformanceMonitor';
@@ -235,61 +197,8 @@ BundleAnalyzer.displayName = 'BundleAnalyzer';
 
 // Accessibility testing component for development
 const AccessibilityTester: React.FC = memo(() => {
-  const [issues, setIssues] = React.useState<string[]>([]);
-
-  React.useEffect(() => {
-    if (process.env.NODE_ENV !== 'development') return;
-
-    const runAccessibilityCheck = () => {
-      const foundIssues: string[] = [];
-
-      // Check for missing alt attributes
-      const images = document.querySelectorAll('img:not([alt])');
-      if (images.length > 0) {
-        foundIssues.push(`${images.length} images without alt text`);
-      }
-
-      // Check for missing aria-labels on interactive elements
-      const interactiveElements = document.querySelectorAll('button:not([aria-label]):not([aria-labelledby])');
-      if (interactiveElements.length > 0) {
-        foundIssues.push(`${interactiveElements.length} buttons without labels`);
-      }
-
-      // Check for proper heading hierarchy
-      const headings = Array.from(document.querySelectorAll('h1, h2, h3, h4, h5, h6'));
-      let lastLevel = 0;
-      let hierarchyIssues = 0;
-      
-      headings.forEach(heading => {
-        const level = parseInt(heading.tagName.charAt(1));
-        if (level > lastLevel + 1) {
-          hierarchyIssues++;
-        }
-        lastLevel = level;
-      });
-
-      if (hierarchyIssues > 0) {
-        foundIssues.push(`${hierarchyIssues} heading hierarchy issues`);
-      }
-
-      setIssues(foundIssues);
-    };
-
-    // Run check after a delay to allow content to load
-    const timer = setTimeout(runAccessibilityCheck, 2000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  if (process.env.NODE_ENV !== 'development' || issues.length === 0) return null;
-
-  return (
-    <div className="fixed top-4 right-4 bg-red-900/90 text-white p-3 rounded text-xs max-w-xs z-50">
-      <div className="font-bold mb-2">Accessibility Issues:</div>
-      {issues.map((issue, index) => (
-        <div key={index} className="mb-1">• {issue}</div>
-      ))}
-    </div>
-  );
+  // Disabled in development to remove notifications
+  return null;
 });
 
 AccessibilityTester.displayName = 'AccessibilityTester';

@@ -6,7 +6,7 @@ import { Input } from '../ui/input';
 import { Badge } from '../ui/badge';
 import { cn } from '@/lib/utils';
 import { MicroLessonCard } from './MicroLessonCard';
-import VideoAnimation from '../ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 
 interface MicroLesson {
@@ -113,11 +113,10 @@ export const MicroLessonGrid: React.FC<MicroLessonGridProps> = ({
         <div className="flex items-center justify-center gap-3">
           {showAnimation && (
             <div className="w-8 h-8">
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl('micro-lessons-icon.mp4')}
                 fallbackIcon={<Grid className="w-8 h-8 text-primary" />}
                 className="w-full h-full"
-                context="ui"
               />
             </div>
           )}

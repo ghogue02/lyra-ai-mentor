@@ -7,7 +7,7 @@ import { Badge } from '@/components/ui/badge';
 import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
-import VideoAnimation from '@/components/ui/VideoAnimation';
+import { OptimizedVideoAnimation } from '@/components/performance/OptimizedVideoAnimation';
 import AnimatedProgress from '@/components/ui/AnimatedProgress';
 import { ProgressCelebration } from '@/components/ui/ProgressCelebration';
 import { getAnimationUrl, getLyraIconUrl } from '@/utils/supabaseIcons';
@@ -84,7 +84,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
         >
           <div className="flex items-center justify-center gap-6 mb-6">
             <div className="w-20 h-20">
-              <VideoAnimation
+              <OptimizedVideoAnimation
                 src={getAnimationUrl(`${characterType}-avatar-animated.mp4`)}
                 fallbackIcon={
                   <img 
@@ -94,7 +94,6 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                   />
                 }
                 className="w-full h-full rounded-full"
-                context="character"
                 loop={true}
               />
             </div>
@@ -116,11 +115,10 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                 </div>
                 {isChapterComplete && (
                   <div className="w-8 h-8">
-                    <VideoAnimation
+                    <OptimizedVideoAnimation
                       src={getAnimationUrl('chapter-complete.mp4')}
                       fallbackIcon={<CheckCircle className="w-8 h-8 text-green-600" />}
                       className="w-full h-full"
-                      context="celebration"
                       loop={false}
                     />
                   </div>
@@ -157,7 +155,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                     <div className="w-12 h-12 relative">
                       {lesson.unlocked ? (
                         <div className="group-hover:scale-110 transition-transform">
-                          <VideoAnimation
+                          <OptimizedVideoAnimation
                             src={getAnimationUrl('button-hover-glow.mp4')}
                             fallbackIcon={
                               <BrandedIcon 
@@ -167,8 +165,6 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                               />
                             }
                             className="w-full h-full"
-                            context="ui"
-                            loop={false}
                             trigger="hover"
                           />
                         </div>
@@ -179,12 +175,10 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                       )}
                       {lesson.completed && (
                         <div className="absolute -top-2 -right-2 w-6 h-6">
-                          <VideoAnimation
+                          <OptimizedVideoAnimation
                             src={getAnimationUrl('completion-checkmark.mp4')}
                             fallbackIcon={<CheckCircle className="w-6 h-6 text-green-600" />}
                             className="w-full h-full"
-                            context="ui"
-                            loop={false}
                           />
                         </div>
                       )}
