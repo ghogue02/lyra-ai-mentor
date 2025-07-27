@@ -11,6 +11,9 @@ import { AIDreamTeamRenderer } from './AIDreamTeamRenderer';
 import { AIPromptPracticeRenderer } from './AIPromptPracticeRenderer';
 import { AICommunicationSimRenderer } from './AICommunicationSimRenderer';
 import { AISuccessVisualizerRenderer } from './AISuccessVisualizerRenderer';
+import { DataStorytellerRenderer } from './renderers/DataStorytellerRenderer';
+import { DocumentImproverRenderer } from './renderers/DocumentImproverRenderer';
+import { AIEmailComposerRenderer as AIEmailComposerRendererNew } from './renderers/AIEmailComposerRenderer';
 import LyraIntroductionJourney from '../chat/lyra/LyraIntroductionJourney';
 
 interface InteractiveElement {
@@ -74,12 +77,33 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
           />
         );
       
+      case 'ai_content_generator':
+        return (
+          <DataStorytellerRenderer
+            elementId={element.id}
+            title={element.title}
+            configuration={element.configuration}
+            onComplete={async () => await onComplete()}
+          />
+        );
+
+      case 'document_improver':
+        return (
+          <DocumentImproverRenderer
+            elementId={element.id}
+            title={element.title}
+            configuration={element.configuration}
+            onComplete={async () => await onComplete()}
+          />
+        );
+
       case 'ai_email_composer':
         return (
-          <AIEmailComposerRenderer
-            element={element}
-            isElementCompleted={isElementCompleted}
-            onComplete={onComplete}
+          <AIEmailComposerRendererNew
+            elementId={element.id}
+            title={element.title}
+            configuration={element.configuration}
+            onComplete={async () => await onComplete()}
           />
         );
       
