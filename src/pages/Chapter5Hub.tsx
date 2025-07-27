@@ -36,7 +36,7 @@ const Chapter5Hub: React.FC = () => {
       title: 'Automation Planning Lab',
       description: 'Create step-by-step implementation roadmaps with AI guidance',
       iconType: 'growth' as const,
-      route: '/chapter/5/rachel-automation-vision',
+      route: '/chapter/5/interactive/automation-planning',
       estimated_time: '20 min',
       difficulty: 'Intermediate' as const,
       completed: false,
@@ -50,7 +50,7 @@ const Chapter5Hub: React.FC = () => {
       title: 'Change Management Mastery',
       description: 'Lead organizational transformation with AI-powered communication',
       iconType: 'achievement' as const,
-      route: '/chapter/5/rachel-workflow-designer',
+      route: '/chapter/5/interactive/workflow-design',
       estimated_time: '18 min',
       difficulty: 'Intermediate' as const,
       completed: false,
@@ -64,7 +64,7 @@ const Chapter5Hub: React.FC = () => {
       title: 'Scaling Systems Strategy',
       description: 'Build a comprehensive AI automation ecosystem for your organization',
       iconType: 'data' as const,
-      route: '/chapter/5/rachel-process-transformer',
+      route: '/chapter/5/interactive/scaling-systems',
       estimated_time: '25 min',
       difficulty: 'Advanced' as const,
       completed: false,
@@ -78,7 +78,7 @@ const Chapter5Hub: React.FC = () => {
       title: 'Ecosystem Builder',
       description: 'Create comprehensive AI ecosystem for lasting organizational transformation',
       iconType: 'workflow' as const,
-      route: '/chapter/5/rachel-ecosystem-builder',
+      route: '/chapter/5/interactive/ecosystem-builder',
       estimated_time: '28 min',
       difficulty: 'Advanced' as const,
       completed: false,
@@ -98,7 +98,7 @@ const Chapter5Hub: React.FC = () => {
       characterType="rachel"
       bgGradient="from-teal-50 via-white to-emerald-50"
       microLessons={microLessons}
-      completionRoute="/chapter/5/interactive/rachel-automation"
+      completionRoute="/chapter/5/interactive/automation-completion"
     />
   );
 };

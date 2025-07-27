@@ -36,7 +36,7 @@ const Chapter4Hub: React.FC = () => {
       title: 'Data Narrative Construction Lab',
       description: 'Build compelling stories from complex datasets with AI assistance',
       iconType: 'growth' as const,
-      route: '/chapter/4/david-impact-analyzer',
+      route: '/chapter/4/interactive/data-revival',
       estimated_time: '20 min',
       difficulty: 'Intermediate' as const,
       completed: false,
@@ -50,7 +50,7 @@ const Chapter4Hub: React.FC = () => {
       title: 'Stakeholder Communication Mastery',
       description: 'Tailor data presentations for different audience types and contexts',
       iconType: 'communication' as const,
-      route: '/chapter/4/david-visualization-creator',
+      route: '/chapter/4/interactive/stakeholder-communication',
       estimated_time: '18 min',
       difficulty: 'Intermediate' as const,
       completed: false,
@@ -64,7 +64,7 @@ const Chapter4Hub: React.FC = () => {
       title: 'Predictive Insights Strategy',
       description: 'Use AI to forecast trends and create forward-looking impact reports',
       iconType: 'data' as const,
-      route: '/chapter/4/david-story-builder',
+      route: '/chapter/4/interactive/predictive-insights',
       estimated_time: '22 min',
       difficulty: 'Advanced' as const,
       completed: false,
@@ -78,7 +78,7 @@ const Chapter4Hub: React.FC = () => {
       title: 'Data Ecosystem Builder',
       description: 'Create comprehensive data systems for ongoing impact measurement',
       iconType: 'data' as const,
-      route: '/chapter/4/david-presentation-optimizer',
+      route: '/chapter/4/interactive/data-ecosystem',
       estimated_time: '25 min',
       difficulty: 'Advanced' as const,
       completed: false,
@@ -98,7 +98,7 @@ const Chapter4Hub: React.FC = () => {
       characterType="david"
       bgGradient="from-blue-50 via-white to-cyan-50"
       microLessons={microLessons}
-      completionRoute="/chapter/4/interactive/david-data"
+      completionRoute="/chapter/4/interactive/data-storytelling-completion"
     />
   );
 };

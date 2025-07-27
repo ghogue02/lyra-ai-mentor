@@ -121,107 +121,143 @@ const journeyRegistry = {
   },
   
   // Sofia's micro-lessons (Chapter 3)
-  'sofia-mission-story': {
+  'mission-story-creator': {
     component: SofiaMissionStoryCreatorLesson,
     characterId: 'sofia',
-    title: 'Sofia\'s Silent Crisis Story Creator',
+    title: 'Sofia\'s Mission Story Creator',
     description: 'Transform invisible mission into compelling narrative'
   },
-  'sofia-voice-discovery': {
+  'voice-discovery': {
     component: SofiaVoiceDiscoveryLesson,
     characterId: 'sofia',
-    title: 'Sofia\'s Voice Discovery Journey',
+    title: 'Sofia\'s Voice Discovery Workshop',
     description: 'Discover authentic communication style'
   },
-  'sofia-story-breakthrough': {
+  'story-breakthrough': {
     component: SofiaStoryBreakthroughLesson,
     characterId: 'sofia',
-    title: 'Sofia\'s Breakthrough Story Creator',
+    title: 'Sofia\'s Story Breakthrough Lab',
     description: 'Craft breakthrough story for high-stakes presentation'
   },
-  'sofia-impact-scaling': {
+  'impact-scaling': {
     component: SofiaImpactScalingLesson,
     characterId: 'sofia',
-    title: 'Sofia\'s Impact Scaling System',
+    title: 'Sofia\'s Impact Scaling Mastery',
     description: 'Scale storytelling across all communication channels'
   },
   
   // David's micro-lessons (Chapter 4)
-  'david-data-revival': {
+  'david-data-foundations': {
     component: DavidDataRevivalLesson,
     characterId: 'david',
-    title: 'David\'s Data Graveyard Revival',
-    description: 'Resurrect buried insights from spreadsheet chaos'
+    title: 'David\'s Data Foundations',
+    description: 'Transform raw nonprofit data into compelling impact narratives'
   },
-  'david-story-finder': {
+  'visual-storytelling': {
     component: DavidDataStoryFinderLesson,
     characterId: 'david',
-    title: 'David\'s Data Story Discovery',
-    description: 'Weave compelling narratives from complex statistics'
+    title: 'Visual Storytelling Workshop',
+    description: 'Create stunning data visualizations that communicate impact clearly'
   },
-  'david-presentation-master': {
+  'data-revival': {
     component: DavidPresentationMasterLesson,
     characterId: 'david',
-    title: 'David\'s Million-Dollar Presentation',
-    description: 'Create high-stakes presentation for transformational funding'
+    title: 'Data Narrative Construction Lab',
+    description: 'Build compelling stories from complex datasets with AI assistance'
   },
-  'david-system-builder': {
+  'stakeholder-communication': {
     component: DavidSystemBuilderLesson,
     characterId: 'david',
-    title: 'David\'s Data Storytelling System',
-    description: 'Build comprehensive data communication infrastructure'
+    title: 'Stakeholder Communication Mastery',
+    description: 'Tailor data presentations for different audience types and contexts'
+  },
+  'predictive-insights': {
+    component: DavidDataRevivalLesson,
+    characterId: 'david', 
+    title: 'Predictive Insights Strategy',
+    description: 'Use AI to forecast trends and create forward-looking impact reports'
+  },
+  'data-ecosystem': {
+    component: DavidSystemBuilderLesson,
+    characterId: 'david',
+    title: 'Data Ecosystem Builder',
+    description: 'Create comprehensive data systems for ongoing impact measurement'
   },
   
   // Rachel's micro-lessons (Chapter 5)
-  'rachel-automation-vision': {
+  'automation-vision': {
     component: RachelAutomationVisionLesson,
     characterId: 'rachel',
-    title: 'Rachel\'s Human-Centered Automation Vision',
-    description: 'Overcome automation resistance through human benefits'
+    title: 'Rachel\'s Automation Vision',
+    description: 'Discover how to map and automate your nonprofit\'s key processes'
   },
-  'rachel-workflow-designer': {
+  'human-centered-design': {
     component: RachelWorkflowDesignerLesson,
     characterId: 'rachel',
-    title: 'Rachel\'s Workflow Design Studio',
-    description: 'Design workflows that balance efficiency with satisfaction'
+    title: 'Human-Centered Design Workshop',
+    description: 'Build automation that enhances rather than replaces human connection'
   },
-  'rachel-process-transformer': {
+  'automation-planning': {
     component: RachelProcessTransformerLesson,
     characterId: 'rachel',
-    title: 'Rachel\'s Process Transformation Proof',
-    description: 'Prove automation value through measurable transformation'
+    title: 'Automation Planning Lab',
+    description: 'Create step-by-step implementation roadmaps with AI guidance'
   },
-  'rachel-ecosystem-builder': {
+  'workflow-design': {
     component: RachelEcosystemBuilderLesson,
     characterId: 'rachel',
-    title: 'Rachel\'s Automation Ecosystem Builder',
-    description: 'Create seamless automation ecosystem'
+    title: 'Change Management Mastery',
+    description: 'Lead organizational transformation with AI-powered communication'
+  },
+  'scaling-systems': {
+    component: RachelProcessTransformerLesson,
+    characterId: 'rachel',
+    title: 'Scaling Systems Strategy',
+    description: 'Build a comprehensive AI automation ecosystem for your organization'
+  },
+  'ecosystem-builder': {
+    component: RachelEcosystemBuilderLesson,
+    characterId: 'rachel',
+    title: 'Ecosystem Builder',
+    description: 'Create comprehensive AI ecosystem for lasting organizational transformation'
   },
   
   // Alex's micro-lessons (Chapter 6)
-  'alex-change-strategy': {
+  'leadership-challenges': {
     component: AlexChangeStrategyLesson,
     characterId: 'alex',
-    title: 'Alex\'s Change Leadership Strategy',
-    description: 'Unite divided organization around AI transformation'
+    title: 'Alex\'s Leadership Challenges',
+    description: 'Navigate the complexities of leading AI transformation in nonprofits'
   },
-  'alex-vision-builder': {
+  'vision-building': {
     component: AlexVisionBuilderLesson,
     characterId: 'alex',
-    title: 'Alex\'s Unified Vision Builder',
-    description: 'Create inspiring vision that drives collective action'
+    title: 'Vision Building Workshop',
+    description: 'Create compelling AI transformation visions with strategic facilitation'
   },
-  'alex-roadmap-creator': {
+  'transformation-planning': {
     component: AlexRoadmapCreatorLesson,
     characterId: 'alex',
-    title: 'Alex\'s Transformation Roadmap Creator',
-    description: 'Build confidence through clear implementation path'
+    title: 'Transformation Planning Lab',
+    description: 'Design comprehensive change management strategies with AI guidance'
   },
-  'alex-leadership-framework': {
+  'team-alignment': {
+    component: AlexVisionBuilderLesson,
+    characterId: 'alex',
+    title: 'Team Alignment Mastery',
+    description: 'Unite your organization around AI adoption with communication tools'
+  },
+  'future-leadership': {
+    component: AlexRoadmapCreatorLesson,
+    characterId: 'alex',
+    title: 'Future Leadership Strategy',
+    description: 'Build a sustainable AI-powered organizational roadmap for lasting impact'
+  },
+  'leadership-framework': {
     component: AlexLeadershipFrameworkLesson,
     characterId: 'alex',
-    title: 'Alex\'s AI Leadership Framework',
-    description: 'Establish leadership model for AI-powered future'
+    title: 'Leadership Framework Mastery',
+    description: 'Develop comprehensive AI leadership skills for lasting organizational transformation'
   }
 };
 

@@ -36,7 +36,7 @@ const Chapter6Hub: React.FC = () => {
       title: 'Transformation Planning Lab',
       description: 'Design comprehensive change management strategies with AI guidance',
       iconType: 'growth' as const,
-      route: '/chapter/6/alex-change-strategy',
+      route: '/chapter/6/interactive/transformation-planning',
       estimated_time: '22 min',
       difficulty: 'Intermediate' as const,
       completed: false,
@@ -50,7 +50,7 @@ const Chapter6Hub: React.FC = () => {
       title: 'Team Alignment Mastery',
       description: 'Unite your organization around AI adoption with communication tools',
       iconType: 'network' as const,
-      route: '/chapter/6/alex-vision-builder',
+      route: '/chapter/6/interactive/team-alignment',
       estimated_time: '20 min',
       difficulty: 'Advanced' as const,
       completed: false,
@@ -64,7 +64,7 @@ const Chapter6Hub: React.FC = () => {
       title: 'Future Leadership Strategy',
       description: 'Build a sustainable AI-powered organizational roadmap for lasting impact',
       iconType: 'achievement' as const,
-      route: '/chapter/6/alex-roadmap-creator',
+      route: '/chapter/6/interactive/future-leadership',
       estimated_time: '25 min',
       difficulty: 'Advanced' as const,
       completed: false,
@@ -78,7 +78,7 @@ const Chapter6Hub: React.FC = () => {
       title: 'Leadership Framework Mastery',
       description: 'Develop comprehensive AI leadership skills for lasting organizational transformation',
       iconType: 'mission' as const,
-      route: '/chapter/6/alex-leadership-framework',
+      route: '/chapter/6/interactive/leadership-framework',
       estimated_time: '28 min',
       difficulty: 'Advanced' as const,
       completed: false,
@@ -98,7 +98,7 @@ const Chapter6Hub: React.FC = () => {
       characterType="alex"
       bgGradient="from-indigo-50 via-white to-violet-50"
       microLessons={microLessons}
-      completionRoute="/chapter/6/interactive/alex-leadership"
+      completionRoute="/chapter/6/interactive/leadership-completion"
     />
   );
 };

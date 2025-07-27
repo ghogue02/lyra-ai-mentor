@@ -8,7 +8,7 @@ const Chapter3Hub: React.FC = () => {
       title: 'Mission Story Creator',
       description: 'Discover your organization\'s unique narrative voice with Sofia Martinez',
       iconType: 'mission' as const,
-      route: '/chapter/3/sofia-mission-story-creator',
+      route: '/chapter/3/interactive/mission-story-creator',
       estimated_time: '12 min',
       difficulty: 'Beginner' as const,
       completed: false,
@@ -22,7 +22,7 @@ const Chapter3Hub: React.FC = () => {
       title: 'Voice Discovery Workshop',
       description: 'Master the art of compelling storytelling with AI-powered story building',
       iconType: 'communication' as const,
-      route: '/chapter/3/sofia-voice-discovery',
+      route: '/chapter/3/interactive/voice-discovery',
       estimated_time: '15 min',
       difficulty: 'Beginner' as const,
       completed: false,
@@ -36,7 +36,7 @@ const Chapter3Hub: React.FC = () => {
       title: 'Story Breakthrough Lab',
       description: 'Create stunning presentations with AI-generated visual assets',
       iconType: 'achievement' as const,
-      route: '/chapter/3/sofia-story-breakthrough',
+      route: '/chapter/3/interactive/story-breakthrough',
       estimated_time: '18 min',
       difficulty: 'Intermediate' as const,
       completed: false,
@@ -50,7 +50,7 @@ const Chapter3Hub: React.FC = () => {
       title: 'Impact Scaling Mastery',
       description: 'Use AI to analyze and connect with different audience types',
       iconType: 'network' as const,
-      route: '/chapter/3/sofia-impact-scaling',
+      route: '/chapter/3/interactive/impact-scaling',
       estimated_time: '16 min',
       difficulty: 'Intermediate' as const,
       completed: false,
@@ -70,7 +70,7 @@ const Chapter3Hub: React.FC = () => {
       characterType="sofia"
       bgGradient="from-rose-50 via-white to-purple-50"
       microLessons={microLessons}
-      completionRoute="/chapter/3/interactive/sofia-storytelling"
+      completionRoute="/chapter/3/interactive/storytelling-completion"
     />
   );
 };
