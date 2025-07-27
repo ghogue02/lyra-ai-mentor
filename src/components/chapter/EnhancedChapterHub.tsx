@@ -184,14 +184,6 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                       )}
                     </div>
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Badge className={getDifficultyColor(lesson.difficulty)}>
-                          {lesson.difficulty}
-                        </Badge>
-                        <Badge variant="outline" className="text-xs">
-                          {lesson.estimated_time}
-                        </Badge>
-                      </div>
                       <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
                         {lesson.title}
                       </h3>

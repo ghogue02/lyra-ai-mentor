@@ -83,23 +83,10 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
       className="h-full"
     >
       <div className="space-y-4">
-        {/* Header with Status and Duration */}
+        {/* Header with Status */}
         <div className="flex items-start justify-between">
           <div className="flex items-center gap-2">
             {getStatusIcon()}
-            <span className="text-xs text-muted-foreground font-medium">
-              {duration} min
-            </span>
-          </div>
-          
-          {/* Difficulty Badge */}
-          <div className={cn(
-            "px-2 py-1 rounded-full text-xs font-medium border",
-            difficultyConfig.color,
-            difficultyConfig.bgColor,
-            difficultyConfig.borderColor
-          )}>
-            {difficultyConfig.label}
           </div>
         </div>
 

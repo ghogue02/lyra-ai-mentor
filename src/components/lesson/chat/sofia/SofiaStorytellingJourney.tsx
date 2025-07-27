@@ -77,13 +77,6 @@ const SofiaStorytellingJourney: React.FC = () => {
               <p className="text-primary italic">"{sofiaStory.quote}"</p>
             </div>
 
-            <div className="flex flex-wrap gap-2">
-              {sofiaStory.skills.map((skill, index) => (
-                <Badge key={index} variant="secondary" className="bg-primary/10 text-primary">
-                  {skill}
-                </Badge>
-              ))}
-            </div>
           </CardContent>
         </Card>
       )}
