@@ -129,14 +129,14 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
         </motion.div>
 
         {/* Micro-Lessons Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 gap-8 mb-12">
           {microLessons.map((lesson, index) => (
             <motion.div
               key={lesson.id}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: lesson.unlocked ? 1.05 : 1 }}
+              whileHover={{ scale: lesson.unlocked ? 1.02 : 1 }}
               className={cn(
                 "group cursor-pointer",
                 !lesson.unlocked && "cursor-not-allowed opacity-50"
@@ -145,16 +145,16 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
             >
               <InteractiveCard className={cn(
                 "h-full transition-all duration-300",
-                lesson.completed && "bg-green-50 border-green-200",
+                lesson.completed && "bg-green-50/50 border-green-200",
                 selectedLesson === lesson.id && "ring-2 ring-primary",
-                lesson.unlocked && "hover:shadow-lg",
-                !lesson.unlocked && "bg-gray-50"
+                lesson.unlocked && "hover:shadow-xl hover:shadow-primary/10",
+                !lesson.unlocked && "bg-muted/30"
               )}>
-                <div className="p-6">
-                  <div className="flex items-start gap-4 mb-4">
-                    <div className="w-12 h-12 relative">
+                <div className="p-8">
+                  <div className="flex items-start gap-6 mb-6">
+                    <div className="w-14 h-14 relative flex-shrink-0">
                       {lesson.unlocked ? (
-                        <div className="group-hover:scale-110 transition-transform">
+                        <div className="group-hover:scale-110 transition-transform duration-300">
                           <OptimizedVideoAnimation
                             src={getAnimationUrl('button-hover-glow.mp4')}
                             fallbackIcon={
@@ -169,49 +169,49 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                           />
                         </div>
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gray-200 rounded-lg">
-                          <Lock className="w-6 h-6 text-gray-400" />
+                        <div className="w-full h-full flex items-center justify-center bg-muted rounded-lg">
+                          <Lock className="w-7 h-7 text-muted-foreground" />
                         </div>
                       )}
                       {lesson.completed && (
-                        <div className="absolute -top-2 -right-2 w-6 h-6">
+                        <div className="absolute -top-2 -right-2 w-7 h-7">
                           <OptimizedVideoAnimation
                             src={getAnimationUrl('completion-checkmark.mp4')}
-                            fallbackIcon={<CheckCircle className="w-6 h-6 text-green-600" />}
+                            fallbackIcon={<CheckCircle className="w-7 h-7 text-green-600" />}
                             className="w-full h-full"
                           />
                         </div>
                       )}
                     </div>
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-gray-900 group-hover:text-primary transition-colors">
+                    <div className="flex-1 min-w-0">
+                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 mb-3 leading-tight">
                         {lesson.title}
                       </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {lesson.description}
+                      </p>
                     </div>
                   </div>
                   
-                  <p className="text-sm text-gray-600 mb-4">
-                    {lesson.description}
-                  </p>
-                  
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between pt-4 border-t border-border/50">
                     {lesson.unlocked ? (
                       <BrandedButton 
                         size="sm" 
-                        className="group-hover:bg-primary group-hover:text-white transition-colors"
+                        className="px-6 py-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
                       >
                         {lesson.completed ? 'Review' : 'Start'} 
                         <PlayCircle className="w-4 h-4 ml-2" />
                       </BrandedButton>
                     ) : (
-                      <BrandedButton size="sm" disabled variant="ghost">
+                      <BrandedButton size="sm" disabled variant="ghost" className="px-6 py-2">
                         Locked <Lock className="w-4 h-4 ml-2" />
                       </BrandedButton>
                     )}
                     
                     {lesson.completed && (
-                      <span className="text-xs text-green-600 font-medium">
-                        ✓ Complete
+                      <span className="text-sm text-green-600 font-medium flex items-center gap-1">
+                        <CheckCircle className="w-4 h-4" />
+                        Complete
                       </span>
                     )}
                   </div>
