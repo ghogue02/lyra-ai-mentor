@@ -143,16 +143,16 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
               )}
               onClick={() => handleLessonSelect(lesson)}
             >
-              <InteractiveCard className={cn(
-                "h-full transition-all duration-300",
+               <InteractiveCard className={cn(
+                "h-full min-h-[280px] transition-all duration-300",
                 lesson.completed && "bg-green-50/50 border-green-200",
                 selectedLesson === lesson.id && "ring-2 ring-primary",
                 lesson.unlocked && "hover:shadow-xl hover:shadow-primary/10",
                 !lesson.unlocked && "bg-muted/30"
               )}>
-                <div className="p-8">
-                  <div className="flex items-start gap-6 mb-6">
-                    <div className="w-14 h-14 relative flex-shrink-0">
+                <div className="p-8 flex flex-col h-full">
+                  <div className="flex items-start gap-8 mb-8">
+                    <div className="w-16 h-16 relative flex-shrink-0">
                       {lesson.unlocked ? (
                         <div className="group-hover:scale-110 transition-transform duration-300">
                           <OptimizedVideoAnimation
@@ -183,17 +183,17 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                         </div>
                       )}
                     </div>
-                    <div className="flex-1 min-w-0">
-                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 mb-3 leading-tight">
+                     <div className="flex-1 min-w-0">
+                      <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-200 mb-4 leading-tight">
                         {lesson.title}
                       </h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">
+                      <p className="text-muted-foreground leading-relaxed mb-6">
                         {lesson.description}
                       </p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                  <div className="mt-auto flex items-center justify-between pt-6 border-t border-border/50">
                     {lesson.unlocked ? (
                       <BrandedButton 
                         size="sm" 
