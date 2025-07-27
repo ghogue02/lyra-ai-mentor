@@ -2,7 +2,7 @@ import React, { Component, ErrorInfo, ReactNode } from 'react';
 import { motion } from 'framer-motion';
 import { AlertTriangle, RefreshCw, Home, Bug } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -162,7 +162,7 @@ const ErrorFallbackUI: React.FC<ErrorFallbackUIProps> = ({
   maxRetries
 }) => {
   const [showFullError, setShowFullError] = React.useState(false);
-  const navigate = useNavigate();
+  // Use window.location for navigation to avoid Router context dependency
 
   const canRetry = retryCount < maxRetries;
 
@@ -214,7 +214,7 @@ const ErrorFallbackUI: React.FC<ErrorFallbackUIProps> = ({
             )}
             
             <Button
-              onClick={() => navigate('/')}
+              onClick={() => window.location.href = '/'}
               variant="outline"
               className="flex items-center gap-2"
             >
