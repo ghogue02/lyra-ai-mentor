@@ -7,6 +7,17 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// Character-specific model mapping for cost optimization
+const CHARACTER_MODELS = {
+  'lyra': 'anthropic/claude-sonnet-4',
+  'rachel': 'google/gemini-2.5-flash-lite',
+  'sofia': 'google/gemini-2.5-flash-lite',
+  'david': 'google/gemini-2.5-flash-lite',
+  'alex': 'google/gemini-2.5-flash-lite',
+  'maya': 'google/gemini-2.5-flash-lite',
+  'default': 'google/gemini-2.5-flash-lite' // Cost-effective default
+};
+
 const characterPersonalities = {
   maya: {
     name: "Maya",
@@ -51,7 +62,7 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_ANON_KEY') ?? ''
     );
 
-    const { characterType, contentType, topic, mayaPatterns, targetAudience } = await req.json();
+    const { characterType, contentType, topic, context, mayaPatterns, targetAudience } = await req.json();
 
     console.log('Generating character content:', { characterType, contentType, topic });
 
@@ -72,15 +83,21 @@ serve(async (req) => {
       patterns = mayaData?.[0]?.analysis_results || "Focus on personalization and data-driven approaches";
     }
 
-    // Generate content using OpenAI
-    const openAIResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+    // Select appropriate model for character
+    const selectedModel = CHARACTER_MODELS[characterType] || CHARACTER_MODELS['default'];
+    console.log(`Using model ${selectedModel} for character ${characterType}`);
+    
+    // Generate content using OpenRouter
+    const openAIResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+        'Authorization': `Bearer ${Deno.env.get('OPENROUTER_API_KEY')}`,
         'Content-Type': 'application/json',
+        'HTTP-Referer': 'https://lovable.dev',
+        'X-Title': 'Lyra AI Learning Platform'
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: selectedModel,
         messages: [
           {
             role: 'system',
@@ -99,7 +116,7 @@ serve(async (req) => {
           },
           {
             role: 'user',
-            content: `Create ${contentType} content about "${topic}" for ${targetAudience}. 
+            content: context ? context : `Create ${contentType} content about "${topic}" for ${targetAudience}. 
             Apply Maya's successful patterns while maintaining ${character.name}'s unique voice and expertise.`
           }
         ],
@@ -111,8 +128,9 @@ serve(async (req) => {
     const aiData = await openAIResponse.json();
     
     if (!openAIResponse.ok) {
-      console.error('OpenAI API error:', aiData);
-      throw new Error(`OpenAI API error: ${aiData.error?.message || 'Unknown error'}`);
+      console.error('OpenRouter API error:', aiData);
+      console.error('Request details:', { characterType, selectedModel, contentType });
+      throw new Error(`OpenRouter API error: ${aiData.error?.message || 'Unknown error'} - Model: ${selectedModel}`);
     }
 
     const generatedContent = aiData.choices[0].message.content;
@@ -120,14 +138,16 @@ serve(async (req) => {
     // Generate title if not lesson content
     let title = topic;
     if (contentType !== 'lesson') {
-      const titleResponse = await fetch('https://api.openai.com/v1/chat/completions', {
+      const titleResponse = await fetch('https://openrouter.ai/api/v1/chat/completions', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${Deno.env.get('OPENAI_API_KEY')}`,
+          'Authorization': `Bearer ${Deno.env.get('OPENROUTER_API_KEY')}`,
           'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://lovable.dev',
+          'X-Title': 'Lyra AI Learning Platform'
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: selectedModel,
           messages: [
             {
               role: 'system',
