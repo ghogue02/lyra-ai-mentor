@@ -4,7 +4,7 @@ import { CheckCircle, Circle, Lock, Heart, Sparkles, Home } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
+import { BrandedButton } from '@/components/ui/BrandedButton';
 
 interface Chapter3SidebarProps {
   currentLessonId: number;
@@ -218,14 +218,15 @@ export const Chapter3Sidebar: React.FC<Chapter3SidebarProps> = ({
 
       {/* Return to Dashboard */}
       <div className="p-4 border-t border-rose-200">
-        <Button 
+        <BrandedButton 
           onClick={() => navigate('/dashboard')} 
           variant="outline" 
           className="w-full flex items-center gap-2 hover:bg-rose-50 border-rose-200"
+          icon="mission"
+          animated={true}
         >
-          <Home className="w-4 h-4" />
           Return to Dashboard
-        </Button>
+        </BrandedButton>
       </div>
 
       {/* Character Quote */}

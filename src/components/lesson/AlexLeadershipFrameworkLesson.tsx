@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { InteractiveCard } from "@/components/ui/InteractiveCard";
+import { BrandedButton } from "@/components/ui/BrandedButton";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { useLyraChat } from "@/hooks/useLyraChat";
@@ -39,8 +39,8 @@ const AlexLeadershipFrameworkLesson: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="border-2 border-primary/20">
-            <CardContent className="p-6">
+          <InteractiveCard className="border-2 border-primary/20">
+            <div className="p-6">
               <div className="space-y-4">
                 <Textarea
                   placeholder="What leadership challenges are you facing in AI transformation?"
@@ -59,16 +59,23 @@ const AlexLeadershipFrameworkLesson: React.FC = () => {
                   value={futureVision}
                   onChange={(e) => setFutureVision(e.target.value)}
                 />
-                <Button onClick={handleBuild} disabled={!leadershipChallenges.trim() || !organizationalContext.trim() || isBuilding} className="w-full">
-                  <Crown className="h-4 w-4 mr-2" />
+                <BrandedButton 
+                  onClick={handleBuild} 
+                  disabled={!leadershipChallenges.trim() || !organizationalContext.trim() || isBuilding} 
+                  className="w-full"
+                  icon="mission"
+                  loading={isBuilding}
+                  animated={true}
+                  glow={true}
+                >
                   {isBuilding ? 'Building...' : 'Build Leadership Framework'}
-                </Button>
+                </BrandedButton>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </InteractiveCard>
 
-          <Card className="border-2 border-secondary/20">
-            <CardContent className="p-6">
+          <InteractiveCard className="border-2 border-secondary/20">
+            <div className="p-6">
               <div className="bg-muted/50 rounded-lg p-4 min-h-96 max-h-96 overflow-y-auto">
                 {messages.length === 0 ? (
                   <div className="text-center text-muted-foreground py-8">
@@ -93,8 +100,8 @@ const AlexLeadershipFrameworkLesson: React.FC = () => {
                   </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </InteractiveCard>
         </div>
       </div>
     </div>
