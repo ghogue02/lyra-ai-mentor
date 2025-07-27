@@ -58,8 +58,14 @@ export const ModelComparisonTool: React.FC = () => {
 
     for (const { character, modelName } of modelTests) {
       try {
-        const { data, error } = await supabase.functions.invoke('chat-with-lyra', {
-          body: {
+        const response = await fetch('https://hfkzwjnlxrwynactcmpe.supabase.co/functions/v1/chat-with-lyra', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhma3p3am5seHJ3eW5hY3RjbXBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODM4NTAsImV4cCI6MjA2Mzg1OTg1MH0.WXPnn8e3_I7mAx_Qv4_2jX70nsTCxSbqMh3qo4_aEw0`,
+            'Content-Type': 'application/json',
+            'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhma3p3am5seHJ3eW5hY3RjbXBlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDgyODM4NTAsImV4cCI6MjA2Mzg1OTg1MH0.WXPnn8e3_I7mAx_Qv4_2jX70nsTCxSbqMh3qo4_aEw0'
+          },
+          body: JSON.stringify({
             messages: [
               {
                 role: 'system',
@@ -72,21 +78,24 @@ export const ModelComparisonTool: React.FC = () => {
             ],
             userId: 'model-comparison-test',
             lessonContext: { modelComparison: true }
-          }
+          })
         });
 
-        if (error) throw error;
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         // Handle streaming response
-        const reader = data?.getReader();
+        const reader = response.body?.getReader();
         let fullResponse = '';
 
         if (reader) {
+          const decoder = new TextDecoder();
           while (true) {
             const { done, value } = await reader.read();
             if (done) break;
             
-            const chunk = new TextDecoder().decode(value);
+            const chunk = decoder.decode(value);
             const lines = chunk.split('\n');
             
             for (const line of lines) {
