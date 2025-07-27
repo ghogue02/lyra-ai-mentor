@@ -34,13 +34,9 @@ const SofiaStorytellingJourney: React.FC = () => {
       <div className="text-center">
         <div className="w-32 h-32 mx-auto mb-6">
           <img 
-            src={getSupabaseIconUrl('character-avatars/sofia-avatar.png')} 
+            src={getSupabaseIconUrl('lyra-avatar.png')} 
             alt="Sofia Martinez"
-            className="w-full h-full rounded-full object-cover border-4 border-gradient-to-br from-primary to-secondary"
-            onError={(e) => {
-              const target = e.target as HTMLImageElement;
-              target.src = getSupabaseIconUrl('lyra-avatar.png');
-            }}
+            className="w-full h-full rounded-full object-cover border-4 border-primary/20"
           />
         </div>
         <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-primary-glow to-secondary bg-clip-text text-transparent">
