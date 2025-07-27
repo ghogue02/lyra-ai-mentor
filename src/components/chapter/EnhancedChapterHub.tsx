@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, PlayCircle, ArrowRight, Lock } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { BrandedButton } from '@/components/ui/BrandedButton';
 import { Badge } from '@/components/ui/badge';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -210,17 +210,17 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                   
                   <div className="flex items-center justify-between">
                     {lesson.unlocked ? (
-                      <Button 
+                      <BrandedButton 
                         size="sm" 
                         className="group-hover:bg-primary group-hover:text-white transition-colors"
                       >
                         {lesson.completed ? 'Review' : 'Start'} 
                         <PlayCircle className="w-4 h-4 ml-2" />
-                      </Button>
+                      </BrandedButton>
                     ) : (
-                      <Button size="sm" disabled variant="ghost">
+                      <BrandedButton size="sm" disabled variant="ghost">
                         Locked <Lock className="w-4 h-4 ml-2" />
-                      </Button>
+                      </BrandedButton>
                     )}
                     
                     {lesson.completed && (
@@ -242,32 +242,32 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
           transition={{ delay: 0.5 }}
           className="flex justify-center gap-4"
         >
-          <Button 
+          <BrandedButton 
             onClick={() => navigate('/dashboard')} 
             variant="outline"
             size="lg"
           >
             Back to Dashboard
-          </Button>
+          </BrandedButton>
           
           {isChapterComplete && nextChapterRoute && (
-            <Button 
+            <BrandedButton 
               onClick={() => navigate(nextChapterRoute)}
               size="lg"
-              className="bg-primary hover:bg-primary/90"
+              variant="default"
             >
               Next Chapter <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
+            </BrandedButton>
           )}
           
           {completionRoute && (
-            <Button 
+            <BrandedButton 
               onClick={() => navigate(completionRoute)}
               variant="secondary"
               size="lg"
             >
               Chapter Summary
-            </Button>
+            </BrandedButton>
           )}
         </motion.div>
       </div>

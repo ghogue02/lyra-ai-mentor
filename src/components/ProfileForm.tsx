@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from "@/components/ui/button";
+import { BrandedButton } from "@/components/ui/BrandedButton";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useBrandedToast } from '@/hooks/use-branded-toast';
 import { CheckCircle2, User, Building, Briefcase, MapPin } from 'lucide-react';
 import { ReflectionsSection } from './ReflectionsSection';
 
@@ -31,7 +31,7 @@ interface ProfileData {
 
 export const ProfileForm = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
+  const { showToast } = useBrandedToast();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [profile, setProfile] = useState<ProfileData>({
@@ -126,7 +126,8 @@ export const ProfileForm = () => {
         profile_completed: isProfileComplete 
       }));
 
-      toast({
+      showToast({
+        type: "success",
         title: "Profile saved!",
         description: isProfileComplete 
           ? "Your profile is now complete. You can start your first chapter!"
@@ -136,10 +137,10 @@ export const ProfileForm = () => {
       // Refresh the parent component
       window.location.reload();
     } catch (error: any) {
-      toast({
+      showToast({
+        type: "error",
         title: "Error",
-        description: error.message,
-        variant: "destructive"
+        description: error.message
       });
     } finally {
       setSaving(false);
@@ -347,13 +348,14 @@ export const ProfileForm = () => {
       <ReflectionsSection />
 
       <div className="flex justify-end">
-        <Button 
+        <BrandedButton 
           onClick={handleSave} 
           disabled={saving}
-          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+          variant="gradient"
+          loading={saving}
         >
           {saving ? 'Saving...' : 'Save Profile'}
-        </Button>
+        </BrandedButton>
       </div>
     </div>
   );

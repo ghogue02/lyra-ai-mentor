@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { BrandedButton } from "@/components/ui/BrandedButton";
 import { RefreshCw } from 'lucide-react';
 import { getUIStateIconUrl } from '@/utils/supabaseIcons';
 import { cn } from '@/lib/utils';
@@ -74,13 +74,13 @@ export const ErrorState: React.FC<ErrorStateProps> = ({
         </p>
         
         {onRetry && (
-          <Button 
+          <BrandedButton 
             onClick={onRetry}
-            className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+            variant="gradient"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Try Again
-          </Button>
+          </BrandedButton>
         )}
       </div>
     </div>

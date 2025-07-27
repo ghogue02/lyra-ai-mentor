@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { BrandedButton } from "@/components/ui/BrandedButton";
 import { LogOut } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -51,14 +51,14 @@ export const Navbar = ({
           {/* Auth Actions */}
           {showAuthButtons && (
             <div className="flex items-center gap-3">
-              <Button
+              <BrandedButton
                 variant="outline"
                 onClick={handleSignOut}
-                className="flex items-center gap-2 hover:bg-red-50 hover:text-red-600 hover:border-red-200"
+                className="flex items-center gap-2"
               >
                 <LogOut className="w-4 h-4" />
                 <span className="hidden sm:inline">Sign Out</span>
-              </Button>
+              </BrandedButton>
             </div>
           )}
         </div>

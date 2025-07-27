@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Button } from "@/components/ui/button";
+import { BrandedButton } from "@/components/ui/BrandedButton";
 import { Badge } from "@/components/ui/badge";
 import { Eye, CheckSquare } from 'lucide-react';
 
@@ -30,15 +30,15 @@ export const CalloutBoxRenderer: React.FC<CalloutBoxRendererProps> = ({
           <h4 className="font-medium text-yellow-800 mb-1">{element.title}</h4>
           <p className="text-yellow-700 text-sm leading-relaxed mb-3">{element.content}</p>
           {!isElementCompleted && (
-            <Button
+            <BrandedButton
               onClick={onComplete}
               variant="outline"
               size="sm"
-              className="text-xs hover:bg-yellow-100 hover:border-yellow-400"
+              className="text-xs"
             >
               <Eye className="w-3 h-3 mr-1" />
               Mark as Read
-            </Button>
+            </BrandedButton>
           )}
           {isElementCompleted && (
             <Badge className="bg-green-100 text-green-700 text-xs">

@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PerformanceWrapper, PerformanceMonitor, BundleAnalyzer, AccessibilityTester } from "@/components/performance/PerformanceIntegration";
+import { BrandedToastContainer } from "@/hooks/use-branded-toast";
 import Index from "./pages/Index";
 import Auth from "./pages/Auth";
 import Dashboard from "./pages/Dashboard";
@@ -163,6 +164,9 @@ const App = () => {
           <PerformanceMonitor />
           <BundleAnalyzer />
           <AccessibilityTester />
+          
+          {/* Branded Toast Container */}
+          <BrandedToastContainer />
         </TooltipProvider>
       </QueryClientProvider>
     </PerformanceWrapper>
