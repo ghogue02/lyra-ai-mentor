@@ -7,10 +7,10 @@ const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 const CHARACTER_MODELS = {
   'lyra': 'anthropic/claude-sonnet-4',
   'rachel': 'anthropic/claude-sonnet-4',
-  'sofia': 'google/gemini-2.5-flash',
-  'david': 'google/gemini-2.5-flash',
-  'alex': 'google/gemini-2.5-flash',
-  'default': 'google/gemini-2.5-flash' // Cost-effective fallback
+  'sofia': 'google/gemini-2.5-flash-lite',
+  'david': 'google/gemini-2.5-flash-lite',
+  'alex': 'google/gemini-2.5-flash-lite',
+  'default': 'openai/gpt-4o-mini' // Cost-effective fallback
 };
 
 function detectCharacterFromMessages(messages: any[]): string {
@@ -51,8 +51,9 @@ export async function createOpenAIStreamingResponse(messages: any[]): Promise<Re
 
   if (!response.ok) {
     const errorText = await response.text();
-    console.error(`OpenRouter API error: ${response.status} - ${errorText}`);
-    throw new Error(`OpenRouter API error: ${response.status}`);
+    console.error(`OpenRouter API error for model ${model}: ${response.status} - ${errorText}`);
+    console.error('Request details:', { character, model, messagesCount: messages.length });
+    throw new Error(`OpenRouter API error: ${response.status} - Model: ${model}`);
   }
 
   return createStreamingResponse(response);
