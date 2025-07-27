@@ -94,40 +94,15 @@ export const LyraUnderstandingAIModelsLesson: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-purple-50/30">
+      {/* Hover Navigation */}
+      <MicroLessonNavigator
+        chapterNumber={1}
+        chapterTitle="Introduction to AI for Nonprofits"
+        lessonTitle="Understanding AI Models"
+        characterName="Lyra"
+      />
+      
       <div className="container mx-auto px-4 py-6">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => navigate('/chapter/1')}
-              className="text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Back to Chapter 1
-            </Button>
-            <div className="flex items-center gap-2">
-              <Badge className="bg-purple-100 text-purple-800 border-purple-200">
-                Lesson 3
-              </Badge>
-              <span className="text-sm text-muted-foreground">•</span>
-              <span className="text-sm font-medium">Understanding AI Models</span>
-            </div>
-          </div>
-          
-          <div className="flex items-center gap-3">
-            <div className="text-xs text-muted-foreground">
-              Progress: {Math.min(completionProgress, 100)}%
-            </div>
-            <div className="w-24 h-2 bg-muted rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 transition-all duration-300"
-                style={{ width: `${Math.min(completionProgress, 100)}%` }}
-              />
-            </div>
-          </div>
-        </div>
 
         {/* Main Content */}
         <UnderstandingAIModels />
