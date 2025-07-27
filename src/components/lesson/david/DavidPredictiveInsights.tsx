@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ChevronRight, Brain, Play, TrendingUp, Crystal, Zap, Target } from 'lucide-react';
+import { ChevronRight, Brain, Play, TrendingUp, Sparkles, Zap, Target } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -43,7 +43,7 @@ const DavidPredictiveInsights: React.FC = () => {
       id: 'outcome-forecasting',
       name: 'Outcome Forecasting',
       description: 'Predict program outcomes and participant success rates',
-      icon: Crystal,
+      icon: Sparkles,
       applications: ['Graduation rates', 'Job placement success', 'Skill acquisition', 'Retention predictions'],
       timeframe: '3-12 months ahead'
     },
@@ -373,7 +373,7 @@ const DavidPredictiveInsights: React.FC = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Crystal className="w-5 h-5 text-green-600" />
+                <Sparkles className="w-5 h-5 text-green-600" />
                 Your Prediction Models
               </CardTitle>
             </CardHeader>

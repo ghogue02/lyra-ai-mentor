@@ -15,23 +15,29 @@ import DavidDataJourney from '@/components/lesson/chat/david/DavidDataJourney';
 import RachelAutomationJourney from '@/components/lesson/chat/rachel/RachelAutomationJourney';
 import AlexLeadershipJourney from '@/components/lesson/chat/alex/AlexLeadershipJourney';
 
-// New micro-lesson components
-import SofiaMissionStoryCreatorLesson from "@/components/lesson/SofiaMissionStoryCreatorLesson";
-import SofiaVoiceDiscoveryLesson from "@/components/lesson/SofiaVoiceDiscoveryLesson";
-import SofiaStoryBreakthroughLesson from "@/components/lesson/SofiaStoryBreakthroughLesson";
-import SofiaImpactScalingLesson from "@/components/lesson/SofiaImpactScalingLesson";
-import DavidDataRevivalLesson from "@/components/lesson/DavidDataRevivalLesson";
-import DavidDataStoryFinderLesson from "@/components/lesson/DavidDataStoryFinderLesson";
-import DavidPresentationMasterLesson from "@/components/lesson/DavidPresentationMasterLesson";
-import DavidSystemBuilderLesson from "@/components/lesson/DavidSystemBuilderLesson";
-import RachelAutomationVisionLesson from "@/components/lesson/RachelAutomationVisionLesson";
-import RachelWorkflowDesignerLesson from "@/components/lesson/RachelWorkflowDesignerLesson";
-import RachelProcessTransformerLesson from "@/components/lesson/RachelProcessTransformerLesson";
-import RachelEcosystemBuilderLesson from "@/components/lesson/RachelEcosystemBuilderLesson";
-import AlexChangeStrategyLesson from "@/components/lesson/AlexChangeStrategyLesson";
-import AlexVisionBuilderLesson from "@/components/lesson/AlexVisionBuilderLesson";
-import AlexRoadmapCreatorLesson from "@/components/lesson/AlexRoadmapCreatorLesson";
-import AlexLeadershipFrameworkLesson from "@/components/lesson/AlexLeadershipFrameworkLesson";
+// Three-phase character components
+import SofiaMissionStoryCreator from "@/components/lesson/SofiaMissionStoryCreator";
+import SofiaVoiceDiscovery from "@/components/lesson/SofiaVoiceDiscovery";
+import SofiaStoryBreakthrough from "@/components/lesson/SofiaStoryBreakthrough";
+import SofiaImpactScaling from "@/components/lesson/SofiaImpactScaling";
+import DavidDataFoundations from "@/components/lesson/david/DavidDataFoundations";
+import DavidVisualStorytelling from "@/components/lesson/david/DavidVisualStorytelling";
+import DavidDataRevival from "@/components/lesson/david/DavidDataRevival";
+import DavidStakeholderCommunication from "@/components/lesson/david/DavidStakeholderCommunication";
+import DavidPredictiveInsights from "@/components/lesson/david/DavidPredictiveInsights";
+import DavidDataEcosystem from "@/components/lesson/david/DavidDataEcosystem";
+import RachelAutomationVision from "@/components/lesson/RachelAutomationVision";
+import RachelHumanCenteredDesign from "@/components/lesson/RachelHumanCenteredDesign";
+import RachelAutomationPlanning from "@/components/lesson/RachelAutomationPlanning";
+import RachelWorkflowDesign from "@/components/lesson/RachelWorkflowDesign";
+import RachelScalingSystems from "@/components/lesson/RachelScalingSystems";
+import RachelEcosystemBuilder from "@/components/lesson/RachelEcosystemBuilder";
+import AlexLeadershipChallenges from "@/components/lesson/AlexLeadershipChallenges";
+import AlexVisionBuilding from "@/components/lesson/AlexVisionBuilding";
+import AlexTransformationPlanning from "@/components/lesson/AlexTransformationPlanning";
+import AlexTeamAlignment from "@/components/lesson/AlexTeamAlignment";
+import AlexFutureLeadership from "@/components/lesson/AlexFutureLeadership";
+import AlexLeadershipFramework from "@/components/lesson/AlexLeadershipFramework";
 
 // Journey configuration registry
 const journeyRegistry = {
@@ -122,25 +128,25 @@ const journeyRegistry = {
   
   // Sofia's micro-lessons (Chapter 3)
   'mission-story-creator': {
-    component: SofiaMissionStoryCreatorLesson,
+    component: SofiaMissionStoryCreator,
     characterId: 'sofia',
     title: 'Sofia\'s Mission Story Creator',
     description: 'Transform invisible mission into compelling narrative'
   },
   'voice-discovery': {
-    component: SofiaVoiceDiscoveryLesson,
+    component: SofiaVoiceDiscovery,
     characterId: 'sofia',
     title: 'Sofia\'s Voice Discovery Workshop',
     description: 'Discover authentic communication style'
   },
   'story-breakthrough': {
-    component: SofiaStoryBreakthroughLesson,
+    component: SofiaStoryBreakthrough,
     characterId: 'sofia',
     title: 'Sofia\'s Story Breakthrough Lab',
     description: 'Craft breakthrough story for high-stakes presentation'
   },
   'impact-scaling': {
-    component: SofiaImpactScalingLesson,
+    component: SofiaImpactScaling,
     characterId: 'sofia',
     title: 'Sofia\'s Impact Scaling Mastery',
     description: 'Scale storytelling across all communication channels'
@@ -148,75 +154,75 @@ const journeyRegistry = {
   
   // David's micro-lessons (Chapter 4)
   'david-data-foundations': {
-    component: DavidDataRevivalLesson,
+    component: DavidDataFoundations,
     characterId: 'david',
     title: 'David\'s Data Foundations',
     description: 'Transform raw nonprofit data into compelling impact narratives'
   },
   'visual-storytelling': {
-    component: DavidDataStoryFinderLesson,
+    component: DavidVisualStorytelling,
     characterId: 'david',
     title: 'Visual Storytelling Workshop',
     description: 'Create stunning data visualizations that communicate impact clearly'
   },
   'data-revival': {
-    component: DavidPresentationMasterLesson,
+    component: DavidDataRevival,
     characterId: 'david',
     title: 'Data Narrative Construction Lab',
     description: 'Build compelling stories from complex datasets with AI assistance'
   },
   'stakeholder-communication': {
-    component: DavidSystemBuilderLesson,
+    component: DavidStakeholderCommunication,
     characterId: 'david',
     title: 'Stakeholder Communication Mastery',
     description: 'Tailor data presentations for different audience types and contexts'
   },
   'predictive-insights': {
-    component: DavidDataRevivalLesson,
+    component: DavidPredictiveInsights,
     characterId: 'david', 
     title: 'Predictive Insights Strategy',
     description: 'Use AI to forecast trends and create forward-looking impact reports'
   },
   'data-ecosystem': {
-    component: DavidSystemBuilderLesson,
+    component: DavidDataEcosystem,
     characterId: 'david',
     title: 'Data Ecosystem Builder',
     description: 'Create comprehensive data systems for ongoing impact measurement'
   },
   
   // Rachel's micro-lessons (Chapter 5)
-  'automation-vision': {
-    component: RachelAutomationVisionLesson,
+  'rachel-automation-vision': {
+    component: RachelAutomationVision,
     characterId: 'rachel',
     title: 'Rachel\'s Automation Vision',
     description: 'Discover how to map and automate your nonprofit\'s key processes'
   },
   'human-centered-design': {
-    component: RachelWorkflowDesignerLesson,
+    component: RachelHumanCenteredDesign,
     characterId: 'rachel',
     title: 'Human-Centered Design Workshop',
     description: 'Build automation that enhances rather than replaces human connection'
   },
   'automation-planning': {
-    component: RachelProcessTransformerLesson,
+    component: RachelAutomationPlanning,
     characterId: 'rachel',
     title: 'Automation Planning Lab',
     description: 'Create step-by-step implementation roadmaps with AI guidance'
   },
   'workflow-design': {
-    component: RachelEcosystemBuilderLesson,
+    component: RachelWorkflowDesign,
     characterId: 'rachel',
-    title: 'Change Management Mastery',
-    description: 'Lead organizational transformation with AI-powered communication'
+    title: 'Workflow Design Mastery',
+    description: 'Lead organizational transformation with AI-powered workflow optimization'
   },
   'scaling-systems': {
-    component: RachelProcessTransformerLesson,
+    component: RachelScalingSystems,
     characterId: 'rachel',
     title: 'Scaling Systems Strategy',
     description: 'Build a comprehensive AI automation ecosystem for your organization'
   },
   'ecosystem-builder': {
-    component: RachelEcosystemBuilderLesson,
+    component: RachelEcosystemBuilder,
     characterId: 'rachel',
     title: 'Ecosystem Builder',
     description: 'Create comprehensive AI ecosystem for lasting organizational transformation'
@@ -224,37 +230,37 @@ const journeyRegistry = {
   
   // Alex's micro-lessons (Chapter 6)
   'leadership-challenges': {
-    component: AlexChangeStrategyLesson,
+    component: AlexLeadershipChallenges,
     characterId: 'alex',
     title: 'Alex\'s Leadership Challenges',
     description: 'Navigate the complexities of leading AI transformation in nonprofits'
   },
   'vision-building': {
-    component: AlexVisionBuilderLesson,
+    component: AlexVisionBuilding,
     characterId: 'alex',
     title: 'Vision Building Workshop',
     description: 'Create compelling AI transformation visions with strategic facilitation'
   },
   'transformation-planning': {
-    component: AlexRoadmapCreatorLesson,
+    component: AlexTransformationPlanning,
     characterId: 'alex',
     title: 'Transformation Planning Lab',
     description: 'Design comprehensive change management strategies with AI guidance'
   },
   'team-alignment': {
-    component: AlexVisionBuilderLesson,
+    component: AlexTeamAlignment,
     characterId: 'alex',
     title: 'Team Alignment Mastery',
     description: 'Unite your organization around AI adoption with communication tools'
   },
   'future-leadership': {
-    component: AlexRoadmapCreatorLesson,
+    component: AlexFutureLeadership,
     characterId: 'alex',
     title: 'Future Leadership Strategy',
     description: 'Build a sustainable AI-powered organizational roadmap for lasting impact'
   },
   'leadership-framework': {
-    component: AlexLeadershipFrameworkLesson,
+    component: AlexLeadershipFramework,
     characterId: 'alex',
     title: 'Leadership Framework Mastery',
     description: 'Develop comprehensive AI leadership skills for lasting organizational transformation'
