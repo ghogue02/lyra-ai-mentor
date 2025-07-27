@@ -248,26 +248,11 @@ const MayaDifficultConversationsGuide: React.FC = () => {
       />
       
       <div className="max-w-4xl mx-auto pt-20">
-        <div className="mb-8">
-          <Progress value={33} className="h-2 mb-4" />
-          <p className="text-sm text-gray-600">Maya's Story • Step 2 of 3</p>
-        </div>
-
         <NarrativeManager
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="maya-conversations-narrative"
         />
-
-        <div className="text-center mt-8">
-          <Button 
-            onClick={() => setCurrentPhase('workshop')}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-6 py-2"
-          >
-            Learn Maya's Conversation Framework
-            <ChevronRight className="w-4 h-4 ml-2" />
-          </Button>
-        </div>
       </div>
     </motion.div>
   );
