@@ -82,8 +82,9 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="flex items-center justify-center gap-6 mb-6">
-            <div className="w-20 h-20">
+          {/* Character Avatar - Centered and Larger */}
+          <div className="flex justify-center mb-6">
+            <div className="w-28 h-28">
               <OptimizedVideoAnimation
                 src={getAnimationUrl(`${characterType}-avatar-animated.mp4`)}
                 fallbackIcon={
@@ -97,33 +98,37 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                 loop={true}
               />
             </div>
-            <div className="text-left">
-              <h1 className="text-4xl font-bold text-gray-900 mb-2">
-                Chapter {chapterNumber}: {title}
-              </h1>
-              <p className="text-xl text-gray-600 mb-4">{description}</p>
-              <div className="flex items-center gap-4">
-                <div className="flex-1">
-                  <AnimatedProgress 
-                    value={progressPercentage} 
-                    className="mb-2" 
-                    showAnimation={true}
-                  />
-                  <p className="text-sm text-gray-600">
-                    {completedCount} of {microLessons.length} lessons completed
-                  </p>
-                </div>
-                {isChapterComplete && (
-                  <div className="w-8 h-8">
-                    <OptimizedVideoAnimation
-                      src={getAnimationUrl('chapter-complete.mp4')}
-                      fallbackIcon={<CheckCircle className="w-8 h-8 text-green-600" />}
-                      className="w-full h-full"
-                      loop={false}
-                    />
-                  </div>
-                )}
+          </div>
+          
+          {/* Chapter Info - Centered */}
+          <div className="max-w-3xl mx-auto mb-6">
+            <h1 className="text-4xl font-bold text-gray-900 mb-3">
+              Chapter {chapterNumber}: {title}
+            </h1>
+            <p className="text-xl text-gray-600 mb-6">{description}</p>
+            
+            {/* Progress Section */}
+            <div className="flex items-center justify-center gap-4">
+              <div className="flex-1 max-w-md">
+                <AnimatedProgress 
+                  value={progressPercentage} 
+                  className="mb-2" 
+                  showAnimation={true}
+                />
+                <p className="text-sm text-gray-600">
+                  {completedCount} of {microLessons.length} lessons completed
+                </p>
               </div>
+              {isChapterComplete && (
+                <div className="w-8 h-8">
+                  <OptimizedVideoAnimation
+                    src={getAnimationUrl('chapter-complete.mp4')}
+                    fallbackIcon={<CheckCircle className="w-8 h-8 text-green-600" />}
+                    className="w-full h-full"
+                    loop={false}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </motion.div>
@@ -144,15 +149,15 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
               onClick={() => handleLessonSelect(lesson)}
             >
                <InteractiveCard className={cn(
-                "h-full min-h-[280px] transition-all duration-300",
+                "h-full min-h-[180px] transition-all duration-300",
                 lesson.completed && "bg-green-50/50 border-green-200",
                 selectedLesson === lesson.id && "ring-2 ring-primary",
                 lesson.unlocked && "hover:shadow-xl hover:shadow-primary/10",
                 !lesson.unlocked && "bg-muted/30"
               )}>
-                <div className="p-8 flex flex-col h-full">
-                  <div className="flex items-start gap-8 mb-8">
-                    <div className="w-16 h-16 relative flex-shrink-0">
+                <div className="p-6 flex flex-col h-full">
+                  <div className="flex items-start gap-6 mb-6">
+                    <div className="w-12 h-12 relative flex-shrink-0">
                       {lesson.unlocked ? (
                         <div className="group-hover:scale-110 transition-transform duration-300">
                           <OptimizedVideoAnimation
@@ -184,16 +189,16 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                       )}
                     </div>
                      <div className="flex-1 min-w-0">
-                      <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors duration-200 mb-4 leading-tight">
+                      <h3 className="text-lg font-semibold text-foreground group-hover:text-primary transition-colors duration-200 mb-3 leading-tight">
                         {lesson.title}
                       </h3>
-                      <p className="text-muted-foreground leading-relaxed mb-6">
+                      <p className="text-sm text-muted-foreground leading-relaxed mb-4">
                         {lesson.description}
                       </p>
                     </div>
                   </div>
                   
-                  <div className="mt-auto flex items-center justify-between pt-6 border-t border-border/50">
+                  <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/50">
                     {lesson.unlocked ? (
                       <BrandedButton 
                         size="sm" 
