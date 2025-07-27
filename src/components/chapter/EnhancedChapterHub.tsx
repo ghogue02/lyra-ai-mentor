@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle, PlayCircle, ArrowRight, Lock } from 'lucide-react';
 import { BrandedButton } from '@/components/ui/BrandedButton';
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent } from '@/components/ui/card';
+import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
 import VideoAnimation from '@/components/ui/VideoAnimation';
@@ -145,14 +145,14 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
               )}
               onClick={() => handleLessonSelect(lesson)}
             >
-              <Card className={cn(
+              <InteractiveCard className={cn(
                 "h-full transition-all duration-300",
                 lesson.completed && "bg-green-50 border-green-200",
                 selectedLesson === lesson.id && "ring-2 ring-primary",
                 lesson.unlocked && "hover:shadow-lg",
                 !lesson.unlocked && "bg-gray-50"
               )}>
-                <CardContent className="p-6">
+                <div className="p-6">
                   <div className="flex items-start gap-4 mb-4">
                     <div className="w-12 h-12 relative">
                       {lesson.unlocked ? (
@@ -229,8 +229,8 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                       </span>
                     )}
                   </div>
-                </CardContent>
-              </Card>
+              </div>
+            </InteractiveCard>
             </motion.div>
           ))}
         </div>
