@@ -249,6 +249,7 @@ const DavidStakeholderCommunication: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="david-stakeholder-narrative"
+          characterName="David"
         />
       </div>
     </motion.div>

@@ -190,7 +190,7 @@ const RachelAutomationVision: React.FC = () => {
           <VideoAnimation
             src={getAnimationUrl('rachel-friendly-wave.mp4')}
             fallbackIcon={<div className="w-24 h-24 bg-teal-100 rounded-full flex items-center justify-center">
-              👋
+              🤖
             </div>}
             className="w-full h-full rounded-full"
             context="character"
@@ -269,6 +269,7 @@ const RachelAutomationVision: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="rachel-automation-narrative"
+          characterName="Rachel"
         />
       </div>
     </motion.div>

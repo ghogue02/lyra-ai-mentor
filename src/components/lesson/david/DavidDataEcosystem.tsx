@@ -249,6 +249,7 @@ const DavidDataEcosystem: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="david-ecosystem-narrative"
+          characterName="David"
         />
       </div>
     </motion.div>

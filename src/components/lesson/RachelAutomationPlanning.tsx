@@ -268,6 +268,7 @@ const RachelAutomationPlanning: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="rachel-planning-narrative"
+          characterName="Rachel"
         />
       </div>
     </motion.div>

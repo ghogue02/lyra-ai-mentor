@@ -249,6 +249,7 @@ const DavidVisualStorytelling: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="david-visual-narrative"
+          characterName="David"
         />
       </div>
     </motion.div>

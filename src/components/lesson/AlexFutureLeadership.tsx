@@ -244,6 +244,7 @@ const AlexFutureLeadership: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="alex-future-narrative"
+          characterName="Alex"
         />
       </div>
     </motion.div>

@@ -243,6 +243,7 @@ const DavidDataFoundations: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="david-foundations-narrative"
+          characterName="David"
         />
       </div>
     </motion.div>

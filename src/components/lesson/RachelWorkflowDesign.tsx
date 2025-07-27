@@ -269,6 +269,7 @@ const RachelWorkflowDesign: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="rachel-workflow-narrative"
+          characterName="Rachel"
         />
       </div>
     </motion.div>

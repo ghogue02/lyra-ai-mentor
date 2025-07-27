@@ -282,6 +282,7 @@ const SofiaImpactScaling: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="sofia-scaling-narrative"
+          characterName="Sofia"
         />
       </div>
     </motion.div>

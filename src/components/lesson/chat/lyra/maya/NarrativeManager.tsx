@@ -26,6 +26,7 @@ interface NarrativeManagerProps {
   autoAdvance?: boolean;
   phaseId?: string; // For state persistence
   onReset?: () => void;
+  characterName?: string; // Character name for display
 }
 
 const NarrativeManager: React.FC<NarrativeManagerProps> = ({
@@ -35,7 +36,8 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   interactionPoints = [],
   autoAdvance = false,
   phaseId = 'default',
-  onReset
+  onReset,
+  characterName = 'Maya'
 }) => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
@@ -315,7 +317,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
                 
                 <div className="flex-1 min-h-[60px]">
                   <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-gray-800">Maya</h3>
+                    <h3 className="font-semibold text-gray-800">{characterName}</h3>
                     {getEmotionIcon(currentMessage.emotion || 'neutral')}
                   </div>
                   

@@ -247,6 +247,7 @@ const SofiaVoiceDiscovery: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="sofia-voice-narrative"
+          characterName="Sofia"
         />
       </div>
     </motion.div>

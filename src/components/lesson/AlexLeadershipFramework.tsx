@@ -251,6 +251,7 @@ const AlexLeadershipFramework: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="alex-framework-narrative"
+          characterName="Alex"
         />
       </div>
     </motion.div>

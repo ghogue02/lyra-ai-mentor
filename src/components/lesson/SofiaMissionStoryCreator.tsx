@@ -248,6 +248,7 @@ const SofiaMissionStoryCreator: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="sofia-mission-narrative"
+          characterName="Sofia"
         />
       </div>
     </motion.div>

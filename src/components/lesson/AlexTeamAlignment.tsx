@@ -244,6 +244,7 @@ const AlexTeamAlignment: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="alex-unity-narrative"
+          characterName="Alex"
         />
       </div>
     </motion.div>

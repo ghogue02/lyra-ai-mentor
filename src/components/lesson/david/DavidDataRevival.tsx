@@ -244,6 +244,7 @@ const DavidDataRevival: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="david-revival-narrative"
+          characterName="David"
         />
       </div>
     </motion.div>

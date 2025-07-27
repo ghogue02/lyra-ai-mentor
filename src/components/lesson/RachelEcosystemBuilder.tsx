@@ -291,6 +291,7 @@ const RachelEcosystemBuilder: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="rachel-ecosystem-narrative"
+          characterName="Rachel"
         />
       </div>
     </motion.div>

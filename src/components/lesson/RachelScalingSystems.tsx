@@ -272,6 +272,7 @@ const RachelScalingSystems: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="rachel-scaling-narrative"
+          characterName="Rachel"
         />
       </div>
     </motion.div>

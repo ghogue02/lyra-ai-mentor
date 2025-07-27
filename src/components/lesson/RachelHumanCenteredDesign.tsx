@@ -295,6 +295,7 @@ const RachelHumanCenteredDesign: React.FC = () => {
           messages={narrativeMessages}
           onComplete={() => setCurrentPhase('workshop')}
           phaseId="rachel-human-design-narrative"
+          characterName="Rachel"
         />
       </div>
     </motion.div>
