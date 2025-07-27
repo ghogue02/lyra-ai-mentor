@@ -9,6 +9,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 import NarrativeManager from './maya/NarrativeManager';
 import InteractionGateway from './maya/InteractionGateway';
@@ -345,6 +346,14 @@ const LyraIntroductionJourney: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+      <MicroLessonNavigator
+        chapterNumber={1}
+        chapterTitle="Lyra's Introduction Journey"
+        lessonTitle="Meet Your AI Coach"
+        characterName="Lyra"
+        progress={currentPhase === 'complete' ? 100 : 50}
+        showCelebration={currentPhase === 'complete'}
+      />
       <div className="container mx-auto px-4 py-8">
         <GlobalNavigation
           currentPhase={currentPhase as JourneyPhase}

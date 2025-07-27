@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { ToolkitService } from '@/services/toolkitService';
 import { useToast } from '@/hooks/use-toast';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
@@ -439,6 +440,14 @@ const MayaToneMastery: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-surface-primary">
+      <MicroLessonNavigator
+        chapterNumber={2}
+        chapterTitle="Maya's Tone Mastery Workshop"
+        lessonTitle="Multi-Audience Communication"
+        characterName="Maya"
+        progress={currentPhase === 'personal-toolkit' ? 100 : 50}
+        showCelebration={currentPhase === 'personal-toolkit'}
+      />
       {/* Fixed Global Navigation */}
       <div className="fixed top-0 left-0 right-0 z-50 bg-surface-primary/95 backdrop-blur-sm border-b border-border">
         <GlobalNavigation

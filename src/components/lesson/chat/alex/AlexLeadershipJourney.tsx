@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Crown, Target, Users, TrendingUp, ChevronRight, ArrowLeft } from 'lucide-react';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 type AlexJourneyPhase = 'intro' | 'change-leadership' | 'strategic-planning' | 'team-alignment' | 'complete';
 
@@ -395,6 +396,14 @@ const AlexLeadershipJourney: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-violet-50 via-white to-purple-50">
+      <MicroLessonNavigator
+        chapterNumber={5}
+        chapterTitle="Alex's Leadership Journey"
+        lessonTitle="Interactive Alex Journey"
+        characterName="Alex"
+        progress={currentPhase === 'complete' ? 100 : 50}
+        showCelebration={currentPhase === 'complete'}
+      />
       <div className="container mx-auto px-4 py-16">
         <AnimatePresence mode="wait">
           {renderPhase()}

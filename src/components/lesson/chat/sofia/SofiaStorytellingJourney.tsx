@@ -9,6 +9,7 @@ import { BrandedIcon } from '@/components/ui/BrandedIcon';
 import { Badge } from '@/components/ui/badge';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
 import { getSupabaseIconUrl } from '@/utils/supabaseIcons';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 type SofiaJourneyPhase = 'intro' | 'voice-discovery' | 'story-crafting' | 'impact-communication' | 'complete';
 
@@ -359,6 +360,14 @@ const SofiaStorytellingJourney: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
+      <MicroLessonNavigator
+        chapterNumber={3}
+        chapterTitle="Sofia's Storytelling Journey"
+        lessonTitle="Interactive Sofia Journey"
+        characterName="Sofia"
+        progress={currentPhase === 'complete' ? 100 : 50}
+        showCelebration={currentPhase === 'complete'}
+      />
       <div className="container mx-auto px-4 py-16">
         <AnimatePresence mode="wait">
           {renderPhase()}

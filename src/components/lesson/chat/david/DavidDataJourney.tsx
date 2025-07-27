@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { BarChart3, TrendingUp, Eye, Users, ChevronRight, ArrowLeft } from 'lucide-react';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 type DavidJourneyPhase = 'intro' | 'data-visualization' | 'story-extraction' | 'impact-reporting' | 'complete';
 
@@ -377,6 +378,14 @@ const DavidDataJourney: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-white to-teal-50">
+      <MicroLessonNavigator
+        chapterNumber={4}
+        chapterTitle="David's Data Journey"
+        lessonTitle="Interactive David Journey"
+        characterName="David"
+        progress={currentPhase === 'complete' ? 100 : 50}
+        showCelebration={currentPhase === 'complete'}
+      />
       <div className="container mx-auto px-4 py-16">
         <AnimatePresence mode="wait">
           {renderPhase()}

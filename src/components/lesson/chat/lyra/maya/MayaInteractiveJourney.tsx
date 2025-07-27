@@ -12,6 +12,7 @@ import { useJourneyProgress } from '@/hooks/useJourneyProgress';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import AnimatedCheckmark from '@/components/ui/AnimatedCheckmark';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 
 import NarrativeManager from './NarrativeManager';
 import InteractionGateway from './InteractionGateway';
@@ -557,6 +558,14 @@ Keep the tone professional but genuine, and focus on solutions rather than probl
 
   return (
     <div className="min-h-screen bg-surface-primary">
+      <MicroLessonNavigator
+        chapterNumber={2}
+        chapterTitle="Maya's Interactive Journey"
+        lessonTitle="PACE Framework Master Class"
+        characterName="Maya"
+        progress={progressPercentage}
+        showCelebration={isCompleted}
+      />
       {/* Global Navigation - only show after intro */}
       {currentPhase !== 'intro' && (
         <GlobalNavigation
