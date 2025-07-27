@@ -28,6 +28,9 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
   ...props
 }) => {
   const isDisabled = disabled || loading;
+  
+  // Generate aria-label if not provided and children is string
+  const ariaLabel = props['aria-label'] || (typeof children === 'string' ? children : undefined);
 
   const buttonClasses = cn(
     glow && 'shadow-lg hover:shadow-xl',
@@ -83,6 +86,7 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
           size={size}
           className={buttonClasses}
           disabled={isDisabled}
+          aria-label={ariaLabel}
           {...props}
         >
           {buttonContent}
@@ -97,6 +101,7 @@ export const BrandedButton: React.FC<BrandedButtonProps> = ({
       size={size}
       className={buttonClasses}
       disabled={isDisabled}
+      aria-label={ariaLabel}
       {...props}
     >
       {buttonContent}

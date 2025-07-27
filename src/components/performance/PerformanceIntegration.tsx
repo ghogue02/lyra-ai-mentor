@@ -159,9 +159,11 @@ const PerformanceMonitor: React.FC = memo(() => {
 
     const startTime = performance.now();
     
+    // Use a ref to track renders to avoid infinite loops
+    const endTime = performance.now();
+    const renderTime = endTime - startTime;
+    
     setMetrics(prev => {
-      const endTime = performance.now();
-      const renderTime = endTime - startTime;
       const newCount = prev.renderCount + 1;
       const newAverage = (prev.averageRenderTime * prev.renderCount + renderTime) / newCount;
       
@@ -171,7 +173,7 @@ const PerformanceMonitor: React.FC = memo(() => {
         averageRenderTime: newAverage
       };
     });
-  });
+  }, []); // Empty dependency array to prevent infinite loop
 
   if (process.env.NODE_ENV !== 'development') return null;
 
