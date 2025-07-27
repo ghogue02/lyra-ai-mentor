@@ -34,7 +34,7 @@ export const LyraAIEthicsLesson: React.FC = () => {
   const [currentStep, setCurrentStep] = useState(0);
   const [currentScenario, setCurrentScenario] = useState(0);
   const [selectedOption, setSelectedOption] = useState<string>('');
-  const [scenarioResults, setScenarioResults] = useState<Array<{ scenarioId: string; choice: string; ethical: string }>>([]);
+  const [scenarioResults, setScenarioResults] = useState<Array<{ scenarioId: string; choice: string; ethical: 'good' | 'concerning' | 'problematic' }>>([]);
   const [showExplanation, setShowExplanation] = useState(false);
 
   const ethicalPrinciples = [
