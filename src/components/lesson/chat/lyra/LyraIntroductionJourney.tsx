@@ -224,7 +224,7 @@ const LyraIntroductionJourney: React.FC = () => {
           >
             <div className="max-w-2xl mx-auto p-6 space-y-6">
               <div className="text-center mb-8">
-                <LyraCharacter size="lg" mood="happy" className="mx-auto mb-4" name="Lyra" />
+                <LyraCharacter size="lg" mood="happy" className="mx-auto mb-4" name="Lyra" key="lyra-character" />
                 <h3 className="text-2xl font-bold mb-2">Let's Get Acquainted</h3>
                 <p className="text-muted-foreground">
                   This is your first direct conversation with me. I'd love to learn about your work and how I can help you.
