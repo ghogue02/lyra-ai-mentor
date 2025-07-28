@@ -17,8 +17,6 @@ const MayaCharacter: React.FC<MayaCharacterProps> = ({
   className = '',
   name = 'Maya'
 }) => {
-  // Debug logging to ensure prop is received
-  console.log('MayaCharacter rendering with name:', name);
   const getSizeClasses = () => {
     switch (size) {
       case 'sm':

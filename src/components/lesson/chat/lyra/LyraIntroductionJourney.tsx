@@ -186,6 +186,7 @@ const LyraIntroductionJourney: React.FC = () => {
                     autoAdvance={false}
                     phaseId="lyra-introduction"
                     onReset={() => setCurrentPhase('intro')}
+                    characterName="Lyra"
                   />
                 </div>
               </div>
@@ -207,6 +208,7 @@ const LyraIntroductionJourney: React.FC = () => {
                     autoAdvance={false}
                     phaseId="capabilities-demo"
                     onReset={() => setCurrentPhase('intro')}
+                    characterName="Lyra"
                   />
                 </div>
               </div>
@@ -276,6 +278,7 @@ const LyraIntroductionJourney: React.FC = () => {
                     autoAdvance={false}
                     phaseId="goal-setting"
                     onReset={() => setCurrentPhase('intro')}
+                    characterName="Lyra"
                   />
                 </div>
               </div>
