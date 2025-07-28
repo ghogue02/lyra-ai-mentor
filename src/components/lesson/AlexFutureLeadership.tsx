@@ -113,7 +113,7 @@ const AlexFutureLeadership: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'alex',
-          contentType: 'future-roadmap',
+          contentType: 'article',
           topic: `${timeframe?.name} AI leadership roadmap`,
           context: `Alex Rivera at National Advocacy Coalition needs sustainable AI roadmap for ${timeframe?.name.toLowerCase()}. Organization vision: ${organizationVision}. Sustainability goals: ${sustainabilityGoals}. Create comprehensive roadmap with milestones, success metrics, and long-term sustainability strategies.`
         }

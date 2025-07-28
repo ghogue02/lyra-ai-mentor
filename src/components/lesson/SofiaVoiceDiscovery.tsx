@@ -116,7 +116,7 @@ const SofiaVoiceDiscovery: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'sofia',
-          contentType: 'voice-discovery',
+          contentType: 'article',
           topic: 'Authentic voice development and discovery',
           context: `Sofia Martinez needs to help discover an authentic communication voice. 
           

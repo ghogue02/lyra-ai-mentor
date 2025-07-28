@@ -136,7 +136,7 @@ const RachelEcosystemBuilder: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'rachel',
-          contentType: 'ecosystem-blueprint',
+          contentType: 'article',
           topic: 'Complete automation ecosystem architecture',
           context: `Rachel Thompson needs to design a comprehensive automation ecosystem for: ${ecosystemVision}. Organization size: ${organizationSize}. Implementation timeframe: ${timeframe}. Selected components: ${componentNames}. Provide detailed architecture blueprint, integration strategies, implementation phases, governance framework, and success metrics. Focus on human-centered design and scalable systems.`
         }

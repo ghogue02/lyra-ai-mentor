@@ -117,7 +117,7 @@ const SofiaMissionStoryCreator: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'sofia',
-          contentType: 'mission-story',
+          contentType: 'article',
           topic: 'Transforming invisible mission into compelling story',
           context: `Sofia Martinez at Hope Gardens Community Center needs to transform her organization's mission into a compelling story. 
           

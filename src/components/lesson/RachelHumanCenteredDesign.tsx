@@ -141,7 +141,7 @@ const RachelHumanCenteredDesign: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'rachel',
-          contentType: 'human-centered-design',
+          contentType: 'article',
           topic: `${principle?.name} automation design`,
           context: `Rachel Thompson needs to design human-centered automation for: ${automationDescription}. Focus on ${principle?.name}. Applied checklist items: ${checkedChecklist.join(', ')}. Provide specific design recommendations, implementation steps, and safeguards.`
         }

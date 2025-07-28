@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Neumorphic Style Guide</title>
+    <style>
+        /* ===================================
+           GLOBAL NEUMORPHIC STYLE SYSTEM
+           =================================== */
+
+        /* 1. CSS VARIABLES - Define once, use everywhere */
+        :root {
+            /* Base colors */
+            --nm-bg-color: #f0f4f8;
+            --nm-text-primary: #2d3748;
+            --nm-text-secondary: #718096;
+            --nm-text-muted: #a0aec0;
+            --nm-accent-color: #5a67d8;
+            --nm-accent-hover: #667eea;
+            
+            /* Shadow colors */
+            --nm-shadow-dark: rgba(214, 220, 229, 0.8);
+            --nm-shadow-light: rgba(255, 255, 255, 0.8);
+            --nm-shadow-inset-dark: rgba(214, 220, 229, 0.2);
+            --nm-shadow-inset-light: rgba(255, 255, 255, 0.2);
+            
+            /* Shadow configurations */
+            --nm-shadow-xs: 
+                2px 2px 4px var(--nm-shadow-dark),
+                -2px -2px 4px var(--nm-shadow-light);
+                
+            --nm-shadow-sm: 
+                4px 4px 8px var(--nm-shadow-dark),
+                -4px -4px 8px var(--nm-shadow-light);
+                
+            --nm-shadow-md: 
+                6px 6px 12px var(--nm-shadow-dark),
+                -6px -6px 12px var(--nm-shadow-light),
+                inset 1px 1px 2px var(--nm-shadow-inset-dark),
+                inset -1px -1px 2px var(--nm-shadow-inset-light);
+                
+            --nm-shadow-lg: 
+                8px 8px 16px var(--nm-shadow-dark),
+                -8px -8px 16px var(--nm-shadow-light),
+                inset 2px 2px 4px var(--nm-shadow-inset-dark),
+                inset -2px -2px 4px var(--nm-shadow-inset-light);
+                
+            --nm-shadow-inset-sm: 
+                inset 3px 3px 6px var(--nm-shadow-dark),
+                inset -3px -3px 6px var(--nm-shadow-light);
+                
+            --nm-shadow-inset-md: 
+                inset 4px 4px 8px var(--nm-shadow-dark),
+                inset -4px -4px 8px var(--nm-shadow-light);
+                
+            /* Border radius */
+            --nm-radius-sm: 8px;
+            --nm-radius-md: 12px;
+            --nm-radius-lg: 16px;
+            --nm-radius-xl: 20px;
+            --nm-radius-round: 50%;
+            
+            /* Spacing */
+            --nm-spacing-xs: 0.5rem;
+            --nm-spacing-sm: 1rem;
+            --nm-spacing-md: 1.5rem;
+            --nm-spacing-lg: 2rem;
+            --nm-spacing-xl: 3rem;
+            
+            /* Transitions */
+            --nm-transition: all 0.2s ease;
+            --nm-transition-slow: all 0.3s ease;
+        }
+
+        /* 2. BASE SETUP - Apply to body or main container */
+        .nm-app {
+            background: var(--nm-bg-color);
+            color: var(--nm-text-primary);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* 3. CARD COMPONENTS */
+        .nm-card {
+            background: var(--nm-bg-color);
+            border-radius: var(--nm-radius-lg);
+            padding: var(--nm-spacing-md);
+            box-shadow: var(--nm-shadow-md);
+            transition: var(--nm-transition);
+        }
+
+        .nm-card:hover {
+            box-shadow: var(--nm-shadow-lg);
+            transform: translateY(-3px);
+        }
+
+        /* Card variations */
+        .nm-card-sm {
+            padding: var(--nm-spacing-sm);
+            border-radius: var(--nm-radius-md);
+            box-shadow: var(--nm-shadow-sm);
+        }
+
+        .nm-card-lg {
+            padding: var(--nm-spacing-lg);
+            border-radius: var(--nm-radius-xl);
+            box-shadow: var(--nm-shadow-lg);
+        }
+
+        .nm-card-pressed {
+            box-shadow: var(--nm-shadow-inset-md);
+        }
+
+        .nm-card-flat {
+            box-shadow: var(--nm-shadow-xs);
+        }
+
+        /* 4. BUTTON COMPONENTS */
+        .nm-button {
+            background: var(--nm-bg-color);
+            color: var(--nm-accent-color);
+            border: none;
+            border-radius: var(--nm-radius-sm);
+            padding: 0.625rem 1.5rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            box-shadow: var(--nm-shadow-sm);
+            transition: var(--nm-transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nm-button:hover {
+            box-shadow: var(--nm-shadow-inset-sm);
+            transform: translateY(0);
+        }
+
+        .nm-button:active {
+            box-shadow: var(--nm-shadow-inset-md);
+        }
+
+        /* Button variations - use with .nm-button base class */
+        .nm-button.nm-button-primary {
+            background: var(--nm-accent-color);
+            color: white;
+            box-shadow: 
+                6px 6px 12px var(--nm-shadow-dark),
+                -6px -6px 12px var(--nm-shadow-light),
+                inset 1px 1px 2px rgba(0, 0, 0, 0.1),
+                inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+        }
+
+        .nm-button.nm-button-primary:hover {
+            background: var(--nm-accent-hover);
+            box-shadow: 
+                8px 8px 16px var(--nm-shadow-dark),
+                -8px -8px 16px var(--nm-shadow-light),
+                inset 2px 2px 4px rgba(0, 0, 0, 0.1),
+                inset -2px -2px 4px rgba(255, 255, 255, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .nm-button.nm-button-primary:active {
+            box-shadow: 
+                inset 4px 4px 8px rgba(0, 0, 0, 0.2),
+                inset -4px -4px 8px rgba(255, 255, 255, 0.1);
+        }
+
+        .nm-button.nm-button-lg {
+            padding: 0.875rem 2rem;
+            font-size: 1rem;
+            border-radius: var(--nm-radius-md);
+        }
+
+        .nm-button.nm-button-round {
+            border-radius: 50px;
+        }
+
+        .nm-button.nm-button-icon {
+            width: 2.5rem;
+            height: 2.5rem;
+            padding: 0;
+            border-radius: var(--nm-radius-round);
+            justify-content: center;
+        }
+
+        /* 5. INPUT COMPONENTS */
+        .nm-input {
+            background: var(--nm-bg-color);
+            border: none;
+            border-radius: var(--nm-radius-sm);
+            padding: 0.75rem 1rem;
+            font-size: 0.875rem;
+            color: var(--nm-text-primary);
+            box-shadow: var(--nm-shadow-inset-sm);
+            transition: var(--nm-transition);
+            width: 100%;
+        }
+
+        .nm-input:focus {
+            outline: none;
+            box-shadow: var(--nm-shadow-inset-md);
+        }
+
+        .nm-input::placeholder {
+            color: var(--nm-text-muted);
+        }
+
+        /* 6. SPECIAL ELEMENTS */
+        .nm-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: var(--nm-radius-round);
+            background: var(--nm-bg-color);
+            box-shadow: var(--nm-shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .nm-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: var(--nm-bg-color);
+            box-shadow: var(--nm-shadow-xs);
+        }
+
+        .nm-progress {
+            width: 100%;
+            height: 12px;
+            background: var(--nm-bg-color);
+            border-radius: 6px;
+            box-shadow: var(--nm-shadow-inset-sm);
+            overflow: hidden;
+        }
+
+        .nm-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--nm-accent-color), var(--nm-accent-hover));
+            border-radius: 6px;
+            transition: width 1s ease-out;
+        }
+
+        /* 7. UTILITY CLASSES */
+        .nm-inset {
+            box-shadow: var(--nm-shadow-inset-md) !important;
+        }
+
+        .nm-flat {
+            box-shadow: var(--nm-shadow-xs) !important;
+        }
+
+        .nm-floating {
+            box-shadow: var(--nm-shadow-lg) !important;
+        }
+
+        .nm-clickable {
+            cursor: pointer;
+            transition: var(--nm-transition);
+        }
+
+        .nm-clickable:hover {
+            transform: translateY(-2px);
+        }
+
+        /* 8. LAYOUT HELPERS */
+        .nm-container {
+            background: var(--nm-bg-color);
+            border-radius: var(--nm-radius-xl);
+            padding: var(--nm-spacing-lg);
+            box-shadow: var(--nm-shadow-md);
+        }
+
+        .nm-section {
+            background: var(--nm-bg-color);
+            padding: var(--nm-spacing-xl) var(--nm-spacing-lg);
+        }
+
+        /* ===================================
+           IMPLEMENTATION EXAMPLES
+           =================================== */
+
+        /* Example styles for demo */
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .demo-section {
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        h1, h2, h3 {
+            color: var(--nm-text-primary);
+        }
+
+        .code-block {
+            background: #1a202c;
+            color: #e2e8f0;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            overflow-x: auto;
+            margin: 1rem 0;
+        }
+
+        .instruction-box {
+            background: #e6fffa;
+            border-left: 4px solid #319795;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="nm-app">
+    <div class="demo-section">
+        <h1>Global Neumorphic Style Implementation Guide</h1>
+        
+        <div class="instruction-box">
+            <h2>🤖 Instructions for Coding Agent</h2>
+            <p><strong>Objective:</strong> Implement the layered neumorphic design system across the entire website.</p>
+        </div>
+
+        <h2>Step 1: Add CSS Variables to Your Global Stylesheet</h2>
+        <div class="code-block">
+/* Add this to your main CSS file or create a new file: neumorphic-styles.css */
+
+:root {
+    /* Base colors */
+    --nm-bg-color: #f0f4f8;
+    --nm-text-primary: #2d3748;
+    --nm-text-secondary: #718096;
+    --nm-text-muted: #a0aec0;
+    --nm-accent-color: #5a67d8;
+    --nm-accent-hover: #667eea;
+    
+    /* Shadow colors */
+    --nm-shadow-dark: rgba(214, 220, 229, 0.8);
+    --nm-shadow-light: rgba(255, 255, 255, 0.8);
+    /* ... all other variables ... */
+}
+
+/* IMPORTANT: Button styles with proper shadows */
+.nm-button {
+    background: var(--nm-bg-color);
+    color: var(--nm-accent-color);
+    box-shadow: var(--nm-shadow-sm);
+    /* ... base button styles ... */
+}
+
+.nm-button-primary {
+    background: var(--nm-accent-color);
+    color: white;
+    box-shadow: 
+        6px 6px 12px var(--nm-shadow-dark),
+        -6px -6px 12px var(--nm-shadow-light),
+        inset 1px 1px 2px rgba(0, 0, 0, 0.1),
+        inset -1px -1px 2px rgba(255, 255, 255, 0.1);
+}
+
+/* All button variants must include shadows! */
+        </div>
+
+        <h2>Step 2: Apply Base Class to Body or Main Container</h2>
+        <div class="code-block">
+&lt;body class="nm-app"&gt;
+    &lt;!-- Your content --&gt;
+&lt;/body&gt;
+
+/* OR for React/Vue/Angular */
+&lt;div id="app" class="nm-app"&gt;
+    &lt;!-- Your app --&gt;
+&lt;/div&gt;
+        </div>
+
+        <h2>Step 3: Update Existing Elements</h2>
+        
+        <h3>Cards/Panels</h3>
+        <div class="demo-grid">
+            <div class="nm-card">
+                <h4>Default Card</h4>
+                <p>Replace <code>.card</code> with <code>.nm-card</code></p>
+                <code>&lt;div class="nm-card"&gt;...&lt;/div&gt;</code>
+            </div>
+            <div class="nm-card-sm">
+                <h4>Small Card</h4>
+                <p>Use <code>.nm-card-sm</code> for compact cards</p>
+            </div>
+            <div class="nm-card-lg">
+                <h4>Large Card</h4>
+                <p>Use <code>.nm-card-lg</code> for feature cards</p>
+            </div>
+        </div>
+
+        <h3>Buttons</h3>
+        <div class="instruction-box" style="background: #fee; border-color: #c53030;">
+            <strong>⚠️ Important:</strong> All button variations MUST include the neumorphic shadows. Primary buttons need custom shadow colors for the colored background.
+        </div>
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin: 2rem 0;">
+            <button class="nm-button">Default Button</button>
+            <button class="nm-button nm-button-primary">Primary Button</button>
+            <button class="nm-button nm-button-lg">Large Button</button>
+            <button class="nm-button nm-button-round">Rounded Button</button>
+            <button class="nm-button nm-button-icon">🚀</button>
+        </div>
+
+        <h3>Form Elements</h3>
+        <div style="max-width: 400px; margin: 2rem 0;">
+            <input type="text" class="nm-input" placeholder="Enter text...">
+            <div style="margin-top: 1rem;">
+                <input type="email" class="nm-input" placeholder="Email address...">
+            </div>
+        </div>
+
+        <h3>Special Elements</h3>
+        <div style="display: flex; gap: 2rem; align-items: center; margin: 2rem 0;">
+            <div class="nm-avatar">👤</div>
+            <div class="nm-badge">New</div>
+            <div class="nm-badge" style="background: var(--nm-accent-color); color: white;">Pro</div>
+        </div>
+
+        <div class="nm-progress" style="max-width: 300px; margin: 2rem 0;">
+            <div class="nm-progress-fill" style="width: 60%;"></div>
+        </div>
+
+        <h2>Step 4: Migration Mapping</h2>
+        <div class="instruction-box">
+            <h3>Class Replacement Guide:</h3>
+            <ul>
+                <li><code>.card</code> → <code>.nm-card</code></li>
+                <li><code>.btn</code> → <code>.nm-button</code></li>
+                <li><code>.btn-primary</code> → <code>.nm-button nm-button-primary</code></li>
+                <li><code>.btn-lg</code> → <code>.nm-button nm-button-lg</code></li>
+                <li><code>.form-control</code> → <code>.nm-input</code></li>
+                <li><code>.avatar</code> → <code>.nm-avatar</code></li>
+                <li><code>.badge</code> → <code>.nm-badge</code></li>
+                <li><code>.progress</code> → <code>.nm-progress</code></li>
+                <li><code>.container</code> → <code>.nm-container</code> (for boxed sections)</li>
+            </ul>
+            <div style="background: #fef3c7; border-left: 4px solid #f59e0b; padding: 1rem; margin-top: 1rem; border-radius: 4px;">
+                <strong>Note on buttons:</strong> Always combine button modifiers with the base <code>.nm-button</code> class:<br>
+                <code>&lt;button class="nm-button nm-button-primary"&gt;</code> NOT <code>&lt;button class="nm-button-primary"&gt;</code>
+            </div>
+        </div>
+
+        <h2>Step 5: Responsive Considerations</h2>
+        <div class="code-block">
+/* Add these media queries to your CSS */
+
+@media (max-width: 768px) {
+    :root {
+        /* Reduce shadows on mobile for performance */
+        --nm-shadow-md: 
+            4px 4px 8px var(--nm-shadow-dark),
+            -4px -4px 8px var(--nm-shadow-light);
+    }
+    
+    .nm-card {
+        padding: var(--nm-spacing-sm);
+    }
+    
+    .nm-button {
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* Dark mode support (optional) */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --nm-bg-color: #1a202c;
+        --nm-text-primary: #e2e8f0;
+        --nm-shadow-dark: rgba(0, 0, 0, 0.6);
+        --nm-shadow-light: rgba(45, 55, 72, 0.3);
+    }
+}
+        </div>
+
+        <h2>Step 6: Component-Specific Adjustments</h2>
+        
+        <div class="nm-card" style="margin: 2rem 0;">
+            <h3>Navigation Bars</h3>
+            <div class="code-block">
+.navbar {
+    background: var(--nm-bg-color);
+    box-shadow: var(--nm-shadow-sm);
+    padding: var(--nm-spacing-sm) var(--nm-spacing-lg);
+}
+
+.nav-item {
+    padding: var(--nm-spacing-xs) var(--nm-spacing-sm);
+    border-radius: var(--nm-radius-sm);
+    transition: var(--nm-transition);
+}
+
+.nav-item:hover {
+    box-shadow: var(--nm-shadow-inset-sm);
+}</div>
+        </div>
+
+        <div class="nm-card" style="margin: 2rem 0;">
+            <h3>Modal/Dialog Boxes</h3>
+            <div class="code-block">
+.modal {
+    background: var(--nm-bg-color);
+    border-radius: var(--nm-radius-xl);
+    box-shadow: var(--nm-shadow-lg);
+    padding: var(--nm-spacing-lg);
+}
+
+.modal-overlay {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+}</div>
+        </div>
+
+        <h2>Step 7: Testing Checklist</h2>
+        <div class="instruction-box">
+            <h3>✅ Verify These Elements:</h3>
+            <ol>
+                <li>All cards/panels have proper shadows and hover effects</li>
+                <li>Buttons show pressed state on click</li>
+                <li>Form inputs have inset shadows</li>
+                <li>Text contrast meets accessibility standards</li>
+                <li>Hover states work on all interactive elements</li>
+                <li>Mobile view maintains readability</li>
+                <li>Page load performance is acceptable</li>
+            </ol>
+        </div>
+
+        <h2>Step 8: Advanced Customization</h2>
+        <div class="nm-card">
+            <h3>Creating Custom Components</h3>
+            <div class="code-block">
+/* Custom dropdown */
+.nm-dropdown {
+    background: var(--nm-bg-color);
+    border-radius: var(--nm-radius-md);
+    box-shadow: var(--nm-shadow-lg);
+    padding: var(--nm-spacing-xs);
+    margin-top: 0.5rem;
+}
+
+.nm-dropdown-item {
+    padding: var(--nm-spacing-xs) var(--nm-spacing-sm);
+    border-radius: var(--nm-radius-sm);
+    transition: var(--nm-transition);
+}
+
+.nm-dropdown-item:hover {
+    box-shadow: var(--nm-shadow-inset-sm);
+}
+
+/* Custom switch */
+.nm-switch {
+    width: 48px;
+    height: 24px;
+    background: var(--nm-bg-color);
+    border-radius: 12px;
+    box-shadow: var(--nm-shadow-inset-sm);
+    position: relative;
+    cursor: pointer;
+}
+
+.nm-switch-handle {
+    width: 20px;
+    height: 20px;
+    background: var(--nm-bg-color);
+    border-radius: var(--nm-radius-round);
+    box-shadow: var(--nm-shadow-sm);
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: var(--nm-transition);
+}
+
+.nm-switch.active .nm-switch-handle {
+    left: 26px;
+    background: var(--nm-accent-color);
+}</div>
+        </div>
+
+        <h2>Final Notes</h2>
+        <div class="instruction-box">
+            <h3>⚡ Performance Tips:</h3>
+            <ul>
+                <li>Use CSS transforms instead of position changes for animations</li>
+                <li>Limit the number of elements with complex shadows on mobile</li>
+                <li>Consider using <code>will-change: transform</code> on frequently animated elements</li>
+                <li>Test on low-end devices to ensure smooth performance</li>
+            </ul>
+            
+            <h3>🎨 Design Consistency:</h3>
+            <ul>
+                <li>Always use the CSS variables instead of hard-coded values</li>
+                <li>Maintain consistent spacing using the spacing variables</li>
+                <li>Keep hover states subtle (don't over-animate)</li>
+                <li>Ensure all interactive elements have visible feedback</li>
+            </ul>
+        </div>
+    </div>
+</body>
+</html>

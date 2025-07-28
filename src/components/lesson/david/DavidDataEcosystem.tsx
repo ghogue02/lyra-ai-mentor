@@ -117,7 +117,7 @@ const DavidDataEcosystem: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'david',
-          contentType: 'ecosystem-blueprint',
+          contentType: 'article',
           topic: `${component?.name} for nonprofit data ecosystem`,
           context: `David Chen needs to design a comprehensive ${component?.name.toLowerCase()} for Riverside Children's Foundation. Include specific integration points: ${component?.integrations.join(', ')}. The system should deliver: ${component?.benefits}. Provide detailed implementation blueprint with technical requirements and step-by-step deployment plan.`
         }
