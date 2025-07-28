@@ -64,9 +64,9 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
       (isLocked || isPlaceholder) ? "opacity-60" : ""
     )}>
       <div className="pb-4 flex-shrink-0">
-        <div className="flex items-start justify-between">
+        <div className="flex flex-col items-center">
           <div className={cn(
-            "nm-icon w-20 h-20",
+            "nm-icon w-20 h-20 flex items-center justify-center mb-2",
             (isLocked || isPlaceholder) ? "opacity-60" : ""
           )}>
             {(isLocked || isPlaceholder) ? (
@@ -84,10 +84,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
             )}
           </div>
           
-          <div className="flex flex-col items-end gap-2">
-            <div className="nm-badge text-xs px-2 py-1">
-              {chapter.duration}
-            </div>
+          <div className="flex flex-col items-center gap-2">
             {isCompleted && (
               <div className="nm-badge-secondary text-xs px-2 py-1">
                 Completed
