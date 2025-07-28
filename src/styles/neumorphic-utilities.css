@@ -7,18 +7,21 @@
    VIDEO MASCOT TRANSPARENCY SYSTEM
    ======================================== */
 
-/* Container for mascot videos with proper neumorphic background */
+/* Container for mascot videos - copy exact styling from nm-hero-card */
 .nm-mascot-container {
-  background: var(--nm-background);
-  border-radius: 24px;
-  padding: 2rem;
-  /* Subtle neumorphic shadows that blend seamlessly with background */
+  position: relative;
+  transition: all 0.5s;
+  border-radius: var(--nm-radius-lg);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.8));
+  border: 1px solid var(--nm-border);
   box-shadow: 
-    8px 8px 16px rgba(0,0,0,0.02),
-    -8px -8px 16px rgba(255,255,255,0.8);
+    16px 16px 32px rgba(209, 213, 219, 0.8),
+    -16px -16px 32px rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 2rem;
 }
 
 /* Video element with white background removal */
@@ -55,11 +58,10 @@
 @media (max-width: 768px) {
   .nm-mascot-container {
     padding: 1.5rem;
-    border-radius: 20px;
-    /* Slightly reduced shadows for mobile */
+    border-radius: var(--nm-radius-md);
     box-shadow: 
-      6px 6px 12px rgba(0,0,0,0.015),
-      -6px -6px 12px rgba(255,255,255,0.9);
+      12px 12px 24px rgba(209, 213, 219, 0.7),
+      -12px -12px 24px rgba(255, 255, 255, 0.8);
   }
   
   .nm-mascot-video {
@@ -70,19 +72,11 @@
 /* Dark mode support */
 @media (prefers-color-scheme: dark) {
   .nm-mascot-container {
-    background: var(--nm-background-dark, #2a2a2a);
+    background: linear-gradient(145deg, rgba(42, 42, 42, 0.9), rgba(32, 32, 32, 0.8));
+    border: 1px solid rgba(255, 255, 255, 0.1);
     box-shadow: 
-      8px 8px 16px rgba(0,0,0,0.15),
-      -8px -8px 16px rgba(255,255,255,0.02);
-  }
-  
-  /* Dark mode mobile adjustments */
-  @media (max-width: 768px) {
-    .nm-mascot-container {
-      box-shadow: 
-        6px 6px 12px rgba(0,0,0,0.1),
-        -6px -6px 12px rgba(255,255,255,0.015);
-    }
+      16px 16px 32px rgba(0, 0, 0, 0.6),
+      -16px -16px 32px rgba(255, 255, 255, 0.05);
   }
   
   .nm-mascot-video {
