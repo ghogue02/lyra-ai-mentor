@@ -4,88 +4,11 @@
  */
 
 /* ========================================
-   VIDEO MASCOT TRANSPARENCY SYSTEM
+   REMOVED: VIDEO MASCOT TRANSPARENCY SYSTEM
+   
+   This entire section has been removed to eliminate black border issues.
+   Dashboard now uses the same nm-hero-card approach as the landing page.
    ======================================== */
-
-/* Container for mascot videos - copy exact styling from nm-hero-card */
-.nm-mascot-container {
-  position: relative;
-  transition: all 0.5s;
-  border-radius: var(--nm-radius-lg);
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.9), rgba(248, 250, 252, 0.8));
-  border: 1px solid var(--nm-border);
-  box-shadow: 
-    16px 16px 32px rgba(209, 213, 219, 0.8),
-    -16px -16px 32px rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(16px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 2rem;
-}
-
-/* Video element with white background removal */
-.nm-mascot-video {
-  /* Primary method: Mix blend mode to make white transparent */
-  mix-blend-mode: multiply;
-  border-radius: 16px;
-  
-  /* Fallback method: CSS filters for better white removal */
-  filter: 
-    contrast(1.2)
-    saturate(1.1);
-}
-
-/* Alternative blend modes for different video types */
-.nm-mascot-video.darken {
-  mix-blend-mode: darken;
-}
-
-.nm-mascot-video.screen {
-  mix-blend-mode: screen;
-}
-
-/* Enhanced version with better white removal */
-.nm-mascot-video.enhanced {
-  mix-blend-mode: multiply;
-  filter: 
-    contrast(1.5)
-    brightness(0.95)
-    saturate(1.2);
-}
-
-/* Mobile optimizations */
-@media (max-width: 768px) {
-  .nm-mascot-container {
-    padding: 1.5rem;
-    border-radius: var(--nm-radius-md);
-    box-shadow: 
-      12px 12px 24px rgba(209, 213, 219, 0.7),
-      -12px -12px 24px rgba(255, 255, 255, 0.8);
-  }
-  
-  .nm-mascot-video {
-    border-radius: 12px;
-  }
-}
-
-/* Dark mode support */
-@media (prefers-color-scheme: dark) {
-  .nm-mascot-container {
-    background: linear-gradient(145deg, rgba(42, 42, 42, 0.9), rgba(32, 32, 32, 0.8));
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-      16px 16px 32px rgba(0, 0, 0, 0.6),
-      -16px -16px 32px rgba(255, 255, 255, 0.05);
-  }
-  
-  .nm-mascot-video {
-    mix-blend-mode: screen;
-    filter: 
-      contrast(1.1)
-      brightness(1.1);
-  }
-}
 
 /* ========================================
    ADVANCED SHADOW COMBINATIONS
