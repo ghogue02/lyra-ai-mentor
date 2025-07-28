@@ -13,7 +13,6 @@ interface MicroLesson {
   id: string;
   title: string;
   description: string;
-  duration: number;
   completed: boolean;
   locked: boolean;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
@@ -33,7 +32,7 @@ interface MicroLessonGridProps {
 }
 
 type ViewMode = 'grid' | 'list';
-type SortMode = 'default' | 'difficulty' | 'duration' | 'progress';
+type SortMode = 'default' | 'difficulty' | 'progress';
 type FilterMode = 'all' | 'completed' | 'in-progress' | 'not-started';
 
 export const MicroLessonGrid: React.FC<MicroLessonGridProps> = ({
@@ -81,9 +80,6 @@ export const MicroLessonGrid: React.FC<MicroLessonGridProps> = ({
           const order = { beginner: 1, intermediate: 2, advanced: 3 };
           return order[a.difficulty] - order[b.difficulty];
         });
-        break;
-      case 'duration':
-        filtered.sort((a, b) => a.duration - b.duration);
         break;
       case 'progress':
         filtered.sort((a, b) => (b.progress || 0) - (a.progress || 0));
@@ -186,7 +182,6 @@ export const MicroLessonGrid: React.FC<MicroLessonGridProps> = ({
           >
             <option value="default">Default</option>
             <option value="difficulty">Difficulty</option>
-            <option value="duration">Duration</option>
             <option value="progress">Progress</option>
           </select>
 

@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ChevronLeft, ChevronRight, BookOpen, CheckCircle, Clock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, BookOpen, CheckCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { TypewriterText } from '@/components/lesson/TypewriterText';
 import { InteractiveElementRenderer } from '@/components/lesson/interactive/InteractiveElementRenderer';
@@ -18,7 +18,6 @@ interface LessonData {
   subtitle: string;
   chapter_id: number;
   order_index: number;
-  estimated_duration: number;
   is_published: boolean;
 }
 
@@ -322,12 +321,6 @@ export const Lesson = () => {
               )}
             </div>
             <div className="flex items-center gap-4">
-              {lesson.estimated_duration && (
-                <Badge variant="outline" className="flex items-center gap-1">
-                  <Clock className="w-3 h-3" />
-                  {lesson.estimated_duration} min
-                </Badge>
-              )}
               {progress?.completed && (
                 <Badge className="bg-green-500 hover:bg-green-600">
                   <CheckCircle className="w-3 h-3 mr-1" />

@@ -13,7 +13,6 @@ interface LessonProgressProps {
   totalBlocks: number;
   completedInteractiveElements: number;
   totalInteractiveElements: number;
-  estimatedDuration: number;
   isCompleted?: boolean;
   chatEngagement?: {
     hasReachedMinimum: boolean;

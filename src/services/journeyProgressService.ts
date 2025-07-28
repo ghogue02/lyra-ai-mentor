@@ -8,7 +8,6 @@ export interface JourneyDefinition {
   character_name: string;
   category: string;
   total_phases: number;
-  estimated_duration?: number;
   difficulty_level: string;
   scoring_enabled: boolean;
   scoring_criteria?: any;

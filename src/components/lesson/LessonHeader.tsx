@@ -8,7 +8,6 @@ interface Lesson {
   id: number;
   title: string;
   subtitle: string;
-  estimated_duration: number;
   chapter: {
     title: string;
     icon: string;
@@ -82,7 +81,7 @@ export const LessonHeader: React.FC<LessonHeaderProps> = ({
             totalBlocks={totalBlocks} 
             completedInteractiveElements={completedInteractiveElements} 
             totalInteractiveElements={totalInteractiveElements} 
-            estimatedDuration={lesson.estimated_duration} 
+ 
             isCompleted={isChapterCompleted} 
             chatEngagement={chatEngagement} 
             onMarkChapterComplete={onMarkChapterComplete} 

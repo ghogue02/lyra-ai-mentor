@@ -11,7 +11,6 @@ interface Chapter {
   id: number;
   title: string;
   description: string;
-  duration: string;
 }
 
 interface ChapterCardProps {

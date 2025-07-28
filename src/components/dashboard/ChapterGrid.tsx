@@ -8,7 +8,6 @@ interface Chapter {
   id: number;
   title: string;
   description: string;
-  duration: string;
 }
 
 interface ChapterGridProps {
@@ -22,25 +21,21 @@ const placeholderChapters: Chapter[] = [
     id: 3,
     title: "Communication & Storytelling",
     description: "Connect with your community using AI-enhanced content creation and storytelling techniques.",
-    duration: "20 min"
   },
   {
     id: 4,
     title: "Data & Decision Making",
     description: "Make smarter decisions with AI insights for program analysis and impact measurement.",
-    duration: "25 min"
   },
   {
     id: 5,
     title: "Automation & Efficiency",
     description: "Build AI-powered workflows that handle routine work automatically.",
-    duration: "22 min"
   },
   {
     id: 6,
     title: "Organizational Transformation",
     description: "Become an AI champion and lead the integration of AI tools across your organization.",
-    duration: "18 min"
   }
 ];
 
@@ -146,7 +141,6 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
                 id: chapter.id,
                 title: chapter.title,
                 description: chapter.description || '',
-                duration: chapter.duration || '15 min'
               }}
               isLocked={isLocked}
               isCompleted={isCompleted}

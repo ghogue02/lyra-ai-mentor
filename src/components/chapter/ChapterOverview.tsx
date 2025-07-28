@@ -20,7 +20,6 @@ interface Lesson {
   title: string;
   subtitle?: string;
   order_index: number;
-  estimated_duration?: number;
   progress?: number;
   is_completed?: boolean;
 }
@@ -197,12 +196,6 @@ export const ChapterOverview: React.FC<ChapterOverviewProps> = ({
                       <h3 className="font-bold text-lg text-gray-800 mb-2">{lesson.title}</h3>
                       {lesson.subtitle && (
                         <p className="text-gray-600 text-sm mb-3">{lesson.subtitle}</p>
-                      )}
-                      {lesson.estimated_duration && (
-                        <div className="neu-text-container inline-flex items-center gap-2 px-3 py-1">
-                          <Clock className="w-3 h-3 text-gray-500" />
-                          <span className="text-xs font-medium text-gray-600">{lesson.estimated_duration} min</span>
-                        </div>
                       )}
                     </div>
                   </div>

@@ -17,7 +17,6 @@ interface MicroLesson {
   description: string;
   iconType: 'ethics' | 'data' | 'workflow' | 'communication' | 'achievement' | 'growth' | 'mission' | 'network' | 'learning';
   route: string;
-  estimated_time: string;
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   completed: boolean;
   unlocked: boolean;

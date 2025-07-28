@@ -7,7 +7,6 @@ interface Lesson {
   id: number;
   title: string;
   subtitle: string;
-  estimated_duration: number;
   chapter: {
     title: string;
     icon: string;
@@ -78,7 +77,6 @@ export const useLessonData = (chapterId?: string, lessonId?: string) => {
           id,
           title,
           subtitle,
-          estimated_duration,
           chapter:chapters(title, icon)
         `)
         .eq('id', lessonIdNum)

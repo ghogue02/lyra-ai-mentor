@@ -11,7 +11,6 @@ interface MicroLessonCardProps {
   id: string;
   title: string;
   description: string;
-  duration: number; // in minutes
   completed: boolean;
   locked: boolean;
   difficulty: 'beginner' | 'intermediate' | 'advanced';
@@ -47,7 +46,6 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
   id,
   title,
   description,
-  duration,
   completed,
   locked,
   difficulty,
