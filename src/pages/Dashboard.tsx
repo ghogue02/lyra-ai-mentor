@@ -157,23 +157,25 @@ export const Dashboard = () => {
       
       {/* Header Section - Fixed spacing to prevent header overlap */}
       <section className="container mx-auto px-4 pt-40 pb-8">
-        {/* Animated Rocket - Larger and more prominent */}
+        {/* Animated Rocket - Larger and more prominent with transparent background */}
         <div className="mb-12 flex justify-center">
-          <OptimizedVideoAnimation
-            src={getAnimationUrl('lyra-rocket.mp4')}
-            fallbackIcon={
-              <img 
-                src={getAnimationUrl('lyra-rocket.mp4')} 
-                alt="AI Learning Journey Rocket" 
-                className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 object-contain" 
-              />
-            }
-            className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112"
-            context="ui"
-            autoPlay={true}
-            loop={true}
-            muted={true}
-          />
+          <div className="nm-mascot-container">
+            <OptimizedVideoAnimation
+              src={getAnimationUrl('lyra-rocket.mp4')}
+              fallbackIcon={
+                <img 
+                  src={getAnimationUrl('lyra-rocket.mp4')} 
+                  alt="AI Learning Journey Rocket" 
+                  className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 object-contain nm-mascot-video" 
+                />
+              }
+              className="w-80 h-80 sm:w-96 sm:h-96 md:w-112 md:h-112 nm-mascot-video"
+              context="ui"
+              autoPlay={true}
+              loop={true}
+              muted={true}
+            />
+          </div>
         </div>
 
         <DashboardHeader 

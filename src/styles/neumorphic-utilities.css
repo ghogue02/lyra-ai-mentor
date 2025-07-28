@@ -4,6 +4,83 @@
  */
 
 /* ========================================
+   VIDEO MASCOT TRANSPARENCY SYSTEM
+   ======================================== */
+
+/* Container for mascot videos with proper neumorphic background */
+.nm-mascot-container {
+  background: var(--nm-background);
+  border-radius: 24px;
+  padding: 2rem;
+  /* Neumorphic shadows to blend with background */
+  box-shadow: 
+    12px 12px 24px rgba(0,0,0,0.06),
+    -12px -12px 24px rgba(255,255,255,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Video element with white background removal */
+.nm-mascot-video {
+  /* Primary method: Mix blend mode to make white transparent */
+  mix-blend-mode: multiply;
+  border-radius: 16px;
+  
+  /* Fallback method: CSS filters for better white removal */
+  filter: 
+    contrast(1.2)
+    saturate(1.1);
+}
+
+/* Alternative blend modes for different video types */
+.nm-mascot-video.darken {
+  mix-blend-mode: darken;
+}
+
+.nm-mascot-video.screen {
+  mix-blend-mode: screen;
+}
+
+/* Enhanced version with better white removal */
+.nm-mascot-video.enhanced {
+  mix-blend-mode: multiply;
+  filter: 
+    contrast(1.5)
+    brightness(0.95)
+    saturate(1.2);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .nm-mascot-container {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+  
+  .nm-mascot-video {
+    border-radius: 12px;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .nm-mascot-container {
+    background: var(--nm-background-dark, #2a2a2a);
+    box-shadow: 
+      12px 12px 24px rgba(0,0,0,0.3),
+      -12px -12px 24px rgba(255,255,255,0.05);
+  }
+  
+  .nm-mascot-video {
+    mix-blend-mode: screen;
+    filter: 
+      contrast(1.1)
+      brightness(1.1);
+  }
+}
+
+/* ========================================
    ADVANCED SHADOW COMBINATIONS
    ======================================== */
 

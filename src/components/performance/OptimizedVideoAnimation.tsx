@@ -279,7 +279,8 @@ const OptimizedVideoAnimation: React.FC<OptimizedVideoAnimationProps> = memo(({
           preload={preload}
           className={cn(
             "w-full h-full object-cover transition-opacity duration-300",
-            assetState.loaded && shouldPlay ? 'opacity-100' : 'opacity-0'
+            assetState.loaded && shouldPlay ? 'opacity-100' : 'opacity-0',
+            className.includes('nm-mascot-video') ? 'nm-mascot-video' : ''
           )}
           style={{ 
             width: '100%', 
