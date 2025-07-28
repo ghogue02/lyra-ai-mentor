@@ -88,16 +88,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Call to Action - Neumorphic styled */}
-      <section className="container mx-auto spacing-mobile py-8 sm:py-16 text-center">
-        <div className="nm-cta max-w-2xl mx-auto p-8 text-white">
-          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Transform Your Impact?</h2>
-          <p className="text-lg mb-6 opacity-90">Join thousands of non-profit professionals already using AI to amplify their mission.</p>
-          <button className="nm-button nm-button-secondary px-8 py-3 text-lg font-semibold" onClick={() => setShowPersonalization(true)}>
-            Get Started Free
-          </button>
-        </div>
-      </section>
     </div>;
 };
 export default Index;

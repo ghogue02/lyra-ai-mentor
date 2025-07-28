@@ -12,10 +12,10 @@
   background: var(--nm-background);
   border-radius: 24px;
   padding: 2rem;
-  /* Neumorphic shadows to blend with background */
+  /* Subtle neumorphic shadows that blend seamlessly with background */
   box-shadow: 
-    12px 12px 24px rgba(0,0,0,0.06),
-    -12px -12px 24px rgba(255,255,255,0.5);
+    8px 8px 16px rgba(0,0,0,0.02),
+    -8px -8px 16px rgba(255,255,255,0.8);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -56,6 +56,10 @@
   .nm-mascot-container {
     padding: 1.5rem;
     border-radius: 20px;
+    /* Slightly reduced shadows for mobile */
+    box-shadow: 
+      6px 6px 12px rgba(0,0,0,0.015),
+      -6px -6px 12px rgba(255,255,255,0.9);
   }
   
   .nm-mascot-video {
@@ -68,8 +72,17 @@
   .nm-mascot-container {
     background: var(--nm-background-dark, #2a2a2a);
     box-shadow: 
-      12px 12px 24px rgba(0,0,0,0.3),
-      -12px -12px 24px rgba(255,255,255,0.05);
+      8px 8px 16px rgba(0,0,0,0.15),
+      -8px -8px 16px rgba(255,255,255,0.02);
+  }
+  
+  /* Dark mode mobile adjustments */
+  @media (max-width: 768px) {
+    .nm-mascot-container {
+      box-shadow: 
+        6px 6px 12px rgba(0,0,0,0.1),
+        -6px -6px 12px rgba(255,255,255,0.015);
+    }
   }
   
   .nm-mascot-video {
