@@ -7,13 +7,15 @@ interface MayaCharacterProps {
   size?: 'sm' | 'md' | 'lg';
   showSparkles?: boolean;
   className?: string;
+  name?: string;
 }
 
 const MayaCharacter: React.FC<MayaCharacterProps> = ({
   mood = 'happy',
   size = 'md',
   showSparkles = true,
-  className = ''
+  className = '',
+  name = 'Maya'
 }) => {
   const getSizeClasses = () => {
     switch (size) {
@@ -109,10 +111,10 @@ const MayaCharacter: React.FC<MayaCharacterProps> = ({
         </div>
       )}
 
-      {/* Maya Label */}
+      {/* Character Label */}
       <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
         <div className="neu-text-container px-3 py-1">
-          <span className="text-xs font-bold text-primary">Maya</span>
+          <span className="text-xs font-bold text-primary">{name}</span>
         </div>
       </div>
     </div>

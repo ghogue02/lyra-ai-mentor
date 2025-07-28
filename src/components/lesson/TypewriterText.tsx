@@ -49,14 +49,14 @@ export const TypewriterText: React.FC<TypewriterTextProps> = ({
   if (preserveHTML) {
     return (
       <div 
-        className={`${className} ${isComplete ? '' : 'after:content-[""] after:inline-block after:w-0.5 after:h-5 after:bg-current after:animate-pulse after:ml-0.5'}`}
+        className={`${className} break-words max-w-full text-sm sm:text-base leading-normal sm:leading-relaxed ${isComplete ? '' : 'after:content-[""] after:inline-block after:w-0.5 after:h-5 after:bg-current after:animate-pulse after:ml-0.5'}`}
         dangerouslySetInnerHTML={{ __html: displayText }}
       />
     );
   }
 
   return (
-    <div className={`${className} ${isComplete ? '' : 'after:content-[""] after:inline-block after:w-0.5 after:h-5 after:bg-current after:animate-pulse after:ml-0.5'}`}>
+    <div className={`${className} break-words max-w-full text-sm sm:text-base leading-normal sm:leading-relaxed ${isComplete ? '' : 'after:content-[""] after:inline-block after:w-0.5 after:h-5 after:bg-current after:animate-pulse after:ml-0.5'}`}>
       {displayText}
     </div>
   );

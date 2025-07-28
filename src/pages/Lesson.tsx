@@ -302,7 +302,7 @@ export const Lesson = () => {
     <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
       <Navbar />
       
-      <div className="container mx-auto px-4 pt-24 pb-8">
+      <div className="container mx-auto px-2 sm:px-4 pt-24 pb-8">
         {/* Header */}
         <div className="mb-8">
           <Button
@@ -354,20 +354,20 @@ export const Lesson = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
               {/* Left Side - Maya's Story */}
               <div className="space-y-6">
-                <div className="nm-card nm-surface-purple p-6">
+                <div className="nm-card nm-surface-purple p-3 sm:p-6">
                   <div className="mb-4">
                     <h2 className="text-lg font-semibold nm-text-accent">Maya's Story</h2>
                   </div>
                   <div>
                     {currentItem?.type === 'content' ? (
-                      <div className="nm-card-subtle p-4">
+                      <div className="nm-card-subtle p-2 sm:p-4">
                         <h3 className="text-lg font-semibold mb-3 nm-text-accent">
                           {(currentItem.data as ContentBlock).title}
                         </h3>
                         <TypewriterText
                           text={(currentItem.data as ContentBlock).content}
                           speed={20}
-                          className="nm-text-secondary leading-relaxed"
+                          className="nm-text-secondary"
                         />
                       </div>
                     ) : (

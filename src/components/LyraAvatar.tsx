@@ -14,7 +14,7 @@ interface LyraAvatarProps {
 const LyraAvatarComponent: React.FC<LyraAvatarProps> = ({ 
   className, 
   size = 'md',
-  withWave = true,
+  withWave = false,
   expression = 'default',
   animated = true
 }) => {

@@ -121,7 +121,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
         {/* Visual indicator - subtle edge hint */}
         {!isMobile && !shouldShowNavigation && (
           <div 
-            className="fixed top-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-accent z-30 opacity-50"
+            className="fixed top-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary to-accent z-20 opacity-50"
             onMouseEnter={handleMouseEnter}
           />
         )}
@@ -129,7 +129,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
         {/* Larger hover zone for desktop */}
         {!isMobile && (
           <div 
-            className="fixed top-0 left-0 w-full h-8 z-40 pointer-events-auto"
+            className="fixed top-0 left-0 w-full h-8 z-35 pointer-events-auto"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
           />
@@ -139,7 +139,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
         {!isMobile && !shouldShowNavigation && (
           <button
             onClick={() => setIsHovered(true)}
-            className="nm-button nm-button-ghost fixed top-2 right-4 z-45 opacity-30 hover:opacity-100 transition-opacity duration-200 px-2 py-2"
+            className="nm-button nm-button-ghost fixed top-2 right-4 z-30 opacity-30 hover:opacity-100 transition-opacity duration-200 px-2 py-2"
           >
             <ChevronLeft className="w-4 h-4 rotate-90" />
           </button>
@@ -149,7 +149,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
           initial={{ y: -100, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -100, opacity: 0 }}
-          className="fixed top-0 left-0 w-full z-50"
+          className="fixed top-0 left-0 w-full z-40"
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -179,7 +179,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
         </motion.div>
       </>
       
-      <div className="max-w-6xl mx-auto p-6">
+      <div className="max-w-6xl mx-auto p-6 pt-16 sm:pt-20 lg:pt-6">
         {/* Header with Character & Progress */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -187,7 +187,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
           className="text-center mb-8"
         >
           {/* Character Avatar - Centered and Larger */}
-          <div className="flex justify-center mb-6">
+          <div className="flex justify-center mb-6 mt-4 sm:mt-2 lg:mt-0">
             <div className="w-28 h-28">
               <OptimizedVideoAnimation
                 src={getAnimationUrl(`${characterType}-avatar-animated.mp4`)}
