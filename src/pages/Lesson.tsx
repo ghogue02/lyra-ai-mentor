@@ -354,30 +354,30 @@ export const Lesson = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
               {/* Left Side - Maya's Story */}
               <div className="space-y-6">
-                <Card className="bg-gradient-to-br from-purple-50 to-indigo-50 border-purple-200">
-                  <CardHeader>
-                    <CardTitle className="text-purple-800">Maya's Story</CardTitle>
-                  </CardHeader>
-                  <CardContent>
+                <div className="nm-card nm-surface-purple p-6">
+                  <div className="mb-4">
+                    <h2 className="text-lg font-semibold nm-text-accent">Maya's Story</h2>
+                  </div>
+                  <div>
                     {currentItem?.type === 'content' ? (
-                      <div className="prose prose-purple max-w-none">
-                        <h3 className="text-lg font-semibold mb-3 text-purple-700">
+                      <div className="nm-card-subtle p-4">
+                        <h3 className="text-lg font-semibold mb-3 nm-text-accent">
                           {(currentItem.data as ContentBlock).title}
                         </h3>
                         <TypewriterText
                           text={(currentItem.data as ContentBlock).content}
                           speed={20}
-                          className="text-gray-700 leading-relaxed"
+                          className="nm-text-secondary leading-relaxed"
                         />
                       </div>
                     ) : (
-                      <div className="text-center py-8">
+                      <div className="nm-card-sunken p-8 text-center">
                         <BookOpen className="w-12 h-12 text-purple-400 mx-auto mb-3" />
-                        <p className="text-purple-600">Interactive element active</p>
+                        <p className="nm-text-accent">Interactive element active</p>
                       </div>
                     )}
-                  </CardContent>
-                </Card>
+                  </div>
+                </div>
               </div>
 
               {/* Right Side - Interactive Elements */}
@@ -394,38 +394,38 @@ export const Lesson = () => {
                     onComplete={() => handleElementComplete((currentItem.data as InteractiveElement).id)}
                   />
                 ) : (
-                  <Card className="bg-gradient-to-br from-cyan-50 to-blue-50 border-cyan-200">
-                    <CardContent className="py-8">
-                      <div className="text-center">
-                        <div className="w-16 h-16 bg-cyan-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                          <BookOpen className="w-8 h-8 text-cyan-600" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-cyan-800 mb-2">
-                          Continue Reading
-                        </h3>
-                        <p className="text-cyan-600">
-                          Follow Maya's journey with AI-powered email communication
-                        </p>
+                  <div className="nm-card nm-surface-cyan p-8">
+                    <div className="text-center">
+                      <div className="nm-surface-elevated w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <BookOpen className="w-8 h-8 text-cyan-600" />
                       </div>
-                    </CardContent>
-                  </Card>
+                      <h3 className="text-lg font-semibold nm-text-cyan mb-2">
+                        Continue Reading
+                      </h3>
+                      <p className="nm-text-secondary">
+                        Follow Maya's journey with AI-powered email communication
+                      </p>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
           ) : (
             /* Regular Lesson Layout */
             <div className="max-w-4xl mx-auto">
-              <Card className="mb-6">
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <BookOpen className="w-5 h-5" />
+              <div className="nm-card mb-6 p-6">
+                <div className="mb-4">
+                  <h2 className="flex items-center gap-3 text-lg font-semibold nm-text-primary">
+                    <div className="nm-surface-elevated p-2 rounded-full">
+                      <BookOpen className="w-5 h-5" />
+                    </div>
                     {currentItem?.type === 'content' 
                       ? (currentItem.data as ContentBlock).title || `Section ${currentItemIndex + 1}`
                       : (currentItem.data as InteractiveElement).title || `Interactive ${currentItemIndex + 1}`
                     }
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
+                  </h2>
+                </div>
+                <div className="nm-card-subtle p-4">
                   {currentItem?.type === 'content' ? (
                     <div className="prose prose-purple max-w-none">
                       <div dangerouslySetInnerHTML={{ __html: (currentItem.data as ContentBlock).content || '' }} />
@@ -442,8 +442,8 @@ export const Lesson = () => {
                       onComplete={() => handleElementComplete((currentItem.data as InteractiveElement).id)}
                     />
                   )}
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             </div>
           )
         ) : (
@@ -454,29 +454,32 @@ export const Lesson = () => {
           </div>
         )}
 
-        {/* Navigation */}
+        {/* Navigation with Neumorphic Design */}
         {lessonItems.length > 0 && (
-          <div className="flex justify-between items-center mt-8 max-w-4xl mx-auto">
-            <Button
-              variant="outline"
+          <div className="nm-nav max-w-4xl mx-auto mt-8 justify-between">
+            <button
+              className={`nm-nav-item ${currentItemIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'nm-interactive'}`}
               onClick={handlePrevItem}
               disabled={currentItemIndex === 0}
             >
               <ChevronLeft className="w-4 h-4 mr-2" />
               Previous
-            </Button>
+            </button>
             
-            <span className="text-sm text-gray-600">
-              {currentItemIndex + 1} of {lessonItems.length}
-            </span>
+            <div className="nm-badge flex items-center gap-2">
+              <span className="nm-text-secondary text-sm">
+                {currentItemIndex + 1} of {lessonItems.length}
+              </span>
+            </div>
             
-            <Button
+            <button
+              className={`nm-nav-item ${currentItemIndex === lessonItems.length - 1 ? 'opacity-50 cursor-not-allowed' : 'nm-interactive'}`}
               onClick={handleNextItem}
               disabled={currentItemIndex === lessonItems.length - 1}
             >
               Next
               <ChevronRight className="w-4 h-4 ml-2" />
-            </Button>
+            </button>
           </div>
         )}
       </div>

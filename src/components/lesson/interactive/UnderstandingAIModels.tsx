@@ -15,78 +15,70 @@ export const UnderstandingAIModels: React.FC = () => {
       </div>
 
       <div className="grid md:grid-cols-3 gap-6 mb-8">
-        <Card>
-          <CardContent className="pt-6 text-center space-y-3">
-            <Brain className="w-8 h-8 text-purple-600 mx-auto" />
-            <h3 className="font-semibold">Claude Sonnet 4</h3>
-            <p className="text-sm text-muted-foreground">
-              Best for technical accuracy, structured thinking, and complex analysis
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Higher cost, superior reasoning
-            </div>
-          </CardContent>
-        </Card>
+        <div className="nm-card nm-p-xl text-center space-y-3">
+          <Brain className="w-8 h-8 text-purple-600 mx-auto" />
+          <h3 className="font-semibold nm-text-primary">Claude Sonnet 4</h3>
+          <p className="text-sm nm-text-secondary">
+            Best for technical accuracy, structured thinking, and complex analysis
+          </p>
+          <div className="nm-badge nm-badge-accent">
+            Higher cost, superior reasoning
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="pt-6 text-center space-y-3">
-            <Zap className="w-8 h-8 text-blue-600 mx-auto" />
-            <h3 className="font-semibold">Gemini 2.5 Flash</h3>
-            <p className="text-sm text-muted-foreground">
-              Fast, creative responses with massive context windows
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Ultra-low cost, 1M+ token context
-            </div>
-          </CardContent>
-        </Card>
+        <div className="nm-card nm-p-xl text-center space-y-3">
+          <Zap className="w-8 h-8 text-blue-600 mx-auto" />
+          <h3 className="font-semibold nm-text-primary">Gemini 2.5 Flash</h3>
+          <p className="text-sm nm-text-secondary">
+            Fast, creative responses with massive context windows
+          </p>
+          <div className="nm-badge nm-badge-cyan">
+            Ultra-low cost, 1M+ token context
+          </div>
+        </div>
 
-        <Card>
-          <CardContent className="pt-6 text-center space-y-3">
-            <Sparkles className="w-8 h-8 text-green-600 mx-auto" />
-            <h3 className="font-semibold">GPT-4o Mini</h3>
-            <p className="text-sm text-muted-foreground">
-              Balanced performance and cost for general use cases
-            </p>
-            <div className="text-xs text-muted-foreground">
-              Reliable fallback option
-            </div>
-          </CardContent>
-        </Card>
+        <div className="nm-card nm-p-xl text-center space-y-3">
+          <Sparkles className="w-8 h-8 text-green-600 mx-auto" />
+          <h3 className="font-semibold nm-text-primary">GPT-4o Mini</h3>
+          <p className="text-sm nm-text-secondary">
+            Balanced performance and cost for general use cases
+          </p>
+          <div className="nm-badge">
+            Reliable fallback option
+          </div>
+        </div>
       </div>
 
       <ModelComparisonTool />
 
-      <Card className="bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
-        <CardContent className="pt-6">
-          <div className="flex items-start gap-3">
-            <DollarSign className="w-6 h-6 text-purple-600 mt-1" />
-            <div>
-              <h3 className="font-semibold text-purple-900 mb-2">Smart Model Selection for Nonprofits</h3>
-              <div className="grid md:grid-cols-2 gap-4 text-sm text-purple-800">
-                <div>
-                  <h4 className="font-medium mb-1">Use Claude Sonnet 4 for:</h4>
-                  <ul className="space-y-1 text-purple-700">
-                    <li>• Complex grant writing</li>
-                    <li>• Technical documentation</li>
-                    <li>• Strategic planning</li>
-                    <li>• Data analysis</li>
-                  </ul>
-                </div>
-                <div>
-                  <h4 className="font-medium mb-1">Use Gemini 2.5 Flash for:</h4>
-                  <ul className="space-y-1 text-purple-700">
-                    <li>• Social media content</li>
-                    <li>• Email campaigns</li>
-                    <li>• Creative storytelling</li>
-                    <li>• Large document processing</li>
-                  </ul>
-                </div>
+      <div className="nm-card nm-surface-purple nm-p-xl">
+        <div className="flex items-start gap-3">
+          <DollarSign className="w-6 h-6 text-purple-600 mt-1" />
+          <div>
+            <h3 className="font-semibold nm-text-accent mb-2">Smart Model Selection for Nonprofits</h3>
+            <div className="grid md:grid-cols-2 gap-4 text-sm nm-text-primary">
+              <div>
+                <h4 className="font-medium mb-1">Use Claude Sonnet 4 for:</h4>
+                <ul className="space-y-1 nm-text-secondary">
+                  <li>• Complex grant writing</li>
+                  <li>• Technical documentation</li>
+                  <li>• Strategic planning</li>
+                  <li>• Data analysis</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-medium mb-1">Use Gemini 2.5 Flash for:</h4>
+                <ul className="space-y-1 nm-text-secondary">
+                  <li>• Social media content</li>
+                  <li>• Email campaigns</li>
+                  <li>• Creative storytelling</li>
+                  <li>• Large document processing</li>
+                </ul>
               </div>
             </div>
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 };

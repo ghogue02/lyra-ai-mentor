@@ -151,25 +151,25 @@ export const ModelComparisonTool: React.FC = () => {
         </p>
       </div>
 
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <div className="nm-card nm-p-xl">
+        <div className="mb-6">
+          <h3 className="flex items-center gap-2 text-lg font-semibold nm-text-primary mb-2">
             <Sparkles className="w-5 h-5 text-primary" />
             Your Test Prompt
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Textarea
+          </h3>
+        </div>
+        <div className="space-y-4">
+          <textarea
             value={prompt}
             onChange={(e) => setPrompt(e.target.value)}
             placeholder="Enter your prompt to test across different AI models..."
             rows={3}
-            className="min-h-[80px]"
+            className="nm-input min-h-[80px] resize-none"
           />
-          <Button 
+          <button 
             onClick={testAllModels}
             disabled={!prompt.trim() || responses.some(r => r.loading)}
-            className="w-full"
+            className={`nm-button-primary w-full ${(!prompt.trim() || responses.some(r => r.loading)) ? 'opacity-60 cursor-not-allowed' : ''}`}
           >
             {responses.some(r => r.loading) ? (
               <>
@@ -179,59 +179,57 @@ export const ModelComparisonTool: React.FC = () => {
             ) : (
               'Test All Models'
             )}
-          </Button>
-        </CardContent>
-      </Card>
+          </button>
+        </div>
+      </div>
 
       <div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
         {responses.map((response, index) => (
-          <Card key={index} className="h-fit">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center justify-between text-sm">
+          <div key={index} className="nm-card nm-p-lg h-fit">
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   {response.icon}
-                  {response.model}
+                  <span className="font-semibold text-sm nm-text-primary">{response.model}</span>
                 </div>
-                <Badge variant="secondary" className="text-xs">
+                <span className="nm-badge nm-badge-accent text-xs">
                   {response.cost}
-                </Badge>
-              </CardTitle>
-              <p className="text-xs text-muted-foreground">
+                </span>
+              </div>
+              <p className="text-xs nm-text-muted">
                 {response.description}
               </p>
-            </CardHeader>
-            <CardContent>
+            </div>
+            <div className="min-h-[120px]">
               {response.loading ? (
                 <div className="flex items-center justify-center py-8">
                   <Loader2 className="w-6 h-6 animate-spin text-primary" />
                 </div>
               ) : response.response ? (
                 <div className="prose prose-sm max-w-none">
-                  <p className="text-sm text-foreground whitespace-pre-wrap">
+                  <p className="text-sm nm-text-primary whitespace-pre-wrap">
                     {response.response}
                   </p>
                 </div>
               ) : (
-                <p className="text-sm text-muted-foreground py-8 text-center">
+                <p className="text-sm nm-text-muted py-8 text-center">
                   Click "Test All Models" to see this model's response
                 </p>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         ))}
       </div>
 
-      <Card className="bg-muted/50">
-        <CardContent className="pt-6">
-          <h3 className="font-semibold mb-3">💡 What You're Learning:</h3>
-          <ul className="space-y-2 text-sm text-muted-foreground">
-            <li>• <strong>Model Personalities:</strong> Each AI has different strengths and response styles</li>
-            <li>• <strong>Cost Considerations:</strong> Gemini 2.5 Flash offers 6x cost savings vs Claude Sonnet 4</li>
-            <li>• <strong>Use Case Matching:</strong> Choose the right model for your specific nonprofit needs</li>
-            <li>• <strong>Quality vs Cost:</strong> Balance response quality with budget constraints</li>
-          </ul>
-        </CardContent>
-      </Card>
+      <div className="nm-card nm-surface-purple nm-p-xl">
+        <h3 className="font-semibold mb-3 nm-text-primary">💡 What You're Learning:</h3>
+        <ul className="space-y-2 text-sm nm-text-secondary">
+          <li>• <strong>Model Personalities:</strong> Each AI has different strengths and response styles</li>
+          <li>• <strong>Cost Considerations:</strong> Gemini 2.5 Flash offers 6x cost savings vs Claude Sonnet 4</li>
+          <li>• <strong>Use Case Matching:</strong> Choose the right model for your specific nonprofit needs</li>
+          <li>• <strong>Quality vs Cost:</strong> Balance response quality with budget constraints</li>
+        </ul>
+      </div>
     </div>
   );
 };

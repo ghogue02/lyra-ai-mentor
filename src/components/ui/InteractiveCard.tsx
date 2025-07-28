@@ -8,7 +8,7 @@ import { getAnimationUrl } from '@/utils/supabaseIcons';
 interface InteractiveCardProps {
   children: React.ReactNode;
   className?: string;
-  variant?: 'default' | 'premium' | 'lesson' | 'achievement' | 'chapter';
+  variant?: 'default' | 'premium' | 'lesson' | 'achievement' | 'chapter' | 'neumorphic' | 'neumorphic-elevated' | 'neumorphic-sunken';
   hover?: boolean;
   onClick?: () => void;
   icon?: 'achievement' | 'learning' | 'growth' | 'mission' | 'network' | 'communication' | 'data' | 'workflow';
@@ -36,6 +36,18 @@ const CARD_VARIANTS = {
   chapter: {
     base: "bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200/50 shadow-md",
     hover: "hover:shadow-xl hover:scale-[1.02] hover:border-green-300/50"
+  },
+  neumorphic: {
+    base: "nm-card",
+    hover: "nm-interactive"
+  },
+  'neumorphic-elevated': {
+    base: "nm-card-elevated",
+    hover: "nm-interactive"
+  },
+  'neumorphic-sunken': {
+    base: "nm-card-sunken",
+    hover: "nm-interactive"
   }
 };
 

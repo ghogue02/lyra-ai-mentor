@@ -81,12 +81,12 @@ export const LyraUnderstandingAIModelsLesson: React.FC = () => {
             </div>
           </div>
           
-          <Button 
+          <button 
             onClick={() => navigate('/chapter/1')}
-            className="bg-purple-600 hover:bg-purple-700 text-white px-8 py-3"
+            className="nm-button-primary px-8 py-3"
           >
             Continue Your Journey
-          </Button>
+          </button>
         </motion.div>
       </div>
     );
@@ -109,35 +109,31 @@ export const LyraUnderstandingAIModelsLesson: React.FC = () => {
 
         {/* Completion Section */}
         <div className="mt-12">
-          <Card className="max-w-2xl mx-auto">
-            <CardHeader>
-              <CardTitle className="text-center">Ready to Complete This Lesson?</CardTitle>
-            </CardHeader>
-            <CardContent className="text-center space-y-4">
-              <p className="text-muted-foreground">
-                You've explored different AI models and learned how to make cost-effective choices 
-                for your nonprofit work. Test the model comparison tool above to solidify your understanding.
-              </p>
-              
-              <div className="space-y-2">
-                <p className="text-sm font-medium">What You've Learned:</p>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-muted-foreground">
-                  <div>• Model strengths and weaknesses</div>
-                  <div>• Cost optimization strategies</div>
-                  <div>• Use case matching</div>
-                  <div>• Smart model selection</div>
-                </div>
+          <div className="nm-card nm-p-xl max-w-2xl mx-auto text-center space-y-4">
+            <h3 className="nm-text-primary text-xl font-semibold">Ready to Complete This Lesson?</h3>
+            
+            <p className="nm-text-secondary">
+              You've explored different AI models and learned how to make cost-effective choices 
+              for your nonprofit work. Test the model comparison tool above to solidify your understanding.
+            </p>
+            
+            <div className="space-y-2">
+              <p className="text-sm font-medium nm-text-primary">What You've Learned:</p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm nm-text-secondary">
+                <div>• Model strengths and weaknesses</div>
+                <div>• Cost optimization strategies</div>
+                <div>• Use case matching</div>
+                <div>• Smart model selection</div>
               </div>
-              
-              <Button
-                onClick={handleComplete}
-                className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white"
-                size="lg"
-              >
-                Complete Lesson & Continue Journey
-              </Button>
-            </CardContent>
-          </Card>
+            </div>
+            
+            <button
+              onClick={handleComplete}
+              className="nm-button-primary w-full nm-button-lg"
+            >
+              Complete Lesson & Continue Journey
+            </button>
+          </div>
         </div>
       </div>
     </div>

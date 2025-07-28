@@ -2,11 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, PlayCircle, ArrowRight, Lock, ChevronLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { BrandedButton } from '@/components/ui/BrandedButton';
 import { Badge } from '@/components/ui/badge';
-import { InteractiveCard } from '@/components/ui/InteractiveCard';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
 import { OptimizedVideoAnimation } from '@/components/performance/OptimizedVideoAnimation';
@@ -140,14 +137,12 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
         
         {/* Fallback trigger - small always-visible button */}
         {!isMobile && !shouldShowNavigation && (
-          <Button
+          <button
             onClick={() => setIsHovered(true)}
-            variant="ghost"
-            size="sm"
-            className="fixed top-2 right-4 z-45 opacity-30 hover:opacity-100 transition-opacity duration-200"
+            className="nm-button nm-button-ghost fixed top-2 right-4 z-45 opacity-30 hover:opacity-100 transition-opacity duration-200 px-2 py-2"
           >
             <ChevronLeft className="w-4 h-4 rotate-90" />
-          </Button>
+          </button>
         )}
         
         <motion.div
@@ -164,14 +159,13 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
             <div className="container mx-auto px-4 py-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <Button
-                    variant="ghost"
+                  <button
                     onClick={() => navigate('/dashboard')}
-                    className="hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                    className="nm-button nm-button-ghost hover:bg-muted/50 text-muted-foreground hover:text-foreground"
                   >
                     <ChevronLeft className="w-4 h-4 mr-2" />
                     Back to Dashboard
-                  </Button>
+                  </button>
                 </div>
                 
                 <div className="flex items-center">
@@ -258,12 +252,12 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
               )}
               onClick={() => handleLessonSelect(lesson)}
             >
-               <InteractiveCard className={cn(
-                "h-full min-h-[180px] transition-all duration-300",
+               <div className={cn(
+                "nm-card h-full min-h-[180px] transition-all duration-300",
                 lesson.completed && "bg-green-50/50 border-green-200",
                 selectedLesson === lesson.id && "ring-2 ring-primary",
-                lesson.unlocked && "hover:shadow-xl hover:shadow-primary/10",
-                !lesson.unlocked && "bg-muted/30"
+                lesson.unlocked && "hover:nm-shadow-floating hover:shadow-primary/10",
+                !lesson.unlocked && "bg-muted/30 opacity-50"
               )}>
                 <div className="p-6 flex flex-col h-full">
                   <div className="flex items-start gap-6 mb-6">
@@ -310,17 +304,16 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                   
                   <div className="mt-auto flex items-center justify-between pt-4 border-t border-border/50">
                     {lesson.unlocked ? (
-                      <BrandedButton 
-                        size="sm" 
-                        className="px-6 py-2 group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
+                      <button 
+                        className="nm-button nm-button-primary px-6 py-2 text-sm font-medium group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200"
                       >
                         {lesson.completed ? 'Review' : 'Start'} 
                         <PlayCircle className="w-4 h-4 ml-2" />
-                      </BrandedButton>
+                      </button>
                     ) : (
-                      <BrandedButton size="sm" disabled variant="ghost" className="px-6 py-2">
+                      <button className="nm-button nm-button-ghost px-6 py-2 text-sm font-medium" disabled>
                         Locked <Lock className="w-4 h-4 ml-2" />
-                      </BrandedButton>
+                      </button>
                     )}
                     
                     {lesson.completed && (
@@ -331,7 +324,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                     )}
                   </div>
               </div>
-            </InteractiveCard>
+            </div>
             </motion.div>
           ))}
         </div>
@@ -343,32 +336,29 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
           transition={{ delay: 0.5 }}
           className="flex justify-center gap-4"
         >
-          <BrandedButton 
+          <button 
             onClick={() => navigate('/dashboard')} 
-            variant="outline"
-            size="lg"
+            className="nm-button nm-button-ghost px-8 py-3 text-lg font-semibold"
           >
             Back to Dashboard
-          </BrandedButton>
+          </button>
           
           {isChapterComplete && nextChapterRoute && (
-            <BrandedButton 
+            <button 
               onClick={() => navigate(nextChapterRoute)}
-              size="lg"
-              variant="default"
+              className="nm-button nm-button-primary px-8 py-3 text-lg font-semibold"
             >
               Next Chapter <ArrowRight className="w-4 h-4 ml-2" />
-            </BrandedButton>
+            </button>
           )}
           
           {completionRoute && (
-            <BrandedButton 
+            <button 
               onClick={() => navigate(completionRoute)}
-              variant="secondary"
-              size="lg"
+              className="nm-button nm-button-ghost px-8 py-3 text-lg font-semibold"
             >
               Chapter Summary
-            </BrandedButton>
+            </button>
           )}
         </motion.div>
       </div>

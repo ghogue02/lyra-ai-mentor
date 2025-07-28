@@ -94,57 +94,57 @@ The email should be approximately 150-200 words and include a specific call to a
 
   if (isElementCompleted) {
     return (
-      <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-green-800">
+      <div className="nm-card nm-surface-cyan nm-p-xl">
+        <div className="mb-4">
+          <h3 className="flex items-center gap-2 nm-text-accent text-lg font-semibold">
             <Sandwich className="w-5 h-5" />
             {element.title}
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center gap-2 text-green-700">
+          </h3>
+        </div>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 nm-text-primary">
             <CheckCircle className="w-4 h-4" />
             <span className="font-medium">Mastered!</span>
-            <Badge className="bg-green-600 text-white">
+            <span className="nm-badge nm-badge-cyan">
               Time Saved: {timeSavings.metric || '84%'}
-            </Badge>
+            </span>
           </div>
-          <p className="text-sm text-green-600 mt-2">
+          <p className="text-sm nm-text-secondary">
             You've learned {character}'s prompt sandwich technique for perfect AI emails.
           </p>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     );
   }
 
   return (
-    <Card className="bg-gradient-to-br from-orange-50 to-amber-50 border-orange-200">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-orange-800">
+    <div className="nm-card nm-p-xl">
+      <div className="mb-6">
+        <h3 className="flex items-center gap-2 nm-text-primary text-lg font-semibold">
           <Sandwich className="w-5 h-5" />
           {element.title}
-        </CardTitle>
+        </h3>
         <div className="flex items-center gap-4 mt-2">
-          <Badge variant="outline" className="text-orange-700">
+          <span className="nm-badge nm-badge-accent">
             <Layers className="w-3 h-3 mr-1" />
             {character}'s Technique
-          </Badge>
-          <Badge variant="outline" className="text-green-700">
+          </span>
+          <span className="nm-badge nm-badge-cyan">
             <Target className="w-3 h-3 mr-1" />
             {timeSavings.time_savings || '32 min → 5 min'}
-          </Badge>
+          </span>
         </div>
-      </CardHeader>
-      <CardContent className="space-y-6">
+      </div>
+      <div className="space-y-6">
         {/* Instructions */}
-        <div className="bg-white/50 p-4 rounded-lg">
-          <h4 className="font-semibold text-gray-800 mb-2">
+        <div className="nm-card-sunken nm-p-lg">
+          <h4 className="font-semibold nm-text-primary mb-2">
             Build Your Perfect AI Prompt Sandwich
           </h4>
-          <p className="text-sm text-gray-600 mb-3">
+          <p className="text-sm nm-text-secondary mb-3">
             {element.content}
           </p>
-          <div className="text-xs text-orange-700 bg-orange-100 p-2 rounded">
+          <div className="text-xs nm-text-accent nm-surface-purple nm-p-sm nm-rounded-md">
             💡 Maya's Secret: Layer tone + context + template for emails that sound exactly like you
           </div>
         </div>
@@ -219,10 +219,10 @@ The email should be approximately 150-200 words and include a specific call to a
         </div>
 
         {/* Generate Button */}
-        <Button
+        <button
           onClick={handleGeneratePrompt}
           disabled={!isReadyToGenerate || isGenerating}
-          className="w-full"
+          className={`nm-button-primary w-full ${(!isReadyToGenerate || isGenerating) ? 'opacity-60 cursor-not-allowed' : ''}`}
         >
           {isGenerating ? (
             <>
@@ -235,21 +235,21 @@ The email should be approximately 150-200 words and include a specific call to a
               Generate My Prompt Sandwich
             </>
           )}
-        </Button>
+        </button>
 
         {/* Generated Prompt Display */}
         {generatedPrompt && (
           <div className="space-y-3">
-            <Label className="text-sm font-medium">Your Perfect AI Prompt:</Label>
-            <div className="bg-white border rounded-lg p-4">
-              <Textarea
+            <label className="text-sm font-medium nm-text-primary">Your Perfect AI Prompt:</label>
+            <div className="nm-card-sunken nm-p-lg">
+              <textarea
                 value={generatedPrompt}
                 onChange={(e) => setGeneratedPrompt(e.target.value)}
-                className="min-h-[150px] font-mono text-sm"
+                className="nm-input min-h-[150px] font-mono text-sm resize-none"
                 placeholder="Your custom prompt will appear here..."
               />
             </div>
-            <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+            <div className="text-xs nm-text-muted nm-surface-elevated nm-p-sm nm-rounded-md">
               💡 Pro Tip: Copy this prompt and use it in ChatGPT, Claude, or your favorite AI tool!
             </div>
           </div>
@@ -257,15 +257,15 @@ The email should be approximately 150-200 words and include a specific call to a
 
         {/* Complete Button */}
         {generatedPrompt && (
-          <Button
+          <button
             onClick={handleComplete}
-            className="w-full bg-green-600 hover:bg-green-700"
+            className="nm-button-primary w-full"
           >
             <CheckCircle className="w-4 h-4 mr-2" />
             Complete Prompt Builder
-          </Button>
+          </button>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
