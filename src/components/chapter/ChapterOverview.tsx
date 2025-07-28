@@ -103,53 +103,65 @@ export const ChapterOverview: React.FC<ChapterOverviewProps> = ({
         </div>
 
         {/* Progress Overview */}
-        <div className="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-purple-100/50 p-6 mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-xl font-semibold text-gray-800">Chapter Progress</h2>
-            <div className="flex items-center gap-2">
-              <Trophy className="w-5 h-5 text-yellow-500" />
-              <span className="font-medium">{completedLessons} / {totalLessons} completed</span>
+        <div className="neu-card p-8 mb-8">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold text-gray-800">Chapter Progress</h2>
+            <div className="neu-text-container px-4 py-2 flex items-center gap-3">
+              <div className="neu-character w-8 h-8 bg-yellow-50 flex items-center justify-center">
+                <Trophy className="w-4 h-4 text-yellow-600" />
+              </div>
+              <span className="font-semibold text-gray-700">{completedLessons} / {totalLessons} completed</span>
             </div>
           </div>
-          <Progress value={overallProgress} className="h-3 mb-2" />
-          <p className="text-sm text-gray-600">{overallProgress}% complete</p>
+          <div className="neu-progress p-2 h-6 mb-3">
+            <div 
+              className="neu-progress-fill h-full transition-all duration-500 ease-out"
+              style={{ width: `${overallProgress}%` }}
+            />
+          </div>
+          <p className="text-sm text-gray-600 font-medium">{overallProgress}% complete</p>
         </div>
       </div>
 
       {/* Character Profile (if provided) */}
       {characterName && (
-        <Card className="mb-8 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <User className="w-5 h-5" />
-              Meet Your Learning Companion
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div>
-                <h3 className="font-semibold text-lg mb-2">{characterName}</h3>
-                <p className="text-gray-600 mb-2">{characterRole}</p>
-                {characterOrganization && (
-                  <p className="text-sm text-gray-500 flex items-center gap-1">
+        <div className="neu-card p-8 mb-8 border-l-4 border-l-blue-500">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="neu-character w-10 h-10 bg-blue-50 flex items-center justify-center">
+              <User className="w-5 h-5 text-blue-600" />
+            </div>
+            <h2 className="text-xl font-bold text-gray-800">Meet Your Learning Companion</h2>
+          </div>
+          
+          <div className="grid md:grid-cols-2 gap-8">
+            <div className="neu-text-container p-6">
+              <h3 className="font-bold text-lg mb-3 text-gray-800">{characterName}</h3>
+              <p className="text-gray-600 mb-3 font-medium">{characterRole}</p>
+              {characterOrganization && (
+                <div className="flex items-center gap-2 text-sm text-gray-500">
+                  <div className="neu-character w-6 h-6 bg-gray-50 flex items-center justify-center">
                     <Building className="w-3 h-3" />
-                    {characterOrganization}
-                  </p>
-                )}
-              </div>
-              {narrativeArc && (
-                <div>
-                  <h4 className="font-medium mb-2 flex items-center gap-1">
-                    <Target className="w-4 h-4" />
-                    Your Journey
-                  </h4>
-                  <p className="text-sm text-gray-600 mb-2">{narrativeArc.overallJourney}</p>
-                  <p className="text-sm text-purple-600 font-medium">{narrativeArc.currentMilestone}</p>
+                  </div>
+                  <span>{characterOrganization}</span>
                 </div>
               )}
             </div>
-          </CardContent>
-        </Card>
+            {narrativeArc && (
+              <div className="neu-text-container p-6">
+                <div className="flex items-center gap-2 mb-3">
+                  <div className="neu-character w-6 h-6 bg-purple-50 flex items-center justify-center">
+                    <Target className="w-3 h-3 text-purple-600" />
+                  </div>
+                  <h4 className="font-bold text-gray-800">Your Journey</h4>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">{narrativeArc.overallJourney}</p>
+                <div className="neu-inset p-3">
+                  <p className="text-sm text-purple-700 font-semibold">{narrativeArc.currentMilestone}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
       )}
 
       {/* Lessons List */}
@@ -159,69 +171,77 @@ export const ChapterOverview: React.FC<ChapterOverviewProps> = ({
         {lessons.length > 0 ? (
           <div className="grid gap-4">
             {lessons.map((lesson, index) => (
-              <Card 
-                key={lesson.id} 
-                className={`cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-[1.02] ${
-                  lesson.is_completed ? 'bg-green-50/50 border-green-200' : 'bg-white/80 hover:bg-white/90'
-                }`}
+              <div
+                key={lesson.id}
+                className={cn(
+                  "neu-card neu-card-hover p-6 cursor-pointer transition-all duration-300",
+                  lesson.is_completed && "border-l-4 border-l-green-500"
+                )}
                 onClick={() => handleLessonClick(lesson.id)}
               >
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-12 h-12 rounded-full flex items-center justify-center ${
-                        lesson.is_completed 
-                          ? 'bg-green-500 text-white' 
-                          : 'bg-gray-200 text-gray-600'
-                      }`}>
-                        {lesson.is_completed ? (
-                          <CheckCircle className="w-6 h-6" />
-                        ) : (
-                          <span className="font-semibold">{index + 1}</span>
-                        )}
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-lg text-gray-800">{lesson.title}</h3>
-                        {lesson.subtitle && (
-                          <p className="text-gray-600 text-sm mt-1">{lesson.subtitle}</p>
-                        )}
-                        {lesson.estimated_duration && (
-                          <Badge variant="outline" className="mt-2">
-                            <Clock className="w-3 h-3 mr-1" />
-                            {lesson.estimated_duration} min
-                          </Badge>
-                        )}
-                      </div>
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-6">
+                    <div className={cn(
+                      "neu-character w-14 h-14 flex items-center justify-center font-bold text-lg",
+                      lesson.is_completed 
+                        ? 'bg-green-50 text-green-600' 
+                        : 'bg-gray-50 text-gray-600'
+                    )}>
+                      {lesson.is_completed ? (
+                        <CheckCircle className="w-7 h-7" />
+                      ) : (
+                        <span>{index + 1}</span>
+                      )}
                     </div>
-                    
-                    <div className="flex items-center gap-4">
-                      {lesson.progress !== undefined && !lesson.is_completed && (
-                        <div className="text-right">
-                          <Progress value={lesson.progress} className="w-24 h-2 mb-1" />
-                          <span className="text-xs text-gray-500">{lesson.progress}%</span>
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg text-gray-800 mb-2">{lesson.title}</h3>
+                      {lesson.subtitle && (
+                        <p className="text-gray-600 text-sm mb-3">{lesson.subtitle}</p>
+                      )}
+                      {lesson.estimated_duration && (
+                        <div className="neu-text-container inline-flex items-center gap-2 px-3 py-1">
+                          <Clock className="w-3 h-3 text-gray-500" />
+                          <span className="text-xs font-medium text-gray-600">{lesson.estimated_duration} min</span>
                         </div>
                       )}
-                      <Button 
-                        variant={lesson.is_completed ? "outline" : "default"}
-                        size="sm"
-                        className="flex items-center gap-2"
-                      >
-                        {lesson.is_completed ? (
-                          <>
-                            <BookOpen className="w-4 h-4" />
-                            Review
-                          </>
-                        ) : (
-                          <>
-                            <Play className="w-4 h-4" />
-                            Start
-                          </>
-                        )}
-                      </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                  
+                  <div className="flex items-center gap-6">
+                    {lesson.progress !== undefined && !lesson.is_completed && (
+                      <div className="text-right">
+                        <div className="neu-progress w-24 h-3 p-0.5 mb-2">
+                          <div 
+                            className="neu-progress-fill h-full transition-all duration-300"
+                            style={{ width: `${lesson.progress}%` }}
+                          />
+                        </div>
+                        <span className="text-xs text-gray-500 font-medium">{lesson.progress}%</span>
+                      </div>
+                    )}
+                    <button 
+                      className={cn(
+                        "neu-button px-4 py-2 font-semibold flex items-center gap-2",
+                        lesson.is_completed 
+                          ? "text-blue-700 bg-blue-50" 
+                          : "text-green-700 bg-green-50"
+                      )}
+                    >
+                      {lesson.is_completed ? (
+                        <>
+                          <BookOpen className="w-4 h-4" />
+                          Review
+                        </>
+                      ) : (
+                        <>
+                          <Play className="w-4 h-4" />
+                          Start
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         ) : (

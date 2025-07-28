@@ -14,34 +14,36 @@ const Index = () => {
   if (showPersonalization) {
     return <PersonalizationFlow onComplete={() => setShowPersonalization(false)} />;
   }
-  return <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+  return <div className="min-h-screen" style={{background: 'var(--nm-bg)'}}>
       <MinimalHeader />
       
-      {/* Hero Section - Optimized spacing for better visual balance */}
+      {/* Hero Section - Neumorphic styled with enhanced spacing */}
       <section className="container mx-auto spacing-mobile spacing-mobile-y pt-24 sm:pt-32 lg:pt-40 pb-8 sm:pb-16">
         <div className="text-center max-w-4xl mx-auto">
-          {/* Hero Animation - Lyra landing page animation */}
+          {/* Hero Animation Container - Neumorphic styled */}
           <div className="mb-12 flex justify-center">
-            <OptimizedVideoAnimation
-              src={getAnimationUrl('lyra-landing-page.mp4')}
-              fallbackIcon={
-                <img 
-                  src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
-                  alt="Lyra AI Mentor - Your intelligent learning companion" 
-                  className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 object-contain" 
-                />
-              }
-              className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96"
-              context="ui"
-              autoPlay={true}
-              loop={true}
-              muted={true}
-            />
+            <div className="nm-hero-card p-8">
+              <OptimizedVideoAnimation
+                src={getAnimationUrl('lyra-landing-page.mp4')}
+                fallbackIcon={
+                  <img 
+                    src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
+                    alt="Lyra AI Mentor - Your intelligent learning companion" 
+                    className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 object-contain" 
+                  />
+                }
+                className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96"
+                context="ui"
+                autoPlay={true}
+                loop={true}
+                muted={true}
+              />
+            </div>
           </div>
 
-          <Badge className="mb-4 sm:mb-6 bg-gradient-to-r from-purple-600 to-cyan-500 text-white px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium">
+          <div className="nm-badge nm-badge-primary mb-4 sm:mb-6 px-4 sm:px-6 py-2 text-xs sm:text-sm font-medium inline-block">
             For Non-Profit & Public Interest Professionals
-          </Badge>
+          </div>
           
           <h1 className="text-responsive-xl font-bold mb-4 sm:mb-6 text-purple-600 leading-tight text-wrap-safe">
             Master AI Without the Mystery
@@ -52,51 +54,49 @@ const Index = () => {
           </p>
           
           <div className="flex justify-center mb-8 sm:mb-12">
-            <Button size="lg" className="mobile-button bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600 text-white px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105" onClick={() => setShowPersonalization(true)}>
+            <button className="nm-button nm-button-primary px-6 sm:px-8 py-3 sm:py-4 text-base sm:text-lg font-semibold" onClick={() => setShowPersonalization(true)}>
               Start Your AI Journey
-            </Button>
+            </button>
           </div>
           
-          {/* Key Benefits - Larger icons with clean white backgrounds */}
+          {/* Key Benefits - Neumorphic feature cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mt-8 sm:mt-16">
-            <Card className="mobile-card border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-              <CardContent className="mobile-card text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-md border border-gray-100">
-                  <img src={getFeatureIconUrl('learningTarget')} alt="Tailored Learning" className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg" />
-                </div>
-                <h3 className="font-semibold text-base sm:text-lg mb-2 text-wrap-safe">Tailored Learning</h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-wrap-safe">Personalized to your role, tech comfort, and learning style</p>
-              </CardContent>
-            </Card>
+            <div className="nm-feature-card p-6 text-center">
+              <div className="nm-icon w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4">
+                <img src={getFeatureIconUrl('learningTarget')} alt="Tailored Learning" className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg" />
+              </div>
+              <h3 className="font-semibold text-base sm:text-lg mb-2 text-wrap-safe">Tailored Learning</h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-wrap-safe">Personalized to your role, tech comfort, and learning style</p>
+            </div>
             
-            <Card className="mobile-card border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300">
-              <CardContent className="mobile-card text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-md border border-gray-100">
-                  <img src={getFeatureIconUrl('missionHeart')} alt="Mission-Focused" className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg" />
-                </div>
-                <h3 className="font-semibold text-base sm:text-lg mb-2 text-wrap-safe">Mission-Focused</h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-wrap-safe">Real-world examples from fundraising to program delivery</p>
-              </CardContent>
-            </Card>
+            <div className="nm-feature-card p-6 text-center">
+              <div className="nm-icon w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4">
+                <img src={getFeatureIconUrl('missionHeart')} alt="Mission-Focused" className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg" />
+              </div>
+              <h3 className="font-semibold text-base sm:text-lg mb-2 text-wrap-safe">Mission-Focused</h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-wrap-safe">Real-world examples from fundraising to program delivery</p>
+            </div>
             
-            <Card className="mobile-card border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300 sm:col-span-2 lg:col-span-1">
-              <CardContent className="mobile-card text-center">
-                <div className="w-20 h-20 sm:w-24 sm:h-24 bg-white rounded-xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-md border border-gray-100">
-                  <img src={getFeatureIconUrl('achievementTrophy')} alt="Confidence Building" className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg" />
-                </div>
-                <h3 className="font-semibold text-base sm:text-lg mb-2 text-wrap-safe">Confidence Building</h3>
-                <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-wrap-safe">Complete fundamental courses with actionable next steps</p>
-              </CardContent>
-            </Card>
+            <div className="nm-feature-card p-6 text-center sm:col-span-2 lg:col-span-1">
+              <div className="nm-icon w-20 h-20 sm:w-24 sm:h-24 mx-auto mb-3 sm:mb-4">
+                <img src={getFeatureIconUrl('achievementTrophy')} alt="Confidence Building" className="w-14 h-14 sm:w-16 sm:h-16 object-contain rounded-lg" />
+              </div>
+              <h3 className="font-semibold text-base sm:text-lg mb-2 text-wrap-safe">Confidence Building</h3>
+              <p className="text-sm sm:text-base text-gray-600 leading-relaxed text-wrap-safe">Complete fundamental courses with actionable next steps</p>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Call to Action */}
+      {/* Call to Action - Neumorphic styled */}
       <section className="container mx-auto spacing-mobile py-8 sm:py-16 text-center">
-        <Card className="max-w-2xl mx-auto border-0 shadow-xl bg-gradient-to-r from-purple-600 to-cyan-500 text-white">
-          
-        </Card>
+        <div className="nm-cta max-w-2xl mx-auto p-8 text-white">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4">Ready to Transform Your Impact?</h2>
+          <p className="text-lg mb-6 opacity-90">Join thousands of non-profit professionals already using AI to amplify their mission.</p>
+          <button className="nm-button nm-button-secondary px-8 py-3 text-lg font-semibold" onClick={() => setShowPersonalization(true)}>
+            Get Started Free
+          </button>
+        </div>
       </section>
     </div>;
 };

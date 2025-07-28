@@ -213,24 +213,24 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
   return (
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Header */}
-      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-3">
+      <div className="neumorph-card bg-gradient-to-r from-purple-50 to-pink-50 p-6">
+        <div>
+          <h2 className="flex items-center gap-3 text-2xl font-bold">
             <Mail className="w-6 h-6 text-purple-600" />
             Maya's Email Mastery Workshop
-          </CardTitle>
-          <div className="flex items-center gap-4">
-            <Badge variant="outline" className="text-purple-700">
+          </h2>
+          <div className="flex items-center gap-4 mt-4">
+            <div className="neumorph-badge text-purple-700">
               <User className="w-3 h-3 mr-1" />
               Maya Rodriguez
-            </Badge>
-            <Badge variant="outline" className="text-green-700">
+            </div>
+            <div className="neumorph-badge text-green-700">
               <Clock className="w-3 h-3 mr-1" />
               15-20 minutes
-            </Badge>
+            </div>
           </div>
-        </CardHeader>
-      </Card>
+        </div>
+      </div>
 
       {/* Progress Bar */}
       <div className="space-y-2">
@@ -242,7 +242,12 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
             {Math.round(progress)}% Complete
           </span>
         </div>
-        <Progress value={progress} className="h-2" />
+        <div className="neumorph-progress">
+          <div 
+            className="neumorph-progress-fill" 
+            style={{ width: `${progress}%` }}
+          />
+        </div>
       </div>
 
       {/* Step Navigation */}
@@ -283,73 +288,73 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
           exit={{ opacity: 0, y: -20 }}
           transition={{ duration: 0.3 }}
         >
-          <Card className="border-2 border-purple-200">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-3">
+          <div className="neumorph-card border-2 border-purple-200 p-6">
+            <div className="mb-6">
+              <h3 className="flex items-center gap-3 text-xl font-semibold">
                 <currentStepData.icon className="w-6 h-6 text-purple-600" />
                 {currentStepData.title}
-              </CardTitle>
-              <p className="text-gray-600">{currentStepData.description}</p>
-            </CardHeader>
-            <CardContent className="space-y-4">
+              </h3>
+              <p className="text-gray-600 mt-2">{currentStepData.description}</p>
+            </div>
+            <div className="space-y-4">
               {/* Step-specific content */}
               {currentStepData.id === 'purpose' && (
                 <div className="space-y-3">
                   <Label htmlFor="purpose">What specific outcome do you want from this email?</Label>
-                  <Textarea
+                  <textarea
                     id="purpose"
                     placeholder="e.g., Get board approval for new program, Schedule a meeting with donors, Respond to parent concern..."
                     value={emailData.purpose}
                     onChange={(e) => setEmailData(prev => ({ ...prev, purpose: e.target.value }))}
-                    className="min-h-[100px]"
+                    className="neumorph-textarea w-full"
                   />
-                  <Button 
+                  <button 
                     onClick={() => handleStepCompletion('purpose', emailData.purpose)}
                     disabled={!emailData.purpose.trim()}
-                    className="w-full"
+                    className="w-full px-4 py-2 font-medium neumorph-button-primary text-white"
                   >
                     Analyze Purpose
-                  </Button>
+                  </button>
                 </div>
               )}
 
               {currentStepData.id === 'audience' && (
                 <div className="space-y-3">
                   <Label htmlFor="audience">Who are you writing to and what do they need?</Label>
-                  <Textarea
+                  <textarea
                     id="audience"
                     placeholder="e.g., Board members who need financial details, Busy parents who want quick updates, Donors who want impact stories..."
                     value={emailData.audience}
                     onChange={(e) => setEmailData(prev => ({ ...prev, audience: e.target.value }))}
-                    className="min-h-[100px]"
+                    className="neumorph-textarea w-full"
                   />
-                  <Button 
+                  <button 
                     onClick={() => handleStepCompletion('audience', emailData.audience)}
                     disabled={!emailData.audience.trim()}
-                    className="w-full"
+                    className="w-full px-4 py-2 font-medium neumorph-button-primary text-white"
                   >
                     Analyze Audience
-                  </Button>
+                  </button>
                 </div>
               )}
 
               {currentStepData.id === 'context' && (
                 <div className="space-y-3">
                   <Label htmlFor="context">What background information is essential?</Label>
-                  <Textarea
+                  <textarea
                     id="context"
                     placeholder="e.g., New policy changes, Budget constraints, Recent program success, Upcoming deadline..."
                     value={emailData.context}
                     onChange={(e) => setEmailData(prev => ({ ...prev, context: e.target.value }))}
-                    className="min-h-[100px]"
+                    className="neumorph-textarea w-full"
                   />
-                  <Button 
+                  <button 
                     onClick={() => handleStepCompletion('context', emailData.context)}
                     disabled={!emailData.context.trim()}
-                    className="w-full"
+                    className="w-full px-4 py-2 font-medium neumorph-button-primary text-white"
                   >
                     Set Context
-                  </Button>
+                  </button>
                 </div>
               )}
 
@@ -357,7 +362,7 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
                 <div className="space-y-3">
                   <Label htmlFor="tone">What tone will resonate with your audience?</Label>
                   <Select value={emailData.tone} onValueChange={(value) => setEmailData(prev => ({ ...prev, tone: value }))}>
-                    <SelectTrigger>
+                    <SelectTrigger className="neumorph-select">
                       <SelectValue placeholder="Choose the appropriate tone..." />
                     </SelectTrigger>
                     <SelectContent>
@@ -369,13 +374,13 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
                       <SelectItem value="persuasive">Persuasive & Compelling</SelectItem>
                     </SelectContent>
                   </Select>
-                  <Button 
+                  <button 
                     onClick={() => handleStepCompletion('tone', emailData.tone)}
                     disabled={!emailData.tone}
-                    className="w-full"
+                    className="w-full px-4 py-2 font-medium neumorph-button-primary text-white"
                   >
                     Set Tone
-                  </Button>
+                  </button>
                 </div>
               )}
 
@@ -390,10 +395,13 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
                       <p><strong>Tone:</strong> {emailData.tone}</p>
                     </div>
                   </div>
-                  <Button 
+                  <button 
                     onClick={handleGenerateStep}
                     disabled={isProcessing}
-                    className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                    className={`w-full px-6 py-3 font-semibold text-white ${
+                      isProcessing ? 'neumorph-loading' : ''
+                    } neumorph-button-primary`}
+                    style={{ background: 'linear-gradient(135deg, #9333ea, #ec4899)' }}
                   >
                     {isProcessing ? (
                       <>
@@ -406,48 +414,48 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
                         Generate Email with AI
                       </>
                     )}
-                  </Button>
+                  </button>
                 </div>
               )}
 
               {currentStepData.id === 'refine' && emailData.generatedEmail && (
                 <div className="space-y-4">
-                  <div className="bg-white border rounded-lg p-4">
+                  <div className="neumorph-card-inset p-4">
                     <div className="flex items-center justify-between mb-3">
-                      <Badge className="bg-green-100 text-green-800">
+                      <div className="neumorph-badge bg-green-100 text-green-800">
                         <Star className="w-3 h-3 mr-1" />
                         AI Generated Email
-                      </Badge>
-                      <Button 
+                      </div>
+                      <button 
                         onClick={() => copyToClipboard(emailData.generatedEmail)}
-                        variant="outline" 
-                        size="sm"
+                        className="neumorph-button px-3 py-1 text-sm"
                       >
                         <Copy className="w-4 h-4 mr-2" />
                         Copy
-                      </Button>
+                      </button>
                     </div>
-                    <div className="text-sm text-gray-800 whitespace-pre-wrap">
+                    <div className="text-sm text-gray-800 whitespace-pre-wrap neumorph-card-inset p-3">
                       {emailData.generatedEmail}
                     </div>
                   </div>
                   
                   <div className="space-y-3">
                     <Label htmlFor="refinedEmail">Refine your email (optional):</Label>
-                    <Textarea
+                    <textarea
                       id="refinedEmail"
                       placeholder="Make any adjustments to the generated email..."
                       value={emailData.refinedEmail}
                       onChange={(e) => setEmailData(prev => ({ ...prev, refinedEmail: e.target.value }))}
-                      className="min-h-[150px]"
+                      className="neumorph-textarea w-full min-h-[150px]"
                     />
-                    <Button 
+                    <button 
                       onClick={handleComplete}
-                      className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-700 hover:to-emerald-700"
+                      className="w-full px-6 py-3 font-semibold text-white neumorph-button-primary"
+                      style={{ background: 'linear-gradient(135deg, var(--neumorph-success), #34d399)' }}
                     >
                       <Send className="w-4 h-4 mr-2" />
                       Complete Email Workshop
-                    </Button>
+                    </button>
                   </div>
                 </div>
               )}
@@ -469,20 +477,20 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
                   </ul>
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </motion.div>
       </AnimatePresence>
 
       {/* Navigation */}
       <div className="flex justify-between items-center">
-        <Button
-          variant="outline"
+        <button
+          className="neumorph-button px-4 py-2"
           onClick={() => setCurrentStep(Math.max(0, currentStep - 1))}
           disabled={currentStep === 0}
         >
           Previous
-        </Button>
+        </button>
         
         <div className="flex items-center gap-2">
           {steps.map((_, index) => (
@@ -496,12 +504,13 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
           ))}
         </div>
 
-        <Button
+        <button
+          className="neumorph-button-primary px-4 py-2 text-white font-medium"
           onClick={() => setCurrentStep(Math.min(steps.length - 1, currentStep + 1))}
           disabled={currentStep === steps.length - 1 || !currentStepData.completed}
         >
           Next
-        </Button>
+        </button>
       </div>
     </div>
   );

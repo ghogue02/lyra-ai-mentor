@@ -31,36 +31,37 @@ export const Navbar = ({
   };
 
   return (
-    <nav className="fixed top-0 w-full bg-white/80 backdrop-blur-md border-b border-gray-200/50 z-50 safe-top">
+    <nav className="fixed top-0 w-full z-50 safe-top" style={{background: 'var(--nm-bg)'}}>
       <div className="container mx-auto px-4 py-3">
-        <div className="flex items-center justify-between">
-          {/* Logo */}
-          <div 
-            className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
-            onClick={handleHomeClick}
-          >
-            <div className="w-16 h-16 bg-white rounded-xl flex items-center justify-center shadow-md border border-gray-100">
-              <img 
-                src={getNavbarIconUrl('logo')} 
-                alt="AI Learning Platform"
-                className="w-12 h-12 object-contain rounded-lg"
-              />
+        <div className="nm-nav px-6 py-4">
+          <div className="flex items-center justify-between">
+            {/* Logo */}
+            <div 
+              className="flex items-center gap-3 cursor-pointer hover:opacity-80 transition-opacity"
+              onClick={handleHomeClick}
+            >
+              <div className="nm-icon w-16 h-16">
+                <img 
+                  src={getNavbarIconUrl('logo')} 
+                  alt="AI Learning Platform"
+                  className="w-12 h-12 object-contain rounded-lg"
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Auth Actions */}
-          {showAuthButtons && (
-            <div className="flex items-center gap-3">
-              <BrandedButton
-                variant="outline"
-                onClick={handleSignOut}
-                className="flex items-center gap-2"
-              >
-                <LogOut className="w-4 h-4" />
-                <span className="hidden sm:inline">Sign Out</span>
-              </BrandedButton>
-            </div>
-          )}
+            {/* Auth Actions */}
+            {showAuthButtons && (
+              <div className="flex items-center gap-3">
+                <button
+                  className="nm-button px-4 py-2 flex items-center gap-2"
+                  onClick={handleSignOut}
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden sm:inline">Sign Out</span>
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </nav>

@@ -1,0 +1,718 @@
+/*
+ * Neumorphic Design System
+ * Foundation CSS for Lyra AI Mentor Platform
+ * 
+ * Features:
+ * - Complete CSS variable system with light/dark mode support
+ * - Base component classes for neumorphic elements
+ * - Responsive breakpoints and mobile optimizations  
+ * - Utility classes for shadow, spacing, and color variations
+ * - Accessibility-compliant color contrasts
+ * - Performance-optimized animations
+ */
+
+/* ========================================
+   CSS VARIABLES - NEUMORPHIC FOUNDATION
+   ======================================== */
+
+:root {
+  /* ========== Core Neumorphic Colors ========== */
+  --nm-background: hsl(220, 16%, 96%);
+  --nm-surface: hsl(220, 16%, 94%);
+  --nm-surface-elevated: hsl(220, 16%, 98%);
+  --nm-surface-sunken: hsl(220, 16%, 92%);
+  
+  /* ========== Shadow System ========== */
+  --nm-shadow-light: hsl(0, 0%, 100%);
+  --nm-shadow-dark: hsl(220, 16%, 80%);
+  --nm-shadow-accent: hsl(262, 83%, 58%, 0.15);
+  
+  /* Base shadow values for neumorphic effect */
+  --nm-shadow-raised: 
+    8px 8px 16px var(--nm-shadow-dark),
+    -8px -8px 16px var(--nm-shadow-light);
+  
+  --nm-shadow-pressed: 
+    inset 4px 4px 8px var(--nm-shadow-dark),
+    inset -4px -4px 8px var(--nm-shadow-light);
+  
+  --nm-shadow-floating: 
+    12px 12px 24px var(--nm-shadow-dark),
+    -12px -12px 24px var(--nm-shadow-light);
+  
+  --nm-shadow-subtle: 
+    4px 4px 8px var(--nm-shadow-dark),
+    -4px -4px 8px var(--nm-shadow-light);
+  
+  /* ========== Interactive States ========== */
+  --nm-hover-offset: 2px;
+  --nm-press-offset: 1px;
+  --nm-focus-ring: hsl(262, 83%, 58%, 0.3);
+  
+  /* ========== Border Radius System ========== */
+  --nm-radius-xs: 4px;
+  --nm-radius-sm: 8px;
+  --nm-radius-md: 12px;
+  --nm-radius-lg: 16px;
+  --nm-radius-xl: 20px;
+  --nm-radius-2xl: 24px;
+  --nm-radius-full: 9999px;
+  
+  /* ========== Spacing System ========== */
+  --nm-space-xs: 0.25rem;  /* 4px */
+  --nm-space-sm: 0.5rem;   /* 8px */
+  --nm-space-md: 0.75rem;  /* 12px */
+  --nm-space-lg: 1rem;     /* 16px */
+  --nm-space-xl: 1.5rem;   /* 24px */
+  --nm-space-2xl: 2rem;    /* 32px */
+  --nm-space-3xl: 3rem;    /* 48px */
+  
+  /* ========== Typography ========== */
+  --nm-text-primary: hsl(220, 26%, 14%);
+  --nm-text-secondary: hsl(220, 16%, 46%);
+  --nm-text-muted: hsl(220, 16%, 64%);
+  --nm-text-accent: hsl(262, 83%, 58%);
+  --nm-text-cyan: hsl(187, 85%, 53%);
+  
+  /* ========== Brand Integration ========== */
+  --nm-brand-purple: hsl(262, 83%, 58%);
+  --nm-brand-purple-light: hsl(262, 83%, 95%);
+  --nm-brand-cyan: hsl(187, 85%, 53%);
+  --nm-brand-cyan-light: hsl(187, 85%, 95%);
+  
+  /* Neumorphic brand surfaces */
+  --nm-surface-purple: hsl(262, 83%, 98%);
+  --nm-surface-cyan: hsl(187, 85%, 98%);
+  
+  /* ========== Gradients ========== */
+  --nm-gradient-primary: linear-gradient(135deg, var(--nm-brand-purple), var(--nm-brand-cyan));
+  --nm-gradient-surface: linear-gradient(135deg, var(--nm-surface) 0%, var(--nm-surface-elevated) 100%);
+  --nm-gradient-pressed: linear-gradient(135deg, var(--nm-surface-sunken) 0%, var(--nm-surface) 100%);
+  
+  /* ========== Animation Timing ========== */
+  --nm-transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  --nm-transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --nm-transition-slow: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  
+  /* ========== Z-Index Scale ========== */
+  --nm-z-base: 0;
+  --nm-z-raised: 10;
+  --nm-z-floating: 20;
+  --nm-z-modal: 50;
+  --nm-z-popover: 100;
+}
+
+/* ========================================
+   DARK MODE VARIABLES
+   ======================================== */
+
+.dark {
+  /* ========== Dark Mode Core Colors ========== */
+  --nm-background: hsl(220, 26%, 14%);
+  --nm-surface: hsl(220, 26%, 16%);
+  --nm-surface-elevated: hsl(220, 26%, 18%);
+  --nm-surface-sunken: hsl(220, 26%, 12%);
+  
+  /* ========== Dark Mode Shadows ========== */
+  --nm-shadow-light: hsl(220, 26%, 22%);
+  --nm-shadow-dark: hsl(220, 26%, 8%);
+  
+  /* Dark mode shadows with adjusted opacity */
+  --nm-shadow-raised: 
+    8px 8px 16px var(--nm-shadow-dark),
+    -8px -8px 16px var(--nm-shadow-light);
+  
+  --nm-shadow-pressed: 
+    inset 4px 4px 8px var(--nm-shadow-dark),
+    inset -4px -4px 8px var(--nm-shadow-light);
+  
+  --nm-shadow-floating: 
+    12px 12px 24px var(--nm-shadow-dark),
+    -12px -12px 24px var(--nm-shadow-light);
+  
+  /* ========== Dark Mode Typography ========== */
+  --nm-text-primary: hsl(220, 16%, 94%);
+  --nm-text-secondary: hsl(220, 16%, 74%);
+  --nm-text-muted: hsl(220, 16%, 54%);
+  
+  /* ========== Dark Mode Brand Surfaces ========== */
+  --nm-surface-purple: hsl(262, 83%, 8%);
+  --nm-surface-cyan: hsl(187, 85%, 8%);
+  
+  /* ========== Dark Mode Gradients ========== */
+  --nm-gradient-surface: linear-gradient(135deg, var(--nm-surface) 0%, var(--nm-surface-elevated) 100%);
+  --nm-gradient-pressed: linear-gradient(135deg, var(--nm-surface-sunken) 0%, var(--nm-surface) 100%);
+}
+
+/* ========================================
+   BASE NEUMORPHIC COMPONENTS
+   ======================================== */
+
+/* ========== Neumorphic Card ========== */
+.nm-card {
+  background: var(--nm-surface);
+  border-radius: var(--nm-radius-lg);
+  box-shadow: var(--nm-shadow-raised);
+  transition: all var(--nm-transition-normal);
+  position: relative;
+  overflow: hidden;
+}
+
+.nm-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--nm-shadow-light);
+  opacity: 0.6;
+}
+
+.nm-card:hover {
+  transform: translateY(-var(--nm-hover-offset));
+  box-shadow: var(--nm-shadow-floating);
+}
+
+.nm-card.pressed {
+  transform: translateY(var(--nm-press-offset));
+  box-shadow: var(--nm-shadow-pressed);
+  background: var(--nm-gradient-pressed);
+}
+
+/* Card variants */
+.nm-card-elevated {
+  background: var(--nm-surface-elevated);
+  box-shadow: var(--nm-shadow-floating);
+  z-index: var(--nm-z-raised);
+}
+
+.nm-card-sunken {
+  background: var(--nm-surface-sunken);
+  box-shadow: var(--nm-shadow-pressed);
+}
+
+.nm-card-subtle {
+  box-shadow: var(--nm-shadow-subtle);
+}
+
+/* ========== Neumorphic Button ========== */
+.nm-button {
+  background: var(--nm-surface);
+  border: none;
+  border-radius: var(--nm-radius-md);
+  box-shadow: var(--nm-shadow-raised);
+  color: var(--nm-text-primary);
+  cursor: pointer;
+  font-weight: 500;
+  padding: var(--nm-space-md) var(--nm-space-xl);
+  transition: all var(--nm-transition-fast);
+  position: relative;
+  overflow: hidden;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--nm-space-sm);
+  min-height: 44px; /* Accessibility: minimum touch target */
+}
+
+.nm-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--nm-shadow-light);
+  opacity: 0.8;
+}
+
+.nm-button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--nm-shadow-floating);
+}
+
+.nm-button:active {
+  transform: translateY(1px);
+  box-shadow: var(--nm-shadow-pressed);
+  background: var(--nm-gradient-pressed);
+}
+
+.nm-button:focus-visible {
+  box-shadow: 
+    var(--nm-shadow-raised),
+    0 0 0 3px var(--nm-focus-ring);
+}
+
+.nm-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: var(--nm-shadow-subtle);
+}
+
+/* Button variants */
+.nm-button-primary {
+  background: var(--nm-gradient-primary);
+  color: white;
+  font-weight: 600;
+}
+
+.nm-button-primary::before {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.nm-button-primary:hover {
+  background: var(--nm-gradient-primary);
+  filter: brightness(1.1);
+}
+
+.nm-button-ghost {
+  background: transparent;
+  box-shadow: none;
+  color: var(--nm-text-secondary);
+}
+
+.nm-button-ghost:hover {
+  background: var(--nm-surface);
+  box-shadow: var(--nm-shadow-subtle);
+  color: var(--nm-text-primary);
+}
+
+/* Button sizes */
+.nm-button-sm {
+  padding: var(--nm-space-sm) var(--nm-space-md);
+  font-size: 0.875rem;
+  min-height: 36px;
+}
+
+.nm-button-lg {
+  padding: var(--nm-space-lg) var(--nm-space-2xl);
+  font-size: 1.125rem;
+  min-height: 52px;
+}
+
+/* ========== Neumorphic Input ========== */
+.nm-input {
+  background: var(--nm-surface-sunken);
+  border: none;
+  border-radius: var(--nm-radius-md);
+  box-shadow: var(--nm-shadow-pressed);
+  color: var(--nm-text-primary);
+  font-size: 1rem;
+  padding: var(--nm-space-md) var(--nm-space-lg);
+  transition: all var(--nm-transition-normal);
+  width: 100%;
+  outline: none;
+  min-height: 44px; /* Accessibility */
+}
+
+.nm-input::placeholder {
+  color: var(--nm-text-muted);
+}
+
+.nm-input:focus {
+  box-shadow: 
+    var(--nm-shadow-pressed),
+    0 0 0 3px var(--nm-focus-ring);
+  background: var(--nm-surface);
+}
+
+.nm-input:hover {
+  background: var(--nm-surface);
+}
+
+/* ========== Neumorphic Container ========== */
+.nm-container {
+  background: var(--nm-background);
+  border-radius: var(--nm-radius-xl);
+  box-shadow: var(--nm-shadow-subtle);
+  padding: var(--nm-space-2xl);
+  position: relative;
+}
+
+.nm-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: var(--nm-shadow-light);
+  border-radius: var(--nm-radius-xl) var(--nm-radius-xl) 0 0;
+  opacity: 0.4;
+}
+
+/* ========== Neumorphic Panel ========== */
+.nm-panel {
+  background: var(--nm-surface);
+  border-radius: var(--nm-radius-lg);
+  box-shadow: var(--nm-shadow-raised);
+  padding: var(--nm-space-xl);
+  position: relative;
+  overflow: hidden;
+}
+
+.nm-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--nm-shadow-light), transparent);
+  opacity: 0.6;
+}
+
+/* ========================================
+   UTILITY CLASSES
+   ======================================== */
+
+/* ========== Shadow Variations ========== */
+.nm-shadow-none { box-shadow: none; }
+.nm-shadow-subtle { box-shadow: var(--nm-shadow-subtle); }
+.nm-shadow-raised { box-shadow: var(--nm-shadow-raised); }
+.nm-shadow-pressed { box-shadow: var(--nm-shadow-pressed); }
+.nm-shadow-floating { box-shadow: var(--nm-shadow-floating); }
+
+/* Accent shadows */
+.nm-shadow-accent {
+  box-shadow: 
+    var(--nm-shadow-raised),
+    0 0 24px var(--nm-shadow-accent);
+}
+
+/* ========== Spacing Utilities ========== */
+.nm-p-xs { padding: var(--nm-space-xs); }
+.nm-p-sm { padding: var(--nm-space-sm); }
+.nm-p-md { padding: var(--nm-space-md); }
+.nm-p-lg { padding: var(--nm-space-lg); }
+.nm-p-xl { padding: var(--nm-space-xl); }
+.nm-p-2xl { padding: var(--nm-space-2xl); }
+.nm-p-3xl { padding: var(--nm-space-3xl); }
+
+.nm-m-xs { margin: var(--nm-space-xs); }
+.nm-m-sm { margin: var(--nm-space-sm); }
+.nm-m-md { margin: var(--nm-space-md); }
+.nm-m-lg { margin: var(--nm-space-lg); }
+.nm-m-xl { margin: var(--nm-space-xl); }
+.nm-m-2xl { margin: var(--nm-space-2xl); }
+.nm-m-3xl { margin: var(--nm-space-3xl); }
+
+/* ========== Border Radius Utilities ========== */
+.nm-rounded-xs { border-radius: var(--nm-radius-xs); }
+.nm-rounded-sm { border-radius: var(--nm-radius-sm); }
+.nm-rounded-md { border-radius: var(--nm-radius-md); }
+.nm-rounded-lg { border-radius: var(--nm-radius-lg); }
+.nm-rounded-xl { border-radius: var(--nm-radius-xl); }
+.nm-rounded-2xl { border-radius: var(--nm-radius-2xl); }
+.nm-rounded-full { border-radius: var(--nm-radius-full); }
+
+/* ========== Surface Utilities ========== */
+.nm-surface { background: var(--nm-surface); }
+.nm-surface-elevated { background: var(--nm-surface-elevated); }
+.nm-surface-sunken { background: var(--nm-surface-sunken); }
+.nm-surface-purple { background: var(--nm-surface-purple); }
+.nm-surface-cyan { background: var(--nm-surface-cyan); }
+
+/* ========== Text Utilities ========== */
+.nm-text-primary { color: var(--nm-text-primary); }
+.nm-text-secondary { color: var(--nm-text-secondary); }
+.nm-text-muted { color: var(--nm-text-muted); }
+.nm-text-accent { color: var(--nm-text-accent); }
+.nm-text-cyan { color: var(--nm-text-cyan); }
+
+/* ========== Interactive States ========== */
+.nm-interactive {
+  cursor: pointer;
+  transition: all var(--nm-transition-fast);
+}
+
+.nm-interactive:hover {
+  transform: translateY(-1px);
+}
+
+.nm-interactive:active {
+  transform: translateY(1px);
+}
+
+.nm-interactive:focus-visible {
+  outline: 3px solid var(--nm-focus-ring);
+  outline-offset: 2px;
+}
+
+/* ========== Gradient Utilities ========== */
+.nm-gradient-primary { background: var(--nm-gradient-primary); }
+.nm-gradient-surface { background: var(--nm-gradient-surface); }
+.nm-gradient-pressed { background: var(--nm-gradient-pressed); }
+
+/* ========================================
+   RESPONSIVE BREAKPOINTS
+   ======================================== */
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  :root {
+    /* Smaller shadows for mobile */
+    --nm-shadow-raised: 
+      4px 4px 8px var(--nm-shadow-dark),
+      -4px -4px 8px var(--nm-shadow-light);
+    
+    --nm-shadow-floating: 
+      6px 6px 12px var(--nm-shadow-dark),
+      -6px -6px 12px var(--nm-shadow-light);
+    
+    /* Smaller spacing for mobile */
+    --nm-space-xl: 1.25rem;
+    --nm-space-2xl: 1.5rem;
+    --nm-space-3xl: 2rem;
+  }
+  
+  .nm-card {
+    border-radius: var(--nm-radius-md);
+  }
+  
+  .nm-container {
+    padding: var(--nm-space-lg);
+    border-radius: var(--nm-radius-lg);
+  }
+  
+  .nm-panel {
+    padding: var(--nm-space-lg);
+  }
+  
+  .nm-button {
+    padding: var(--nm-space-sm) var(--nm-space-lg);
+    min-height: 48px; /* Larger touch targets on mobile */
+  }
+  
+  .nm-input {
+    padding: var(--nm-space-lg);
+    min-height: 48px;
+  }
+}
+
+/* Tablet optimizations */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .nm-container {
+    padding: var(--nm-space-xl);
+  }
+}
+
+/* Desktop and larger screens */
+@media (min-width: 1025px) {
+  :root {
+    /* Enhanced shadows for larger screens */
+    --nm-shadow-floating: 
+      16px 16px 32px var(--nm-shadow-dark),
+      -16px -16px 32px var(--nm-shadow-light);
+  }
+  
+  .nm-card:hover {
+    transform: translateY(-3px);
+  }
+  
+  .nm-button:hover {
+    transform: translateY(-2px);
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY ENHANCEMENTS
+   ======================================== */
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  :root {
+    --nm-shadow-dark: hsl(220, 16%, 60%);
+    --nm-text-muted: hsl(220, 16%, 40%);
+  }
+  
+  .dark {
+    --nm-shadow-light: hsl(220, 26%, 40%);
+    --nm-text-muted: hsl(220, 16%, 70%);
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+  
+  .nm-interactive:hover {
+    transform: none;
+  }
+  
+  .nm-interactive:active {
+    transform: none;
+  }
+  
+  .nm-button:hover,
+  .nm-card:hover {
+    transform: none;
+  }
+}
+
+/* ========================================
+   COMPONENT-SPECIFIC CLASSES
+   ======================================== */
+
+/* ========== Neumorphic Avatar ========== */
+.nm-avatar {
+  background: var(--nm-surface);
+  border-radius: var(--nm-radius-full);
+  box-shadow: var(--nm-shadow-raised);
+  overflow: hidden;
+  position: relative;
+}
+
+.nm-avatar::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  right: 2px;
+  height: 1px;
+  background: var(--nm-shadow-light);
+  border-radius: var(--nm-radius-full);
+  opacity: 0.6;
+}
+
+/* ========== Neumorphic Badge ========== */
+.nm-badge {
+  background: var(--nm-surface-elevated);
+  border-radius: var(--nm-radius-full);
+  box-shadow: var(--nm-shadow-subtle);
+  color: var(--nm-text-secondary);
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: var(--nm-space-xs) var(--nm-space-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.nm-badge-accent {
+  background: var(--nm-surface-purple);
+  color: var(--nm-text-accent);
+}
+
+.nm-badge-cyan {
+  background: var(--nm-surface-cyan);
+  color: var(--nm-text-cyan);
+}
+
+/* ========== Neumorphic Progress ========== */
+.nm-progress {
+  background: var(--nm-surface-sunken);
+  border-radius: var(--nm-radius-full);
+  box-shadow: var(--nm-shadow-pressed);
+  height: 8px;
+  overflow: hidden;
+  position: relative;
+}
+
+.nm-progress-bar {
+  background: var(--nm-gradient-primary);
+  border-radius: var(--nm-radius-full);
+  height: 100%;
+  transition: width var(--nm-transition-normal);
+  position: relative;
+}
+
+.nm-progress-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: var(--nm-radius-full);
+}
+
+/* ========== Neumorphic Navigation ========== */
+.nm-nav {
+  background: var(--nm-surface);
+  border-radius: var(--nm-radius-xl);
+  box-shadow: var(--nm-shadow-raised);
+  padding: var(--nm-space-sm);
+  display: flex;
+  gap: var(--nm-space-xs);
+}
+
+.nm-nav-item {
+  background: transparent;
+  border: none;
+  border-radius: var(--nm-radius-md);
+  color: var(--nm-text-secondary);
+  cursor: pointer;
+  padding: var(--nm-space-sm) var(--nm-space-md);
+  transition: all var(--nm-transition-fast);
+  font-weight: 500;
+}
+
+.nm-nav-item:hover {
+  background: var(--nm-surface-elevated);
+  color: var(--nm-text-primary);
+  box-shadow: var(--nm-shadow-subtle);
+}
+
+.nm-nav-item.active {
+  background: var(--nm-surface-sunken);
+  box-shadow: var(--nm-shadow-pressed);
+  color: var(--nm-text-accent);
+}
+
+/* ========================================
+   ANIMATION CLASSES
+   ======================================== */
+
+.nm-animate-float {
+  animation: nm-float 3s ease-in-out infinite;
+}
+
+.nm-animate-pulse {
+  animation: nm-pulse 2s ease-in-out infinite;
+}
+
+.nm-animate-glow {
+  animation: nm-glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes nm-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes nm-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes nm-glow {
+  0% { box-shadow: var(--nm-shadow-raised); }
+  100% { 
+    box-shadow: 
+      var(--nm-shadow-raised),
+      0 0 20px var(--nm-shadow-accent);
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+
+@media print {
+  .nm-card,
+  .nm-button,
+  .nm-input,
+  .nm-container,
+  .nm-panel {
+    box-shadow: none !important;
+    background: white !important;
+    color: black !important;
+  }
+}

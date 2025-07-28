@@ -17,14 +17,20 @@ export const LessonNavigation: React.FC<LessonNavigationProps> = ({
 
   return (
     <div className="flex justify-between items-center mt-12 mx-auto max-w-4xl">
-      <Button variant="outline" onClick={() => navigate('/dashboard')}>
+      {/* Neumorphic Back Button */}
+      <Button 
+        variant="outline" 
+        onClick={() => navigate('/dashboard')}
+        className="bg-white shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#e5e7eb,-2px_-2px_4px_#ffffff] border-gray-200 transition-all duration-300"
+      >
         <ArrowLeft className="w-4 h-4 mr-2" />
         Back to Chapters
       </Button>
       
       {user && isChapterCompleted && (
+        /* Neumorphic Continue Button */
         <Button 
-          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600" 
+          className="bg-white shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#e5e7eb,-2px_-2px_4px_#ffffff] text-purple-600 hover:text-purple-700 border-0 transition-all duration-300" 
           onClick={() => navigate('/dashboard')}
         >
           Continue Learning

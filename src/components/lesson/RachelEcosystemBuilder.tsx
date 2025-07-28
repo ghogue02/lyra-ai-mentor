@@ -237,7 +237,7 @@ const RachelEcosystemBuilder: React.FC = () => {
           ].map((item, index) => (
             <div key={index} className="relative group">
               <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
-              <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+              <div className="relative neumorph-card">
                 <div className="p-6 text-center">
                   <div className="w-12 h-12 mx-auto mb-3">
                     <VideoAnimation
@@ -247,7 +247,7 @@ const RachelEcosystemBuilder: React.FC = () => {
                       context="character"
                     />
                   </div>
-                  <Badge variant="secondary" className="mb-3">{index + 1}</Badge>
+                  <div className="neumorph-badge mb-3">{index + 1}</div>
                   <h3 className="font-bold text-lg mb-2 text-gray-900">{item.title}</h3>
                   <p className="text-sm text-gray-600">{item.desc}</p>
                 </div>
@@ -259,14 +259,13 @@ const RachelEcosystemBuilder: React.FC = () => {
         {/* Begin Button */}
         <div className="relative group">
           <div className="absolute inset-0 bg-gradient-to-r from-teal-600/20 to-emerald-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
-          <Button 
+          <button 
             onClick={() => setCurrentPhase('narrative')}
-            size="lg"
-            className="relative bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700 text-white text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="relative neumorph-button-primary text-lg px-8 py-4 font-semibold"
           >
             <Play className="w-5 h-5 mr-2" />
             Begin Rachel's Ecosystem Journey
-          </Button>
+          </button>
         </div>
       </div>
     </motion.div>
@@ -325,19 +324,20 @@ const RachelEcosystemBuilder: React.FC = () => {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Left Side - Ecosystem Designer */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="neumorph-card p-6">
+            <div className="mb-6">
+              <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-900">
                 <Network className="w-5 h-5 text-teal-600" />
                 Ecosystem Architecture Designer
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
+              </h3>
+            </div>
+            <div className="space-y-6">
               {/* Organization Context */}
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium mb-2">Organization Size</label>
-                  <Input
+                  <input
+                    className="neumorph-input w-full"
                     placeholder="e.g., 50 employees"
                     value={organizationSize}
                     onChange={(e) => setOrganizationSize(e.target.value)}
@@ -345,7 +345,8 @@ const RachelEcosystemBuilder: React.FC = () => {
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Implementation Timeframe</label>
-                  <Input
+                  <input
+                    className="neumorph-input w-full"
                     placeholder="e.g., 12 months"
                     value={timeframe}
                     onChange={(e) => setTimeframe(e.target.value)}
@@ -356,11 +357,11 @@ const RachelEcosystemBuilder: React.FC = () => {
               {/* Ecosystem Vision */}
               <div>
                 <label className="block text-sm font-medium mb-2">Ecosystem Vision & Goals</label>
-                <Textarea
+                <textarea
+                  className="neumorph-textarea w-full"
                   placeholder="Describe your vision for a complete automation ecosystem... Include organizational goals, key processes, integration needs, and success criteria."
                   value={ecosystemVision}
                   onChange={(e) => setEcosystemVision(e.target.value)}
-                  className="min-h-[120px]"
                 />
               </div>
 
@@ -369,7 +370,7 @@ const RachelEcosystemBuilder: React.FC = () => {
                 <label className="block text-sm font-medium mb-3">Select Ecosystem Components</label>
                 <div className="space-y-4">
                   {ecosystemComponents.map((component) => (
-                    <div key={component.id} className="border rounded-lg p-4">
+                    <div key={component.id} className="neumorph-card-inset p-4">
                       <div className="flex items-start space-x-3">
                         <Checkbox 
                           id={component.id}
@@ -387,15 +388,14 @@ const RachelEcosystemBuilder: React.FC = () => {
                             >
                               {component.name}
                             </label>
-                            <Badge 
-                              variant={
-                                component.complexity === 'advanced' ? 'destructive' : 
-                                component.complexity === 'intermediate' ? 'outline' : 'secondary'
-                              }
-                              className="text-xs"
-                            >
+                            <div className={
+                              `neumorph-badge text-xs ${
+                                component.complexity === 'advanced' ? 'text-red-700' : 
+                                component.complexity === 'intermediate' ? 'text-orange-700' : 'text-green-700'
+                              }`
+                            }>
                               {component.complexity}
-                            </Badge>
+                            </div>
                           </div>
                           <p className="text-sm text-gray-600 mb-2">{component.description}</p>
                           <div className="text-xs text-gray-500">
@@ -414,10 +414,12 @@ const RachelEcosystemBuilder: React.FC = () => {
               </div>
 
               {/* Build Button */}
-              <Button 
+              <button 
                 onClick={buildEcosystem}
                 disabled={selectedComponents.length === 0 || !ecosystemVision || isBuilding}
-                className="w-full bg-gradient-to-r from-teal-600 to-emerald-600 hover:from-teal-700 hover:to-emerald-700"
+                className={`w-full px-6 py-3 font-semibold text-white ${
+                  isBuilding ? 'neumorph-loading' : ''
+                } neumorph-button-primary`}
               >
                 {isBuilding ? (
                   <>
@@ -430,19 +432,19 @@ const RachelEcosystemBuilder: React.FC = () => {
                     Build Complete Ecosystem Blueprint
                   </>
                 )}
-              </Button>
-            </CardContent>
-          </Card>
+              </button>
+            </div>
+          </div>
 
           {/* Right Side - Ecosystem Blueprints */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
+          <div className="neumorph-card p-6">
+            <div className="mb-6">
+              <h3 className="flex items-center gap-2 text-xl font-semibold text-gray-900">
                 <Save className="w-5 h-5 text-green-600" />
                 Your Ecosystem Blueprints
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+              </h3>
+            </div>
+            <div>
               {ecosystemBlueprints.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
                   <Building className="w-12 h-12 mx-auto mb-4 text-gray-300" />
@@ -452,71 +454,70 @@ const RachelEcosystemBuilder: React.FC = () => {
               ) : (
                 <div className="space-y-4">
                   {ecosystemBlueprints.map((blueprint) => (
-                    <div key={blueprint.id} className="border rounded-lg p-4">
+                    <div key={blueprint.id} className="neumorph-card-inset p-4">
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-semibold">{blueprint.name}</h4>
-                        <Button 
+                        <button 
                           onClick={() => copyBlueprint(blueprint.content)}
-                          variant="outline" 
-                          size="sm"
+                          className="neumorph-button px-3 py-1 text-sm"
                         >
                           <Copy className="w-4 h-4 mr-1" />
                           Copy
-                        </Button>
+                        </button>
                       </div>
-                      <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
+                      <div className="text-sm text-gray-600 neumorph-card-inset p-3 max-h-40 overflow-y-auto">
                         {blueprint.content}
                       </div>
                     </div>
                   ))}
                 </div>
               )}
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </div>
 
         {/* Selected Components Summary */}
         {selectedComponents.length > 0 && (
-          <Card className="mt-8">
-            <CardHeader>
-              <CardTitle>Selected Ecosystem Components ({selectedComponents.length})</CardTitle>
-            </CardHeader>
-            <CardContent>
+          <div className="neumorph-card mt-8 p-6">
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold">Selected Ecosystem Components ({selectedComponents.length})</h3>
+            </div>
+            <div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {ecosystemComponents
                   .filter(c => selectedComponents.includes(c.id))
                   .map((component) => (
-                    <div key={component.id} className="border rounded-lg p-4 bg-green-50">
+                    <div key={component.id} className="neumorph-character-card selected">
                       <div className="flex items-center gap-2 mb-2">
                         <component.icon className="w-5 h-5 text-teal-600" />
                         <h4 className="font-semibold">{component.name}</h4>
-                        <Badge 
-                          variant={
-                            component.complexity === 'advanced' ? 'destructive' : 
-                            component.complexity === 'intermediate' ? 'outline' : 'secondary'
-                          }
-                          className="text-xs"
-                        >
+                        <div className={
+                          `neumorph-badge text-xs ${
+                            component.complexity === 'advanced' ? 'text-red-700' : 
+                            component.complexity === 'intermediate' ? 'text-orange-700' : 'text-green-700'
+                          }`
+                        }>
                           {component.complexity}
-                        </Badge>
+                        </div>
                       </div>
                       <p className="text-sm text-gray-600">{component.description}</p>
                     </div>
                   ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         )}
 
         {/* Completion Button */}
         {ecosystemBlueprints.length > 0 && (
           <div className="text-center mt-8">
-            <Button 
+            <button 
               onClick={handleComplete}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
+              className="neumorph-button-primary text-white px-8 py-3 font-semibold"
+              style={{ background: 'linear-gradient(135deg, var(--neumorph-success), #34d399)' }}
             >
               Complete Ecosystem Builder Workshop
-            </Button>
+            </button>
           </div>
         )}
       </div>

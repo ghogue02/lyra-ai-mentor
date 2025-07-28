@@ -152,7 +152,7 @@ export const Dashboard = () => {
 
   return (
     <ProgressProvider>
-      <div className="min-h-screen bg-gradient-to-br from-white via-purple-50/30 to-cyan-50/30">
+      <div className="min-h-screen" style={{background: 'var(--nm-bg)'}}>
         <MinimalHeader />
       
       {/* Header Section - Fixed spacing to prevent header overlap */}
@@ -193,47 +193,56 @@ export const Dashboard = () => {
           />
         )}
 
-        {/* Tabbed Interface */}
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-8">
-            <TabsTrigger 
-              value="journey" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-emerald-500 data-[state=active]:to-teal-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+        {/* Neumorphic Tabbed Interface */}
+        <div className="w-full">
+          <div className="nm-card-inset grid w-full grid-cols-3 mb-8 p-2 gap-2">
+            <button 
+              className={`nm-tab ${activeTab === 'journey' ? 'nm-tab-active' : ''} px-4 py-3 flex items-center justify-center gap-2 text-sm font-medium text-emerald-600`}
+              onClick={() => setActiveTab('journey')}
             >
               <GraduationCap className="w-4 h-4" />
-              Your Learning Journey
-            </TabsTrigger>
-            <TabsTrigger 
-              value="progress" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+              <span className="hidden sm:inline">Your Learning Journey</span>
+              <span className="sm:hidden">Journey</span>
+            </button>
+            <button 
+              className={`nm-tab ${activeTab === 'progress' ? 'nm-tab-active' : ''} px-4 py-3 flex items-center justify-center gap-2 text-sm font-medium text-yellow-600`}
+              onClick={() => setActiveTab('progress')}
             >
               <Trophy className="w-4 h-4" />
-              Progress & Badges
-            </TabsTrigger>
-            <TabsTrigger 
-              value="toolkit" 
-              className="flex items-center gap-2 data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-md"
+              <span className="hidden sm:inline">Progress & Badges</span>
+              <span className="sm:hidden">Progress</span>
+            </button>
+            <button 
+              className={`nm-tab ${activeTab === 'toolkit' ? 'nm-tab-active' : ''} px-4 py-3 flex items-center justify-center gap-2 text-sm font-medium text-purple-600`}
+              onClick={() => setActiveTab('toolkit')}
             >
               <Package className="w-4 h-4" />
-              My Toolkit
-            </TabsTrigger>
-          </TabsList>
+              <span className="hidden sm:inline">My Toolkit</span>
+              <span className="sm:hidden">Toolkit</span>
+            </button>
+          </div>
 
-          <TabsContent value="journey" className="space-y-8">
-            <JourneyTab 
-              onboardingComplete={onboardingComplete}
-              onChapterClick={handleChapterClick}
-            />
-          </TabsContent>
+          {activeTab === 'journey' && (
+            <div className="space-y-8">
+              <JourneyTab 
+                onboardingComplete={onboardingComplete}
+                onChapterClick={handleChapterClick}
+              />
+            </div>
+          )}
 
-          <TabsContent value="progress" className="space-y-8">
-            <ProgressDashboard />
-          </TabsContent>
+          {activeTab === 'progress' && (
+            <div className="space-y-8">
+              <ProgressDashboard />
+            </div>
+          )}
 
-          <TabsContent value="toolkit" className="space-y-8">
-            <MyToolkit />
-          </TabsContent>
-        </Tabs>
+          {activeTab === 'toolkit' && (
+            <div className="space-y-8">
+              <MyToolkit />
+            </div>
+          )}
+        </div>
       </section>
     </div>
     </ProgressProvider>

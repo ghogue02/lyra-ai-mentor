@@ -21,6 +21,14 @@
     "test:object-primitive": "vitest run tests/performance/regression/object-to-primitive-regression.test.tsx",
     "test:bundle-size": "vitest run tests/performance/regression/bundle-size-regression.test.ts",
     "test:all-automated": "./scripts/run-component-tests.sh",
+    "test:breaking-changes": "vitest run tests/breaking-changes/",
+    "test:baseline": "vitest run tests/breaking-changes/baseline-functionality.test.ts",
+    "test:css-conflicts": "vitest run tests/breaking-changes/css-conflict-monitor.test.ts",
+    "test:responsive": "vitest run tests/breaking-changes/responsive-behavior-monitor.test.ts",
+    "test:ai-functionality": "vitest run tests/breaking-changes/ai-functionality-monitor.test.ts",
+    "monitor": "tsx scripts/breaking-changes-monitor.ts",
+    "monitor:continuous": "tsx scripts/breaking-changes-monitor.ts continuous",
+    "monitor:report": "tsx scripts/breaking-changes-monitor.ts report",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

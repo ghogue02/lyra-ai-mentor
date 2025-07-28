@@ -73,20 +73,33 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
   };
 
   return (
-    <InteractiveCard
-      variant={getCardVariant()}
-      hover={!locked}
+    <motion.div
+      className={cn(
+        "neu-card neu-card-hover h-full p-6 cursor-pointer transition-all duration-300",
+        locked && "opacity-60 cursor-not-allowed",
+        completed && "border-l-4 border-l-green-500",
+        progress > 0 && !completed && "border-l-4 border-l-blue-500"
+      )}
       onClick={locked ? undefined : onClick}
-      icon={iconType}
-      showAnimation={showAnimation}
-      disabled={locked}
-      className="h-full"
+      whileHover={!locked ? { scale: 1.02 } : undefined}
+      whileTap={!locked ? { scale: 0.98 } : undefined}
     >
       <div className="space-y-4">
         {/* Header with Status */}
-        <div className="flex items-start justify-between">
-          <div className="flex items-center gap-2">
+        <div className="flex items-start justify-between mb-4">
+          <div className={cn(
+            "neu-surface p-2 rounded-full",
+            completed && "bg-green-50",
+            progress > 0 && !completed && "bg-blue-50",
+            locked && "bg-gray-50"
+          )}>
             {getStatusIcon()}
+          </div>
+          <div className={cn(
+            "neu-surface px-3 py-1 rounded-full text-xs font-medium",
+            difficultyConfig.color
+          )}>
+            {difficultyConfig.label}
           </div>
         </div>
 
@@ -100,8 +113,8 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
           </h3>
           
           {characterName && (
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6">
+            <div className="flex items-center gap-3 neu-text-container p-3">
+              <div className="w-8 h-8 neu-character">
                 {showAnimation ? (
                   <OptimizedVideoAnimation
                     src={getAnimationUrl(`${characterName.toLowerCase()}-avatar.mp4`)}
@@ -123,7 +136,7 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
                   />
                 )}
               </div>
-              <span className="text-xs text-muted-foreground font-medium">
+              <span className="text-sm text-muted-foreground font-medium">
                 with {characterName}
               </span>
             </div>
@@ -140,14 +153,14 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
 
         {/* Progress Bar */}
         {progress > 0 && !completed && (
-          <div className="space-y-1">
-            <div className="flex items-center justify-between text-xs">
-              <span className="text-muted-foreground">Progress</span>
-              <span className="font-medium text-primary">{progress}%</span>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between text-sm">
+              <span className="text-muted-foreground font-medium">Progress</span>
+              <span className="font-semibold text-primary">{progress}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-1.5">
+            <div className="neu-progress p-1 h-4">
               <motion.div
-                className="bg-gradient-to-r from-primary to-brand-cyan h-1.5 rounded-full"
+                className="neu-progress-fill h-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${progress}%` }}
                 transition={{ duration: 0.8, ease: "easeOut" }}
@@ -162,27 +175,35 @@ export const MicroLessonCard: React.FC<MicroLessonCardProps> = ({
             initial={{ scale: 0, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 300 }}
-            className="flex items-center gap-2 text-green-600 bg-green-50 px-3 py-2 rounded-lg border border-green-200"
+            className="neu-text-container p-4 border-l-4 border-l-green-500"
           >
-            <OptimizedVideoAnimation
-              src={getAnimationUrl('micro-lesson-complete.mp4')}
-              fallbackIcon={<CheckCircle className="w-4 h-4" />}
-              className="w-4 h-4"
-              context="celebration"
-              loop={false}
-            />
-            <span className="text-sm font-medium">Completed!</span>
+            <div className="flex items-center gap-3">
+              <div className="neu-character w-8 h-8 bg-green-50 flex items-center justify-center">
+                <OptimizedVideoAnimation
+                  src={getAnimationUrl('micro-lesson-complete.mp4')}
+                  fallbackIcon={<CheckCircle className="w-4 h-4 text-green-600" />}
+                  className="w-4 h-4"
+                  context="celebration"
+                  loop={false}
+                />
+              </div>
+              <span className="text-sm font-semibold text-green-700">Completed!</span>
+            </div>
           </motion.div>
         )}
 
         {/* Locked State */}
         {locked && (
-          <div className="flex items-center gap-2 text-gray-400 bg-gray-50 px-3 py-2 rounded-lg border border-gray-200">
-            <Lock className="w-4 h-4" />
-            <span className="text-sm font-medium">Complete previous lessons to unlock</span>
+          <div className="neu-inset p-4">
+            <div className="flex items-center gap-3">
+              <div className="neu-character w-8 h-8 bg-gray-50 flex items-center justify-center">
+                <Lock className="w-4 h-4 text-gray-400" />
+              </div>
+              <span className="text-sm font-medium text-gray-500">Complete previous lessons to unlock</span>
+            </div>
           </div>
         )}
       </div>
-    </InteractiveCard>
+    </motion.div>
   );
 };

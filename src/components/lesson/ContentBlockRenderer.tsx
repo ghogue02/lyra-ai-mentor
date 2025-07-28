@@ -219,20 +219,24 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
           const imageUrl = storyImages[index] ? getImageUrl(storyImages[index]) : null;
           
           return (
-            <div key={index} className="flex flex-col md:flex-row gap-6 p-6 bg-gray-50 rounded-lg">
-              {imageUrl && (
-                <div className="md:w-1/3 flex-shrink-0">
-                  <img 
-                    src={imageUrl} 
-                    alt={`Success Story ${index + 1}`}
-                    className="w-full h-48 object-contain rounded-lg shadow-sm bg-white"
-                  />
-                </div>
-              )}
-              <div className={imageUrl ? "md:w-2/3" : "w-full"}>
-                <div className="prose prose-base max-w-none">
-                  <div className="text-gray-700 leading-relaxed">
-                    {formatTextContent(story.trim())}
+            <div key={index} className="neu-text-container p-6">
+              <div className="flex flex-col md:flex-row gap-6">
+                {imageUrl && (
+                  <div className="md:w-1/3 flex-shrink-0">
+                    <div className="neu-character w-full h-48 p-2">
+                      <img 
+                        src={imageUrl} 
+                        alt={`Success Story ${index + 1}`}
+                        className="w-full h-full object-contain rounded-lg"
+                      />
+                    </div>
+                  </div>
+                )}
+                <div className={imageUrl ? "md:w-2/3" : "w-full"}>
+                  <div className="prose prose-base max-w-none">
+                    <div className="text-gray-700 leading-relaxed">
+                      {formatTextContent(story.trim())}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -242,7 +246,7 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
         
         {/* Render the concluding section separately without an image */}
         {content.includes('What These Stories Share') && (
-          <div className="mt-8 p-6 bg-purple-50 rounded-lg border border-purple-200">
+          <div className="neu-quote p-6 border-l-purple-500">
             <div className="prose prose-base max-w-none">
               <div className="text-gray-700 leading-relaxed">
                 {formatTextContent(content.split('What These Stories Share')[1]?.trim() || '')}
@@ -277,14 +281,16 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
       return (
         <div className="flex flex-col lg:flex-row gap-6 min-h-[400px]">
           {/* Image container - optimized for square images */}
-          <div className="lg:w-2/5 flex-shrink-0 flex items-center justify-center bg-gradient-to-br from-purple-50 to-cyan-50 rounded-lg p-4">
-            <img 
-              src={imageUrl} 
-              alt={block.title}
-              className="w-full h-full object-contain rounded-lg shadow-sm max-h-[350px] lg:max-h-[400px]"
-              onLoad={() => console.log(`ContentBlockRenderer: Image loaded successfully for ${block.title}`)}
-              onError={(e) => console.error(`ContentBlockRenderer: Image failed to load for ${block.title}:`, e)}
-            />
+          <div className="lg:w-2/5 flex-shrink-0">
+            <div className="neu-character w-full h-96 p-4">
+              <img 
+                src={imageUrl} 
+                alt={block.title}
+                className="w-full h-full object-contain rounded-lg"
+                onLoad={() => console.log(`ContentBlockRenderer: Image loaded successfully for ${block.title}`)}
+                onError={(e) => console.error(`ContentBlockRenderer: Image failed to load for ${block.title}:`, e)}
+              />
+            </div>
           </div>
           {/* Text content on right */}
           <div className="lg:w-3/5 flex flex-col justify-center">
@@ -376,40 +382,50 @@ export const ContentBlockRenderer: React.FC<ContentBlockRendererProps> = ({
   };
 
   return (
-    <Card 
+    <div 
       ref={blockRef}
       onClick={handleCardClick}
       data-testid="content-block-renderer"
       data-content-block-id={block.id}
       className={cn(
-        "shadow-sm backdrop-blur-sm transition-all duration-300 my-8 cursor-pointer",
-        "border border-gray-200 bg-white/60",
-        isCompleted ? "border-green-200 bg-green-50/30" : "hover:bg-gray-50/80"
+        "neu-card neu-card-hover transition-all duration-300 my-8 cursor-pointer",
+        isCompleted && "border-l-4 border-l-green-500"
       )}
     >
-      <CardHeader className="pb-4">
-        <div className="flex items-center gap-2">
-          <div className="text-gray-500">
-            {getBlockIcon()}
+      <div className="p-6 pb-4">
+        <div className="flex items-center gap-4">
+          <div className={cn(
+            "neu-character w-10 h-10 flex items-center justify-center",
+            isCompleted ? "bg-green-50" : "bg-gray-50"
+          )}>
+            {isCompleted ? (
+              <CheckCircle className="w-5 h-5 text-green-600" />
+            ) : (
+              <div className="text-gray-500">
+                {getBlockIcon()}
+              </div>
+            )}
           </div>
-          <CardTitle className="text-xl font-semibold text-gray-800">
-            {block.title}
-          </CardTitle>
-          {isCompleted && (
-            <Badge className="bg-green-100 text-green-700 ml-auto">
-              <CheckCircle className="w-3 h-3 mr-1" />
-              Read
-            </Badge>
-          )}
-          {!isCompleted && (
-            <span className="text-xs text-gray-500 ml-auto">Click to mark as read</span>
-          )}
+          <div className="flex-1">
+            <h3 className="text-xl font-bold text-gray-800 mb-1">
+              {block.title}
+            </h3>
+            {isCompleted ? (
+              <div className="neu-text-container inline-flex items-center gap-2 px-3 py-1">
+                <span className="text-xs font-semibold text-green-700">Read</span>
+              </div>
+            ) : (
+              <span className="text-xs text-gray-500">Click to mark as read</span>
+            )}
+          </div>
         </div>
-      </CardHeader>
+      </div>
       
-      <CardContent className="pt-0 px-6 pb-6">
-        {renderContent()}
-      </CardContent>
-    </Card>
+      <div className="px-6 pb-6">
+        <div className="neu-text-container p-6">
+          {renderContent()}
+        </div>
+      </div>
+    </div>
   );
 };

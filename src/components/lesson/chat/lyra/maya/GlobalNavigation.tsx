@@ -152,10 +152,10 @@ const GlobalNavigation: React.FC<GlobalNavigationProps> = ({
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Card className={`bg-white/95 backdrop-blur-sm border-b shadow-sm transform transition-transform duration-300 ease-in-out ${
+        <Card className={`bg-white/95 backdrop-blur-sm border-b shadow-[0_4px_8px_rgba(0,0,0,0.05)] transform transition-transform duration-300 ease-in-out rounded-b-2xl ${
           shouldShowNavigation ? 'translate-y-0' : '-translate-y-full'
         }`}>
-          <CardContent className="p-4">
+          <CardContent className="p-4 bg-white rounded-b-2xl shadow-[inset_2px_2px_4px_rgba(0,0,0,0.05)]">
           <div className="flex items-center justify-between">
             {/* Left side - Back button and breadcrumb */}
             <div className="flex items-center gap-4">

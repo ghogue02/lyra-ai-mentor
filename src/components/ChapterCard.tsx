@@ -59,18 +59,15 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
   };
 
   return (
-    <Card className={cn(
-      "border-0 shadow-lg bg-white/80 backdrop-blur-sm hover:shadow-xl transition-all duration-300",
-      "h-80 flex flex-col", // Fixed height and flex layout
-      (isLocked || isPlaceholder) ? "opacity-60" : "transform hover:scale-105"
+    <div className={cn(
+      "nm-card h-80 flex flex-col p-6", // Fixed height and flex layout
+      (isLocked || isPlaceholder) ? "opacity-60" : ""
     )}>
-      <CardHeader className="pb-4 flex-shrink-0">
+      <div className="pb-4 flex-shrink-0">
         <div className="flex items-start justify-between">
           <div className={cn(
-            "w-20 h-20 rounded-xl flex items-center justify-center shadow-md border",
-            (isLocked || isPlaceholder)
-              ? "bg-white border-gray-200" 
-              : "bg-white border-gray-100"
+            "nm-icon w-20 h-20",
+            (isLocked || isPlaceholder) ? "opacity-60" : ""
           )}>
             {(isLocked || isPlaceholder) ? (
               <img 
@@ -88,62 +85,63 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
           </div>
           
           <div className="flex flex-col items-end gap-2">
-            <Badge variant="secondary" className="text-xs">
+            <div className="nm-badge text-xs px-2 py-1">
               {chapter.duration}
-            </Badge>
+            </div>
             {isCompleted && (
-              <Badge className="bg-green-100 text-green-700 text-xs">
+              <div className="nm-badge-secondary text-xs px-2 py-1">
                 Completed
-              </Badge>
+              </div>
             )}
             {isPlaceholder && (
-              <Badge variant="outline" className="text-xs">
+              <div className="nm-badge text-xs px-2 py-1">
                 Preview
-              </Badge>
+              </div>
             )}
           </div>
         </div>
         
-        <CardTitle className="text-lg font-semibold mt-4 h-14 overflow-hidden">
+        <h3 className="text-lg font-semibold mt-4 h-14 overflow-hidden">
           <div className="line-clamp-2">
             Chapter {chapter.id}: {chapter.title}
           </div>
-        </CardTitle>
-        <CardDescription className="text-gray-600 text-sm h-16 overflow-hidden">
+        </h3>
+        <p className="text-gray-600 text-sm h-16 overflow-hidden">
           <div className="line-clamp-3">
             {chapter.description}
           </div>
-        </CardDescription>
-      </CardHeader>
+        </p>
+      </div>
       
-      <CardContent className="pt-0 flex flex-col justify-end flex-grow">
+      <div className="pt-0 flex flex-col justify-end flex-grow">
         {!isLocked && !isPlaceholder && progress > 0 && (
           <div className="mb-4">
             <div className="flex justify-between text-sm text-gray-600 mb-2">
               <span>Progress</span>
               <span>{Math.round(progress)}%</span>
             </div>
-            <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="nm-progress w-full h-2">
               <div 
-                className="bg-gradient-to-r from-purple-500 to-cyan-500 h-2 rounded-full transition-all duration-300"
+                className="nm-progress-fill h-2 transition-all duration-300"
                 style={{ width: `${progress}%` }}
               />
             </div>
           </div>
         )}
         
-        <Button 
-          variant={isLocked || isPlaceholder ? "secondary" : "default"}
+        <button 
           className={cn(
             "w-full mt-auto",
-            !isLocked && !isPlaceholder && "bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+            isLocked || isPlaceholder 
+              ? "nm-button opacity-60 cursor-not-allowed" 
+              : "nm-button nm-button-primary"
           )}
           disabled={isLocked || isPlaceholder}
         >
           {getButtonIcon()}
           {getButtonText()}
-        </Button>
-      </CardContent>
-    </Card>
+        </button>
+      </div>
+    </div>
   );
 };

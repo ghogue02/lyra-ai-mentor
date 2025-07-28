@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neumorphic Design System Demo</title>
+    <link rel="stylesheet" href="../index.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--nm-background);
+            padding: 2rem;
+            min-height: 100vh;
+        }
+        
+        .demo-section {
+            margin-bottom: 3rem;
+        }
+        
+        .demo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 1rem;
+        }
+        
+        .component-showcase {
+            padding: 1.5rem;
+        }
+        
+        /* Dark mode toggle */
+        .dark-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1000;
+        }
+    </style>
+</head>
+<body>
+    <!-- Dark Mode Toggle -->
+    <button class="nm-button dark-toggle" onclick="toggleDarkMode()">
+        🌙 Toggle Dark Mode
+    </button>
+
+    <div class="max-w-7xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-4xl font-bold nm-text-primary mb-4">Neumorphic Design System</h1>
+            <p class="text-lg nm-text-secondary">Complete component showcase for Lyra AI Mentor</p>
+        </header>
+
+        <!-- Cards Section -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Cards & Containers</h2>
+            <div class="demo-grid">
+                <div class="nm-card component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Default Card</h3>
+                    <p class="nm-text-secondary">Basic neumorphic card with subtle depth and hover effects.</p>
+                </div>
+                
+                <div class="nm-card-elevated component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Elevated Card</h3>
+                    <p class="nm-text-secondary">Higher elevation for important content areas.</p>
+                </div>
+                
+                <div class="nm-card-sunken component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Sunken Card</h3>
+                    <p class="nm-text-secondary">Pressed appearance, perfect for input areas.</p>
+                </div>
+                
+                <div class="nm-card nm-glass component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Glass Card</h3>
+                    <p class="nm-text-secondary">Modern glassmorphic effect with backdrop blur.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Buttons Section -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Buttons</h2>
+            <div class="nm-panel component-showcase">
+                <div class="flex flex-wrap gap-4 items-center">
+                    <button class="nm-button">Default Button</button>
+                    <button class="nm-button nm-button-primary">Primary Button</button>
+                    <button class="nm-button nm-button-ghost">Ghost Button</button>
+                    <button class="nm-button nm-button-sm">Small Button</button>
+                    <button class="nm-button nm-button-lg">Large Button</button>
+                    <button class="nm-button nm-metallic">Metallic Button</button>
+                    <button class="nm-button" disabled>Disabled Button</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Inputs Section -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Form Elements</h2>
+            <div class="nm-panel component-showcase">
+                <div class="space-y-4 max-w-md">
+                    <input class="nm-input" type="text" placeholder="Enter your name">
+                    <input class="nm-input nm-focus-ring" type="email" placeholder="Enter your email">
+                    <textarea class="nm-input" rows="3" placeholder="Enter your message"></textarea>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Section -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Navigation</h2>
+            <div class="nm-panel component-showcase">
+                <nav class="nm-nav max-w-md">
+                    <button class="nm-nav-item active">Home</button>
+                    <button class="nm-nav-item">About</button>
+                    <button class="nm-nav-item">Services</button>
+                    <button class="nm-nav-item">Contact</button>
+                </nav>
+            </div>
+        </section>
+
+        <!-- Components Section -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Specialized Components</h2>
+            <div class="demo-grid">
+                <div class="nm-panel component-showcase">
+                    <h3 class="text-lg font-semibold mb-4">Avatar</h3>
+                    <div class="nm-avatar w-16 h-16">
+                        <img src="https://via.placeholder.com/64" alt="Avatar" class="w-full h-full object-cover">
+                    </div>
+                </div>
+                
+                <div class="nm-panel component-showcase">
+                    <h3 class="text-lg font-semibold mb-4">Badges</h3>
+                    <div class="flex gap-2 flex-wrap">
+                        <span class="nm-badge">Default</span>
+                        <span class="nm-badge nm-badge-accent">Purple</span>
+                        <span class="nm-badge nm-badge-cyan">Cyan</span>
+                    </div>
+                </div>
+                
+                <div class="nm-panel component-showcase">
+                    <h3 class="text-lg font-semibold mb-4">Progress Bar</h3>
+                    <div class="nm-progress">
+                        <div class="nm-progress-bar" style="width: 65%;"></div>
+                    </div>
+                </div>
+                
+                <div class="nm-panel component-showcase">
+                    <h3 class="text-lg font-semibold mb-4">Icon Container</h3>
+                    <div class="nm-icon w-12 h-12">
+                        <span class="text-xl">⚡</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- States Section -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Interactive States</h2>
+            <div class="demo-grid">
+                <div class="nm-card nm-success component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Success State</h3>
+                    <p>Operation completed successfully!</p>
+                </div>
+                
+                <div class="nm-card nm-warning component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Warning State</h3>
+                    <p>Please check your input before proceeding.</p>
+                </div>
+                
+                <div class="nm-card nm-error component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Error State</h3>
+                    <p>Something went wrong. Please try again.</p>
+                </div>
+                
+                <div class="nm-card nm-loading component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Loading State</h3>
+                    <p>Please wait while we process your request...</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Animations Section -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Animations</h2>
+            <div class="demo-grid">
+                <div class="nm-card nm-animate-float component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Float Animation</h3>
+                    <p class="nm-text-secondary">Gentle floating motion effect.</p>
+                </div>
+                
+                <div class="nm-card nm-animate-pulse component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Pulse Animation</h3>
+                    <p class="nm-text-secondary">Subtle pulsing attention grabber.</p>
+                </div>
+                
+                <div class="nm-card nm-glow-soft component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Soft Glow</h3>
+                    <p class="nm-text-secondary">Purple brand glow effect.</p>
+                </div>
+                
+                <div class="nm-card nm-breathe component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Breathing Effect</h3>
+                    <p class="nm-text-secondary">Subtle breathing scale animation.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Shadow Variations -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Shadow Variations</h2>
+            <div class="demo-grid">
+                <div class="nm-surface nm-shadow-subtle component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Subtle Shadow</h3>
+                    <p class="nm-text-secondary">Minimal depth for delicate elements.</p>
+                </div>
+                
+                <div class="nm-surface nm-shadow-raised component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Raised Shadow</h3>
+                    <p class="nm-text-secondary">Standard elevation for most components.</p>
+                </div>
+                
+                <div class="nm-surface nm-shadow-floating component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Floating Shadow</h3>
+                    <p class="nm-text-secondary">High elevation for modal elements.</p>
+                </div>
+                
+                <div class="nm-surface nm-shadow-pressed component-showcase">
+                    <h3 class="text-lg font-semibold mb-3">Pressed Shadow</h3>
+                    <p class="nm-text-secondary">Inset shadow for input areas.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Utility Classes Demo -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Utility Classes</h2>
+            <div class="nm-panel component-showcase">
+                <div class="space-y-4">
+                    <h3 class="text-lg font-semibold">Typography</h3>
+                    <div class="space-y-2">
+                        <p class="nm-text-primary">Primary text color</p>
+                        <p class="nm-text-secondary">Secondary text color</p>
+                        <p class="nm-text-muted">Muted text color</p>
+                        <p class="nm-text-accent">Accent purple text</p>
+                        <p class="nm-text-cyan">Cyan accent text</p>
+                    </div>
+                    
+                    <h3 class="text-lg font-semibold mt-6">Surfaces</h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="nm-surface p-4 text-center nm-rounded-md">Surface</div>
+                        <div class="nm-surface-elevated p-4 text-center nm-rounded-md">Elevated</div>
+                        <div class="nm-surface-sunken p-4 text-center nm-rounded-md">Sunken</div>
+                        <div class="nm-surface-purple p-4 text-center nm-rounded-md">Purple</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Responsive Demo -->
+        <section class="demo-section">
+            <h2 class="text-2xl font-semibold nm-text-primary mb-6">Responsive Design</h2>
+            <div class="nm-panel component-showcase">
+                <div class="nm-card nm-shadow-responsive">
+                    <div class="p-6">
+                        <h3 class="text-lg font-semibold mb-3">Responsive Shadows</h3>
+                        <p class="nm-text-secondary">
+                            This card uses responsive shadows that adapt based on screen size:
+                            subtle on mobile, raised on tablet, floating on desktop.
+                        </p>
+                        <p class="nm-text-muted mt-2 text-sm">
+                            Resize your window to see the effect!
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+            const isDark = document.documentElement.classList.contains('dark');
+            const button = document.querySelector('.dark-toggle');
+            button.textContent = isDark ? '☀️ Toggle Light Mode' : '🌙 Toggle Dark Mode';
+            
+            // Store preference
+            localStorage.setItem('darkMode', isDark);
+        }
+        
+        // Load dark mode preference
+        const darkMode = localStorage.getItem('darkMode') === 'true';
+        if (darkMode) {
+            document.documentElement.classList.add('dark');
+            document.querySelector('.dark-toggle').textContent = '☀️ Toggle Light Mode';
+        }
+        
+        // Add interactive effects
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add ripple effect to buttons
+            const buttons = document.querySelectorAll('.nm-button');
+            buttons.forEach(button => {
+                button.classList.add('nm-ripple');
+            });
+            
+            // Add interactive class to cards
+            const cards = document.querySelectorAll('.nm-card, .nm-card-elevated, .nm-card-sunken');
+            cards.forEach(card => {
+                card.classList.add('nm-interactive');
+            });
+        });
+    </script>
+</body>
+</html>

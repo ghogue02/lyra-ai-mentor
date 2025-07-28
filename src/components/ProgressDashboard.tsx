@@ -22,10 +22,10 @@ const BadgeCard: React.FC<{ badge: Badge; isUnlocked: boolean }> = ({ badge, isU
   return (
     <div
       className={cn(
-        "relative p-4 rounded-lg border-2 transition-all duration-300",
+        "relative p-4 rounded-2xl border-2 transition-all duration-300",
         isUnlocked
-          ? "bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-400 shadow-md"
-          : "bg-gray-50 border-gray-200 opacity-75"
+          ? "bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border-yellow-400"
+          : "bg-gray-50 shadow-[inset_4px_4px_8px_#e5e7eb] border-gray-200 opacity-75"
       )}
     >
       <div className="flex items-start gap-3">
@@ -105,9 +105,9 @@ export const ProgressDashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* Stats Overview */}
+      {/* Neumorphic Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
+        <Card className="bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -118,12 +118,14 @@ export const ProgressDashboard: React.FC = () => {
                   {progressData.experience} / {progressData.nextLevelExperience} XP
                 </p>
               </div>
-              <Trophy className="h-8 w-8 text-yellow-500" />
+              <div className="bg-white rounded-full p-3 shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff]">
+                <Trophy className="h-8 w-8 text-yellow-500" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -131,12 +133,14 @@ export const ProgressDashboard: React.FC = () => {
                 <p className="text-3xl font-bold">{progressData.totalTimeSpent}</p>
                 <p className="text-xs text-gray-500 mt-1">minutes</p>
               </div>
-              <Clock className="h-8 w-8 text-blue-500" />
+              <div className="bg-white rounded-full p-3 shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff]">
+                <Clock className="h-8 w-8 text-blue-500" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -146,12 +150,14 @@ export const ProgressDashboard: React.FC = () => {
                   Best: {progressData.longestStreak} days
                 </p>
               </div>
-              <Flame className="h-8 w-8 text-orange-500" />
+              <div className="bg-white rounded-full p-3 shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff]">
+                <Flame className="h-8 w-8 text-orange-500" />
+              </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card className="bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50 rounded-2xl">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
@@ -159,14 +165,16 @@ export const ProgressDashboard: React.FC = () => {
                 <p className="text-3xl font-bold">{unlockedBadges.length}</p>
                 <p className="text-xs text-gray-500 mt-1">of {badges.length} total</p>
               </div>
-              <Target className="h-8 w-8 text-green-500" />
+              <div className="bg-white rounded-full p-3 shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff]">
+                <Target className="h-8 w-8 text-green-500" />
+              </div>
             </div>
           </CardContent>
         </Card>
       </div>
 
-      {/* Progress Overview */}
-      <Card>
+      {/* Neumorphic Progress Overview */}
+      <Card className="bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50 rounded-2xl">
         <CardHeader>
           <CardTitle>Learning Progress</CardTitle>
         </CardHeader>
@@ -186,27 +194,29 @@ export const ProgressDashboard: React.FC = () => {
             </div>
 
             {suggestedComponent && (
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center justify-between">
+              <div className="bg-white rounded-2xl p-4 flex items-center justify-between shadow-[inset_4px_4px_8px_#e5e7eb,inset_-4px_-4px_8px_#ffffff] border border-blue-200/30">
                 <div>
                   <p className="font-medium text-blue-900">Suggested Next</p>
                   <p className="text-sm text-blue-700">{suggestedComponent}</p>
                 </div>
-                <ChevronRight className="h-5 w-5 text-blue-600" />
+                <div className="bg-white rounded-full p-2 shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff]">
+                  <ChevronRight className="h-5 w-5 text-blue-600" />
+                </div>
               </div>
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Badges */}
-      <Card>
+      {/* Neumorphic Badges */}
+      <Card className="bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50 rounded-2xl">
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle>Achievement Badges</CardTitle>
           <Button
             variant="ghost"
             size="sm"
             onClick={resetProgress}
-            className="text-gray-500"
+            className="text-gray-500 bg-white shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#e5e7eb,-2px_-2px_4px_#ffffff] transition-all duration-300"
           >
             <RefreshCw className="h-4 w-4 mr-2" />
             Reset Progress
@@ -239,8 +249,8 @@ export const ProgressDashboard: React.FC = () => {
         </CardContent>
       </Card>
 
-      {/* Character Progress */}
-      <Card>
+      {/* Neumorphic Character Progress */}
+      <Card className="bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50 rounded-2xl">
         <CardHeader>
           <CardTitle>Character Progress</CardTitle>
         </CardHeader>

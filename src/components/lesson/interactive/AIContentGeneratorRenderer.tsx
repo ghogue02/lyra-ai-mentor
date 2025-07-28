@@ -66,7 +66,7 @@ export const AIContentGeneratorRenderer: React.FC<AIContentGeneratorRendererProp
         <div>
           <label className="text-xs font-medium text-gray-700 mb-2 block">Choose Organization</label>
           <Select value={selectedOrg} onValueChange={setSelectedOrg}>
-            <SelectTrigger className="text-sm">
+            <SelectTrigger className="neumorph-select text-sm">
               <SelectValue placeholder="Select an organization..." />
             </SelectTrigger>
             <SelectContent>
@@ -82,7 +82,7 @@ export const AIContentGeneratorRenderer: React.FC<AIContentGeneratorRendererProp
         <div>
           <label className="text-xs font-medium text-gray-700 mb-2 block">Content Type</label>
           <Select value={selectedType} onValueChange={setSelectedType}>
-            <SelectTrigger className="text-sm">
+            <SelectTrigger className="neumorph-select text-sm">
               <SelectValue placeholder="Select content type..." />
             </SelectTrigger>
             <SelectContent>
@@ -97,10 +97,12 @@ export const AIContentGeneratorRenderer: React.FC<AIContentGeneratorRendererProp
       </div>
 
       <div className="text-center">
-        <Button 
+        <button 
           onClick={generateContent} 
           disabled={!canGenerate || loading} 
-          size="sm"
+          className={`px-4 py-2 text-sm font-medium text-white ${
+            loading ? 'neumorph-loading' : ''
+          } neumorph-button-primary`}
         >
           {loading ? (
             <>
@@ -113,35 +115,33 @@ export const AIContentGeneratorRenderer: React.FC<AIContentGeneratorRendererProp
               Generate Content
             </>
           )}
-        </Button>
+        </button>
       </div>
 
       {generatedContent && (
-        <Card className="border border-purple-200 bg-purple-50">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between mb-3">
-              <Badge className="bg-purple-100 text-purple-700 text-xs">
-                AI Generated Content
-              </Badge>
-              <Button onClick={copyContent} variant="ghost" size="sm" className="text-xs">
-                {copied ? (
-                  <>
-                    <CheckCircle className="w-3 h-3 mr-1" />
-                    Copied!
-                  </>
-                ) : (
-                  <>
-                    <Copy className="w-3 h-3 mr-1" />
-                    Copy
-                  </>
-                )}
-              </Button>
+        <div className="neumorph-card border border-purple-200 bg-purple-50 p-4">
+          <div className="flex items-center justify-between mb-3">
+            <div className="neumorph-badge bg-purple-100 text-purple-700 text-xs">
+              AI Generated Content
             </div>
-            <div className="text-sm text-gray-800 whitespace-pre-wrap">
-              {generatedContent}
-            </div>
-          </CardContent>
-        </Card>
+            <button onClick={copyContent} className="neumorph-icon-button text-xs">
+              {copied ? (
+                <>
+                  <CheckCircle className="w-3 h-3 mr-1" />
+                  Copied!
+                </>
+              ) : (
+                <>
+                  <Copy className="w-3 h-3 mr-1" />
+                  Copy
+                </>
+              )}
+            </button>
+          </div>
+          <div className="text-sm text-gray-800 whitespace-pre-wrap neumorph-card-inset p-3">
+            {generatedContent}
+          </div>
+        </div>
       )}
     </div>
   );

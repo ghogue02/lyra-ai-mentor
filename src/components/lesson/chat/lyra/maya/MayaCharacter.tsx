@@ -62,27 +62,29 @@ const MayaCharacter: React.FC<MayaCharacterProps> = ({
     <div className={`relative ${className}`}>
       {/* Maya Avatar Container */}
       <motion.div
-        className={`${getSizeClasses()} rounded-2xl glass-effect flex items-center justify-center shadow-lg brand-shadow-glow relative overflow-hidden`}
+        className={`${getSizeClasses()} neu-character relative overflow-hidden`}
         animate={getMoodAnimation()}
         transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
       >
         {/* Background Gradient */}
-        <div className="absolute inset-0 brand-gradient-glow rounded-2xl" />
+        <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-brand-cyan/10 rounded-full" />
         
         {/* Character Icon */}
-        <div className="relative z-10 p-2">
+        <div className="relative z-10 p-2 flex items-center justify-center w-full h-full">
           {getMoodIcon()}
         </div>
         
         {/* Mood Indicator */}
-        <div className="absolute top-1 right-1 w-3 h-3 bg-primary rounded-full animate-pulse" />
+        <div className="absolute top-1 right-1 w-3 h-3 neu-surface rounded-full animate-pulse border border-primary/20">
+          <div className="w-full h-full bg-primary rounded-full opacity-80" />
+        </div>
       </motion.div>
 
       {/* Sparkles Animation */}
       {showSparkles && (
         <div className="absolute inset-0 pointer-events-none">
           <motion.div
-            className="absolute -top-1 -right-1"
+            className="absolute -top-2 -right-2 neu-surface p-1 rounded-full"
             animate={{ 
               rotate: [0, 360],
               scale: [1, 1.2, 1],
@@ -90,11 +92,11 @@ const MayaCharacter: React.FC<MayaCharacterProps> = ({
             }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           >
-            <Sparkles className="w-4 h-4 text-primary" />
+            <Sparkles className="w-3 h-3 text-primary" />
           </motion.div>
           
           <motion.div
-            className="absolute -bottom-1 -left-1"
+            className="absolute -bottom-2 -left-2 neu-surface p-1 rounded-full"
             animate={{ 
               rotate: [360, 0],
               scale: [1, 1.1, 1],
@@ -102,15 +104,15 @@ const MayaCharacter: React.FC<MayaCharacterProps> = ({
             }}
             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 1 }}
           >
-            <Sparkles className="w-3 h-3 text-brand-cyan" />
+            <Sparkles className="w-2 h-2 text-brand-cyan" />
           </motion.div>
         </div>
       )}
 
       {/* Maya Label */}
-      <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-        <div className="bg-primary/10 backdrop-blur-sm rounded-lg px-2 py-1">
-          <span className="text-xs font-semibold text-primary">Maya</span>
+      <div className="absolute -bottom-8 left-1/2 transform -translate-x-1/2">
+        <div className="neu-text-container px-3 py-1">
+          <span className="text-xs font-bold text-primary">Maya</span>
         </div>
       </div>
     </div>

@@ -193,7 +193,8 @@ export const Chapter2Sidebar: React.FC<Chapter2SidebarProps> = ({
 
   return (
     <div className="w-80 p-4 space-y-4">
-      <div className="text-center mb-6">
+      {/* Neumorphic Header */}
+      <div className="text-center mb-6 bg-white rounded-2xl p-6 shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border border-gray-100/50">
         <h2 className="text-xl font-bold text-gray-800">Chapter 2: AI for Your Daily Work</h2>
         <p className="text-sm text-gray-600 mt-1">Follow Maya's transformation journey</p>
       </div>
@@ -209,7 +210,13 @@ export const Chapter2Sidebar: React.FC<Chapter2SidebarProps> = ({
           return (
             <Card 
               key={lesson.id}
-              className={`cursor-pointer border-2 ${getColorClasses(lesson.color, isActive, isCompleted)}`}
+              className={`cursor-pointer border-2 transition-all duration-300 rounded-2xl ${
+                isCompleted 
+                  ? 'bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border-green-200'
+                  : isActive
+                  ? 'bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] border-blue-300'
+                  : 'bg-white shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff] border-gray-200 hover:shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff]'
+              }`}
               onClick={() => handleLessonClick(lesson.id)}
             >
               <CardContent className="p-4">
@@ -275,18 +282,20 @@ export const Chapter2Sidebar: React.FC<Chapter2SidebarProps> = ({
         })}
       </div>
 
+      {/* Neumorphic Dashboard Button */}
       <div className="mt-6">
         <Button 
           onClick={() => navigate('/dashboard')} 
           variant="outline" 
-          className="w-full flex items-center gap-2 hover:bg-gray-50"
+          className="w-full flex items-center gap-2 bg-white shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff] hover:shadow-[2px_2px_4px_#e5e7eb,-2px_-2px_4px_#ffffff] border-gray-200 transition-all duration-300"
         >
           <Home className="w-4 h-4" />
           Return to Dashboard
         </Button>
       </div>
 
-      <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+      {/* Neumorphic Progress Summary */}
+      <div className="mt-4 p-4 bg-white rounded-2xl shadow-[inset_4px_4px_8px_#e5e7eb,inset_-4px_-4px_8px_#ffffff] border border-blue-200/30">
         <div className="text-center">
           <h4 className="text-sm font-semibold text-blue-800 mb-1">Maya's Progress</h4>
           <p className="text-xs text-blue-600">

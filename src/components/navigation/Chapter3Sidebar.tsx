@@ -109,8 +109,8 @@ export const Chapter3Sidebar: React.FC<Chapter3SidebarProps> = ({
 
   return (
     <div className="w-80 h-screen bg-gradient-to-b from-rose-50 to-purple-50 border-r border-rose-200 flex flex-col">
-      {/* Chapter Header */}
-      <div className="p-6 border-b border-rose-200 bg-white/80 backdrop-blur-sm">
+      {/* Neumorphic Chapter Header */}
+      <div className="p-6 border-b border-rose-200 bg-white rounded-b-2xl shadow-[0_4px_8px_rgba(0,0,0,0.05)] backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-2">
           <Heart className="w-6 h-6 text-rose-500" />
           <h2 className="text-lg font-bold text-gray-900">Chapter 3</h2>
@@ -136,17 +136,17 @@ export const Chapter3Sidebar: React.FC<Chapter3SidebarProps> = ({
               onClick={() => handleLessonClick(lesson.id)}
               disabled={false}
               className={cn(
-                "w-full text-left p-4 rounded-lg transition-all duration-200",
+                "w-full text-left p-4 rounded-2xl transition-all duration-300",
                 "border-2 backdrop-blur-sm",
                 isActive ? [
-                  "bg-white shadow-lg scale-[1.02]",
-                  lesson.color === 'rose' && "border-rose-400 bg-rose-50",
-                  lesson.color === 'purple' && "border-purple-400 bg-purple-50",
-                  lesson.color === 'indigo' && "border-indigo-400 bg-indigo-50",
-                  lesson.color === 'blue' && "border-blue-400 bg-blue-50"
+                  "bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] scale-[1.02]",
+                  lesson.color === 'rose' && "border-rose-400",
+                  lesson.color === 'purple' && "border-purple-400",
+                  lesson.color === 'indigo' && "border-indigo-400",
+                  lesson.color === 'blue' && "border-blue-400"
                 ] : [
-                  "hover:bg-white/80 hover:shadow-md",
-                  status === 'completed' ? "border-green-300 bg-green-50/50" : "border-gray-200 bg-white/50",
+                  "hover:bg-white shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff] hover:shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff]",
+                  status === 'completed' ? "border-green-300" : "border-gray-200",
                   false
                 ]
               )}
@@ -198,8 +198,8 @@ export const Chapter3Sidebar: React.FC<Chapter3SidebarProps> = ({
         })}
       </div>
 
-      {/* Chapter Progress Summary */}
-      <div className="p-4 border-t border-rose-200 bg-white/80 backdrop-blur-sm">
+      {/* Neumorphic Chapter Progress Summary */}
+      <div className="p-4 border-t border-rose-200 bg-white rounded-t-2xl shadow-[inset_4px_4px_8px_#e5e7eb,inset_-4px_-4px_8px_#ffffff] backdrop-blur-sm">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-gray-700">Chapter Progress</span>
           <span className="text-sm text-gray-600">
