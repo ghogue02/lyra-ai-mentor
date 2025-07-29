@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -446,8 +447,14 @@ const RachelWorkflowDesign: React.FC = () => {
                           Copy
                         </Button>
                       </div>
-                      <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
-                        {design.content}
+                      <div className="bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
+                        <TemplateContentFormatter 
+                          content={design.content}
+                          contentType="article"
+                          variant="compact"
+                          showMergeFieldTypes={false}
+                          className="formatted-ai-content"
+                        />
                       </div>
                     </div>
                   ))}

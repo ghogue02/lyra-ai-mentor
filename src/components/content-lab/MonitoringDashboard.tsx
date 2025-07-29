@@ -62,6 +62,7 @@ export const MonitoringDashboard = () => {
             title: `Generated ${item.content_type}`,
             timestamp: item.created_at,
             status: item.approval_status,
+            content: item.content || '',
           })),
           ...jobsData.slice(-5).map(item => ({
             type: "job",
@@ -201,16 +202,27 @@ export const MonitoringDashboard = () => {
               <ScrollArea className="h-80">
                 <div className="space-y-2">
                   {systemMetrics?.recentActivity?.map((activity, index) => (
-                    <div key={index} className="flex items-center justify-between p-2 border rounded">
-                      <div>
-                        <div className="font-medium">{activity.title}</div>
-                        <div className="text-sm text-muted-foreground">
-                          {format(new Date(activity.timestamp), "MMM d, yyyy HH:mm")}
+                    <div key={index} className="space-y-2 p-2 border rounded">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <div className="font-medium">{activity.title}</div>
+                          <div className="text-sm text-muted-foreground">
+                            {format(new Date(activity.timestamp), "MMM d, yyyy HH:mm")}
+                          </div>
                         </div>
+                        <Badge className={getStatusColor(activity.status)}>
+                          {activity.status}
+                        </Badge>
                       </div>
-                      <Badge className={getStatusColor(activity.status)}>
-                        {activity.status}
-                      </Badge>
+                      {activity.content && (
+                        <TemplateContentFormatter 
+                          content={activity.content.slice(0, 150) + '...'}
+                          contentType="article"
+                          variant="compact"
+                          showMergeFieldTypes={false}
+                          className="admin-formatted-content text-xs bg-gray-50"
+                        />
+                      )}
                     </div>
                   ))}
                 </div>

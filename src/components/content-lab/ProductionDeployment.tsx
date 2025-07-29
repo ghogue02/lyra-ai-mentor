@@ -10,6 +10,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useToast } from "@/hooks/use-toast";
 import { Rocket, CheckCircle, AlertTriangle, History, Target, Zap } from "lucide-react";
+import { TemplateContentFormatter } from "@/components/ui/TemplateContentFormatter";
 
 export const ProductionDeployment = () => {
   const [selectedLesson, setSelectedLesson] = useState<string>("");
@@ -249,11 +250,22 @@ export const ProductionDeployment = () => {
                 <Alert>
                   <AlertTriangle className="h-4 w-4" />
                   <AlertDescription>
-                    <strong>Content Preview:</strong> {selectedContentData.title}
-                    <br />
-                    <span className="text-sm text-muted-foreground">
-                      Type: {selectedContentData.content_type} | Character: {selectedContentData.character_type}
-                    </span>
+                    <div className="space-y-2">
+                      <div>
+                        <strong>Content Preview:</strong> {selectedContentData.title}
+                        <br />
+                        <span className="text-sm text-muted-foreground">
+                          Type: {selectedContentData.content_type} | Character: {selectedContentData.character_type}
+                        </span>
+                      </div>
+                      <TemplateContentFormatter 
+                        content={selectedContentData.content.slice(0, 200) + '...'}
+                        contentType={selectedContentData.content_type as any}
+                        variant="compact"
+                        showMergeFieldTypes={false}
+                        className="admin-formatted-content text-xs"
+                      />
+                    </div>
                   </AlertDescription>
                 </Alert>
               )}

@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { CheckCircle, XCircle, MessageSquare, User, Calendar, FileText } from "lucide-react";
+import { TemplateContentFormatter } from "@/components/ui/TemplateContentFormatter";
 import { format } from "date-fns";
 
 interface ContentReviewCardProps {
@@ -111,8 +112,14 @@ export const ContentReviewCard = ({ content }: ContentReviewCardProps) => {
       <CardContent className="space-y-4">
         <div>
           <Label className="text-sm font-medium">Generated Content</Label>
-          <div className="mt-2 p-3 bg-muted rounded-lg">
-            <div className="text-sm whitespace-pre-wrap">{content.content}</div>
+          <div className="mt-2">
+            <TemplateContentFormatter 
+              content={content.content}
+              contentType="article"
+              variant="compact"
+              showMergeFieldTypes={true}
+              className="admin-formatted-content"
+            />
           </div>
         </div>
 

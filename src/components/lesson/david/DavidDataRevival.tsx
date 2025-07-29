@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -385,11 +386,25 @@ const DavidDataRevival: React.FC = () => {
                         <Badge variant="outline">Revived</Badge>
                       </div>
                       <div className="space-y-3">
-                        <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded">
-                          <strong className="text-blue-800">Insight:</strong> {insight.insight}
+                        <div className="bg-blue-50 p-3 rounded">
+                          <strong className="text-blue-800">Insight:</strong>
+                          <TemplateContentFormatter 
+                            content={insight.insight}
+                            contentType="article"
+                            variant="compact"
+                            showMergeFieldTypes={false}
+                            className="formatted-ai-content mt-2"
+                          />
                         </div>
-                        <div className="text-sm text-gray-600 bg-green-50 p-3 rounded">
-                          <strong className="text-green-800">Impact:</strong> {insight.impact}
+                        <div className="bg-green-50 p-3 rounded">
+                          <strong className="text-green-800">Impact:</strong>
+                          <TemplateContentFormatter 
+                            content={insight.impact}
+                            contentType="lesson"
+                            variant="compact"
+                            showMergeFieldTypes={false}
+                            className="formatted-ai-content mt-2"
+                          />
                         </div>
                       </div>
                     </div>

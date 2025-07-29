@@ -11,6 +11,7 @@ import { ApprovalDashboard } from "./ApprovalDashboard";
 import { ProductionDeployment } from "./ProductionDeployment";
 import { MonitoringDashboard } from "./MonitoringDashboard";
 import { CheckCircle, Clock, AlertCircle, TrendingUp } from "lucide-react";
+import { TemplateContentFormatter } from "@/components/ui/TemplateContentFormatter";
 
 interface GeneratedContent {
   id: string;
@@ -158,8 +159,15 @@ export const ApprovalWorkflow = () => {
                 <ContentReviewCard key={content.id} content={content} />
               ))}
               {(!pendingContent || pendingContent.length === 0) && (
-                <div className="text-center py-8 text-muted-foreground">
-                  No pending content to review
+                <div className="text-center py-8">
+                  <div className="text-muted-foreground mb-2">No pending content to review</div>
+                  <TemplateContentFormatter 
+                    content="All content has been reviewed. New submissions will appear here for approval."
+                    contentType="article"
+                    variant="compact"
+                    showMergeFieldTypes={false}
+                    className="admin-formatted-content text-sm"
+                  />
                 </div>
               )}
             </div>

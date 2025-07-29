@@ -17,6 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Label } from '@/components/ui/label';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -440,9 +441,13 @@ const SofiaImpactScaling: React.FC = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="bg-gradient-to-br from-rose-50 to-purple-50 p-4 rounded-lg max-h-96 overflow-y-auto">
-                    <div className="text-sm text-gray-700 whitespace-pre-wrap">
-                      {generatedStrategy}
-                    </div>
+                    <TemplateContentFormatter 
+                      content={generatedStrategy}
+                      contentType="social_post"
+                      variant="default"
+                      showMergeFieldTypes={true}
+                      className="formatted-ai-content"
+                    />
                   </div>
                 </CardContent>
               </Card>

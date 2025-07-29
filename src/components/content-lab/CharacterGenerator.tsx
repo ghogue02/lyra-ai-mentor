@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Progress } from "@/components/ui/progress";
 import { Users, Sparkles, MessageSquare, Target, BookOpen } from "lucide-react";
+import { TemplateContentFormatter } from "@/components/ui/TemplateContentFormatter";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -266,9 +267,13 @@ export const CharacterGenerator = () => {
                     <MessageSquare className="h-4 w-4" />
                     <span className="font-medium">Introduction</span>
                   </div>
-                  <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                    {generatedContent.introduction}
-                  </p>
+                  <TemplateContentFormatter 
+                    content={generatedContent.introduction}
+                    contentType="lesson"
+                    variant="compact"
+                    showMergeFieldTypes={false}
+                    className="admin-formatted-content bg-muted/50"
+                  />
                 </div>
 
                 <div>
@@ -276,9 +281,13 @@ export const CharacterGenerator = () => {
                     <Target className="h-4 w-4" />
                     <span className="font-medium">Challenge</span>
                   </div>
-                  <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                    {generatedContent.challenge}
-                  </p>
+                  <TemplateContentFormatter 
+                    content={generatedContent.challenge}
+                    contentType="lesson"
+                    variant="compact"
+                    showMergeFieldTypes={false}
+                    className="admin-formatted-content bg-muted/50"
+                  />
                 </div>
 
                 <div>
@@ -286,9 +295,13 @@ export const CharacterGenerator = () => {
                     <Sparkles className="h-4 w-4" />
                     <span className="font-medium">Solution</span>
                   </div>
-                  <p className="text-sm text-muted-foreground bg-muted/50 p-3 rounded-lg">
-                    {generatedContent.solution}
-                  </p>
+                  <TemplateContentFormatter 
+                    content={generatedContent.solution}
+                    contentType="lesson"
+                    variant="compact"
+                    showMergeFieldTypes={false}
+                    className="admin-formatted-content bg-muted/50"
+                  />
                 </div>
               </div>
 

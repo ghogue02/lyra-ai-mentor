@@ -9,6 +9,7 @@ interface TemplateContentFormatterProps {
   className?: string;
   variant?: 'default' | 'preview' | 'compact';
   showMergeFieldTypes?: boolean;
+  contentType?: 'email' | 'lesson' | 'general';
 }
 
 interface MergeField {
@@ -22,7 +23,8 @@ const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> = ({
   content,
   className,
   variant = 'default',
-  showMergeFieldTypes = true
+  showMergeFieldTypes = true,
+  contentType = 'general'
 }) => {
   // Configure marked options for security and formatting
   const configureMarked = () => {
@@ -35,30 +37,42 @@ const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> = ({
     // Custom renderer for better email-specific formatting
     const renderer = new marked.Renderer();
     
-    // Enhanced paragraph rendering for email structure
+    // Enhanced paragraph rendering based on content type
     renderer.paragraph = (text: string | { text: string }) => {
       const textString = typeof text === 'string' ? text : text.text || '';
-      // Check if this is a subject line
-      if (textString.toLowerCase().startsWith('subject:')) {
-        return `<div class="email-subject">${textString}</div>`;
+      
+      if (contentType === 'lesson') {
+        // Lesson-specific paragraph handling
+        if (textString.toLowerCase().startsWith('objective:') || textString.toLowerCase().startsWith('learning objective:')) {
+          return `<div class="lesson-objective">${textString}</div>`;
+        }
+        if (textString.toLowerCase().startsWith('takeaway:') || textString.toLowerCase().startsWith('key takeaway:')) {
+          return `<div class="lesson-takeaway">${textString}</div>`;
+        }
+        return `<p class="lesson-paragraph">${textString}</p>`;
+      } else {
+        // Email-specific paragraph handling
+        if (textString.toLowerCase().startsWith('subject:')) {
+          return `<div class="email-subject">${textString}</div>`;
+        }
+        if (textString.toLowerCase().startsWith('preheader:')) {
+          return `<div class="email-preheader">${textString}</div>`;
+        }
+        return `<p class="email-paragraph">${textString}</p>`;
       }
-      // Check if this is a preheader
-      if (textString.toLowerCase().startsWith('preheader:')) {
-        return `<div class="email-preheader">${textString}</div>`;
-      }
-      return `<p class="email-paragraph">${textString}</p>`;
     };
 
-    // Enhanced heading rendering
+    // Enhanced heading rendering based on content type
     renderer.heading = (text: string | { text: string }, level: number) => {
       const textString = typeof text === 'string' ? text : text.text || '';
+      const prefix = contentType === 'lesson' ? 'lesson' : 'email';
       const classes = {
-        1: 'email-heading-1',
-        2: 'email-heading-2',
-        3: 'email-heading-3',
-        4: 'email-heading-4',
-        5: 'email-heading-5',
-        6: 'email-heading-6'
+        1: `${prefix}-heading-1`,
+        2: `${prefix}-heading-2`,
+        3: `${prefix}-heading-3`,
+        4: `${prefix}-heading-4`,
+        5: `${prefix}-heading-5`,
+        6: `${prefix}-heading-6`
       };
       return `<h${level} class="${classes[level as keyof typeof classes]}">${textString}</h${level}>`;
     };
@@ -299,10 +313,75 @@ const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> = ({
           .template-content-formatter .prose li {
             margin: 0.25rem 0;
           }
+
+          /* Lesson-specific styles */
+          .template-content-formatter .lesson-objective {
+            font-weight: 600;
+            font-size: 1.125rem;
+            margin-bottom: 0.75rem;
+            padding: 0.75rem;
+            background-color: #dbeafe;
+            border-left: 4px solid #3b82f6;
+            border-radius: 0 6px 6px 0;
+            color: #1e40af;
+          }
+
+          .template-content-formatter .lesson-takeaway {
+            font-weight: 600;
+            font-size: 1rem;
+            margin: 1rem 0;
+            padding: 0.75rem;
+            background-color: #dcfce7;
+            border-left: 4px solid #16a34a;
+            border-radius: 0 6px 6px 0;
+            color: #15803d;
+          }
+
+          .template-content-formatter .lesson-paragraph {
+            margin-bottom: 1rem;
+            line-height: 1.7;
+            color: #374151;
+            font-size: 1rem;
+          }
+
+          .template-content-formatter .lesson-heading-1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            margin: 2rem 0 1.5rem 0;
+            color: #1f2937;
+            border-bottom: 2px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+          }
+
+          .template-content-formatter .lesson-heading-2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 1.5rem 0 1rem 0;
+            color: #1f2937;
+            border-left: 4px solid #6366f1;
+            padding-left: 1rem;
+          }
+
+          .template-content-formatter .lesson-heading-3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin: 1.25rem 0 0.75rem 0;
+            color: #374151;
+          }
+
+          .template-content-formatter .lesson-heading-4,
+          .template-content-formatter .lesson-heading-5,
+          .template-content-formatter .lesson-heading-6 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin: 1rem 0 0.5rem 0;
+            color: #374151;
+          }
         `
       }} />
     </div>
   );
 };
 
+export { TemplateContentFormatter };
 export default TemplateContentFormatter;

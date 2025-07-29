@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -393,9 +394,12 @@ const MayaDifficultConversationsGuide: React.FC = () => {
                       </div>
                       <span className="font-semibold text-green-800">Maya's Approach</span>
                     </div>
-                    <div className="text-gray-700 whitespace-pre-wrap">
-                      {generatedResponse}
-                    </div>
+                    <TemplateContentFormatter 
+                      content={generatedResponse}
+                      variant="default"
+                      showMergeFieldTypes={true}
+                      className="formatted-ai-content"
+                    />
                   </div>
 
                   {/* Framework Tips */}

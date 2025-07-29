@@ -17,6 +17,7 @@ import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigat
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -465,8 +466,14 @@ const RachelEcosystemBuilder: React.FC = () => {
                           Copy
                         </button>
                       </div>
-                      <div className="text-sm text-gray-600 neumorph-card-inset p-3 max-h-40 overflow-y-auto">
-                        {blueprint.content}
+                      <div className="max-h-40 overflow-y-auto">
+                        <TemplateContentFormatter 
+                          content={blueprint.content}
+                          contentType="ecosystem-blueprint"
+                          variant="compact"
+                          showMergeFieldTypes={false}
+                          className="formatted-ai-content"
+                        />
                       </div>
                     </div>
                   ))}

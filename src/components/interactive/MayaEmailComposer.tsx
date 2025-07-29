@@ -11,6 +11,7 @@ import { Mail, Clock, User, Target, Sparkles, Send, CheckCircle, Lightbulb, Mess
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from '@/integrations/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 interface MayaEmailComposerProps {
   onComplete?: () => void;
@@ -440,9 +441,12 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
                         Copy
                       </button>
                     </div>
-                    <div className="text-sm text-gray-800 whitespace-pre-wrap neumorph-card-inset p-3">
-                      {emailData.generatedEmail}
-                    </div>
+                    <TemplateContentFormatter 
+                      content={emailData.generatedEmail}
+                      variant="preview"
+                      showMergeFieldTypes={true}
+                      className="formatted-ai-content"
+                    />
                   </div>
                   
                   <div className="space-y-3">

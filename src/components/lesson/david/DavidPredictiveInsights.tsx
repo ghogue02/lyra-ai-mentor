@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -394,14 +395,35 @@ const DavidPredictiveInsights: React.FC = () => {
                         <Badge variant="outline">AI Prediction</Badge>
                       </div>
                       <div className="space-y-3">
-                        <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded">
-                          <strong className="text-blue-800">Prediction:</strong> {model.prediction}
+                        <div className="bg-blue-50 p-3 rounded">
+                          <strong className="text-blue-800">Prediction:</strong>
+                          <TemplateContentFormatter 
+                            content={model.prediction}
+                            contentType="article"
+                            variant="compact"
+                            showMergeFieldTypes={false}
+                            className="formatted-ai-content mt-2"
+                          />
                         </div>
-                        <div className="text-sm text-gray-600 bg-yellow-50 p-3 rounded">
-                          <strong className="text-yellow-800">Confidence:</strong> {model.confidence}
+                        <div className="bg-yellow-50 p-3 rounded">
+                          <strong className="text-yellow-800">Confidence:</strong>
+                          <TemplateContentFormatter 
+                            content={model.confidence}
+                            contentType="lesson"
+                            variant="compact"
+                            showMergeFieldTypes={false}
+                            className="formatted-ai-content mt-2"
+                          />
                         </div>
-                        <div className="text-sm text-gray-600 bg-green-50 p-3 rounded">
-                          <strong className="text-green-800">Action Plan:</strong> {model.actionable}
+                        <div className="bg-green-50 p-3 rounded">
+                          <strong className="text-green-800">Action Plan:</strong>
+                          <TemplateContentFormatter 
+                            content={model.actionable}
+                            contentType="lesson"
+                            variant="compact"
+                            showMergeFieldTypes={false}
+                            className="formatted-ai-content mt-2"
+                          />
                         </div>
                       </div>
                     </div>

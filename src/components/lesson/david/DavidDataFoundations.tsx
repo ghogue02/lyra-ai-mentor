@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -360,8 +361,14 @@ const DavidDataFoundations: React.FC = () => {
                         <h4 className="font-semibold text-blue-800">{plan.principle}</h4>
                         <Badge variant="outline">Foundation</Badge>
                       </div>
-                      <div className="text-sm text-gray-600 bg-blue-50 p-3 rounded">
-                        {plan.implementation}
+                      <div className="bg-blue-50 p-3 rounded">
+                        <TemplateContentFormatter 
+                          content={plan.implementation}
+                          contentType="article"
+                          variant="compact"
+                          showMergeFieldTypes={false}
+                          className="formatted-ai-content"
+                        />
                       </div>
                     </div>
                   ))}

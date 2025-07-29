@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { Input } from '@/components/ui/input';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -421,8 +422,14 @@ const RachelAutomationPlanning: React.FC = () => {
                           Copy
                         </Button>
                       </div>
-                      <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
-                        {roadmap.content}
+                      <div className="bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
+                        <TemplateContentFormatter 
+                          content={roadmap.content}
+                          contentType="article"
+                          variant="compact"
+                          showMergeFieldTypes={false}
+                          className="formatted-ai-content"
+                        />
                       </div>
                     </div>
                   ))}

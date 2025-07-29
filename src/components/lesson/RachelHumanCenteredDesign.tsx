@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { Checkbox } from '@/components/ui/checkbox';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -447,8 +448,14 @@ const RachelHumanCenteredDesign: React.FC = () => {
                           Copy
                         </Button>
                       </div>
-                      <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
-                        {plan.content}
+                      <div className="bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
+                        <TemplateContentFormatter 
+                          content={plan.content}
+                          contentType="article"
+                          variant="compact"
+                          showMergeFieldTypes={false}
+                          className="formatted-ai-content"
+                        />
                       </div>
                     </div>
                   ))}
