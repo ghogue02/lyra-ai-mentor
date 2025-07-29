@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import TemplateContentFormatter from '@/components/ui/TemplateContentFormatter';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -383,8 +384,13 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
                           Copy
                         </Button>
                       </div>
-                      <div className="text-sm text-gray-600 bg-gray-50 p-3 rounded max-h-32 overflow-y-auto">
-                        {template.content}
+                      <div className="max-h-48 overflow-y-auto">
+                        <TemplateContentFormatter 
+                          content={template.content}
+                          variant="compact"
+                          showMergeFieldTypes={true}
+                          className="text-sm"
+                        />
                       </div>
                     </div>
                   ))}
