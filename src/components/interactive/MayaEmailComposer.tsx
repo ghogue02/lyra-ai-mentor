@@ -97,18 +97,24 @@ export const MayaEmailComposer: React.FC<MayaEmailComposerProps> = ({
     if (!userInput.trim()) return [];
 
     try {
-      const { data, error } = await supabase.functions.invoke('ai-testing-assistant', {
+      const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
-          type: 'email_response',
-          prompt: `For the "${stepId}" step of email writing, provide 3 specific, actionable suggestions based on this input: "${userInput}". Focus on practical advice Maya Rodriguez would give.`,
-          context: lessonContext?.content || 'Email composition using PACE framework'
+          characterType: 'maya',
+          contentType: 'email_suggestions',
+          topic: `For the "${stepId}" step of email writing, provide 3 specific, actionable suggestions based on this input: "${userInput}". Focus on practical advice Maya Rodriguez would give.`,
+          context: lessonContext?.content || 'Email composition using PACE framework',
+          targetAudience: 'learners'
         }
       });
 
       if (error) throw error;
       
-      const suggestions = data.result.split('\n').filter((s: string) => s.trim().length > 0).slice(0, 3);
-      return suggestions;
+      if (data && data.success && data.content) {
+        const suggestions = data.content.split('\n').filter((s: string) => s.trim().length > 0).slice(0, 3);
+        return suggestions;
+      } else {
+        throw new Error(data?.error || 'Failed to generate suggestions');
+      }
     } catch (error) {
       console.error('Error generating AI suggestions:', error);
       return [];

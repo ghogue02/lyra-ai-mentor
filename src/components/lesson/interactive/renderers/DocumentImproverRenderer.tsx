@@ -68,7 +68,9 @@ Instructions:
 Please provide the improved version that maintains professionalism while adding emotional connection and clarity.`;
 
     try {
-      const result = await callAI('document_improver', prompt, context);
+      // Use character from configuration or default to Sofia (document improvement expert)
+      const characterType = configuration.character?.toLowerCase() || 'sofia';
+      const result = await callAI('document_improver', prompt, context, characterType);
       setImprovedText(result);
       setPhase('comparison');
       

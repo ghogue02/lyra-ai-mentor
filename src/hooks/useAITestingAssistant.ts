@@ -6,17 +6,30 @@ export const useAITestingAssistant = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const callAI = async (type: string, prompt: string, context?: string) => {
+  const callAI = async (type: string, prompt: string, context?: string, characterType: string = 'lyra') => {
     setLoading(true);
     setError(null);
 
     try {
-      const { data, error: supabaseError } = await supabase.functions.invoke('ai-testing-assistant', {
-        body: { type, prompt, context }
+      // Use the working generate-character-content Edge Function
+      const { data, error: supabaseError } = await supabase.functions.invoke('generate-character-content', {
+        body: { 
+          characterType: characterType,
+          contentType: type,
+          topic: prompt,
+          context: context || undefined,
+          targetAudience: 'learners' // Default target audience
+        }
       });
 
       if (supabaseError) throw supabaseError;
-      return data.result;
+      
+      // The generate-character-content function returns { success, content, ... }
+      if (data && data.success && data.content) {
+        return data.content;
+      } else {
+        throw new Error(data?.error || 'Failed to generate content');
+      }
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An error occurred';
       setError(errorMessage);

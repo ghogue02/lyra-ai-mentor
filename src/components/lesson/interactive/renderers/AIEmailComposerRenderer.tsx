@@ -90,7 +90,9 @@ Subject: [subject line]
 Email Body: [email content]`;
 
     try {
-      const result = await callAI('ai_email_composer', prompt, characterContext);
+      // Use character from configuration or default to Sofia (communication expert)
+      const characterType = configuration.character?.toLowerCase() || 'sofia';
+      const result = await callAI('ai_email_composer', prompt, characterContext, characterType);
       setGeneratedEmail(result);
       setPhase('result');
       

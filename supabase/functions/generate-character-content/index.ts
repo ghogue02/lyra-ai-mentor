@@ -48,6 +48,12 @@ const characterPersonalities = {
     personality: "Change management specialist who guides smooth transitions and adaptations",
     tone: "Supportive, strategic, calm, forward-thinking",
     expertise: "Change management, team leadership, organizational development, adaptation strategies"
+  },
+  lyra: {
+    name: "Lyra",
+    personality: "AI learning and foundational concepts expert who makes complex technology accessible",
+    tone: "Clear, educational, encouraging, patient",
+    expertise: "AI fundamentals, machine learning concepts, technology education, beginner-friendly explanations"
   }
 };
 

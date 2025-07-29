@@ -59,7 +59,9 @@ Please create a story that:
 Make it emotionally engaging while staying accurate to the data. Focus on human connection and authentic storytelling.`;
 
     try {
-      const result = await callAI('ai_content_generator', prompt, context);
+      // Use character from configuration or default to David (data storytelling expert)
+      const characterType = configuration.character?.toLowerCase() || 'david';
+      const result = await callAI('ai_content_generator', prompt, context, characterType);
       setStory(result);
       setPhase('result');
       

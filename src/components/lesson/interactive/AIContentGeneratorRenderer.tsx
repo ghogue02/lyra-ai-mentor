@@ -39,7 +39,9 @@ export const AIContentGeneratorRenderer: React.FC<AIContentGeneratorRendererProp
 
     try {
       const prompt = `Generate a ${selectedType} for ${selectedOrg}. Make it compelling, professional, and specific to their mission. Keep it concise and actionable.`;
-      const result = await callAI('content_generation', prompt);
+      // Use default lyra character type, or pass it from element configuration if available
+      const characterType = element.configuration?.characterType || 'lyra';
+      const result = await callAI('content_generation', prompt, undefined, characterType);
       setGeneratedContent(result);
       
       if (!isElementCompleted) {
