@@ -112,9 +112,10 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'maya',
-          contentType: 'email-template',
+          contentType: 'email',
           topic: `${category?.name} template for nonprofit organization`,
-          context: `Maya Rodriguez at Hope Gardens Community Center needs a professional ${category?.name.toLowerCase()} email template. Include merge fields for personalization and maintain Maya's warm, professional tone.`
+          context: `Maya Rodriguez at Hope Gardens Community Center needs a professional ${category?.name.toLowerCase()} email template. Include merge fields for personalization and maintain Maya's warm, professional tone.`,
+          targetAudience: 'nonprofit development professionals'
         }
       });
 
