@@ -390,13 +390,7 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
             }}
           />
           
-          {/* Context indicator */}
-          <Badge 
-            variant="secondary" 
-            className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 text-xs whitespace-nowrap shadow-md"
-          >
-            {lessonContext.chapterNumber}.{lessonContext.phase} Help
-          </Badge>
+          {/* Context indicator - removed help text per user request */}
         </div>
         
         {/* Tooltip */}
@@ -519,10 +513,10 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
 
               {/* Messages Area */}
               {messages.length > 0 && (
-                <div className="flex-1 relative">
+                <div className="flex-1 relative min-h-0">
                   <ScrollArea 
                     ref={scrollAreaRef}
-                    className="h-full"
+                    className="h-full max-h-full"
                     onScrollCapture={handleScroll}
                   >
                     <div className="p-4 space-y-4">
@@ -596,7 +590,7 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
               )}
 
               {/* Input Area */}
-              <div className="p-4 border-t bg-gray-50/50">
+              <div className="p-4 border-t bg-gray-50/50 flex-shrink-0">
                 <div className="flex gap-2">
                   <Input
                     value={inputValue}

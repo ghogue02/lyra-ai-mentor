@@ -128,30 +128,43 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   }, [currentMessageIndex, isTyping, interactionPoints]);
 
-  // Typing effect - enhanced with paused state handling
+  // Typing effect - enhanced with paused state handling and stuck cursor fix
   useEffect(() => {
     if (!currentMessage?.content) return;
 
-    // If paused, maintain current state without typing
+    // If paused, stop typing immediately but maintain current displayed text
     if (paused) {
-      console.log('NarrativeManager: paused, maintaining current state');
+      console.log('NarrativeManager: paused, stopping typing');
+      setIsTyping(false);
       return;
     }
 
     // Only start typing if we don't already have the full text displayed
     if (displayedText === currentMessage.content) {
       console.log('NarrativeManager: text already fully displayed');
+      setIsTyping(false);
       return;
     }
 
     console.log('NarrativeManager: starting typing effect for message', currentMessageIndex);
     setIsTyping(true);
-    setDisplayedText('');
+    
+    // Only reset text if we're starting fresh (not resuming)
+    if (displayedText === '' || !displayedText.startsWith(currentMessage.content.substring(0, 1))) {
+      setDisplayedText('');
+    }
     
     const text = currentMessage.content;
-    let index = 0;
+    let index = displayedText.length; // Resume from current position
     
     const typingInterval = setInterval(() => {
+      if (paused) {
+        // Stop typing if paused mid-way
+        clearInterval(typingInterval);
+        setIsTyping(false);
+        return;
+      }
+      
       if (index < text.length) {
         setDisplayedText(text.substring(0, index + 1));
         index++;
@@ -172,7 +185,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       console.log('NarrativeManager: cleaning up typing interval');
       clearInterval(typingInterval);
     };
-  }, [currentMessage, autoAdvance, isLastMessage, paused, displayedText, currentMessageIndex]);
+  }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex]);
 
   const handleAdvance = () => {
     console.log('handleAdvance called:', { 
