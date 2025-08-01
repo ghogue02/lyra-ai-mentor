@@ -27,6 +27,7 @@ interface NarrativeManagerProps {
   phaseId?: string; // For state persistence
   onReset?: () => void;
   characterName?: string; // Character name for display
+  paused?: boolean; // Support for external pause/resume
 }
 
 const NarrativeManager: React.FC<NarrativeManagerProps> = ({
@@ -37,7 +38,8 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   autoAdvance = false,
   phaseId = 'default',
   onReset,
-  characterName = 'Maya'
+  characterName = 'Maya',
+  paused = false
 }) => {
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [displayedText, setDisplayedText] = useState('');
