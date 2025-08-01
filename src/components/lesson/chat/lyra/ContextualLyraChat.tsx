@@ -207,6 +207,7 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
+  const chatRef = useRef<HTMLDivElement>(null);
 
   // Get contextual questions based on lesson (with Maya journey state if available)
   const contextualQuestions = getContextualQuestions(lessonContext, mayaJourneyState);
@@ -254,6 +255,36 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
       onNarrativeResume?.();
     }
   }, [isExpanded, isMinimized, onChatOpen, onChatClose, onNarrativePause, onNarrativeResume]);
+
+  // Click outside detection to close chat
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
+      // Only handle clicks when chat is expanded and not minimized
+      if (!isExpanded || isMinimized) return;
+      
+      // Check if the click is outside the chat container
+      if (chatRef.current && !chatRef.current.contains(event.target as Node)) {
+        // Prevent closing if clicking on the floating avatar (when it exists)
+        const target = event.target as Element;
+        if (target.closest('[data-lyra-avatar]')) {
+          return;
+        }
+        
+        handleClose();
+      }
+    };
+
+    // Add event listeners for both mouse and touch events
+    if (isExpanded && !isMinimized) {
+      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('touchstart', handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
+  }, [isExpanded, isMinimized]);
 
   // Auto-scroll to bottom
   const scrollToBottom = useCallback(() => {
@@ -326,6 +357,7 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
   if (!isExpanded && isFloating) {
     return (
       <motion.div
+        data-lyra-avatar
         className={cn(
           "fixed bottom-6 right-6 z-50 group cursor-pointer",
           className
@@ -383,9 +415,10 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
     <AnimatePresence>
       {isExpanded && (
         <motion.div
+          ref={chatRef}
           className={cn(
             isFloating 
-              ? "fixed inset-4 md:right-6 md:bottom-6 md:top-auto md:left-auto md:w-96 md:h-[600px] z-50"
+              ? "fixed inset-4 md:right-6 md:bottom-6 md:top-auto md:left-auto md:w-96 md:h-[400px] z-50"
               : "w-full h-full",
             className
           )}
