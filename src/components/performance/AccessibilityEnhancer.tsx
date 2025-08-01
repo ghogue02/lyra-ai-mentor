@@ -212,32 +212,23 @@ export const AccessibleAnimation: React.FC<AccessibleAnimationProps> = memo(({
   const { config } = useAccessibility();
   const shouldReduceMotion = reduceMotion ?? config.enableReducedMotion;
 
-  const animationProps = useMemo(() => {
+  const animationClasses = useMemo(() => {
     if (shouldReduceMotion) {
-      return {
-        initial: { opacity: 1 },
-        animate: { opacity: 1 },
-        transition: { duration: 0 }
-      };
+      return 'opacity-100';
     }
     
-    return {
-      initial: { opacity: 0, scale: 0.9 },
-      animate: { opacity: 1, scale: 1 },
-      transition: { duration: 0.3, ease: "easeOut" as const }
-    };
+    return 'animate-scale-in';
   }, [shouldReduceMotion]);
 
   return (
-    <motion.div
-      {...animationProps}
-      className={className}
+    <div
+      className={cn(animationClasses, className)}
       role={config.enableScreenReader ? role : undefined}
       aria-label={config.enableScreenReader ? ariaLabel : undefined}
       aria-hidden={!config.enableScreenReader}
     >
       {children}
-    </motion.div>
+    </div>
   );
 });
 

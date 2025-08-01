@@ -166,21 +166,12 @@ const ErrorFallbackUI: React.FC<ErrorFallbackUIProps> = ({
   const canRetry = retryCount < maxRetries;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.9 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="min-h-[400px] flex items-center justify-center p-6"
-    >
+    <div className="min-h-[400px] flex items-center justify-center p-6 animate-fade-in">
       <div className="max-w-md w-full space-y-6 text-center">
         {/* Error Icon */}
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.1, type: "spring", stiffness: 300 }}
-          className="w-16 h-16 mx-auto text-red-500"
-        >
+        <div className="w-16 h-16 mx-auto text-red-500 animate-scale-in">
           <AlertTriangle className="w-full h-full" />
-        </motion.div>
+        </div>
 
         {/* Error Message */}
         <div className="space-y-2">
@@ -246,11 +237,7 @@ const ErrorFallbackUI: React.FC<ErrorFallbackUIProps> = ({
             </Button>
 
             {showFullError && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                className="bg-red-50 border border-red-200 rounded-lg p-4 text-left text-xs space-y-2"
-              >
+              <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-left text-xs space-y-2 animate-expand-down">
                 <div>
                   <strong className="text-red-800">Error:</strong>
                   <pre className="mt-1 text-red-700 whitespace-pre-wrap break-words">
@@ -275,7 +262,7 @@ const ErrorFallbackUI: React.FC<ErrorFallbackUIProps> = ({
                     </pre>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
           </div>
         )}
@@ -290,7 +277,7 @@ const ErrorFallbackUI: React.FC<ErrorFallbackUIProps> = ({
           </p>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 
