@@ -17,7 +17,7 @@ import LyraCharacter from './maya/MayaCharacter'; // Reuse the character compone
 import GlobalNavigation, { JourneyPhase } from './maya/GlobalNavigation';
 import LyraFoundationsChat from './LyraFoundationsChat';
 import { FloatingLyraAvatar } from '../../FloatingLyraAvatar';
-import type { LessonContext } from './ContextualLyraChat';
+import type { LessonContext } from '@/types/ContextualChat';
 
 // Define Lyra-specific journey phases
 type LyraJourneyPhase = 'intro' | 'lyra-introduction' | 'capabilities-demo' | 'first-chat' | 'goal-setting' | 'journey-preview' | 'complete';
@@ -29,7 +29,7 @@ const LyraIntroductionJourney: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<LyraJourneyPhase>('intro');
   const [userGoals, setUserGoals] = useState<string[]>([]);
   const [narrativePaused, setNarrativePaused] = useState(false);
-  const [showFloatingChat, setShowFloatingChat] = useState(false);
+  const [showFloatingChat, setShowFloatingChat] = useState(true);
 
   // Create lesson context for the floating chat
   const lessonContext: LessonContext = {
@@ -113,8 +113,8 @@ const LyraIntroductionJourney: React.FC = () => {
 
   const handlePhaseChange = (phase: LyraJourneyPhase) => {
     setCurrentPhase(phase);
-    // Show floating chat after introduction phase
-    if (phase === 'lyra-introduction' || phase === 'capabilities-demo') {
+    // Show floating chat across all main phases
+    if (phase === 'intro' || phase === 'lyra-introduction' || phase === 'capabilities-demo' || phase === 'goal-setting') {
       setShowFloatingChat(true);
     }
   };
