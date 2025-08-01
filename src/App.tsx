@@ -24,6 +24,7 @@ import Chapter3Hub from "./pages/Chapter3Hub";
 import Chapter4Hub from "./pages/Chapter4Hub";
 import Chapter5Hub from "./pages/Chapter5Hub";
 import Chapter6Hub from "./pages/Chapter6Hub";
+import TestLyra from "./pages/TestLyra";
 import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
 
 const queryClient = new QueryClient();
@@ -45,6 +46,7 @@ const App = () => {
                 <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/test-lyra" element={<TestLyra />} />
               <Route 
                 path="/dashboard" 
                 element={

@@ -15,6 +15,7 @@ import NarrativeManager from './maya/NarrativeManager';
 import InteractionGateway from './maya/InteractionGateway';
 import LyraCharacter from './maya/MayaCharacter'; // Reuse the character component structure
 import GlobalNavigation, { JourneyPhase } from './maya/GlobalNavigation';
+import LyraFoundationsChat from './LyraFoundationsChat';
 
 // Define Lyra-specific journey phases
 type LyraJourneyPhase = 'intro' | 'lyra-introduction' | 'capabilities-demo' | 'first-chat' | 'goal-setting' | 'journey-preview' | 'complete';
@@ -218,50 +219,25 @@ const LyraIntroductionJourney: React.FC = () => {
 
       case 'first-chat':
         return (
-          <InteractionGateway
-            title="Let's Chat!"
-            description="Now it's time for us to have our first conversation. Tell me about yourself and your nonprofit work."
-            stage="input"
-            showHeader={false}
-          >
-            <div className="max-w-2xl mx-auto p-6 space-y-6">
-              <div className="text-center mb-8">
-                <LyraCharacter size="lg" mood="happy" className="mx-auto mb-4" name="Lyra" key={`lyra-character-${Date.now()}`} />
-                <h3 className="text-2xl font-bold mb-2">Let's Get Acquainted</h3>
-                <p className="text-muted-foreground">
-                  This is your first direct conversation with me. I'd love to learn about your work and how I can help you.
-                </p>
+          <div className="max-w-4xl mx-auto">
+            <div className="relative">
+              <div className="absolute inset-0 bg-gradient-to-br from-brand-cyan/5 via-emerald-500/5 to-brand-cyan/5 rounded-3xl blur-2xl opacity-80" />
+              <div className="relative premium-card brand-shadow-glow">
+                <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
+                <div className="relative z-10 p-8">
+                  <LyraFoundationsChat
+                    onEngagementChange={(hasEngaged) => {
+                      if (hasEngaged) {
+                        // Auto-advance after successful chat engagement
+                        setTimeout(() => setCurrentPhase('goal-setting'), 3000);
+                      }
+                    }}
+                    embedded={true}
+                  />
+                </div>
               </div>
-              
-              <Card className="premium-card">
-                <CardContent className="p-6">
-                  <h4 className="font-semibold mb-4">Chat Topics to Explore:</h4>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {[
-                      "Your role in your organization",
-                      "Daily communication challenges",
-                      "Experience with AI tools",
-                      "Goals for this learning journey"
-                    ].map((topic, index) => (
-                      <div key={index} className="flex items-center gap-2 p-3 bg-muted/50 rounded-lg">
-                        <Badge variant="outline">{index + 1}</Badge>
-                        <span className="text-sm">{topic}</span>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <Button 
-                onClick={() => setCurrentPhase('goal-setting')}
-                className="w-full premium-button-primary"
-                size="lg"
-              >
-                Start Our Conversation
-                <ChevronRight className="w-4 h-4 ml-2" />
-              </Button>
             </div>
-          </InteractionGateway>
+          </div>
         );
 
       case 'goal-setting':
