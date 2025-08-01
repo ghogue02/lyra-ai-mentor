@@ -14,7 +14,7 @@ import { AISuccessVisualizerRenderer } from './AISuccessVisualizerRenderer';
 import { DataStorytellerRenderer } from './renderers/DataStorytellerRenderer';
 import { DocumentImproverRenderer } from './renderers/DocumentImproverRenderer';
 import { AIEmailComposerRenderer as AIEmailComposerRendererNew } from './renderers/AIEmailComposerRenderer';
-import LyraIntroductionJourney from '../chat/lyra/LyraIntroductionJourney';
+import { ChatSystem } from '../../chat-system/ChatSystem';
 
 interface InteractiveElement {
   id: number;
@@ -57,11 +57,27 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
   onComplete
 }) => {
   const renderElement = () => {
-    // Special routing for Chapter 1 - Lyra Introduction Journey
+    // Special routing for Chapter 1 - Glass ChatSystem
     if (lessonContext?.chapterTitle === "Chapter 1" || 
         lessonContext?.lessonTitle?.includes("Hello, I'm Lyra") ||
         element.type === 'lyra_introduction') {
-      return <LyraIntroductionJourney />;
+      return (
+        <ChatSystem 
+          lessonModule={{
+            title: lessonContext?.lessonTitle || "Hello, I'm Lyra!",
+            content: lessonContext?.content || "",
+            chapter: lessonContext?.chapterTitle || "Chapter 1"
+          }}
+          position="bottom-right"
+          className="fixed z-50"
+          onEngagementChange={(hasEngaged) => {
+            onEngagementChange?.({ 
+              hasReachedMinimum: hasEngaged, 
+              exchangeCount: hasEngaged ? 3 : 0 
+            });
+          }}
+        />
+      );
     }
 
     switch (element.type) {
