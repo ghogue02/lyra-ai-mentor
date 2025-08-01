@@ -7,6 +7,7 @@ import { CheckCircle, Clock, Trophy, Target } from 'lucide-react';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { cn } from '@/lib/utils';
 
 interface LessonProgressProps {
   completedBlocks: number;

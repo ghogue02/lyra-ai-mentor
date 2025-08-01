@@ -79,12 +79,11 @@ export const useChatActions = () => {
   const { state, dispatch } = context;
 
   // Initialize persistent chat hook
-  const { sendMessage: persistentSendMessage, clearChat, isLoading } = usePersistentChat({
-    chapterTitle: state.currentLesson?.title || 'Chat',
-    lessonTitle: state.currentLesson?.title || 'Lesson',
-    content: state.currentLesson?.content || '',
-    lessonContext: state.currentLesson
-  });
+  const { sendMessage: persistentSendMessage, clearChat, isLoading } = usePersistentChat(
+    1, // Default lesson ID
+    1, // Default chapter ID 
+    undefined
+  );
 
   const toggleExpanded = useCallback(() => {
     dispatch({ type: 'TOGGLE_EXPANDED' });
@@ -109,16 +108,8 @@ export const useChatActions = () => {
     }});
 
     try {
-      const result = await persistentSendMessage(text);
-      // Add the AI response to the chat
-      if (result) {
-        dispatch({ type: 'ADD_MESSAGE', payload: {
-          id: (Date.now() + 1).toString(),
-          content: result,
-          isUser: false,
-          timestamp: new Date()
-        }});
-      }
+      await persistentSendMessage(text);
+      // Message will be added by the persistent chat hook
     } catch (error) {
       console.error('Failed to send message:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to send message. Please try again.' });
