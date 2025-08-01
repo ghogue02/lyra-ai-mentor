@@ -450,7 +450,7 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
 
             {/* Chat Content */}
             <div className={cn(
-              "flex-1 flex flex-col",
+              "flex-1 flex flex-col min-h-0",
               isMinimized && "hidden"
             )}>
               {/* Contextual Questions (shown when no messages) */}
@@ -501,10 +501,10 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
 
               {/* Messages Area */}
               {messages.length > 0 && (
-                <div className="flex-1 relative min-h-0">
+                <div className="flex-1 min-h-0 overflow-hidden">
                   <ScrollArea 
                     ref={scrollAreaRef}
-                    className="h-full max-h-full"
+                    className="h-full"
                     onScrollCapture={handleScroll}
                   >
                     <div className="p-4 space-y-4">

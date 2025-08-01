@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { Card, CardContent } from '@/components/ui/card';
@@ -141,8 +141,21 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
 
     // Only start typing if we don't already have the full text displayed
     if (displayedText === currentMessage.content) {
-      console.log('NarrativeManager: text already fully displayed');
+      console.log('NarrativeManager: text already fully displayed, checking auto-advance');
       setIsTyping(false);
+      
+      // Handle auto-advance for already completed text
+      if (autoAdvance && !isLastMessage && !paused) {
+        console.log('NarrativeManager: setting up auto-advance for completed text');
+        const advanceTimeout = setTimeout(() => {
+          console.log('NarrativeManager: executing auto-advance for completed text');
+          handleAdvance();
+        }, currentMessage.delay || 1500);
+        
+        return () => {
+          clearTimeout(advanceTimeout);
+        };
+      }
       return;
     }
 
@@ -173,10 +186,18 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
         setIsTyping(false);
         console.log('NarrativeManager: typing complete for message', currentMessageIndex);
         
+        // Auto-advance after typing completion
         if (autoAdvance && !isLastMessage && !paused) {
-          setTimeout(() => {
+          console.log('NarrativeManager: setting up auto-advance after typing completion');
+          const advanceTimeout = setTimeout(() => {
+            console.log('NarrativeManager: executing auto-advance after typing completion');
             handleAdvance();
           }, currentMessage.delay || 1500);
+          
+          // Store timeout reference for cleanup
+          return () => {
+            clearTimeout(advanceTimeout);
+          };
         }
       }
     }, 30);
@@ -185,7 +206,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       console.log('NarrativeManager: cleaning up typing interval');
       clearInterval(typingInterval);
     };
-  }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex]);
+  }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex, displayedText, handleAdvance]);
 
   // Force re-render when displayedText changes to ensure UI updates
   useEffect(() => {
@@ -196,7 +217,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   }, [displayedText, currentMessage, paused]);
 
-  const handleAdvance = () => {
+  const handleAdvance = useCallback(() => {
     console.log('handleAdvance called:', { 
       currentMessageIndex, 
       showInteraction, 
@@ -243,7 +264,17 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
         onComplete();
       }, 100);
     }
-  };
+  }, [
+    currentMessageIndex,
+    showInteraction,
+    messages.length,
+    isTyping,
+    displayedText,
+    currentMessage,
+    currentInteraction,
+    onInteractionPoint,
+    onComplete
+  ]);
 
   const handleGoBack = () => {
     console.log('handleGoBack called:', { 

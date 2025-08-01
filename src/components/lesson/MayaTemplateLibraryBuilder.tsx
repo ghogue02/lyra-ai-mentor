@@ -18,7 +18,7 @@ import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManage
 import TemplateContentFormatter from '@/components/ui/TemplateContentFormatter';
 import MayaContextualChatIntegration from '@/components/lesson/chat/lyra/maya/MayaContextualChatIntegration';
 import { useMayaJourney } from '@/hooks/useMayaJourney';
-import { FloatingLyraAvatar } from '@/components/lesson/FloatingLyraAvatar';
+import { ChatSystem } from '@/components/chat-system/ChatSystem';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -485,14 +485,14 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
           </div>
         )}
         
-        {/* Floating Lyra Avatar for contextual help */}
-        <FloatingLyraAvatar
-          lessonContext={{
+        {/* New ChatSystem for contextual help */}
+        <ChatSystem
+          lessonModule={{
             chapterNumber: 2,
-            chapterTitle: "Maya's Communication Mastery",
-            lessonTitle: "Template Library Builder",
+            title: "Template Library Builder",
             phase: 'workshop',
             content: "Maya's template creation workshop with PACE framework integration",
+            chapterTitle: "Maya's Communication Mastery",
             objectives: [
               "Master the PACE framework for donor communication",
               "Create personalized email templates with AI assistance", 
@@ -508,7 +508,6 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
             ],
             difficulty: "intermediate"
           }}
-          mayaJourneyState={mayaJourneyState}
           position="bottom-right"
           onEngagementChange={(isEngaged, exchangeCount) => {
             if (isEngaged && exchangeCount > 0) {

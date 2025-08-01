@@ -104,57 +104,7 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
         )}
       />
       
-      {/* Floating indicator for engagement status when collapsed */}
-      {!isExpanded && exchangeCount > 0 && (
-        <motion.div
-          className={cn(
-            "fixed z-40 pointer-events-none",
-            position === 'bottom-right' ? 'bottom-20 right-6' :
-            position === 'bottom-left' ? 'bottom-20 left-6' :
-            position === 'top-right' ? 'top-20 right-6' :
-            'top-20 left-6'
-          )}
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: 10 }}
-        >
-          <Badge 
-            variant="secondary" 
-            className="bg-gradient-to-r from-brand-cyan to-brand-purple text-white border-0 shadow-lg"
-          >
-            {exchangeCount} {exchangeCount === 1 ? 'message' : 'messages'} with Lyra
-          </Badge>
-        </motion.div>
-      )}
-      
-      {/* New message notification pulse */}
-      {!isExpanded && hasNewMessage && (
-        <motion.div
-          className={cn(
-            "fixed z-40 pointer-events-none",
-            position === 'bottom-right' ? 'bottom-6 right-6' :
-            position === 'bottom-left' ? 'bottom-6 left-6' :
-            position === 'top-right' ? 'top-6 right-6' :
-            'top-6 left-6'
-          )}
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          exit={{ scale: 0 }}
-        >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-r from-brand-cyan/30 to-brand-purple/30 rounded-full"
-            animate={{ 
-              scale: [1, 1.5, 1],
-              opacity: [0.8, 0.2, 0.8]
-            }}
-            transition={{ 
-              duration: 2, 
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
-        </motion.div>
-      )}
+      {/* All notification elements completely removed per user request */}
     </>
   );
 };

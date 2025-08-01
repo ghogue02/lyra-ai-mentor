@@ -8,7 +8,7 @@ import { ArrowLeft, TestTube, CheckCircle, AlertCircle, Play, Pause } from 'luci
 import { useNavigate } from 'react-router-dom';
 import MayaTemplateLibraryBuilder from '@/components/lesson/MayaTemplateLibraryBuilder';
 import { useMayaJourney } from '@/hooks/useMayaJourney';
-import { FloatingLyraAvatar } from '@/components/lesson/FloatingLyraAvatar';
+import { ChatSystem } from '@/components/chat-system/ChatSystem';
 import MayaContextualChatIntegration from '@/components/lesson/chat/lyra/maya/MayaContextualChatIntegration';
 
 interface TestCase {
@@ -401,17 +401,17 @@ const TestMaya: React.FC = () => {
           </Card>
         )}
 
-        {/* Floating Lyra Avatar for the test page */}
-        <FloatingLyraAvatar
-          lessonContext={{
+        {/* New ChatSystem for the test page */}
+        <ChatSystem
+          lessonModule={{
             chapterNumber: 2,
-            chapterTitle: "Maya's Communication Mastery",
-            lessonTitle: "Integration Test",
+            title: "Integration Test",
             phase: 'workshop',
             content: "Testing Maya's contextual chat integration and PACE framework",
+            chapterTitle: "Maya's Communication Mastery",
             objectives: [
               "Test contextual question generation",
-              "Validate PACE framework integration",
+              "Validate PACE framework integration", 
               "Test Maya journey state management",
               "Verify chat personality consistency"
             ],
@@ -424,7 +424,6 @@ const TestMaya: React.FC = () => {
             ],
             difficulty: "intermediate"
           }}
-          mayaJourneyState={mayaJourneyState}
           position="bottom-right"
           onEngagementChange={(isEngaged, exchangeCount) => {
             console.log('Test page chat engagement:', { isEngaged, exchangeCount });
