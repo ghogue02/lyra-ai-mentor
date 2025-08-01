@@ -3,6 +3,41 @@ import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation'
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 import { BrandedIcon } from './BrandedIcon';
 
+// CSS animation styles
+const animationStyles = `
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
+  @keyframes scaleIn {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  
+  @keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+  }
+  
+  @keyframes sparkle {
+    0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+    50% { transform: scale(1) rotate(180deg); opacity: 1; }
+  }
+  
+  @keyframes bounceIn {
+    0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+    50% { transform: scale(1.1) rotate(-90deg); opacity: 1; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
+  }
+  
+  .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+  .animate-scale-in { animation: scaleIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+  .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+  .animate-sparkle { animation: sparkle 2s infinite; }
+  .animate-bounce-in { animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+`;
+
 interface ProgressCelebrationProps {
   isVisible: boolean;
   onComplete?: () => void;
@@ -75,28 +110,13 @@ export const ProgressCelebration: React.FC<ProgressCelebrationProps> = ({
   }, [isVisible, duration, onComplete]);
 
   return (
-    <AnimatePresence>
+    <>
+      <style>{animationStyles}</style>
       {isVisible && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm"
-        >
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.8, opacity: 0 }}
-            transition={{ type: "spring", stiffness: 300, damping: 30 }}
-            className={`bg-gradient-to-br ${config.bgGradient} bg-white/90 backdrop-blur-md rounded-2xl p-8 text-center max-w-md mx-4 shadow-2xl border border-white/20`}
-          >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in">
+          <div className={`bg-gradient-to-br ${config.bgGradient} bg-white/90 backdrop-blur-md rounded-2xl p-8 text-center max-w-md mx-4 shadow-2xl border border-white/20 animate-scale-in`}>
             {/* Main Animation */}
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 400 }}
-              className="w-24 h-24 mx-auto mb-6"
-            >
+            <div className="w-24 h-24 mx-auto mb-6 animate-bounce-in" style={{ animationDelay: '0.2s' }}>
               <OptimizedVideoAnimation
                 src={getAnimationUrl(config.animation)}
                 fallbackIcon={
@@ -111,40 +131,23 @@ export const ProgressCelebration: React.FC<ProgressCelebrationProps> = ({
                 context="celebration"
                 loop={false}
               />
-            </motion.div>
+            </div>
 
             {/* Title */}
-            <motion.h2
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="text-2xl font-bold text-gray-900 mb-2"
-            >
+            <h2 className="text-2xl font-bold text-gray-900 mb-2 animate-slide-up" style={{ animationDelay: '0.3s' }}>
               {title || config.defaultTitle}
-            </motion.h2>
+            </h2>
 
             {/* Subtitle */}
             {subtitle && (
-              <motion.p
-                initial={{ y: 20, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.4 }}
-                className="text-gray-600 mb-4"
-              >
+              <p className="text-gray-600 mb-4 animate-slide-up" style={{ animationDelay: '0.4s' }}>
                 {subtitle}
-              </motion.p>
+              </p>
             )}
 
             {/* Character Celebration */}
-            <AnimatePresence>
-              {showCharacter && (
-                <motion.div
-                  initial={{ scale: 0, rotate: -180 }}
-                  animate={{ scale: 1, rotate: 0 }}
-                  exit={{ scale: 0, rotate: 180 }}
-                  transition={{ type: "spring", stiffness: 300 }}
-                  className="w-16 h-16 mx-auto"
-                >
+            {showCharacter && (
+              <div className="w-16 h-16 mx-auto animate-bounce-in" style={{ animationDelay: '0.5s' }}>
                   <OptimizedVideoAnimation
                     src={getAnimationUrl(`${characterType}-celebration.mp4`)}
                     fallbackIcon={
@@ -158,35 +161,24 @@ export const ProgressCelebration: React.FC<ProgressCelebrationProps> = ({
                     context="celebration"
                     loop={false}
                   />
-                </motion.div>
-              )}
-            </AnimatePresence>
+              </div>
+            )}
 
             {/* Sparkle Effects */}
             {[...Array(6)].map((_, i) => (
-              <motion.div
+              <div
                 key={i}
-                className="absolute w-2 h-2 bg-yellow-400 rounded-full"
+                className="absolute w-2 h-2 bg-yellow-400 rounded-full animate-sparkle"
                 style={{
                   left: `${20 + (i * 12)}%`,
                   top: `${30 + (i % 2) * 40}%`,
-                }}
-                animate={{
-                  scale: [0, 1, 0],
-                  opacity: [0, 1, 0],
-                  rotate: [0, 180, 360],
-                }}
-                transition={{
-                  duration: 2,
-                  delay: 0.5 + (i * 0.1),
-                  repeat: Infinity,
-                  repeatDelay: 1,
+                  animationDelay: `${0.5 + (i * 0.1)}s`,
                 }}
               />
             ))}
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 };
