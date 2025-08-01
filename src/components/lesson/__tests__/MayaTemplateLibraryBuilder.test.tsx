@@ -7,13 +7,40 @@ import { AuthContext, AuthProvider } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 
 // Mock dependencies
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: {
+vi.mock('@/integrations/supabase/client', () => {
+  const mockSubscription = {
+    unsubscribe: vi.fn()
+  };
+
+  const mockSupabase = {
+    auth: {
+      onAuthStateChange: vi.fn(() => {
+        return {
+          data: { 
+            subscription: mockSubscription 
+          }
+        };
+      }),
+      getSession: vi.fn().mockResolvedValue({
+        data: { session: null },
+        error: null
+      }),
+      signOut: vi.fn().mockResolvedValue({ error: null }),
+      signInWithPassword: vi.fn().mockResolvedValue({
+        data: { user: null, session: null },
+        error: null
+      }),
+      user: null
+    },
     functions: {
       invoke: vi.fn()
     }
-  }
-}));
+  };
+
+  return {
+    supabase: mockSupabase
+  };
+});
 
 vi.mock('@/hooks/use-toast', () => ({
   useToast: () => ({
