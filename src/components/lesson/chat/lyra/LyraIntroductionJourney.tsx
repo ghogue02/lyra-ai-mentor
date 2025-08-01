@@ -16,6 +16,8 @@ import InteractionGateway from './maya/InteractionGateway';
 import LyraCharacter from './maya/MayaCharacter'; // Reuse the character component structure
 import GlobalNavigation, { JourneyPhase } from './maya/GlobalNavigation';
 import LyraFoundationsChat from './LyraFoundationsChat';
+import { FloatingLyraAvatar } from '../../FloatingLyraAvatar';
+import type { LessonContext } from './ContextualLyraChat';
 
 // Define Lyra-specific journey phases
 type LyraJourneyPhase = 'intro' | 'lyra-introduction' | 'capabilities-demo' | 'first-chat' | 'goal-setting' | 'journey-preview' | 'complete';
@@ -26,8 +28,29 @@ const LyraIntroductionJourney: React.FC = () => {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<LyraJourneyPhase>('intro');
   const [userGoals, setUserGoals] = useState<string[]>([]);
+  const [narrativePaused, setNarrativePaused] = useState(false);
+  const [showFloatingChat, setShowFloatingChat] = useState(false);
 
-  // Lyra's introduction narrative messages
+  // Create lesson context for the floating chat
+  const lessonContext: LessonContext = {
+    chapterNumber: 1,
+    lessonTitle: "Meet Lyra & AI Foundations",
+    phase: currentPhase,
+    content: "Introduction to Lyra, your AI learning companion and coach for nonprofit professionals. Learn about AI capabilities, set your learning goals, and begin your transformative journey.",
+    chapterTitle: "Lyra's Introduction Journey",
+    objectives: [
+      "Meet Lyra, your AI learning companion",
+      "Understand AI's potential for nonprofit work", 
+      "Experience AI-powered conversation",
+      "Set personalized learning goals",
+      "Preview your learning journey"
+    ],
+    difficulty: 'beginner',
+    estimatedDuration: 15,
+    keyTerms: ['AI Assistant', 'Machine Learning', 'Nonprofit Technology', 'AI Ethics']
+  };
+
+  // Lyra's introduction narrative messages with chat prompting
   const lyraIntroductionMessages = [
     {
       id: 'lyra-intro-1',
@@ -47,7 +70,7 @@ const LyraIntroductionJourney: React.FC = () => {
     },
     {
       id: 'lyra-intro-4',
-      content: "But I'm not just any AI assistant. I'm your learning partner, designed to teach you how to work with AI effectively.",
+      content: "But I'm not just any AI assistant. I'm your learning partner, designed to teach you how to work with AI effectively. Notice the floating avatar in the corner? That's me - ready to chat whenever you have questions!",
       emotion: 'hopeful' as const
     }
   ];
@@ -65,7 +88,7 @@ const LyraIntroductionJourney: React.FC = () => {
     },
     {
       id: 'capabilities-3',
-      content: "Think of me as your AI literacy coach. Together, we'll explore real scenarios, practice with actual tools, and build your confidence.",
+      content: "Think of me as your AI literacy coach. Go ahead, click on my avatar and ask me anything about AI for nonprofits!",
       emotion: 'hopeful' as const
     }
   ];
@@ -90,6 +113,31 @@ const LyraIntroductionJourney: React.FC = () => {
 
   const handlePhaseChange = (phase: LyraJourneyPhase) => {
     setCurrentPhase(phase);
+    // Show floating chat after introduction phase
+    if (phase === 'lyra-introduction' || phase === 'capabilities-demo') {
+      setShowFloatingChat(true);
+    }
+  };
+
+  const handleNarrativePause = () => {
+    console.log('Narrative paused for chat');
+    setNarrativePaused(true);
+  };
+
+  const handleNarrativeResume = () => {
+    console.log('Narrative resumed from chat');
+    setNarrativePaused(false);
+  };
+
+  const handleChatEngagement = (isEngaged: boolean, exchangeCount: number) => {
+    console.log('Chat engagement:', { isEngaged, exchangeCount, phase: currentPhase });
+    
+    // Auto-advance after meaningful chat engagement in capabilities phase
+    if (currentPhase === 'capabilities-demo' && exchangeCount >= 2) {
+      setTimeout(() => {
+        setCurrentPhase('goal-setting');
+      }, 2000);
+    }
   };
 
   const handleGoalSelection = (goals: string[]) => {
@@ -188,6 +236,7 @@ const LyraIntroductionJourney: React.FC = () => {
                     phaseId="lyra-introduction"
                     onReset={() => setCurrentPhase('intro')}
                     characterName="Lyra"
+                    paused={narrativePaused}
                   />
                 </div>
               </div>
@@ -210,6 +259,7 @@ const LyraIntroductionJourney: React.FC = () => {
                     phaseId="capabilities-demo"
                     onReset={() => setCurrentPhase('intro')}
                     characterName="Lyra"
+                    paused={narrativePaused}
                   />
                 </div>
               </div>
@@ -255,6 +305,7 @@ const LyraIntroductionJourney: React.FC = () => {
                     phaseId="goal-setting"
                     onReset={() => setCurrentPhase('intro')}
                     characterName="Lyra"
+                    paused={narrativePaused}
                   />
                 </div>
               </div>
@@ -352,6 +403,18 @@ const LyraIntroductionJourney: React.FC = () => {
             {renderPhase()}
           </motion.div>
         </AnimatePresence>
+        
+        {/* Floating Lyra Avatar - Context-aware chat */}
+        {showFloatingChat && (
+          <FloatingLyraAvatar
+            lessonContext={lessonContext}
+            position="bottom-right"
+            onEngagementChange={handleChatEngagement}
+            onNarrativePause={handleNarrativePause}
+            onNarrativeResume={handleNarrativeResume}
+            className="z-50"
+          />
+        )}
       </div>
     </div>
   );

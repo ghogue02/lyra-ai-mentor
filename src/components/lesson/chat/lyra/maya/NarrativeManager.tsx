@@ -391,6 +391,19 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
           )}
         </motion.div>
       )}
+      
+      {/* Pause indicator */}
+      {paused && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="mt-6 flex justify-center"
+        >
+          <div className="px-4 py-2 bg-brand-cyan/10 border border-brand-cyan/20 rounded-lg text-brand-cyan text-sm font-medium">
+            Narrative paused - chatting with Lyra
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 };

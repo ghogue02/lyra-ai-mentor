@@ -52,6 +52,12 @@ interface RequestBody {
     experience?: string;
     challenges?: string[];
   };
+  lessonContext?: {
+    lessonId?: string;
+    chapterId?: string;
+    topic?: string;
+    objectives?: string[];
+  };
 }
 
 serve(async (req) => {
@@ -86,7 +92,7 @@ serve(async (req) => {
       throw new Error('Invalid token')
     }
 
-    const { message, conversationHistory = [], userContext }: RequestBody = await req.json()
+    const { message, conversationHistory = [], userContext, lessonContext }: RequestBody = await req.json()
 
     if (!message?.trim()) {
       throw new Error('Message is required')
@@ -112,6 +118,23 @@ serve(async (req) => {
       contextualPrompt += `\n\nUse this context to personalize your response and make it more relevant to their specific situation.`;
     }
 
+    if (lessonContext) {
+      contextualPrompt += `\n\nLESSON CONTEXT:`;
+      if (lessonContext.lessonId) {
+        contextualPrompt += `\n- Current lesson: ${lessonContext.lessonId}`;
+      }
+      if (lessonContext.chapterId) {
+        contextualPrompt += `\n- Chapter: ${lessonContext.chapterId}`;
+      }
+      if (lessonContext.topic) {
+        contextualPrompt += `\n- Topic focus: ${lessonContext.topic}`;
+      }
+      if (lessonContext.objectives?.length) {
+        contextualPrompt += `\n- Learning objectives: ${lessonContext.objectives.join(', ')}`;
+      }
+      contextualPrompt += `\n\nTailor your response to align with the current lesson content and learning objectives.`;
+    }
+
     // Prepare messages for AI
     const messages = [
       { role: 'system', content: contextualPrompt },
@@ -127,9 +150,9 @@ serve(async (req) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'gpt-4-turbo-preview',
+        model: 'gpt-4.1',
         messages: messages,
-        max_tokens: 500,
+        max_tokens: 1000,
         temperature: 0.7,
         presence_penalty: 0.1,
         frequency_penalty: 0.1,
@@ -157,15 +180,18 @@ serve(async (req) => {
         user_message: message,
         ai_response: lyraResponse,
         context: {
-          lesson: 'lyra-foundations',
-          chapter: 1,
+          lesson: lessonContext?.lessonId || 'lyra-foundations',
+          chapter: lessonContext?.chapterId || 1,
           userContext: userContext || null,
+          lessonContext: lessonContext || null,
           conversationLength: conversationHistory.length + 1
         },
         metadata: {
-          model: 'gpt-4-turbo-preview',
+          model: 'gpt-4.1',
           timestamp: new Date().toISOString(),
-          responseTime: Date.now()
+          responseTime: Date.now(),
+          maxTokens: 1000,
+          contextWindow: '1M tokens'
         }
       });
     } catch (dbError) {
