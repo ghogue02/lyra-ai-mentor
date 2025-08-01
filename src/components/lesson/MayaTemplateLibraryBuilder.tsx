@@ -40,6 +40,7 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
   const [templateDraft, setTemplateDraft] = useState('');
   const [generatedTemplates, setGeneratedTemplates] = useState<Array<{id: string, name: string, content: string}>>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [narrativePaused, setNarrativePaused] = useState(false);
   
   // Maya journey state management
   const {
@@ -291,6 +292,7 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
             }));
           }}
           phaseId="maya-template-narrative"
+          paused={narrativePaused}
         />
       </div>
       
@@ -301,10 +303,12 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
         currentPhase={currentPhase}
         lessonTitle="Template Library Builder"
         onNarrativePause={() => {
-          // Pause any ongoing narrative animations
+          console.log('Pausing Maya narrative for chat interaction');
+          setNarrativePaused(true);
         }}
         onNarrativeResume={() => {
-          // Resume narrative animations
+          console.log('Resuming Maya narrative after chat interaction');
+          setNarrativePaused(false);
         }}
       />
     </motion.div>

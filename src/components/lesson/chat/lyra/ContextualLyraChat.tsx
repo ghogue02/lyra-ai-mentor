@@ -51,6 +51,7 @@ export interface ContextualLyraChatProps {
   isFloating?: boolean;
   expanded?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
+  onAvatarClick?: () => void;
 }
 
 // Enhanced contextual questions with Maya journey support
@@ -195,7 +196,8 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
   className,
   isFloating = true,
   expanded = false,
-  onExpandedChange
+  onExpandedChange,
+  onAvatarClick
 }) => {
   const [isExpanded, setIsExpanded] = useState(expanded);
   const [isMinimized, setIsMinimized] = useState(false);
@@ -300,8 +302,15 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
 
   // Handle expanding/collapsing
   const handleToggleExpanded = () => {
-    setIsExpanded(!isExpanded);
-    setIsMinimized(false);
+    console.log('ContextualLyraChat: toggling expansion from', isExpanded);
+    if (onAvatarClick) {
+      // Use the parent's click handler for proper state coordination
+      onAvatarClick();
+    } else {
+      // Fallback to local state management
+      setIsExpanded(!isExpanded);
+      setIsMinimized(false);
+    }
   };
 
   const handleMinimize = () => {

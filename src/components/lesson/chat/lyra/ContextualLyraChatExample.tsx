@@ -1,8 +1,8 @@
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { FloatingLyraAvatar } from '../../FloatingLyraAvatar';
-import { type LessonContext } from './ContextualLyraChat';
+import { FloatingLyraAvatar } from '../FloatingLyraAvatar';
+import { type LessonContext } from '@/types/ContextualChat';
 
 // Example usage component demonstrating the ContextualLyraChat system
 export const ContextualLyraChatExample: React.FC = () => {

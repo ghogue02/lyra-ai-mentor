@@ -128,10 +128,23 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   }, [currentMessageIndex, isTyping, interactionPoints]);
 
-  // Typing effect
+  // Typing effect - enhanced with paused state handling
   useEffect(() => {
     if (!currentMessage?.content) return;
 
+    // If paused, maintain current state without typing
+    if (paused) {
+      console.log('NarrativeManager: paused, maintaining current state');
+      return;
+    }
+
+    // Only start typing if we don't already have the full text displayed
+    if (displayedText === currentMessage.content) {
+      console.log('NarrativeManager: text already fully displayed');
+      return;
+    }
+
+    console.log('NarrativeManager: starting typing effect for message', currentMessageIndex);
     setIsTyping(true);
     setDisplayedText('');
     
@@ -145,8 +158,9 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       } else {
         clearInterval(typingInterval);
         setIsTyping(false);
+        console.log('NarrativeManager: typing complete for message', currentMessageIndex);
         
-        if (autoAdvance && !isLastMessage) {
+        if (autoAdvance && !isLastMessage && !paused) {
           setTimeout(() => {
             handleAdvance();
           }, currentMessage.delay || 1500);
@@ -154,8 +168,11 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       }
     }, 30);
 
-    return () => clearInterval(typingInterval);
-  }, [currentMessage, autoAdvance, isLastMessage]);
+    return () => {
+      console.log('NarrativeManager: cleaning up typing interval');
+      clearInterval(typingInterval);
+    };
+  }, [currentMessage, autoAdvance, isLastMessage, paused, displayedText, currentMessageIndex]);
 
   const handleAdvance = () => {
     console.log('handleAdvance called:', { 

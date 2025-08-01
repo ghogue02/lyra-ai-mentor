@@ -63,11 +63,20 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
 
   // Handle expansion state changes
   const handleExpandedChange = useCallback((expanded: boolean) => {
+    console.log('FloatingLyraAvatar: expansion state changed to', expanded);
     setIsExpanded(expanded);
     if (expanded) {
       setHasNewMessage(false);
     }
   }, []);
+
+  // Handle avatar click to toggle expansion
+  const handleAvatarClick = useCallback(() => {
+    console.log('FloatingLyraAvatar: avatar clicked, current expansion:', isExpanded);
+    const newExpansion = !isExpanded;
+    setIsExpanded(newExpansion);
+    handleExpandedChange(newExpansion);
+  }, [isExpanded, handleExpandedChange]);
 
   if (disabled) {
     return null;
@@ -87,6 +96,7 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
         isFloating={true}
         expanded={isExpanded}
         onExpandedChange={handleExpandedChange}
+        onAvatarClick={handleAvatarClick}
         className={cn(
           "fixed z-50",
           positionClasses[position],

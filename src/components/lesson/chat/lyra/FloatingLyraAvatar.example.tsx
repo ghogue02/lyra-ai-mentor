@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FloatingLyraAvatar } from './FloatingLyraAvatar';
+import { FloatingLyraAvatar } from '../FloatingLyraAvatar';
 
 /**
  * Example usage of FloatingLyraAvatar component
@@ -89,13 +89,22 @@ export const FloatingLyraAvatarExample: React.FC = () => {
 
       {/* FloatingLyraAvatar - positioned as overlay */}
       <FloatingLyraAvatar
-        state={avatarState}
-        onAvatarClick={handleAvatarClick}
         lessonContext={{
-          lessonId: 'demo-lesson',
-          currentStep: 1,
-          totalSteps: 5,
-          hasActiveChat: chatOpen
+          chapterNumber: 1,
+          lessonTitle: 'Demo Lesson',
+          phase: avatarState === 'pulsing' ? 'introduction' : 'learning',
+          content: 'Demo lesson content',
+          objectives: ['Demo objective 1', 'Demo objective 2'],
+          keyTerms: ['Demo', 'Test'],
+          difficulty: 'beginner'
+        }}
+        position="bottom-right"
+        onEngagementChange={(isEngaged, count) => {
+          console.log(`Engagement: ${isEngaged}, Count: ${count}`);
+          if (isEngaged && count >= 1) {
+            setAvatarState('active');
+            setChatOpen(true);
+          }
         }}
       />
     </div>
