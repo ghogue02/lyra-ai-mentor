@@ -116,6 +116,66 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   const currentMessage = messages[currentMessageIndex];
   const isLastMessage = currentMessageIndex === messages.length - 1;
 
+  // Define handleAdvance callback BEFORE any useEffect that references it
+  const handleAdvance = useCallback(() => {
+    console.log('handleAdvance called:', { 
+      currentMessageIndex, 
+      showInteraction, 
+      messagesLength: messages.length,
+      isTyping,
+      displayedText: displayedText?.length,
+      currentMessageLength: currentMessage?.content?.length
+    });
+    
+    setIsStuck(false); // Reset stuck state on interaction
+    
+    // Ensure typing is stopped when manually advancing
+    if (isTyping) {
+      console.log('Stopping typing and completing current message');
+      setIsTyping(false);
+      if (currentMessage) {
+        setDisplayedText(currentMessage.content);
+      }
+      return; // Let the user click again to advance
+    }
+    
+    if (showInteraction) {
+      setShowInteraction(false);
+      setCurrentInteraction(null);
+      if (onInteractionPoint) {
+        onInteractionPoint(currentInteraction!);
+      }
+      return;
+    }
+
+    if (currentMessageIndex < messages.length - 1) {
+      console.log('Advancing to next message:', currentMessageIndex + 1);
+      setCurrentMessageIndex(prev => prev + 1);
+    } else if (onComplete) {
+      console.log('Completing narrative');
+      
+      // Clear any existing timeout
+      if (completionTimeoutRef.current) {
+        clearTimeout(completionTimeoutRef.current);
+      }
+      
+      // Delay completion slightly to prevent race conditions
+      completionTimeoutRef.current = setTimeout(() => {
+        onComplete();
+      }, 100);
+    }
+  }, [
+    currentMessageIndex,
+    showInteraction,
+    messages.length,
+    isTyping,
+    displayedText,
+    currentMessage,
+    currentInteraction,
+    onInteractionPoint,
+    onComplete
+  ]);
+
   // Check for interaction points
   useEffect(() => {
     const interactionPoint = interactionPoints.find(
@@ -216,65 +276,6 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       setIsTyping(false);
     }
   }, [displayedText, currentMessage, paused]);
-
-  const handleAdvance = useCallback(() => {
-    console.log('handleAdvance called:', { 
-      currentMessageIndex, 
-      showInteraction, 
-      messagesLength: messages.length,
-      isTyping,
-      displayedText: displayedText?.length,
-      currentMessageLength: currentMessage?.content?.length
-    });
-    
-    setIsStuck(false); // Reset stuck state on interaction
-    
-    // Ensure typing is stopped when manually advancing
-    if (isTyping) {
-      console.log('Stopping typing and completing current message');
-      setIsTyping(false);
-      if (currentMessage) {
-        setDisplayedText(currentMessage.content);
-      }
-      return; // Let the user click again to advance
-    }
-    
-    if (showInteraction) {
-      setShowInteraction(false);
-      setCurrentInteraction(null);
-      if (onInteractionPoint) {
-        onInteractionPoint(currentInteraction!);
-      }
-      return;
-    }
-
-    if (currentMessageIndex < messages.length - 1) {
-      console.log('Advancing to next message:', currentMessageIndex + 1);
-      setCurrentMessageIndex(prev => prev + 1);
-    } else if (onComplete) {
-      console.log('Completing narrative');
-      
-      // Clear any existing timeout
-      if (completionTimeoutRef.current) {
-        clearTimeout(completionTimeoutRef.current);
-      }
-      
-      // Delay completion slightly to prevent race conditions
-      completionTimeoutRef.current = setTimeout(() => {
-        onComplete();
-      }, 100);
-    }
-  }, [
-    currentMessageIndex,
-    showInteraction,
-    messages.length,
-    isTyping,
-    displayedText,
-    currentMessage,
-    currentInteraction,
-    onInteractionPoint,
-    onComplete
-  ]);
 
   const handleGoBack = () => {
     console.log('handleGoBack called:', { 

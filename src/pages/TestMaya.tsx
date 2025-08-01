@@ -8,7 +8,6 @@ import { ArrowLeft, TestTube, CheckCircle, AlertCircle, Play, Pause } from 'luci
 import { useNavigate } from 'react-router-dom';
 import MayaTemplateLibraryBuilder from '@/components/lesson/MayaTemplateLibraryBuilder';
 import { useMayaJourney } from '@/hooks/useMayaJourney';
-import { ChatSystem } from '@/components/chat-system/ChatSystem';
 import MayaContextualChatIntegration from '@/components/lesson/chat/lyra/maya/MayaContextualChatIntegration';
 
 interface TestCase {
