@@ -4,9 +4,11 @@ import { Badge } from '@/components/ui/badge';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { cn } from '@/lib/utils';
 import ContextualLyraChat, { type LessonContext } from './chat/lyra/ContextualLyraChat';
+import { type MayaJourneyState } from './chat/lyra/maya/Chapter2ContextualQuestions';
 
 export interface FloatingLyraAvatarProps {
   lessonContext: LessonContext;
+  mayaJourneyState?: MayaJourneyState; // Optional for Maya Chapter 2 integration
   className?: string;
   position?: 'bottom-right' | 'bottom-left' | 'top-right' | 'top-left';
   onEngagementChange?: (isEngaged: boolean, exchangeCount: number) => void;
@@ -25,6 +27,7 @@ const positionClasses = {
 
 export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
   lessonContext,
+  mayaJourneyState,
   className,
   position = 'bottom-right',
   onEngagementChange,
@@ -75,6 +78,7 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
       {/* Always render the ContextualLyraChat - it handles its own visibility */}
       <ContextualLyraChat
         lessonContext={lessonContext}
+        mayaJourneyState={mayaJourneyState}
         onChatOpen={handleChatOpen}
         onChatClose={handleChatClose}
         onEngagementChange={handleEngagementChange}

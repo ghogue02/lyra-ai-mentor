@@ -25,6 +25,7 @@ import { LyraAvatar } from '@/components/LyraAvatar';
 import { ChatMessage, type ChatMessageData } from '../shared/ChatMessage';
 import { cn } from '@/lib/utils';
 import { useLyraChat } from '@/hooks/useLyraChat';
+import { getMayaContextualQuestions, MayaJourneyState } from './maya/Chapter2ContextualQuestions';
 
 // Types for lesson context and integration
 export interface LessonContext {
@@ -40,6 +41,7 @@ export interface LessonContext {
 
 export interface ContextualLyraChatProps {
   lessonContext: LessonContext;
+  mayaJourneyState?: MayaJourneyState; // Optional for Maya Chapter 2 integration
   onChatOpen?: () => void;
   onChatClose?: () => void;
   onEngagementChange?: (isEngaged: boolean, exchangeCount: number) => void;
@@ -51,8 +53,8 @@ export interface ContextualLyraChatProps {
   onExpandedChange?: (expanded: boolean) => void;
 }
 
-// Contextual starting questions based on lesson content
-const getContextualQuestions = (lessonContext: LessonContext): Array<{
+// Enhanced contextual questions with Maya journey support
+const getContextualQuestions = (lessonContext: LessonContext, mayaProgress?: MayaJourneyState): Array<{
   id: string;
   text: string;
   icon: React.ComponentType<{ className?: string }>;
@@ -60,6 +62,19 @@ const getContextualQuestions = (lessonContext: LessonContext): Array<{
   priority: 'high' | 'medium' | 'low';
 }> => {
   const { chapterNumber, lessonTitle, phase } = lessonContext;
+  
+  // Chapter 2 - Maya's Email Challenge with enhanced contextual questions
+  if (chapterNumber === 2 && mayaProgress) {
+    const mayaQuestions = getMayaContextualQuestions(lessonContext, mayaProgress);
+    // Convert to expected format
+    return mayaQuestions.map(q => ({
+      id: q.id,
+      text: q.text,
+      icon: q.icon,
+      category: q.category,
+      priority: q.priority
+    }));
+  }
   
   // Chapter 1 Lesson 1 - AI Foundations
   if (chapterNumber === 1) {
@@ -109,7 +124,7 @@ const getContextualQuestions = (lessonContext: LessonContext): Array<{
     ];
   }
   
-  // Chapter 2 - Maya's Email Challenge
+  // Fallback to existing Chapter 2 questions if mayaProgress not provided
   if (chapterNumber === 2) {
     return [
       {
@@ -171,6 +186,7 @@ const getContextualQuestions = (lessonContext: LessonContext): Array<{
 
 export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
   lessonContext,
+  mayaJourneyState,
   onChatOpen,
   onChatClose,
   onEngagementChange,
@@ -190,8 +206,8 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-  // Get contextual questions based on lesson
-  const contextualQuestions = getContextualQuestions(lessonContext);
+  // Get contextual questions based on lesson (with Maya journey state if available)
+  const contextualQuestions = getContextualQuestions(lessonContext, mayaJourneyState);
 
   // Initialize chat hook with lesson context
   const {

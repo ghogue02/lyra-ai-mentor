@@ -16,6 +16,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import TemplateContentFormatter from '@/components/ui/TemplateContentFormatter';
+import MayaContextualChatIntegration from '@/components/lesson/chat/lyra/maya/MayaContextualChatIntegration';
+import { useMayaJourney } from '@/hooks/useMayaJourney';
+import { FloatingLyraAvatar } from '@/components/lesson/FloatingLyraAvatar';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -37,6 +40,16 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
   const [templateDraft, setTemplateDraft] = useState('');
   const [generatedTemplates, setGeneratedTemplates] = useState<Array<{id: string, name: string, content: string}>>([]);
   const [isGenerating, setIsGenerating] = useState(false);
+  
+  // Maya journey state management
+  const {
+    journeyState: mayaJourneyState,
+    setJourneyState: setMayaJourneyState,
+    completeStage,
+    updatePaceProgress,
+    updateTemplateProgress,
+    getPaceCompletionPercentage
+  } = useMayaJourney();
 
   const templateCategories: TemplateCategory[] = [
     {
@@ -129,6 +142,15 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
       };
 
       setGeneratedTemplates([...generatedTemplates, newTemplate]);
+      
+      // Update Maya journey progress
+      const newProgress = Math.min(100, (generatedTemplates.length + 1) * 25);
+      updateTemplateProgress(newProgress);
+      
+      // Mark template creation stage as completed
+      if (generatedTemplates.length === 0) {
+        completeStage('template-creation-started');
+      }
       
       toast({
         title: "Template Generated!",
@@ -259,10 +281,32 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
       <div className="max-w-4xl mx-auto pt-20">
         <NarrativeManager
           messages={narrativeMessages}
-          onComplete={() => setCurrentPhase('workshop')}
+          onComplete={() => {
+            setCurrentPhase('workshop');
+            // Mark narrative completion and advance Maya's journey
+            completeStage('narrative-complete');
+            setMayaJourneyState(prev => ({
+              ...prev,
+              currentStage: 'workshop-intro'
+            }));
+          }}
           phaseId="maya-template-narrative"
         />
       </div>
+      
+      {/* Maya contextual chat integration */}
+      <MayaContextualChatIntegration
+        mayaJourneyState={mayaJourneyState}
+        onJourneyStateUpdate={setMayaJourneyState}
+        currentPhase={currentPhase}
+        lessonTitle="Template Library Builder"
+        onNarrativePause={() => {
+          // Pause any ongoing narrative animations
+        }}
+        onNarrativeResume={() => {
+          // Resume narrative animations
+        }}
+      />
     </motion.div>
   );
 
@@ -400,17 +444,75 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
           </Card>
         </div>
 
+        {/* Maya PACE Progress Indicator */}
+        <div className="mt-8 p-4 bg-gradient-to-r from-purple-50 to-pink-50 rounded-lg border">
+          <h4 className="font-semibold text-purple-800 mb-2">Maya's PACE Framework Progress</h4>
+          <div className="grid grid-cols-4 gap-2">
+            {Object.entries(mayaJourneyState.paceFrameworkProgress).map(([component, completed]) => (
+              <div key={component} className="text-center">
+                <div className={`w-8 h-8 mx-auto mb-1 rounded-full flex items-center justify-center text-xs font-bold ${
+                  completed ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'
+                }`}>
+                  {component[0].toUpperCase()}
+                </div>
+                <div className="text-xs text-purple-700 capitalize">{component}</div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-2">
+            <Progress value={getPaceCompletionPercentage()} className="h-2" />
+            <p className="text-xs text-purple-600 mt-1">{getPaceCompletionPercentage()}% Complete</p>
+          </div>
+        </div>
+
         {/* Completion Button */}
         {generatedTemplates.length > 0 && (
           <div className="text-center mt-8">
             <Button 
-              onClick={handleComplete}
+              onClick={() => {
+                handleComplete();
+                completeStage('template-library-complete');
+                updatePaceProgress('execution');
+              }}
               className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
             >
               Complete Template Library Workshop
             </Button>
           </div>
         )}
+        
+        {/* Floating Lyra Avatar for contextual help */}
+        <FloatingLyraAvatar
+          lessonContext={{
+            chapterNumber: 2,
+            chapterTitle: "Maya's Communication Mastery",
+            lessonTitle: "Template Library Builder",
+            phase: 'workshop',
+            content: "Maya's template creation workshop with PACE framework integration",
+            objectives: [
+              "Master the PACE framework for donor communication",
+              "Create personalized email templates with AI assistance", 
+              "Develop audience-specific communication strategies",
+              "Build sustainable email workflow systems"
+            ],
+            keyTerms: [
+              "PACE Framework (Purpose, Audience, Context, Execution)",
+              "Donor Segmentation",
+              "Personalization at Scale",
+              "Communication Templates",
+              "Email Workflow Optimization"
+            ],
+            difficulty: "intermediate"
+          }}
+          mayaJourneyState={mayaJourneyState}
+          position="bottom-right"
+          onEngagementChange={(isEngaged, exchangeCount) => {
+            if (isEngaged && exchangeCount > 0) {
+              completeStage('chat-engagement');
+            }
+          }}
+          disabled={currentPhase === 'intro'} // Disabled during intro to let users connect with Maya's story first
+        />
       </div>
     </motion.div>
   );
