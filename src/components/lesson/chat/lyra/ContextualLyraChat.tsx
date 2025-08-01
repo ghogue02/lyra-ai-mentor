@@ -376,19 +376,7 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
             className="shadow-lg hover:shadow-xl transition-shadow duration-300" 
           />
           
-          {/* Notification pulse */}
-          <motion.div
-            className="absolute -top-1 -right-1 w-4 h-4 bg-gradient-to-r from-brand-cyan to-brand-purple rounded-full border-2 border-white"
-            animate={{ 
-              scale: [1, 1.2, 1],
-              opacity: [0.8, 1, 0.8]
-            }}
-            transition={{ 
-              duration: 2, 
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-          />
+          {/* Notification pulse - removed per user request */}
           
           {/* Context indicator - removed help text per user request */}
         </div>

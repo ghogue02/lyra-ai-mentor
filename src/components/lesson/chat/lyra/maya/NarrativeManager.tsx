@@ -187,14 +187,36 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     };
   }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex]);
 
+  // Force re-render when displayedText changes to ensure UI updates
+  useEffect(() => {
+    // This ensures the component re-renders when text is updated
+    if (displayedText && currentMessage && displayedText === currentMessage.content && !paused) {
+      console.log('NarrativeManager: Text fully displayed, ensuring isTyping is false');
+      setIsTyping(false);
+    }
+  }, [displayedText, currentMessage, paused]);
+
   const handleAdvance = () => {
     console.log('handleAdvance called:', { 
       currentMessageIndex, 
       showInteraction, 
-      messagesLength: messages.length 
+      messagesLength: messages.length,
+      isTyping,
+      displayedText: displayedText?.length,
+      currentMessageLength: currentMessage?.content?.length
     });
     
     setIsStuck(false); // Reset stuck state on interaction
+    
+    // Ensure typing is stopped when manually advancing
+    if (isTyping) {
+      console.log('Stopping typing and completing current message');
+      setIsTyping(false);
+      if (currentMessage) {
+        setDisplayedText(currentMessage.content);
+      }
+      return; // Let the user click again to advance
+    }
     
     if (showInteraction) {
       setShowInteraction(false);
