@@ -401,34 +401,6 @@ const TestMaya: React.FC = () => {
           </Card>
         )}
 
-        {/* New ChatSystem for the test page */}
-        <ChatSystem
-          lessonModule={{
-            chapterNumber: 2,
-            title: "Integration Test",
-            phase: 'workshop',
-            content: "Testing Maya's contextual chat integration and PACE framework",
-            chapterTitle: "Maya's Communication Mastery",
-            objectives: [
-              "Test contextual question generation",
-              "Validate PACE framework integration", 
-              "Test Maya journey state management",
-              "Verify chat personality consistency"
-            ],
-            keyTerms: [
-              "Integration Testing",
-              "PACE Framework",
-              "Contextual Questions",
-              "Maya Journey State",
-              "Chat Integration"
-            ],
-            difficulty: "intermediate"
-          }}
-          position="bottom-right"
-          onEngagementChange={(isEngaged, exchangeCount) => {
-            console.log('Test page chat engagement:', { isEngaged, exchangeCount });
-          }}
-        />
       </div>
     </div>
   );

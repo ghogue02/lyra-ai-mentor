@@ -16,7 +16,7 @@ import InteractionGateway from './maya/InteractionGateway';
 import LyraCharacter from './maya/MayaCharacter'; // Reuse the character component structure
 import GlobalNavigation, { JourneyPhase } from './maya/GlobalNavigation';
 import LyraFoundationsChat from './LyraFoundationsChat';
-import { FloatingLyraAvatar } from '../../FloatingLyraAvatar';
+import { ChatSystem } from '@/components/chat-system/ChatSystem';
 import type { LessonContext } from '@/types/ContextualChat';
 
 // Define Lyra-specific journey phases
@@ -404,10 +404,19 @@ const LyraIntroductionJourney: React.FC = () => {
           </motion.div>
         </AnimatePresence>
         
-        {/* Floating Lyra Avatar - Context-aware chat */}
+        {/* New ChatSystem - Context-aware chat */}
         {showFloatingChat && (
-          <FloatingLyraAvatar
-            lessonContext={lessonContext}
+          <ChatSystem
+            lessonModule={{
+              chapterNumber: lessonContext.chapterNumber,
+              title: lessonContext.lessonTitle,
+              phase: lessonContext.phase,
+              content: lessonContext.content,
+              chapterTitle: lessonContext.chapterTitle,
+              objectives: lessonContext.objectives,
+              keyTerms: lessonContext.keyTerms,
+              difficulty: lessonContext.difficulty
+            }}
             position="bottom-right"
             onEngagementChange={handleChatEngagement}
             onNarrativePause={handleNarrativePause}

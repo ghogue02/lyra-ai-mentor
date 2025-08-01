@@ -109,10 +109,23 @@ export const useChatActions = () => {
     }});
 
     try {
-      await persistentSendMessage(text);
+      const result = await persistentSendMessage(text);
+      // Add the AI response to the chat
+      if (result) {
+        dispatch({ type: 'ADD_MESSAGE', payload: {
+          id: (Date.now() + 1).toString(),
+          content: result,
+          isUser: false,
+          timestamp: new Date()
+        }});
+      }
     } catch (error) {
       console.error('Failed to send message:', error);
-      dispatch({ type: 'SET_ERROR', payload: 'Failed to send message' });
+      dispatch({ type: 'SET_ERROR', payload: 'Failed to send message. Please try again.' });
+      // Add timeout to clear error
+      setTimeout(() => {
+        dispatch({ type: 'CLEAR_ERROR' });
+      }, 5000);
     } finally {
       dispatch({ type: 'SET_TYPING', payload: false });
     }
