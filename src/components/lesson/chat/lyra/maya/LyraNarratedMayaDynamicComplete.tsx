@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 import { Target, Heart, Lightbulb, Zap, Users, Star, ChevronRight, FastForward, Mail, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { motion } from 'framer-motion';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import PromptLearning from './PromptLearning';
 import PromptComparison from './PromptComparison';

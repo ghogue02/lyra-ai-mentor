@@ -1,5 +1,4 @@
 import React, { memo, useCallback, useMemo } from 'react';
-import { motion } from 'framer-motion';
 import { Loader2, Image as ImageIcon, Play, Pause } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { 
@@ -207,12 +206,11 @@ const OptimizedVideoAnimation: React.FC<OptimizedVideoAnimationProps> = memo(({
         role={enableAccessibility ? "img" : undefined}
         aria-label={enableAccessibility ? (ariaLabel || alt || "Decorative animation") : undefined}
       >
-        <motion.div
-          animate={config.enableAnimations ? { scale: [1, 1.05, 1] } : {}}
-          transition={{ duration: 2, repeat: Infinity }}
+        <div 
+          className={config.enableAnimations ? "animate-pulse" : ""}
         >
           {fallbackIcon}
-        </motion.div>
+        </div>
       </div>
     );
   }
@@ -228,22 +226,14 @@ const OptimizedVideoAnimation: React.FC<OptimizedVideoAnimationProps> = memo(({
     >
       {/* Loading State */}
       {assetState.loading && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="absolute inset-0 flex items-center justify-center bg-muted/50 backdrop-blur-sm"
-        >
+        <div className="absolute inset-0 flex items-center justify-center bg-muted/50 backdrop-blur-sm opacity-100 animate-fade-in">
           <Loader2 className="w-6 h-6 animate-spin text-primary" />
-        </motion.div>
+        </div>
       )}
 
       {/* Error State */}
       {assetState.error && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground"
-        >
+        <div className="absolute inset-0 flex flex-col items-center justify-center text-muted-foreground opacity-100 animate-fade-in">
           <ImageIcon className="w-8 h-8 mb-2" />
           <span className="text-xs text-center">
             Animation unavailable
@@ -253,18 +243,16 @@ const OptimizedVideoAnimation: React.FC<OptimizedVideoAnimationProps> = memo(({
               </div>
             )}
           </span>
-        </motion.div>
+        </div>
       )}
 
       {/* Fallback while not visible or loading */}
       {(!isVisible || (!assetState.loaded && !assetState.loading)) && (
-        <motion.div
-          animate={config.enableAnimations ? { scale: [1, 1.05, 1] } : {}}
-          transition={{ duration: 2, repeat: Infinity }}
-          className="flex items-center justify-center w-full h-full"
+        <div 
+          className={`flex items-center justify-center w-full h-full ${config.enableAnimations ? "animate-pulse" : ""}`}
         >
           {fallbackIcon}
-        </motion.div>
+        </div>
       )}
 
       {/* Video Element */}
@@ -294,17 +282,15 @@ const OptimizedVideoAnimation: React.FC<OptimizedVideoAnimationProps> = memo(({
 
       {/* Play/Pause Indicator for hover trigger */}
       {trigger === 'hover' && config.enableAnimations && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 0.8 : 0 }}
-          className="absolute top-2 right-2 bg-black/50 rounded-full p-1"
+        <div 
+          className={`absolute top-2 right-2 bg-black/50 rounded-full p-1 transition-opacity duration-200 ${isHovered ? 'opacity-80' : 'opacity-0'}`}
         >
           {shouldPlay ? (
             <Pause className="w-3 h-3 text-white" />
           ) : (
             <Play className="w-3 h-3 text-white" />
           )}
-        </motion.div>
+        </div>
       )}
     </div>
   );

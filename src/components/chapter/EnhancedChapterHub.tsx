@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, PlayCircle, ArrowRight, Lock, ChevronLeft } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -144,11 +143,10 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
           </button>
         )}
         
-        <motion.div
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          exit={{ y: -100, opacity: 0 }}
-          className="fixed top-0 left-0 w-full z-40"
+        <div
+          className={`fixed top-0 left-0 w-full z-40 transition-transform duration-300 ease-in-out ${
+            shouldShowNavigation ? 'animate-slide-down' : 'transform -translate-y-full'
+          }`}
           onMouseEnter={handleMouseEnter}
           onMouseLeave={handleMouseLeave}
         >
@@ -175,15 +173,13 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
               </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </>
       
       <div className="max-w-6xl mx-auto p-6 pt-16 sm:pt-20 lg:pt-6">
         {/* Header with Character & Progress */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-8"
+        <div
+          className="text-center mb-8 animate-fade-in"
         >
           {/* Character Avatar - Centered and Larger */}
           <div className="flex justify-center mb-6 mt-4 sm:mt-2 lg:mt-0">
@@ -234,21 +230,19 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
               )}
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Micro-Lessons Grid */}
         <div className="grid md:grid-cols-2 gap-8 mb-12">
           {microLessons.map((lesson, index) => (
-            <motion.div
+            <div
               key={lesson.id}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              whileHover={{ scale: lesson.unlocked ? 1.02 : 1 }}
               className={cn(
-                "group cursor-pointer",
+                "group cursor-pointer animate-slide-up transition-transform duration-200",
+                lesson.unlocked && "hover:scale-[1.02]",
                 !lesson.unlocked && "cursor-not-allowed opacity-50"
               )}
+              style={{ animationDelay: `${index * 0.1}s` }}
               onClick={() => handleLessonSelect(lesson)}
             >
                <div className={cn(
@@ -324,16 +318,14 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                   </div>
               </div>
             </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
         {/* Chapter Actions */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="flex justify-center gap-4"
+        <div
+          className="flex justify-center gap-4 animate-fade-in"
+          style={{ animationDelay: '0.5s' }}
         >
           <button 
             onClick={() => navigate('/dashboard')} 
@@ -359,7 +351,7 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
               Chapter Summary
             </button>
           )}
-        </motion.div>
+        </div>
       </div>
 
       {/* Celebration Overlay */}

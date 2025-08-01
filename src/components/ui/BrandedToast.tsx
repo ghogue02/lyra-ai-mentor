@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { CheckCircle, AlertCircle, Info, XCircle, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from './BrandedIcon';

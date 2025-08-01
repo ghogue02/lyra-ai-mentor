@@ -1,5 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { motion } from 'framer-motion';
 import { useChatState, useChatActions } from '../core/ChatContext';
 import { Send } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -61,20 +60,18 @@ export const ChatInput: React.FC = () => {
           />
         </div>
         
-        <motion.button
+        <button
           onClick={handleSendMessage}
           disabled={!inputValue.trim() || isDisabled}
           className={cn(
             "w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200",
             "bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300",
             "text-white disabled:text-gray-500",
-            "disabled:cursor-not-allowed"
+            "disabled:cursor-not-allowed hover:scale-105 active:scale-95"
           )}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
         >
           <Send className="w-4 h-4" />
-        </motion.button>
+        </button>
       </div>
       
       {/* Footer with controls */}
@@ -92,30 +89,25 @@ export const ChatInput: React.FC = () => {
 
       {/* Loading indicator */}
       {isLoading && (
-        <motion.div
-          className="flex items-center gap-2 mt-2 text-xs text-gray-600"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+        <div
+          className="flex items-center gap-2 mt-2 text-xs text-gray-600 animate-fade-in"
         >
           <div className="flex gap-1">
-            <motion.div
-              className="w-1 h-1 bg-purple-500 rounded-full"
-              animate={{ scale: [1, 1.5, 1] }}
-              transition={{ duration: 0.6, repeat: Infinity, delay: 0 }}
+            <div
+              className="w-1 h-1 bg-purple-500 rounded-full animate-pulse"
+              style={{ animationDelay: '0s' }}
             />
-            <motion.div
-              className="w-1 h-1 bg-purple-500 rounded-full"
-              animate={{ scale: [1, 1.5, 1] }}
-              transition={{ duration: 0.6, repeat: Infinity, delay: 0.2 }}
+            <div
+              className="w-1 h-1 bg-purple-500 rounded-full animate-pulse"
+              style={{ animationDelay: '0.2s' }}
             />
-            <motion.div
-              className="w-1 h-1 bg-purple-500 rounded-full"
-              animate={{ scale: [1, 1.5, 1] }}
-              transition={{ duration: 0.6, repeat: Infinity, delay: 0.4 }}
+            <div
+              className="w-1 h-1 bg-purple-500 rounded-full animate-pulse"
+              style={{ animationDelay: '0.4s' }}
             />
           </div>
           <span>Sending...</span>
-        </motion.div>
+        </div>
       )}
     </div>
   );

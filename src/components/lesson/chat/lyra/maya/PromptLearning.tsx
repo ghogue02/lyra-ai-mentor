@@ -3,7 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Lightbulb, Target, Users, Zap, ChevronRight } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface PromptLearningProps {
   mayaJourney: {

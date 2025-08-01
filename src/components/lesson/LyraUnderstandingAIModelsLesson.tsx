@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -48,10 +47,8 @@ export const LyraUnderstandingAIModelsLesson: React.FC = () => {
   if (isCompleted) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center p-6">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          className="text-center space-y-6 max-w-2xl"
+        <div
+          className="text-center space-y-6 max-w-2xl animate-scale-in"
         >
           <div className="w-24 h-24 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto">
             <Award className="w-12 h-12 text-white" />
@@ -87,7 +84,7 @@ export const LyraUnderstandingAIModelsLesson: React.FC = () => {
           >
             Continue Your Journey
           </button>
-        </motion.div>
+        </div>
       </div>
     );
   }

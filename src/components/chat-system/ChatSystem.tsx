@@ -1,5 +1,4 @@
 import React, { useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { ChatProvider, useChatState, useChatActions } from './core/ChatContext';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { MessageList } from './components/MessageList';
@@ -51,12 +50,8 @@ const ChatWidget: React.FC = () => {
   // Floating avatar (collapsed state)
   if (!isExpanded) {
     return (
-      <motion.div
-        className="group cursor-pointer"
-        initial={{ scale: 0, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+      <div
+        className="group cursor-pointer animate-scale-in transition-transform duration-200 hover:scale-105 active:scale-95"
         onClick={toggleExpanded}
       >
         <div className="relative">
@@ -75,20 +70,15 @@ const ChatWidget: React.FC = () => {
             <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-gray-900"></div>
           </div>
         </div>
-      </motion.div>
+      </div>
     );
   }
 
   // Expanded chat interface
   return (
-    <AnimatePresence>
-      <motion.div
-        className="bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col h-full"
-        initial={{ opacity: 0, scale: 0.9, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.9, y: 20 }}
-        transition={{ type: "spring", damping: 20, stiffness: 300 }}
-      >
+    <div
+      className="bg-white rounded-2xl shadow-xl border border-gray-100 flex flex-col h-full animate-scale-in-spring"
+    >
         {/* Minimal Header */}
         <div className="flex items-center justify-between p-4 border-b border-gray-100">
           <div className="flex items-center gap-3">
@@ -161,8 +151,7 @@ const ChatWidget: React.FC = () => {
             <ChatInput />
           </div>
         )}
-      </motion.div>
-    </AnimatePresence>
+      </div>
   );
 };
 

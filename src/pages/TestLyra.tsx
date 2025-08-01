@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -48,10 +47,8 @@ const TestLyra: React.FC = () => {
 
       <div className="container mx-auto px-4 py-8">
         {/* Test Info */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+        <div
+          className="mb-8 animate-fade-in"
         >
           <Card className="premium-card border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
             <CardContent className="p-6">
@@ -90,14 +87,11 @@ const TestLyra: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
 
         {/* Test Features */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="mb-8"
+        <div
+          className="mb-8 animate-fade-in" style={{ animationDelay: '0.2s' }}
         >
           <h3 className="text-lg font-semibold mb-4">Features to Test</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -134,13 +128,11 @@ const TestLyra: React.FC = () => {
               </Card>
             ))}
           </div>
-        </motion.div>
+        </div>
 
         {/* Main Chat Component */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4 }}
+        <div
+          className="animate-fade-in" style={{ animationDelay: '0.4s' }}
         >
           <LyraFoundationsChat 
             className="max-w-6xl mx-auto"
@@ -149,14 +141,11 @@ const TestLyra: React.FC = () => {
               console.log('Engagement changed:', hasEngaged);
             }}
           />
-        </motion.div>
+        </div>
 
         {/* Footer Info */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6 }}
-          className="mt-12 text-center"
+        <div
+          className="mt-12 text-center animate-fade-in" style={{ animationDelay: '0.6s' }}
         >
           <Card className="max-w-2xl mx-auto premium-card border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
             <CardContent className="p-6">
@@ -177,7 +166,7 @@ const TestLyra: React.FC = () => {
               </div>
             </CardContent>
           </Card>
-        </motion.div>
+        </div>
       </div>
     </div>
   );

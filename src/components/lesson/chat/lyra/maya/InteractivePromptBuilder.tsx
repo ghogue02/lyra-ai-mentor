@@ -5,7 +5,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { Target, Users, Heart, Zap, Plus, Trash2, Edit3, Sparkles, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
 
 interface InteractivePromptBuilderProps {
   userChallenge: string;

@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -135,12 +134,9 @@ const TestMaya: React.FC = () => {
       case 'failed':
         return <AlertCircle className="w-4 h-4 text-red-500" />;
       case 'running':
-        return <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-        >
+        return <div className="animate-spin">
           <TestTube className="w-4 h-4 text-blue-500" />
-        </motion.div>;
+        </div>;
       default:
         return <TestTube className="w-4 h-4 text-gray-400" />;
     }

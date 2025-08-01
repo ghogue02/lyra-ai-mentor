@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -194,10 +193,8 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
   };
 
   const renderIntroPhase = () => (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-6"
+    <div
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 flex items-center justify-center p-6 animate-fade-in"
     >
       <div className="max-w-4xl mx-auto text-center">
         {/* Maya Avatar */}
@@ -262,14 +259,12 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
           </Button>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 
   const renderNarrativePhase = () => (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6"
+    <div
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6 animate-slide-in-right"
     >
       <MicroLessonNavigator
         chapterNumber={2}
@@ -311,14 +306,12 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
           setNarrativePaused(false);
         }}
       />
-    </motion.div>
+    </div>
   );
 
   const renderWorkshopPhase = () => (
-    <motion.div
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6"
+    <div
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-pink-50 p-6 animate-slide-in-right"
     >
       <MicroLessonNavigator
         chapterNumber={2}
@@ -517,15 +510,15 @@ const MayaTemplateLibraryBuilder: React.FC = () => {
           disabled={currentPhase === 'intro'} // Disabled during intro to let users connect with Maya's story first
         />
       </div>
-    </motion.div>
+    </div>
   );
 
   return (
-    <AnimatePresence mode="wait">
+    <>
       {currentPhase === 'intro' && renderIntroPhase()}
       {currentPhase === 'narrative' && renderNarrativePhase()}
       {currentPhase === 'workshop' && renderWorkshopPhase()}
-    </AnimatePresence>
+    </>
   );
 };
 

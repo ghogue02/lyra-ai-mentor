@@ -1,6 +1,5 @@
 import React from 'react';
 import { Button, ButtonProps } from '@/components/ui/button';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from './BrandedIcon';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';

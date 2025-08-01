@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 
 const getAnimationUrl = (filename: string) => {

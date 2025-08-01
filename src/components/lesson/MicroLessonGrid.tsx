@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Grid, List, Filter, Search, SortAsc } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';

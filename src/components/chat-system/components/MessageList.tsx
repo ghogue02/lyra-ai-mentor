@@ -1,5 +1,4 @@
 import React, { memo } from 'react';
-import { motion } from 'framer-motion';
 import { useChatState } from '../core/ChatContext';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { TypewriterText } from './TypewriterText';
@@ -22,14 +21,11 @@ const MessageBubble: React.FC<MessageBubbleProps> = memo(({ message, isLast }) =
   };
 
   return (
-    <motion.div
+    <div
       className={cn(
-        "flex gap-3 mb-4",
+        "flex gap-3 mb-4 animate-slide-up",
         message.isUser ? "flex-row-reverse" : "flex-row"
       )}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ type: "spring", damping: 20, stiffness: 300 }}
     >
       {/* Avatar */}
       {!message.isUser && (
@@ -72,7 +68,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = memo(({ message, isLast }) =
           {formatTime(message.timestamp)}
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 });
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { CheckCircle } from 'lucide-react';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 

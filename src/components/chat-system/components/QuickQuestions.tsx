@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { useChatState, useChatActions } from '../core/ChatContext';
 import { chatSelectors } from '../core/chatReducer';
 import { BookOpen, Heart, Lightbulb, Target, Zap, HelpCircle } from 'lucide-react';
@@ -26,11 +25,9 @@ export const QuickQuestions: React.FC = () => {
   };
 
   return (
-    <motion.div
-      className="p-6 space-y-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.2 }}
+    <div
+      className="p-6 space-y-4 animate-fade-in"
+      style={{ animationDelay: '0.2s' }}
     >
       <div className="text-center">
         <h4 className="font-medium text-gray-900 mb-2">
@@ -46,15 +43,11 @@ export const QuickQuestions: React.FC = () => {
           const IconComponent = iconMap[question.category as keyof typeof iconMap] || BookOpen;
           
           return (
-            <motion.button
+            <button
               key={question.id}
-              className="w-full text-left p-4 rounded-xl bg-gray-50 hover:bg-gray-100 border border-transparent hover:border-gray-200 transition-all duration-200 group"
+              className="w-full text-left p-4 rounded-xl bg-gray-50 hover:bg-gray-100 border border-transparent hover:border-gray-200 transition-all duration-200 group animate-slide-up hover:scale-[1.02] active:scale-[0.98]"
               onClick={() => handleQuestionClick(question)}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 * index }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
+              style={{ animationDelay: `${0.1 * index}s` }}
             >
               <div className="flex items-start gap-3">
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center group-hover:scale-110 transition-transform">
@@ -74,7 +67,7 @@ export const QuickQuestions: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </motion.button>
+            </button>
           );
         })}
       </div>
@@ -84,6 +77,6 @@ export const QuickQuestions: React.FC = () => {
           💬 These suggestions are tailored to your current lesson
         </p>
       </div>
-    </motion.div>
+    </div>
   );
 };

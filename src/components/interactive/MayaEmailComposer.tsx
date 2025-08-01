@@ -10,7 +10,6 @@ import { Progress } from "@/components/ui/progress";
 import { Mail, Clock, User, Target, Sparkles, Send, CheckCircle, Lightbulb, MessageSquare, PenTool, Copy, Star } from 'lucide-react';
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from '@/integrations/supabase/client';
-import { motion, AnimatePresence } from 'framer-motion';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 interface MayaEmailComposerProps {

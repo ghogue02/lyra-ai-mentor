@@ -7,7 +7,6 @@ import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Badge } from '@/components/ui/badge';
 import { Target, Users, Mail, Presentation, MessageSquare, FileText, ChevronRight, Lightbulb } from 'lucide-react';
-import { motion } from 'framer-motion';
 
 interface ChallengeDefinitionProps {
   onChallengeSubmit: (challenge: UserChallenge) => void;

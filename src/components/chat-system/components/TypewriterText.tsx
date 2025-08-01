@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
 interface TypewriterTextProps {
@@ -105,14 +104,8 @@ export const TypewriterText: React.FC<TypewriterTextProps> = ({
     <span className={cn("inline-block", className)}>
       {displayedText}
       {showCursor && isTyping && !paused && (
-        <motion.span
-          className="inline-block w-0.5 h-4 bg-current ml-0.5"
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ 
-            duration: 0.8, 
-            repeat: Infinity,
-            ease: "easeInOut" 
-          }}
+        <span
+          className="inline-block w-0.5 h-4 bg-current ml-0.5 animate-pulse"
         />
       )}
     </span>

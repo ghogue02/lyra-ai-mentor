@@ -1,5 +1,4 @@
 import React, { memo, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { LyraAvatar } from '@/components/LyraAvatar';
 
