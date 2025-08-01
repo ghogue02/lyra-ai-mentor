@@ -215,7 +215,7 @@ vi.mock('@/components/ui/badge', () => ({
   )
 }));
 
-vi.mock '@/components/ui/scroll-area', () => ({
+vi.mock('@/components/ui/scroll-area', () => ({
   ScrollArea: ({ children, onScrollCapture, className }: any) => (
     <div 
       data-testid="scroll-area" 

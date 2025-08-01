@@ -96,7 +96,7 @@ Development Coordinator
           <div className="bg-blue-50 p-4 rounded-lg">
             <h3 className="font-medium text-blue-900 mb-2">Merge Field Processing</h3>
             <ul className="text-sm text-blue-800 space-y-1">
-              <li>• Transforms {{"{{"}}FirstName{{"}}"}} → [First Name]</li>
+              <li>• Transforms {`{{FirstName}} → [First Name]`}</li>
               <li>• Color-coded by field type</li>
               <li>• Automatic categorization</li>
               <li>• Legend showing all fields used</li>
