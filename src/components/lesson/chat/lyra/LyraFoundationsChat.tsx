@@ -411,7 +411,7 @@ export const LyraFoundationsChat: React.FC<LyraFoundationsChatProps> = ({
           I'm here to listen, learn, and help you discover how AI can amplify your nonprofit's impact. 
           There are no wrong questions, and every conversation helps us both grow!
         </p>
-      </div>
+      </motion.div>
     </motion.div>
   );
 };
