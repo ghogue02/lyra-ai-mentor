@@ -158,18 +158,13 @@ const LyraIntroductionJourney: React.FC = () => {
       case 'intro':
         return (
           <div className="flex flex-col items-center justify-center min-h-[80vh] text-center p-8">
-            <motion.div 
-              initial={{ scale: 0, rotate: -180 }}
-              animate={{ scale: 1, rotate: 0 }}
-              transition={{ duration: 0.8, type: "spring", bounce: 0.4 }}
-              className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-brand-cyan flex items-center justify-center mb-8 shadow-lg overflow-hidden"
-            >
+            <div className="w-24 h-24 rounded-full bg-gradient-to-br from-primary to-brand-cyan flex items-center justify-center mb-8 shadow-lg overflow-hidden animate-scale-in">
               <VideoAnimation
                 src={getAnimationUrl('lyra-brightidea.mp4')}
                 fallbackIcon={<Heart className="w-12 h-12 text-white" />}
                 className="w-full h-full"
               />
-            </motion.div>
+            </div>
             
             <h1 className="text-5xl font-bold mb-6 brand-gradient-text">
               Hello, I'm Lyra!
@@ -315,11 +310,7 @@ const LyraIntroductionJourney: React.FC = () => {
       case 'journey-preview':
         return (
           <div className="max-w-4xl mx-auto p-6 text-center">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="space-y-8"
-            >
+            <div className="space-y-8 animate-fade-in">
               <div className="w-24 h-24 bg-gradient-to-br from-primary to-brand-cyan rounded-full flex items-center justify-center mx-auto overflow-hidden">
                 <VideoAnimation
                   src={getAnimationUrl('lyra-celebration.mp4')}
@@ -364,7 +355,7 @@ const LyraIntroductionJourney: React.FC = () => {
                   Begin with Maya's Story
                 </Button>
               </div>
-            </motion.div>
+            </div>
           </div>
         );
 
@@ -391,17 +382,9 @@ const LyraIntroductionJourney: React.FC = () => {
           onReset={() => setCurrentPhase('intro')}
         />
         
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={currentPhase}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {renderPhase()}
-          </motion.div>
-        </AnimatePresence>
+        <div className="animate-fade-in">
+          {renderPhase()}
+        </div>
         
         {/* New ChatSystem - Context-aware chat */}
         {showFloatingChat && (
