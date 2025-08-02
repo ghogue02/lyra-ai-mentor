@@ -75,9 +75,42 @@ function generateContextualContent(context: any): string {
       return `User is on their learning dashboard, viewing their progress and available chapters. Help them navigate their learning journey.`;
     
     case 'chapter-hub':
+      if (context.chapterNumber === 2 && context.microLessons) {
+        const progress = context.progressSummary;
+        const availableLessons = context.microLessons.map(lesson => `${lesson.title} (${lesson.difficulty})`).join(', ');
+        
+        return `User is on Chapter 2: Maya's Communication Mastery hub. Progress: ${progress.completed} of ${progress.total} micro-lessons completed (${Math.round(progress.percentage)}%).
+
+Available micro-lessons: ${availableLessons}
+
+Context: Maya Rodriguez transforms from email overwhelm to confident communication mastery at Hope Gardens Community Center. Each lesson builds on her real experiences.
+
+Learning paths:
+- PACE Framework: Beginner-level foundation (Purpose → Audience → Context → Execute)
+- Tone Mastery & Template Library: Intermediate workshops for voice adaptation and efficiency
+- Difficult Conversations Guide: Advanced lesson for challenging communications
+- Subject Line Workshop: Practical email engagement tactics
+
+User can start any lesson, review completed ones, or get guidance on the best path forward. All lessons feature Maya's real nonprofit scenarios and practical applications.`;
+      }
       return `User is exploring Chapter ${context.chapterNumber}: ${context.chapterTitle}. They can see available lessons and interactive journeys.`;
     
     case 'interactive-journey':
+      if (context.chapterNumber === 2 && context.currentLessonId && context.microLessons) {
+        const currentLesson = context.microLessons.find(l => l.id === context.currentLessonId);
+        if (currentLesson) {
+          return `User is in "${currentLesson.title}" with Maya Rodriguez.
+
+Lesson details:
+- Focus: ${currentLesson.description}
+- Difficulty: ${currentLesson.difficulty}
+- Status: ${currentLesson.completed ? 'Completed' : 'In Progress'}
+
+Learning context: Maya's real experiences at Hope Gardens Community Center. This ${currentLesson.difficulty.toLowerCase()}-level lesson emphasizes practical communication techniques through authentic nonprofit scenarios.
+
+Available guidance: Lesson-specific help, Maya's insights, practical examples, next steps, or navigation back to chapter hub. Focus on real-world application and Maya's transformation journey.`;
+        }
+      }
       return `User is in an interactive learning journey with ${context.character || 'Lyra'} in Chapter ${context.chapterNumber}. Current phase: ${context.phase}. The journey focuses on ${context.journeyName || 'AI foundations and capabilities'}.`;
     
     case 'lesson':
@@ -97,9 +130,25 @@ function generateContextualGreeting(context: any): string {
       return "Hi! I can see you're on your learning dashboard. Ready to dive into your next chapter or need help navigating your progress?";
     
     case 'chapter-hub':
+      if (context.chapterNumber === 2 && context.progressSummary) {
+        const { completed, total, percentage } = context.progressSummary;
+        if (percentage === 100) {
+          return `Congratulations! You've completed all ${total} micro-lessons in Maya's Communication Mastery! 🎉 Ready to move to the next chapter or want to review any concepts?`;
+        } else if (completed > 0) {
+          return `Welcome back to Maya's Communication Mastery! You've completed ${completed} of ${total} lessons (${Math.round(percentage)}% done). Which lesson would you like to tackle next, or need help choosing?`;
+        } else {
+          return `Welcome to Maya's Communication Mastery! 📧 You have 5 exciting micro-lessons ahead, following Maya's transformation at Hope Gardens Community Center. Want to start with the PACE Framework or need guidance on which lesson fits your needs?`;
+        }
+      }
       return `Welcome to Chapter ${context.chapterNumber}! I can help you understand what you'll learn in "${context.chapterTitle}" or guide you to the perfect lesson for your needs.`;
     
     case 'interactive-journey':
+      if (context.chapterNumber === 2 && context.currentLessonId) {
+        const currentLesson = context.microLessons?.find(l => l.id === context.currentLessonId);
+        if (currentLesson) {
+          return `Hi! I see you're working on "${currentLesson.title}" with Maya! 📧 This ${currentLesson.difficulty.toLowerCase()}-level lesson focuses on ${currentLesson.description.toLowerCase()}. Need help with any specific aspect or want Maya's insights?`;
+        }
+      }
       return `I see you're working through the interactive journey${context.character ? ` with ${context.character}` : ''}! How can I support your learning about ${context.journeyName || 'AI capabilities'}?`;
     
     case 'lesson':
