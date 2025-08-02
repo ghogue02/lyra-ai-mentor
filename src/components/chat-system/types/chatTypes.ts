@@ -64,7 +64,8 @@ export type ChatAction =
   | { type: 'SET_ERROR'; payload: string }
   | { type: 'CLEAR_ERROR' }
   | { type: 'SET_LESSON_MODULE'; payload: LessonModule }
-  | { type: 'UPDATE_PERFORMANCE'; payload: Partial<ChatPerformance> };
+  | { type: 'UPDATE_PERFORMANCE'; payload: Partial<ChatPerformance> }
+  | { type: 'REMOVE_MESSAGE'; payload: string };
 
 // Animation configuration
 export interface AnimationConfig {

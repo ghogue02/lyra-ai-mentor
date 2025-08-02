@@ -308,7 +308,20 @@ export const useChatActions = () => {
   const sendMessage = useCallback(async (text: string) => {
     if (!text.trim() || !user || !state.currentLesson) return;
 
+    // Prevent duplicate requests
+    if (state.isTyping) {
+      console.log('🚫 Message sending already in progress, ignoring duplicate request');
+      return;
+    }
+
+    console.log('📤 sendMessage called with:', text);
     dispatch({ type: 'SET_TYPING', payload: true });
+
+    // Generate unique IDs upfront
+    const userMessageId = crypto.randomUUID();
+    const aiMessageId = crypto.randomUUID();
+    
+    console.log('🆔 Generated message IDs:', { userMessageId, aiMessageId });
 
     try {
       // Find current conversation
@@ -329,19 +342,32 @@ export const useChatActions = () => {
       const conversationId = conversation.id;
       const currentMessageOrder = state.messages.length;
 
-      // Add user message to state immediately
+      // Add user message to state immediately with unique ID
       const userMessage: ChatMessage = {
-        id: Date.now().toString(),
+        id: userMessageId,
         content: text,
         isUser: true,
         timestamp: new Date(),
         characterName: undefined
       };
 
+      console.log('📝 Adding user message to state:', userMessage);
       dispatch({ type: 'ADD_MESSAGE', payload: userMessage });
 
       // Save user message to database
       await saveMessage(conversationId, text, true, currentMessageOrder, user.id, state.currentLesson.chapterNumber);
+
+      // Create AI message placeholder with unique ID
+      const aiMessage: ChatMessage = {
+        id: aiMessageId,
+        content: '',
+        isUser: false,
+        timestamp: new Date(),
+        characterName: 'Lyra'
+      };
+
+      console.log('🤖 Adding AI message placeholder to state:', aiMessage);
+      dispatch({ type: 'ADD_MESSAGE', payload: aiMessage });
 
       // Send to AI
       const response = await fetch('https://hfkzwjnlxrwynactcmpe.supabase.co/functions/v1/chat-with-lyra', {
@@ -363,7 +389,9 @@ export const useChatActions = () => {
           },
           conversationId,
           userId: user.id,
-          lessonId: state.currentLesson.chapterNumber
+          lessonId: state.currentLesson.chapterNumber,
+          messageId: userMessageId,
+          responseId: aiMessageId
         })
       });
 
@@ -380,16 +408,6 @@ export const useChatActions = () => {
       const decoder = new TextDecoder();
       let aiResponseContent = '';
 
-      const aiMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: '',
-        isUser: false,
-        timestamp: new Date(),
-        characterName: 'Lyra'
-      };
-
-      dispatch({ type: 'ADD_MESSAGE', payload: aiMessage });
-
       // Stream the AI response
       while (true) {
         const { done, value } = await reader.read();
@@ -404,10 +422,11 @@ export const useChatActions = () => {
               const data = JSON.parse(line.slice(6));
               if (data.content) {
                 aiResponseContent += data.content;
-                // Update the AI message content by updating the specific message
+                console.log('📝 Updating AI message content for ID:', aiMessageId);
+                // Update the specific AI message using its unique ID
                 dispatch({ 
                   type: 'UPDATE_MESSAGE', 
-                  payload: { id: aiMessage.id, content: aiResponseContent }
+                  payload: { id: aiMessageId, content: aiResponseContent }
                 });
               }
             } catch (e) {
@@ -422,9 +441,15 @@ export const useChatActions = () => {
         await saveMessage(conversationId, aiResponseContent, false, currentMessageOrder + 1, user.id, state.currentLesson.chapterNumber);
       }
 
+      console.log('✅ Message flow complete:', { userMessageId, aiMessageId, contentLength: aiResponseContent.length });
+
     } catch (error) {
-      console.error('Failed to send message:', error);
+      console.error('❌ Failed to send message:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to send message. Please try again.' });
+      
+      // Remove the failed AI message if it was added
+      dispatch({ type: 'REMOVE_MESSAGE', payload: aiMessageId });
+      
       setTimeout(() => {
         dispatch({ type: 'CLEAR_ERROR' });
       }, 5000);

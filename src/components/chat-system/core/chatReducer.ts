@@ -119,6 +119,13 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         }
       };
 
+    case 'REMOVE_MESSAGE':
+      return {
+        ...state,
+        messages: state.messages.filter(msg => msg.id !== action.payload),
+        lastActivity: new Date()
+      };
+
     default:
       return state;
   }
