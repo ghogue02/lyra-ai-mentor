@@ -5,7 +5,7 @@ const openRouterApiKey = Deno.env.get('OPENROUTER_API_KEY');
 
 // Character-specific model mapping for cost optimization
 const CHARACTER_MODELS = {
-  'lyra': 'anthropic/claude-sonnet-4',
+  'lyra': 'openai/gpt-4.1',
   'rachel': 'anthropic/claude-sonnet-4',
   'sofia': 'google/gemini-2.5-flash-lite',
   'david': 'google/gemini-2.5-flash-lite',

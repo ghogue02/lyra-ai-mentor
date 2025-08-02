@@ -6,17 +6,23 @@ import { buildNaturalSystemMessage } from './system-message.ts';
 import { createOpenAIStreamingResponse } from './openai-client.ts';
 import type { ChatRequest } from './types.ts';
 
-function detectCharacterFromMessages(messages: any[]): string {
+function detectCharacterFromMessages(messages: any[], character?: string): string {
+  // Prioritize explicit character parameter
+  if (character && character !== 'default') {
+    return character;
+  }
+  
+  // For main Lyra chat interface, default to 'lyra' 
+  // Only check system message for explicit character declarations
   const systemMessage = messages.find(msg => msg.role === 'system')?.content || '';
-  const userMessages = messages.filter(msg => msg.role === 'user').map(msg => msg.content).join(' ').toLowerCase();
   
-  if (systemMessage.toLowerCase().includes('lyra') || userMessages.includes('lyra')) return 'lyra';
-  if (systemMessage.toLowerCase().includes('sofia') || userMessages.includes('sofia')) return 'sofia';
-  if (systemMessage.toLowerCase().includes('david') || userMessages.includes('david')) return 'david';
-  if (systemMessage.toLowerCase().includes('rachel') || userMessages.includes('rachel')) return 'rachel';
-  if (systemMessage.toLowerCase().includes('alex') || userMessages.includes('alex')) return 'alex';
+  if (systemMessage.toLowerCase().includes('i am sofia') || systemMessage.toLowerCase().includes('this is sofia')) return 'sofia';
+  if (systemMessage.toLowerCase().includes('i am david') || systemMessage.toLowerCase().includes('this is david')) return 'david';  
+  if (systemMessage.toLowerCase().includes('i am rachel') || systemMessage.toLowerCase().includes('this is rachel')) return 'rachel';
+  if (systemMessage.toLowerCase().includes('i am alex') || systemMessage.toLowerCase().includes('this is alex')) return 'alex';
   
-  return 'default';
+  // Default to lyra for main chat interface
+  return 'lyra';
 }
 
 serve(async (req) => {
