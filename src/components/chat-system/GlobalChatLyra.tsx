@@ -34,7 +34,7 @@ const GlobalChatLyra: React.FC = () => {
         <div className="w-full h-full">
           <ChatLyra
             lessonContext={lessonContext}
-            mode="floating"
+            mode="embedded"
             position="bottom-right"
             onEngagementChange={() => {}}
             className="w-full h-full shadow-2xl"
