@@ -30,18 +30,20 @@ const GlobalChatLyra: React.FC = () => {
 
   // Generate contextual quick questions based on the current page
   const contextualQuestions = useMemo(() => {
-    if (pageContext.type === 'interactive-journey' && pageContext.chapterNumber === 1) {
+    if (pageContext.type === 'interactive-journey') {
       const lesson = pageContext.microLessons?.find(l => l.id === pageContext.currentLessonId);
-      if (lesson?.id === 'ai-ethics') {
-        return [
-          "I'm worried about AI ethics - can you help?",
-          "What are the most important ethical principles for nonprofits?",
-          "How do I prevent bias in AI systems?",
-          "What does transparency mean in AI?",
-          "How can I ensure AI accountability in my organization?"
-        ];
-      }
-      if (lesson) {
+      
+      // Chapter 1 specific questions
+      if (pageContext.chapterNumber === 1) {
+        if (lesson?.id === 'ai-ethics') {
+          return [
+            "I'm worried about AI ethics - can you help?",
+            "What are the most important ethical principles for nonprofits?",
+            "How do I prevent bias in AI systems?",
+            "What does transparency mean in AI?",
+            "How can I ensure AI accountability in my organization?"
+          ];
+        }
         return [
           "What makes AI so powerful for nonprofits?",
           "How do I start implementing AI ethically?",
@@ -49,14 +51,100 @@ const GlobalChatLyra: React.FC = () => {
           "Can you explain AI foundations simply?"
         ];
       }
+      
+      // Chapter 2 specific questions
+      if (pageContext.chapterNumber === 2) {
+        return [
+          "How do I write more effective emails like Maya?",
+          "What is the PACE framework?",
+          "How can I improve my communication tone?",
+          "Can you help me with difficult conversations?",
+          "What makes a good email subject line?"
+        ];
+      }
+      
+      // Chapter 3 specific questions  
+      if (pageContext.chapterNumber === 3) {
+        if (lesson?.id === 'voice-discovery') {
+          return [
+            "How do I find my organization's storytelling voice?",
+            "What makes a compelling nonprofit story?",
+            "How can Sofia help me with voice discovery?",
+            "What's the difference between voice and tone?",
+            "How do I make my stories more engaging?"
+          ];
+        }
+        return [
+          "How do I craft compelling stories like Sofia?",
+          "What makes storytelling effective for nonprofits?",
+          "Can Sofia help with narrative structure?",
+          "How do I connect with my audience emotionally?",
+          "What's the secret to impactful storytelling?"
+        ];
+      }
+      
+      // Chapter 4 specific questions
+      if (pageContext.chapterNumber === 4) {
+        return [
+          "How do I turn data into stories like David?",
+          "What makes data visualization compelling?",
+          "Can David help with impact reporting?",
+          "How do I present data to different stakeholders?",
+          "What tools can help with data storytelling?"
+        ];
+      }
+      
+      // Chapter 5 specific questions
+      if (pageContext.chapterNumber === 5) {
+        return [
+          "How do I automate without losing human connection?",
+          "What processes should I automate first?",
+          "Can Rachel help with change management?",
+          "How do I design human-centered workflows?",
+          "What's the key to successful automation?"
+        ];
+      }
     }
     
-    if (pageContext.type === 'chapter-hub' && pageContext.chapterNumber === 1) {
-      return [
-        "What will I learn in Chapter 1?",
-        "Why are AI foundations important?",
-        "How does this prepare me for advanced AI?",
-        "What's the difference between AI types?"
+    // Chapter hub specific questions
+    if (pageContext.type === 'chapter-hub') {
+      const chapterQuestions = {
+        1: [
+          "What will I learn in Chapter 1?",
+          "Why are AI foundations important?",
+          "How does this prepare me for advanced AI?",
+          "What's the difference between AI types?"
+        ],
+        2: [
+          "What will I learn about communication with Maya?",
+          "How can I improve my email effectiveness?",
+          "What makes Maya's approach special?",
+          "How do I handle difficult conversations?"
+        ],
+        3: [
+          "What will I learn about storytelling with Sofia?",
+          "How can I make my stories more compelling?",
+          "What makes Sofia's storytelling approach unique?",
+          "How do I find my organization's voice?"
+        ],
+        4: [
+          "What will I learn about data storytelling with David?",
+          "How can I make my data more compelling?",
+          "What makes David's data approach effective?",
+          "How do I create better impact reports?"
+        ],
+        5: [
+          "What will I learn about automation with Rachel?",
+          "How can I automate without losing human connection?",
+          "What makes Rachel's automation approach special?",
+          "How do I lead successful change management?"
+        ]
+      };
+      
+      return chapterQuestions[pageContext.chapterNumber as keyof typeof chapterQuestions] || [
+        "What will I learn in this chapter?",
+        "How does this chapter help my nonprofit?",
+        "What skills will I develop?"
       ];
     }
     

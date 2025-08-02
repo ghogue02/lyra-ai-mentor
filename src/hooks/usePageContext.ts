@@ -17,12 +17,14 @@ interface PageContext {
   description: string;
   chapterNumber?: number;
   chapterTitle?: string;
+  characterName?: string;
   lessonTitle?: string;
   journeyName?: string;
   character?: string;
   phase?: string;
   microLessons?: MicroLesson[];
   currentLessonId?: string;
+  currentLesson?: MicroLesson;
   progressSummary?: {
     completed: number;
     total: number;
@@ -41,11 +43,19 @@ const characterMap: Record<string, string> = {
 };
 
 const chapterTitles: Record<string, string> = {
-  '1': 'Introduction to AI for Nonprofits',
+  '1': 'AI Foundations with Lyra',
   '2': 'Maya\'s Communication Mastery',
-  '3': 'Data and Ethics',
-  '4': 'Implementation Strategies', 
-  '5': 'Advanced AI Applications'
+  '3': 'Sofia\'s Storytelling Mastery',
+  '4': 'David\'s Data Storytelling Mastery',
+  '5': 'Rachel\'s Workflow Automation Mastery'
+};
+
+const chapterCharacters: Record<string, string> = {
+  '1': 'Lyra',
+  '2': 'Maya',
+  '3': 'Sofia',
+  '4': 'David',
+  '5': 'Rachel'
 };
 
 // Chapter 1 micro-lessons data for context awareness
@@ -146,6 +156,19 @@ const chapter2MicroLessons = [
   }
 ];
 
+// Chapter 3, 4, 5 micro-lessons data
+const chapter3MicroLessons = [
+  { id: 'voice-discovery', title: 'Voice Discovery Workshop', description: 'Find your organization\'s unique storytelling voice', difficulty: 'Beginner', completed: false, unlocked: true, route: '/chapter/3/interactive/voice-discovery' }
+];
+
+const chapter4MicroLessons = [
+  { id: 'david-data-foundations', title: 'David\'s Data Foundations', description: 'Transform data into compelling narratives', difficulty: 'Beginner', completed: false, unlocked: true, route: '/chapter/4/interactive/david-data-foundations' }
+];
+
+const chapter5MicroLessons = [
+  { id: 'rachel-automation-vision', title: 'Rachel\'s Automation Vision', description: 'Map and automate key processes', difficulty: 'Beginner', completed: false, unlocked: true, route: '/chapter/5/interactive/rachel-automation-vision' }
+];
+
 export const usePageContext = (): PageContext => {
   const location = useLocation();
   const params = useParams();
@@ -225,6 +248,7 @@ export const usePageContext = (): PageContext => {
           description: `Chapter ${chapterNum}: ${chapterTitles[chapterNum.toString()]} - Follow Maya Rodriguez as she transforms from email overwhelm to confident communication mastery`,
           chapterNumber: chapterNum,
           chapterTitle: chapterTitles[chapterNum.toString()],
+          characterName: chapterCharacters[chapterNum.toString()],
           phase: 'exploration',
           microLessons: chapter2MicroLessons,
           progressSummary: {
@@ -247,6 +271,120 @@ export const usePageContext = (): PageContext => {
             'The Difficult Conversations Guide is the most advanced lesson',
             'Template Library Builder helps create reusable organizational assets',
             'Subject Line Workshop focuses on email engagement tactics'
+          ]
+        };
+      }
+
+      // Enhanced context for Chapter 3
+      if (chapterNum === 3) {
+        const completedCount = chapter3MicroLessons.filter(lesson => lesson.completed).length;
+        const totalCount = chapter3MicroLessons.length;
+        const progressPercentage = (completedCount / totalCount) * 100;
+        
+        return {
+          type: 'chapter-hub',
+          title: `Chapter ${chapterNum} Hub`,
+          description: `Chapter ${chapterNum}: ${chapterTitles[chapterNum.toString()]} - Follow Sofia Martinez as she transforms from basic communications to compelling storytelling mastery`,
+          chapterNumber: chapterNum,
+          chapterTitle: chapterTitles[chapterNum.toString()],
+          characterName: chapterCharacters[chapterNum.toString()],
+          phase: 'exploration',
+          microLessons: chapter3MicroLessons,
+          progressSummary: {
+            completed: completedCount,
+            total: totalCount,
+            percentage: progressPercentage
+          },
+          availableActions: [
+            'Start with Mission Story Creator',
+            'Discover your Voice',
+            'Master Narrative Structure',
+            'Connect with Audiences',
+            'Create Multimedia Stories',
+            'Amplify Your Impact'
+          ],
+          contextualHints: [
+            'All 6 micro-lessons follow Sofia\'s storytelling journey at Hope Gardens Community Center',
+            'Voice Discovery Workshop helps you find your unique storytelling style',
+            'Multimedia Storytelling is the most advanced lesson',
+            'Mission Story Creator provides the foundation for compelling narratives',
+            'Impact Amplifier shows how to scale your storytelling across channels'
+          ]
+        };
+      }
+
+      // Enhanced context for Chapter 4
+      if (chapterNum === 4) {
+        const completedCount = chapter4MicroLessons.filter(lesson => lesson.completed).length;
+        const totalCount = chapter4MicroLessons.length;
+        const progressPercentage = (completedCount / totalCount) * 100;
+        
+        return {
+          type: 'chapter-hub',
+          title: `Chapter ${chapterNum} Hub`,
+          description: `Chapter ${chapterNum}: ${chapterTitles[chapterNum.toString()]} - Follow David Chen as he transforms spreadsheet overwhelm into compelling data storytelling mastery`,
+          chapterNumber: chapterNum,
+          chapterTitle: chapterTitles[chapterNum.toString()],
+          characterName: chapterCharacters[chapterNum.toString()],
+          phase: 'exploration',
+          microLessons: chapter4MicroLessons,
+          progressSummary: {
+            completed: completedCount,
+            total: totalCount,
+            percentage: progressPercentage
+          },
+          availableActions: [
+            'Meet David & Learn Data Foundations',
+            'Create Visual Stories',
+            'Build Data Narratives',
+            'Master Stakeholder Communication',
+            'Develop Predictive Insights',
+            'Build Data Ecosystems'
+          ],
+          contextualHints: [
+            'All 6 micro-lessons follow David\'s data journey at Riverside Children\'s Foundation',
+            'Visual Storytelling Workshop teaches you to create compelling data visualizations',
+            'Data Ecosystem Builder is the most advanced lesson',
+            'Data Foundations provides essential skills for nonprofit data work',
+            'Predictive Insights shows how to use AI for forward-looking reports'
+          ]
+        };
+      }
+
+      // Enhanced context for Chapter 5
+      if (chapterNum === 5) {
+        const completedCount = chapter5MicroLessons.filter(lesson => lesson.completed).length;
+        const totalCount = chapter5MicroLessons.length;
+        const progressPercentage = (completedCount / totalCount) * 100;
+        
+        return {
+          type: 'chapter-hub',
+          title: `Chapter ${chapterNum} Hub`,
+          description: `Chapter ${chapterNum}: ${chapterTitles[chapterNum.toString()]} - Follow Rachel Thompson as she transforms chaotic manual processes into streamlined, human-centered workflows`,
+          chapterNumber: chapterNum,
+          chapterTitle: chapterTitles[chapterNum.toString()],
+          characterName: chapterCharacters[chapterNum.toString()],
+          phase: 'exploration',
+          microLessons: chapter5MicroLessons,
+          progressSummary: {
+            completed: completedCount,
+            total: totalCount,
+            percentage: progressPercentage
+          },
+          availableActions: [
+            'Meet Rachel & Learn Automation Vision',
+            'Practice Human-Centered Design',
+            'Create Automation Plans',
+            'Master Change Management',
+            'Scale Your Systems',
+            'Build Comprehensive Ecosystems'
+          ],
+          contextualHints: [
+            'All 6 micro-lessons follow Rachel\'s automation journey at Green Future Alliance',
+            'Human-Centered Design Workshop focuses on maintaining human connection',
+            'Ecosystem Builder is the most advanced lesson',
+            'Automation Vision provides the foundation for workflow transformation',
+            'Change Management teaches you to lead organizational transformation'
           ]
         };
       }
