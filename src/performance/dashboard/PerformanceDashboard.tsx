@@ -39,7 +39,7 @@ export const PerformanceDashboard: React.FC<DashboardProps> = ({
     const refreshData = () => {
       try {
         setCostMetrics(costAnalyzer.getCostMetrics('day'));
-        setPerformanceStats(performanceMonitor.getPerformanceStats(selectedTimeframe));
+        setPerformanceStats(performanceMonitor.getPerformanceStats(selectedTimeframe === 'week' ? '24h' : selectedTimeframe));
         setActiveAlerts(performanceMonitor.getActiveAlerts());
         setOptimizationMetrics(optimizationEngine.getOptimizationMetrics());
       } catch (error) {

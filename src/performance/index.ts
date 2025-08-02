@@ -63,6 +63,8 @@ export interface PerformanceConfig {
  * Main Performance Validation System
  * Coordinates all performance monitoring and optimization components
  */
+import { CostAnalyzer, PerformanceMonitor, OptimizationEngine, BenchmarkRunner } from './stubs';
+
 export class PerformanceValidationSystem {
   public readonly costAnalyzer: CostAnalyzer;
   public readonly performanceMonitor: PerformanceMonitor;

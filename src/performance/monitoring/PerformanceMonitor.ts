@@ -380,7 +380,7 @@ export class PerformanceMonitor {
   private checkAlertsForMetrics(metrics: PerformanceMetrics): void {
     this.alertThresholds.forEach(threshold => {
       const value = metrics[threshold.metric];
-      const shouldAlert = this.evaluateThreshold(value, threshold.threshold, threshold.operator);
+      const shouldAlert = this.evaluateThreshold(typeof value === 'number' ? value : value instanceof Date ? value.getTime() : 0, threshold.threshold, threshold.operator);
 
       if (shouldAlert) {
         const existingAlert = this.alerts.find(a => 
@@ -391,7 +391,7 @@ export class PerformanceMonitor {
           const alert: PerformanceAlert = {
             id: `alert-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
             metric: threshold.metric,
-            value,
+            value: typeof value === 'number' ? value : value instanceof Date ? value.getTime() : 0,
             threshold: threshold.threshold,
             severity: threshold.severity,
             message: `${threshold.metric} ${threshold.operator} ${threshold.threshold} (current: ${value})`,

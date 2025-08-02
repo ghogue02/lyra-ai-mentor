@@ -6,6 +6,7 @@ interface LessonContext {
   chapterTitle?: string;
   lessonTitle?: string;
   content?: string;
+  phase?: string;
 }
 
 export const useLyraChat = (lessonContext?: LessonContext) => {

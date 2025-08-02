@@ -5,8 +5,8 @@
  * Automated setup and configuration for the performance validation system
  */
 
-import { PerformanceValidationSystem, PerformanceConfiguration } from '../index';
-import { ConfigurationLoader, ConfigurationValidator } from '../config/performance.config';
+import { PerformanceValidationSystem } from '../index';
+import { ConfigurationLoader, ConfigurationValidator, PerformanceConfiguration } from '../config/performance.config';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -244,7 +244,34 @@ echo "✅ Report generated"
   private async initializeSystem(): Promise<void> {
     console.log('\n⚙️ Initializing performance system...');
 
-    this.perfSystem = new PerformanceValidationSystem(this.config);
+    // Convert PerformanceConfiguration to the format expected by PerformanceValidationSystem
+    const adaptedConfig = {
+      costAnalysis: {
+        budgetLimit: this.config.costAnalysis.budgetLimits.monthly,
+        alertThreshold: this.config.costAnalysis.alertThresholds.percentage,
+        trackingEnabled: this.config.costAnalysis.enabled
+      },
+      monitoring: {
+        enabled: this.config.monitoring.enabled,
+        intervalMs: this.config.monitoring.metricsCollection.intervalMs,
+        alertsEnabled: this.config.monitoring.alerts?.enabled || false,
+        retentionHours: parseInt(this.config.monitoring.metricsCollection.retentionPeriod.replace(/[^\d]/g, '')) || 24
+      },
+      optimization: {
+        cachingEnabled: this.config.optimization.caching.enabled,
+        compressionEnabled: this.config.optimization.contextCompression.enabled,
+        batchingEnabled: this.config.optimization.requestBatching.enabled,
+        maxCacheSize: this.config.optimization.caching.maxSize,
+        compressionThreshold: this.config.optimization.contextCompression.qualityThreshold
+      },
+      benchmarking: {
+        autoRunEnabled: this.config.benchmarking.autoSchedule.enabled,
+        scheduleIntervalHours: 24, // Default to daily since frequency is enum-based
+        customScenarios: this.config.benchmarking.scenarios?.customScenarios || []
+      }
+    };
+    
+    this.perfSystem = new PerformanceValidationSystem(adaptedConfig);
     await this.perfSystem.initialize();
 
     console.log('✅ Performance system initialized');
@@ -414,4 +441,5 @@ if (require.main === module) {
   });
 }
 
-export { PerformanceSetup, SetupOptions };
+export { PerformanceSetup };
+export type { SetupOptions };
