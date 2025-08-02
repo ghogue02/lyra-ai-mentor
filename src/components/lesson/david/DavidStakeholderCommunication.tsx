@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -82,7 +83,7 @@ const DavidStakeholderCommunication: React.FC = () => {
     {
       id: '2', 
       content: "I used to present the same data dump to everyone - board members, donors, staff, partners.",
-      emotion: 'embarrassed' as const
+      emotion: 'regretful' as const
     },
     {
       id: '3',
@@ -92,7 +93,7 @@ const DavidStakeholderCommunication: React.FC = () => {
     {
       id: '4',
       content: "Each stakeholder group has different needs, different languages, different attention spans.",
-      emotion: 'understanding' as const
+      emotion: 'thoughtful' as const
     },
     {
       id: '5',

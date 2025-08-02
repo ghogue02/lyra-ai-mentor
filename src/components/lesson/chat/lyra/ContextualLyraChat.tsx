@@ -221,7 +221,7 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
     chapterTitle: lessonContext.chapterTitle || `Chapter ${lessonContext.chapterNumber}`,
     lessonTitle: lessonContext.lessonTitle,
     content: lessonContext.content,
-    lessonContext: lessonContext
+    phase: lessonContext.phase
   });
 
   // Handle expansion changes

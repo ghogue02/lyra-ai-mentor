@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -397,7 +398,7 @@ const DavidVisualStorytelling: React.FC = () => {
                           <strong className="text-blue-800">Design:</strong>
                           <TemplateContentFormatter 
                             content={design.design}
-                            contentType="article"
+                            contentType="lesson"
                             variant="compact"
                             showMergeFieldTypes={false}
                             className="formatted-ai-content mt-2"

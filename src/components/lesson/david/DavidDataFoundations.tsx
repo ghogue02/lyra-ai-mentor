@@ -73,7 +73,7 @@ const DavidDataFoundations: React.FC = () => {
     {
       id: '1',
       content: "Hi, I'm David Chen from Riverside Children's Foundation.",
-      emotion: 'nervous' as const,
+      emotion: 'worried' as const,
       showAvatar: true
     },
     {
@@ -364,7 +364,7 @@ const DavidDataFoundations: React.FC = () => {
                       <div className="bg-blue-50 p-3 rounded">
                         <TemplateContentFormatter 
                           content={plan.implementation}
-                          contentType="article"
+                          contentType="lesson"
                           variant="compact"
                           showMergeFieldTypes={false}
                           className="formatted-ai-content"
