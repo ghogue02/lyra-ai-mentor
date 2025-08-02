@@ -88,9 +88,9 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
     }
   };
 
-  const handleStarterClick = (starter: string) => {
-    setInputValue(starter);
-    sendMessage(starter);
+  const handleStarterClick = async (starter: string) => {
+    await sendMessage(starter);
+    setInputValue('');
   };
 
   if (mode === 'floating' && !isExpanded) {
