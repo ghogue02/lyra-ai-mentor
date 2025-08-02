@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { MessageCircle } from 'lucide-react';
 import { usePageContext } from '@/hooks/usePageContext';
 import { useGlobalChat } from '@/contexts/GlobalChatContext';
@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 const GlobalChatLyra: React.FC = () => {
   const pageContext = usePageContext();
   const { isGlobalChatExpanded, setIsGlobalChatExpanded, conversationId } = useGlobalChat();
+  const previousConversationId = useRef<string>(conversationId);
   
   // Create dynamic lesson context based on current page
   const lessonContext = useMemo(() => ({
@@ -19,10 +20,18 @@ const GlobalChatLyra: React.FC = () => {
   }), [pageContext]);
 
   // Generate contextual welcome message when chat opens
-  const { sendMessage } = useChatLyra({ 
+  const { sendMessage, clearMessages } = useChatLyra({ 
     lessonContext,
     conversationId 
   });
+
+  // Clear messages when conversation ID changes (context change)
+  useEffect(() => {
+    if (previousConversationId.current !== conversationId) {
+      clearMessages();
+      previousConversationId.current = conversationId;
+    }
+  }, [conversationId, clearMessages]);
 
   // Generate contextual greeting when chat opens (but don't auto-send)
   const contextualGreeting = useMemo(() => 
@@ -314,6 +323,15 @@ function generateContextualGreeting(context: any): string {
         } else {
           return `Welcome to Maya's Communication Mastery! 📧 You have 5 exciting micro-lessons ahead, following Maya's transformation at Hope Gardens Community Center. Want to start with the PACE Framework or need guidance on which lesson fits your needs?`;
         }
+      } else if (context.chapterNumber === 4 && context.progressSummary) {
+        const { completed, total, percentage } = context.progressSummary;
+        if (percentage === 100) {
+          return `Outstanding! You've completed all ${total} micro-lessons in David's Data Storytelling Mastery! 📊 You're now equipped to transform any dataset into compelling impact narratives. Ready for the next chapter or want to review any data storytelling concepts?`;
+        } else if (completed > 0) {
+          return `Welcome back to David's Data Storytelling Mastery! You've completed ${completed} of ${total} lessons (${Math.round(percentage)}% done). Which data storytelling skill would you like to develop next, or need help choosing your path?`;
+        } else {
+          return `Welcome to David's Data Storytelling Mastery! 📊 You have 6 exciting micro-lessons ahead, following David's transformation at Riverside Children's Foundation. Want to start with Data Foundations or need guidance on which lesson fits your current needs?`;
+        }
       }
       return `Welcome to Chapter ${context.chapterNumber}! I can help you understand what you'll learn in "${context.chapterTitle}" or guide you to the perfect lesson for your needs.`;
     
@@ -329,6 +347,13 @@ function generateContextualGreeting(context: any): string {
         const currentLesson = context.microLessons?.find(l => l.id === context.currentLessonId);
         if (currentLesson) {
           return `Hi! I see you're working on "${currentLesson.title}" with Maya! 📧 This ${currentLesson.difficulty.toLowerCase()}-level lesson focuses on ${currentLesson.description.toLowerCase()}. Need help with any specific aspect or want Maya's insights?`;
+        }
+      } else if (context.chapterNumber === 4 && context.currentLessonId) {
+        const currentLesson = context.microLessons?.find(l => l.id === context.currentLessonId);
+        if (currentLesson?.id === 'visual-storytelling') {
+          return `Hi! I see you're working on "Visual Storytelling Workshop" with David! 📊 This lesson focuses on creating stunning data visualizations that communicate impact clearly. What aspect of data visualization would you like to explore together?`;
+        } else if (currentLesson) {
+          return `Hi! I see you're working on "${currentLesson.title}" with David! 📊 This ${currentLesson.difficulty.toLowerCase()}-level lesson focuses on ${currentLesson.description.toLowerCase()}. How can I help you with data storytelling concepts?`;
         }
       }
       return `I see you're working through the interactive journey${context.character ? ` with ${context.character}` : ''}! How can I support your learning about ${context.journeyName || 'AI capabilities'}?`;
