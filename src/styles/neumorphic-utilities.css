@@ -127,22 +127,22 @@
    COMPONENT MODIFIERS
    ======================================== */
 
-/* Glass-like neumorphic effect */
+/* Glass-like neumorphic effect - Enhanced transparency */
 .nm-glass {
-  background: rgba(255, 255, 255, 0.1);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   box-shadow: 
-    4px 4px 16px rgba(0, 0, 0, 0.1),
-    -4px -4px 16px rgba(255, 255, 255, 0.1);
+    4px 4px 16px rgba(0, 0, 0, 0.08),
+    -4px -4px 16px rgba(255, 255, 255, 0.08);
 }
 
 .dark .nm-glass {
-  background: rgba(0, 0, 0, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   box-shadow: 
-    4px 4px 16px rgba(0, 0, 0, 0.3),
-    -4px -4px 16px rgba(255, 255, 255, 0.05);
+    4px 4px 16px rgba(0, 0, 0, 0.25),
+    -4px -4px 16px rgba(255, 255, 255, 0.03);
 }
 
 /* Metallic effect */
