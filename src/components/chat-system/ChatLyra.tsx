@@ -123,47 +123,6 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
       className
     )}>
       <div className="h-full flex flex-col nm-card-elevated nm-rounded-2xl overflow-hidden">
-        {/* Header */}
-        <div className="nm-glass p-4 nm-rounded-xl nm-rounded-b-none">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <Avatar className="w-8 h-8 nm-shadow-subtle">
-                <AvatarImage src="/lovable-uploads/character-avatars/lyra-avatar.png" alt="Lyra" />
-                <AvatarFallback className="bg-white/20 text-white text-xs font-bold">LY</AvatarFallback>
-              </Avatar>
-              <div>
-                <h3 className="font-semibold text-sm text-white">Lyra</h3>
-                <div className="flex items-center space-x-1">
-                  <div className={cn(
-                    "w-2 h-2 rounded-full",
-                    isConnected ? "bg-emerald-400" : "bg-red-400"
-                  )} />
-                  <span className="text-xs opacity-90 text-white">
-                    {isConnected ? 'Online' : 'Offline'}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={clearMessages}
-                className="nm-button-secondary nm-rounded-lg nm-p-sm nm-text-accent hover:nm-text-primary transition-colors"
-                title="Clear chat"
-              >
-                <RotateCcw className="w-4 h-4" />
-              </button>
-              {mode === 'floating' && (
-                <button
-                  onClick={() => setIsExpanded(false)}
-                  className="nm-button-secondary nm-rounded-lg nm-p-sm nm-text-accent hover:nm-text-primary transition-colors"
-                >
-                  <Minimize2 className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
 
         {/* Messages */}
         <div className="flex-1 p-0 overflow-hidden nm-container">
@@ -279,7 +238,23 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
 
         {/* Input */}
         <div className="nm-panel nm-p-lg nm-rounded-xl nm-rounded-t-none border-t border-white/10">
-          <div className="flex space-x-2">
+          <div className="flex space-x-2 items-center">
+            <button
+              onClick={clearMessages}
+              className="nm-button-secondary nm-rounded-lg p-1 nm-text-accent hover:nm-text-primary transition-colors"
+              title="Clear chat"
+            >
+              <RotateCcw className="w-3 h-3" />
+            </button>
+            {mode === 'floating' && (
+              <button
+                onClick={() => setIsExpanded(false)}
+                className="nm-button-secondary nm-rounded-lg p-1 nm-text-accent hover:nm-text-primary transition-colors"
+                title="Minimize"
+              >
+                <Minimize2 className="w-3 h-3" />
+              </button>
+            )}
             <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
