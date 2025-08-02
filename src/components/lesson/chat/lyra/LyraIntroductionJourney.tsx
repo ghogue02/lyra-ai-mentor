@@ -14,7 +14,7 @@ import NarrativeManager from './maya/NarrativeManager';
 import InteractionGateway from './maya/InteractionGateway';
 import LyraCharacter from './maya/MayaCharacter'; // Reuse the character component structure
 import GlobalNavigation, { JourneyPhase } from './maya/GlobalNavigation';
-import { ChatSystem } from '@/components/chat-system/ChatSystem';
+import ChatLyra from '@/components/chat-system/ChatLyra';
 import type { LessonContext } from '@/types/ContextualChat';
 
 // Define Lyra-specific journey phases
@@ -277,18 +277,15 @@ const LyraIntroductionJourney: React.FC = () => {
                     </div>
                     
                     {/* Embedded Chat Component */}
-                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-                      <ChatSystem
-                        lessonModule={{
-                          chapterNumber: 1,
-                          title: "Meet Lyra & AI Foundations",
-                          chapterTitle: "Meet Lyra & AI Foundations",
-                          phase: "first-chat",
-                          content: "Introduction to Lyra and AI fundamentals for nonprofit professionals"
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden h-[500px]">
+                      <ChatLyra
+                        lessonContext={{
+                          chapterTitle: "Lyra's Introduction Journey",
+                          lessonTitle: "Meet Lyra & AI Foundations",
+                          content: "Introduction to Lyra, your AI learning companion and coach for nonprofit professionals. Learn about AI capabilities, set your learning goals, and begin your transformative journey.",
+                          phase: "first-chat"
                         }}
-                        position="bottom-right"
-                        initialExpanded={true}
-                        className="!relative !bottom-auto !right-auto !w-full !h-[500px] !max-w-none"
+                        mode="embedded"
                         onEngagementChange={(isEngaged, messageCount) => {
                           if (isEngaged && messageCount >= 2) {
                             // Auto-advance after meaningful engagement
@@ -406,24 +403,13 @@ const LyraIntroductionJourney: React.FC = () => {
           {renderPhase()}
         </div>
         
-        {/* Unified ChatSystem - Single source of truth */}
+        {/* Unified ChatLyra - Single source of truth */}
         {showFloatingChat && (
-          <ChatSystem
-            lessonModule={{
-              chapterNumber: lessonContext.chapterNumber,
-              title: lessonContext.lessonTitle,
-              phase: lessonContext.phase,
-              content: lessonContext.content,
-              chapterTitle: lessonContext.chapterTitle,
-              objectives: lessonContext.objectives,
-              keyTerms: lessonContext.keyTerms,
-              difficulty: lessonContext.difficulty
-            }}
+          <ChatLyra
+            lessonContext={lessonContext}
+            mode="floating"
             position="bottom-right"
             onEngagementChange={handleChatEngagement}
-            onNarrativePause={handleNarrativePause}
-            onNarrativeResume={handleNarrativeResume}
-            className="z-50"
           />
         )}
       </div>

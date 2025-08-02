@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChatSimple } from '@/components/chat-system/ChatSimple';
+import ChatLyra from '@/components/chat-system/ChatLyra';
 
 export interface FloatingLyraAvatarProps {
   className?: string;
@@ -7,23 +7,25 @@ export interface FloatingLyraAvatarProps {
   disabled?: boolean;
 }
 
-const positionClasses = {
-  'bottom-right': 'bottom-6 right-6',
-  'bottom-left': 'bottom-6 left-6',
-  'top-right': 'top-6 right-6',
-  'top-left': 'top-6 left-6',
-};
 
 export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
   position = 'bottom-right',
   disabled = false,
   className
 }) => {
+  if (disabled) return null;
+
   return (
-    <ChatSimple
+    <ChatLyra
+      lessonContext={{
+        chapterTitle: "AI Learning Session",
+        lessonTitle: "Interactive AI Learning",
+        content: "Interactive AI learning session with Lyra",
+        phase: "learning"
+      }}
+      mode="floating"
       position={position}
       className={className}
-      disabled={disabled}
     />
   );
 };
