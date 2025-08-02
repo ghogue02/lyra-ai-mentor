@@ -47,7 +47,8 @@ const chapterTitles: Record<string, string> = {
   '2': 'Maya\'s Communication Mastery',
   '3': 'Sofia\'s Storytelling Mastery',
   '4': 'David\'s Data Storytelling Mastery',
-  '5': 'Rachel\'s Workflow Automation Mastery'
+  '5': 'Rachel\'s Workflow Automation Mastery',
+  '6': 'Alex\'s Organizational Transformation'
 };
 
 const chapterCharacters: Record<string, string> = {
@@ -55,7 +56,8 @@ const chapterCharacters: Record<string, string> = {
   '2': 'Maya',
   '3': 'Sofia',
   '4': 'David',
-  '5': 'Rachel'
+  '5': 'Rachel',
+  '6': 'Alex'
 };
 
 // Chapter 1 micro-lessons data for context awareness
@@ -513,6 +515,34 @@ export const usePageContext = (): PageContext => {
             'Ecosystem Builder is the most advanced lesson',
             'Automation Vision provides the foundation for workflow transformation',
             'Change Management teaches you to lead organizational transformation'
+          ]
+        };
+      }
+
+      // Enhanced context for Chapter 6
+      if (chapterNum === 6) {
+        return {
+          type: 'chapter-hub',
+          title: `Chapter ${chapterNum} Hub`,
+          description: `Chapter ${chapterNum}: ${chapterTitles[chapterNum.toString()]} - Follow Alex Thompson as they navigate the complexities of leading AI transformation in nonprofits`,
+          chapterNumber: chapterNum,
+          chapterTitle: chapterTitles[chapterNum.toString()],
+          characterName: chapterCharacters[chapterNum.toString()],
+          phase: 'exploration',
+          availableActions: [
+            'Meet Alex & Learn Leadership Challenges',
+            'Create AI Transformation Visions',
+            'Design Change Management Plans',
+            'Build Team Communication',
+            'Develop Future Leadership Strategy',
+            'Master Leadership Adaptation'
+          ],
+          contextualHints: [
+            'All 6 micro-lessons follow Alex\'s leadership journey at National Advocacy Coalition',
+            'Leadership Challenges provides foundation for understanding transformation complexity',
+            'Future Leadership Strategy is the most advanced lesson',
+            'Focus on building vision, managing change, and creating sustainable AI adoption',
+            'Alex guides you through proven strategies for organizational transformation'
           ]
         };
       }
