@@ -7,6 +7,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CharacterStoryProvider } from "@/contexts/CharacterStoryContext";
+import { GlobalChatProvider } from "@/contexts/GlobalChatContext";
+import GlobalChatLyra from "@/components/chat-system/GlobalChatLyra";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PerformanceWrapper, PerformanceMonitor, BundleAnalyzer, AccessibilityTester } from "@/components/performance/PerformanceIntegration";
 import { BrandedToastContainer } from "@/hooks/use-branded-toast";
@@ -43,7 +45,8 @@ const App = () => {
           <Sonner />
           <AuthProvider>
             <CharacterStoryProvider>
-              <BrowserRouter>
+              <GlobalChatProvider>
+                <BrowserRouter>
                 <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
@@ -163,7 +166,9 @@ const App = () => {
               />
                <Route path="*" element={<NotFound />} />
                 </Routes>
-            </BrowserRouter>
+                <GlobalChatLyra />
+              </BrowserRouter>
+              </GlobalChatProvider>
             </CharacterStoryProvider>
           </AuthProvider>
           
