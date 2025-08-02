@@ -62,6 +62,17 @@ export const chatReducer = (state: ChatState, action: ChatAction): ChatState => 
         lastActivity: new Date()
       };
 
+    case 'UPDATE_MESSAGE':
+      return {
+        ...state,
+        messages: state.messages.map(msg =>
+          msg.id === action.payload.id
+            ? { ...msg, content: action.payload.content }
+            : msg
+        ),
+        lastActivity: new Date()
+      };
+
     case 'CLEAR_MESSAGES':
       return {
         ...state,

@@ -58,6 +58,7 @@ export type ChatAction =
   | { type: 'SET_MINIMIZED'; payload: boolean }
   | { type: 'ADD_MESSAGE'; payload: ChatMessage }
   | { type: 'SET_MESSAGES'; payload: ChatMessage[] }
+  | { type: 'UPDATE_MESSAGE'; payload: { id: string; content: string } }
   | { type: 'CLEAR_MESSAGES' }
   | { type: 'SET_TYPING'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string }

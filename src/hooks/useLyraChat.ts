@@ -1,6 +1,9 @@
 
-import { usePersistentChat } from './usePersistentChat';
-import { useParams } from 'react-router-dom';
+// This hook is now deprecated - use ChatContext directly
+// Keeping for backward compatibility but redirecting to ChatContext
+
+import { useState } from 'react';
+import { useChatActions, useChatState } from '@/components/chat-system/core/ChatContext';
 
 interface LessonContext {
   chapterTitle?: string;
@@ -10,10 +13,19 @@ interface LessonContext {
 }
 
 export const useLyraChat = (lessonContext?: LessonContext) => {
-  const { chapterId, lessonId } = useParams();
-  
-  const chapterIdNum = chapterId ? parseInt(chapterId) : 1;
-  const lessonIdNum = lessonId ? parseInt(lessonId) : 1;
+  const { state } = useChatState();
+  const { sendMessage, clearMessages, isLoading } = useChatActions();
+  const [inputValue, setInputValue] = useState('');
 
-  return usePersistentChat(lessonIdNum, chapterIdNum, lessonContext);
+  return {
+    messages: state.messages,
+    sendMessage,
+    clearChat: clearMessages,
+    isLoading,
+    isTyping: state.isTyping,
+    inputValue,
+    setInputValue,
+    userProfile: null, // Legacy compatibility - profile is now handled in ChatContext
+    engagement: { exchangeCount: 0, hasReachedThreshold: false } // Legacy compatibility
+  };
 };
