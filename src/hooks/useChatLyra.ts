@@ -16,6 +16,8 @@ interface UseChatLyraProps {
     lessonTitle?: string;
     content?: string;
     phase?: string;
+    chapterNumber?: number;
+    currentLessonId?: string | number;
   };
   conversationId?: string;
 }
@@ -67,6 +69,26 @@ export const useChatLyra = ({ lessonContext, conversationId }: UseChatLyraProps 
         }
       ];
 
+      // Determine the correct lesson ID based on context
+      const determineLessonId = () => {
+        if (lessonContext?.currentLessonId && typeof lessonContext.currentLessonId === 'number') {
+          return lessonContext.currentLessonId;
+        }
+        if (lessonContext?.chapterNumber) {
+          // Map chapters to their first lesson ID for better context
+          const chapterToLessonMap: Record<number, number> = {
+            1: 3,   // Chapter 1: Meet Lyra
+            2: 5,   // Chapter 2: AI for Your Daily Work (placeholder)
+            3: 11,  // Chapter 3: Communication & Storytelling
+            4: 15,  // Chapter 4: Data & Decision Making
+            5: 19,  // Chapter 5: Automation & Efficiency
+            6: 23   // Chapter 6: Organizational Transformation
+          };
+          return chapterToLessonMap[lessonContext.chapterNumber] || 1;
+        }
+        return 1; // Default fallback
+      };
+
       // Call the chat-with-lyra function
       const { data, error: apiError } = await supabase.functions.invoke('chat-with-lyra', {
         body: {
@@ -74,7 +96,7 @@ export const useChatLyra = ({ lessonContext, conversationId }: UseChatLyraProps 
           lessonContext,
           conversationId: conversationId || crypto.randomUUID(),
           userId: user.id,
-          lessonId: 1,
+          lessonId: determineLessonId(),
           isDummyDataRequest: false,
           isDataInsights: false,
           useCleanFormatting: true

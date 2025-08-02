@@ -28,7 +28,9 @@ const GlobalChatLyra: React.FC = () => {
     chapterTitle: pageContext.chapterTitle || pageContext.title,
     lessonTitle: pageContext.lessonTitle || pageContext.description,
     content: generateContextualContent(pageContext),
-    phase: pageContext.phase || 'general'
+    phase: pageContext.phase || 'general',
+    chapterNumber: pageContext.chapterNumber,
+    currentLessonId: pageContext.currentLessonId
   }), [pageContext, conversationId]); // Add conversationId to force refresh
 
   // Generate contextual welcome message when chat opens
@@ -177,6 +179,12 @@ const GlobalChatLyra: React.FC = () => {
           "How can I automate without losing human connection?",
           "What makes Rachel's automation approach special?",
           "How do I lead successful change management?"
+        ],
+        6: [
+          "What will I learn about organizational transformation?",
+          "How do I lead AI initiatives in my nonprofit?",
+          "What makes organizational change successful?",
+          "How do I build buy-in for AI transformation?"
         ]
       };
       
@@ -361,6 +369,24 @@ function generateContextualGreeting(context: any): string {
           return `Welcome back to David's Data Storytelling Mastery! You've completed ${completed} of ${total} lessons (${Math.round(percentage)}% done). Which data storytelling skill would you like to develop next, or need help choosing your path?`;
         } else {
           return `Welcome to David's Data Storytelling Mastery! 📊 You have 6 exciting micro-lessons ahead, following David's transformation at Riverside Children's Foundation. Want to start with Data Foundations or need guidance on which lesson fits your current needs?`;
+        }
+      } else if (context.chapterNumber === 5 && context.progressSummary) {
+        const { completed, total, percentage } = context.progressSummary;
+        if (percentage === 100) {
+          return `Outstanding! You've completed all ${total} micro-lessons in Rachel's Workflow Automation Mastery! 🚀 You now know how to build human-centered workflows that enhance rather than replace human connection. Ready for the next chapter or want to review any automation concepts?`;
+        } else if (completed > 0) {
+          return `Welcome back to Rachel's Workflow Automation Mastery! You've completed ${completed} of ${total} lessons (${Math.round(percentage)}% done). Which automation skill would you like to develop next, or need help choosing your path?`;
+        } else {
+          return `Welcome to Rachel's Workflow Automation Mastery! 🤖 You have exciting micro-lessons ahead, following Rachel's transformation at Green Future Alliance. Want to start with automation vision or need guidance on which lesson fits your current needs?`;
+        }
+      } else if (context.chapterNumber === 6 && context.progressSummary) {
+        const { completed, total, percentage } = context.progressSummary;
+        if (percentage === 100) {
+          return `Congratulations! You've completed all ${total} micro-lessons in Organizational Transformation! 🎯 You're now equipped to lead AI transformation initiatives. Ready for advanced topics or want to review any leadership concepts?`;
+        } else if (completed > 0) {
+          return `Welcome back to Organizational Transformation! You've completed ${completed} of ${total} lessons (${Math.round(percentage)}% done). Which leadership skill would you like to develop next?`;
+        } else {
+          return `Welcome to Organizational Transformation! 🎯 You have powerful lessons ahead on leading AI initiatives in nonprofit organizations. Ready to start your leadership journey?`;
         }
       }
       return `Welcome to Chapter ${context.chapterNumber}! I can help you understand what you'll learn in "${context.chapterTitle}" or guide you to the perfect lesson for your needs.`;
