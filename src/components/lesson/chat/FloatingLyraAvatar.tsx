@@ -120,8 +120,7 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
   const avatarVariants = {
     idle: {
       scale: 1,
-      boxShadow: '0 4px 20px rgba(124, 58, 237, 0.2)',
-      animation: 'breathing 3s ease-in-out infinite'
+      boxShadow: '0 4px 20px rgba(124, 58, 237, 0.2)'
     },
     pulsing: {
       scale: [1, 1.1, 1],
@@ -133,13 +132,12 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
       transition: {
         duration: 2,
         repeat: Infinity,
-        ease: 'easeInOut'
+        ease: "easeInOut" as const
       }
     },
     active: {
       scale: 1.05,
-      boxShadow: '0 8px 25px rgba(124, 58, 237, 0.3)',
-      background: 'linear-gradient(135deg, #7c3aed 0%, #06b6d4 100%)'
+      boxShadow: '0 8px 25px rgba(124, 58, 237, 0.3)'
     },
     chatOpen: {
       scale: 1,
@@ -160,7 +158,7 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
       scale: 1,
       y: 0,
       transition: {
-        type: 'spring',
+        type: "spring" as const,
         stiffness: 300,
         damping: 30
       }
