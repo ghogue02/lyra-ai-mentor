@@ -96,20 +96,19 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
     return (
       <div className={cn('fixed z-50', positionClasses[position], className)}>
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-br from-primary/20 to-brand-cyan/20 rounded-full blur-lg opacity-70 group-hover:opacity-90 transition-opacity duration-300" />
           <Button
             onClick={() => setIsExpanded(true)}
             size="lg"
-            className="relative w-16 h-16 rounded-full bg-gradient-to-br from-primary to-brand-cyan text-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+            className="nm-button-primary nm-rounded-full nm-shadow-floating nm-glow-soft nm-interactive w-16 h-16"
           >
             <Avatar className="w-10 h-10">
               <AvatarImage src="/lovable-uploads/character-avatars/lyra-avatar.png" alt="Lyra" />
-              <AvatarFallback className="bg-primary text-white text-sm font-bold">LY</AvatarFallback>
+              <AvatarFallback className="bg-transparent text-white text-sm font-bold">LY</AvatarFallback>
             </Avatar>
           </Button>
           
           {/* Notification dot */}
-          <div className="absolute -top-1 -right-1 w-4 h-4 bg-emerald-500 rounded-full border-2 border-white animate-pulse" />
+          <div className="absolute -top-1 -right-1 w-4 h-4 nm-success nm-rounded-full border-2 border-white animate-pulse" />
         </div>
       </div>
     );
@@ -122,23 +121,23 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
         : 'w-full h-full',
       className
     )}>
-      <Card className="h-full flex flex-col shadow-xl border-0 bg-white/95 backdrop-blur-sm">
+      <div className="h-full flex flex-col nm-card-elevated nm-rounded-2xl overflow-hidden">
         {/* Header */}
-        <CardHeader className="bg-gradient-to-r from-primary to-brand-cyan text-white p-4 rounded-t-lg">
+        <div className="nm-panel nm-gradient-primary p-4 nm-rounded-xl nm-rounded-b-none">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <Avatar className="w-8 h-8 border-2 border-white/20">
+              <Avatar className="w-8 h-8 nm-shadow-subtle">
                 <AvatarImage src="/lovable-uploads/character-avatars/lyra-avatar.png" alt="Lyra" />
                 <AvatarFallback className="bg-white/20 text-white text-xs font-bold">LY</AvatarFallback>
               </Avatar>
               <div>
-                <h3 className="font-semibold text-sm">Lyra</h3>
+                <h3 className="font-semibold text-sm text-white">Lyra</h3>
                 <div className="flex items-center space-x-1">
                   <div className={cn(
                     "w-2 h-2 rounded-full",
                     isConnected ? "bg-emerald-400" : "bg-red-400"
                   )} />
-                  <span className="text-xs opacity-90">
+                  <span className="text-xs opacity-90 text-white">
                     {isConnected ? 'Online' : 'Offline'}
                   </span>
                 </div>
@@ -146,32 +145,28 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
             </div>
             
             <div className="flex items-center space-x-2">
-              <Button
-                variant="ghost"
-                size="sm"
+              <button
                 onClick={clearMessages}
-                className="text-white hover:bg-white/20 p-1 h-auto"
+                className="nm-button-secondary nm-rounded-lg nm-p-sm nm-text-accent hover:nm-text-primary transition-colors"
                 title="Clear chat"
               >
                 <RotateCcw className="w-4 h-4" />
-              </Button>
+              </button>
               {mode === 'floating' && (
-                <Button
-                  variant="ghost"
-                  size="sm"
+                <button
                   onClick={() => setIsExpanded(false)}
-                  className="text-white hover:bg-white/20 p-1 h-auto"
+                  className="nm-button-secondary nm-rounded-lg nm-p-sm nm-text-accent hover:nm-text-primary transition-colors"
                 >
                   <Minimize2 className="w-4 h-4" />
-                </Button>
+                </button>
               )}
             </div>
           </div>
-        </CardHeader>
+        </div>
 
         {/* Messages */}
-        <CardContent className="flex-1 p-0 overflow-hidden">
-          <ScrollArea className="h-full p-4" ref={scrollAreaRef}>
+        <div className="flex-1 p-0 overflow-hidden nm-container">
+          <ScrollArea className="h-full nm-p-lg" ref={scrollAreaRef}>
             <div className="space-y-4">
               {/* Welcome message */}
               {messages.length === 0 && (
@@ -181,32 +176,30 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                       <AvatarImage src="/lovable-uploads/character-avatars/lyra-avatar.png" alt="Lyra" />
                       <AvatarFallback className="bg-primary text-white text-xs">LY</AvatarFallback>
                     </Avatar>
-                    <div className="bg-gray-100 rounded-2xl rounded-tl-none p-3 max-w-[80%]">
-                      <p className="text-sm text-gray-900">
+                    <div className="nm-card-subtle nm-rounded-2xl nm-rounded-tl-none nm-p-md max-w-[80%]">
+                      <p className="text-sm nm-text-primary">
                         Hi! I'm Lyra, your AI learning companion. I'm here to help you explore AI's potential for nonprofit work. What would you like to know?
                       </p>
                     </div>
                   </div>
                   
-                  {/* Conversation starters */}
-                  <div className="space-y-2">
-                    <div className="flex items-center space-x-2 text-xs text-muted-foreground px-2">
-                      <Sparkles className="w-3 h-3" />
-                      <span>Quick questions to get started:</span>
-                    </div>
-                    {conversationStarters.slice(0, 3).map((starter, index) => (
-                      <Button
-                        key={index}
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleStarterClick(starter)}
-                        className="w-full text-left justify-start text-xs h-auto py-2 px-3 bg-white hover:bg-gray-50"
-                        disabled={isLoading}
-                      >
-                        {starter}
-                      </Button>
-                    ))}
-                  </div>
+                   {/* Conversation starters */}
+                   <div className="space-y-2">
+                     <div className="flex items-center space-x-2 text-xs nm-text-muted px-2">
+                       <Sparkles className="w-3 h-3" />
+                       <span>Quick questions to get started:</span>
+                     </div>
+                     {conversationStarters.slice(0, 3).map((starter, index) => (
+                       <button
+                         key={index}
+                         onClick={() => handleStarterClick(starter)}
+                         className="w-full text-left nm-button nm-interactive nm-rounded-lg nm-p-sm text-xs h-auto nm-text-secondary hover:nm-text-primary transition-colors"
+                         disabled={isLoading}
+                       >
+                         {starter}
+                       </button>
+                     ))}
+                   </div>
                 </div>
               )}
 
@@ -225,20 +218,23 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                       <AvatarFallback className="bg-primary text-white text-xs">LY</AvatarFallback>
                     </Avatar>
                   )}
-                  <div className={cn(
-                    "rounded-2xl p-3 max-w-[80%]",
-                    message.isUser 
-                      ? "bg-primary text-white rounded-tr-none" 
-                      : "bg-gray-100 text-gray-900 rounded-tl-none"
-                  )}>
-                    <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-                    <span className={cn(
-                      "text-xs mt-1 block",
-                      message.isUser ? "text-white/70" : "text-gray-500"
-                    )}>
-                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
+                   <div className={cn(
+                     "nm-rounded-2xl nm-p-md max-w-[80%]",
+                     message.isUser 
+                       ? "nm-button-primary nm-rounded-tr-none text-white" 
+                       : "nm-card-subtle nm-rounded-tl-none"
+                   )}>
+                     <p className={cn(
+                       "text-sm whitespace-pre-wrap",
+                       message.isUser ? "text-white" : "nm-text-primary"
+                     )}>{message.content}</p>
+                     <span className={cn(
+                       "text-xs mt-1 block",
+                       message.isUser ? "text-white/70" : "nm-text-muted"
+                     )}>
+                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                     </span>
+                   </div>
                 </div>
               ))}
 
@@ -249,13 +245,13 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                     <AvatarImage src="/lovable-uploads/character-avatars/lyra-avatar.png" alt="Lyra" />
                     <AvatarFallback className="bg-primary text-white text-xs">LY</AvatarFallback>
                   </Avatar>
-                  <div className="bg-gray-100 rounded-2xl rounded-tl-none p-3">
-                    <div className="flex space-x-1">
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" />
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
-                      <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
-                    </div>
-                  </div>
+                   <div className="nm-card-subtle nm-rounded-2xl nm-rounded-tl-none nm-p-md">
+                     <div className="flex space-x-1">
+                       <div className="w-2 h-2 nm-text-accent rounded-full animate-pulse" />
+                       <div className="w-2 h-2 nm-text-accent rounded-full animate-pulse" style={{ animationDelay: '0.2s' }} />
+                       <div className="w-2 h-2 nm-text-accent rounded-full animate-pulse" style={{ animationDelay: '0.4s' }} />
+                     </div>
+                   </div>
                 </div>
               )}
 
@@ -267,33 +263,32 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                   </Badge>
                 </div>
               )}
-            </div>
-          </ScrollArea>
-        </CardContent>
+             </div>
+           </ScrollArea>
+        </div>
 
         {/* Input */}
-        <div className="p-4 border-t bg-white rounded-b-lg">
+        <div className="nm-panel nm-p-lg nm-rounded-xl nm-rounded-t-none border-t border-white/10">
           <div className="flex space-x-2">
-            <Textarea
+            <textarea
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
               onKeyPress={handleKeyPress}
               placeholder="Ask me about AI for nonprofits..."
-              className="flex-1 min-h-0 h-10 resize-none text-sm"
+              className="flex-1 nm-input min-h-0 h-10 resize-none text-sm"
               rows={1}
               disabled={isLoading || !isConnected}
             />
-            <Button
+            <button
               onClick={handleSendMessage}
               disabled={!inputValue.trim() || isLoading || !isConnected}
-              size="sm"
-              className="px-3"
+              className="nm-button-primary nm-rounded-lg nm-p-sm nm-interactive"
             >
               <Send className="w-4 h-4" />
-            </Button>
+            </button>
           </div>
         </div>
-      </Card>
+      </div>
     </div>
   );
 };

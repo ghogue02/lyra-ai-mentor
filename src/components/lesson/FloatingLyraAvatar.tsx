@@ -1,5 +1,6 @@
 import React from 'react';
 import ChatLyra from '@/components/chat-system/ChatLyra';
+import { cn } from '@/lib/utils';
 
 export interface FloatingLyraAvatarProps {
   className?: string;
@@ -25,7 +26,7 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
       }}
       mode="floating"
       position={position}
-      className={className}
+      className={cn("nm-interactive", className)}
     />
   );
 };
