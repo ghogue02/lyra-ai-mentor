@@ -23,6 +23,7 @@ interface ChatLyraProps {
   initialExpanded?: boolean;
   onEngagementChange?: (engaged: boolean, messageCount: number) => void;
   showMinimize?: boolean;
+  onMinimize?: () => void;
 }
 
 const conversationStarters = [
@@ -47,7 +48,8 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
   position = 'bottom-right',
   initialExpanded = false,
   onEngagementChange,
-  showMinimize = false
+  showMinimize = false,
+  onMinimize
 }) => {
   const [isExpanded, setIsExpanded] = useState(initialExpanded || mode === 'embedded');
   const [inputValue, setInputValue] = useState('');
@@ -250,7 +252,7 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
             </button>
             {(mode === 'floating' || showMinimize) && (
               <button
-                onClick={() => setIsExpanded(false)}
+                onClick={() => onMinimize ? onMinimize() : setIsExpanded(false)}
                 className="nm-button-secondary nm-rounded-lg p-1 nm-text-accent hover:nm-text-primary transition-colors"
                 title="Minimize"
               >

@@ -38,6 +38,7 @@ const GlobalChatLyra: React.FC = () => {
             position="bottom-right"
             onEngagementChange={() => {}}
             showMinimize={true}
+            onMinimize={() => setIsGlobalChatExpanded(false)}
             className="w-full h-full shadow-2xl"
           />
         </div>
