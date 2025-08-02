@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, Sparkles, Star } from 'lucide-react';
 
 interface MayaCharacterProps {

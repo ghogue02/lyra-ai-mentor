@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import ContextualLyraChat, { LessonContext } from '../ContextualLyraChat';
 import { getMayaContextualQuestions, getStageSpecificQuestions, MayaJourneyState } from './Chapter2ContextualQuestions';
 

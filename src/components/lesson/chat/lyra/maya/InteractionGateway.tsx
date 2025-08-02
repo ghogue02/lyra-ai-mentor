@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Heart, MessageSquare, ChevronRight, Lightbulb, Sparkles } from 'lucide-react';
 import MayaCharacter from './MayaCharacter';
