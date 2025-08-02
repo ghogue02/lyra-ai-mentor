@@ -153,7 +153,7 @@ export const useChatActions = () => {
     close,
     sendMessage,
     clearMessages,
-    isLoading
+    isLoading: state.isTyping
   };
 };
 

@@ -386,9 +386,6 @@ export const usePersistentChat = (
 
         // Save AI response to database
         await saveMessage(conversationId, data.generatedText, false, currentMessageOrder + 1);
-        
-        // Reload messages from database to sync state
-        await loadMessages(conversationId);
       } else {
         // Streaming response with natural pacing
         const reader = response.body?.getReader();
@@ -453,9 +450,6 @@ export const usePersistentChat = (
         // Save AI response to database
         if (aiResponseContent) {
           await saveMessage(conversationId, aiResponseContent, false, currentMessageOrder + 1);
-          
-          // Reload messages from database to sync state
-          await loadMessages(conversationId);
         }
       }
     } catch (error: any) {
