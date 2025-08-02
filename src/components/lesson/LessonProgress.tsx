@@ -1,5 +1,6 @@
 
 import React, { memo, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { CheckCircle, Clock, Trophy, Target } from 'lucide-react';

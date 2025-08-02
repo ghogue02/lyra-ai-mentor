@@ -163,7 +163,25 @@ export type NarrativeEmotion =
   | 'regretful'
   | 'curious'
   | 'optimistic'
-  | 'amazed';
+  | 'determined'
+  | 'accomplished'
+  | 'overwhelmed'
+  | 'proud'
+  | 'confident'
+  | 'amused'
+  | 'inspired'
+  | 'grateful'
+  | 'motivated'
+  | 'empowered'
+  | 'ambitious'
+  | 'focused'
+  | 'strategic'
+  | 'creative'
+  | 'innovative'
+  | 'collaborative'
+  | 'compassionate'
+  | 'resilient'
+  | 'visionary';
 
 export interface NarrativeProgress {
   currentIndex: number;
