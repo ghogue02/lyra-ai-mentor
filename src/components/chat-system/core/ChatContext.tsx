@@ -37,9 +37,13 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
 
   // Initialize lesson module and load conversation
   useEffect(() => {
+    console.log('ChatContext: Setting lesson module:', lessonModule);
     dispatch({ type: 'SET_LESSON_MODULE', payload: lessonModule });
     if (user && lessonModule) {
+      console.log('ChatContext: Initializing chat with user and lesson');
       initializeChat(user, lessonModule);
+    } else {
+      console.log('ChatContext: Waiting for user or lesson module', { hasUser: !!user, hasLesson: !!lessonModule });
     }
   }, [lessonModule, user]);
 

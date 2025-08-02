@@ -19,6 +19,13 @@ export const QuickQuestions: React.FC = () => {
   const { sendMessage } = useChatActions();
   
   const questions = chatSelectors.getQuickQuestions(state);
+  
+  console.log('QuickQuestions Debug:', {
+    hasLesson: !!state.currentLesson,
+    lesson: state.currentLesson,
+    questionsCount: questions.length,
+    questions: questions
+  });
 
   const handleQuestionClick = async (question: typeof questions[0]) => {
     await sendMessage(question.text);

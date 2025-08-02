@@ -268,18 +268,35 @@ const LyraIntroductionJourney: React.FC = () => {
               <div className="relative premium-card brand-shadow-glow">
                 <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
                 <div className="relative z-10 p-8">
-                  <div className="text-center space-y-6">
-                    <h3 className="text-2xl font-bold mb-4">Ready to Chat with Lyra?</h3>
-                    <p className="text-lg text-muted-foreground mb-6">
-                      Click on my avatar in the corner to start our conversation! Ask me anything about AI for nonprofits.
-                    </p>
-                    <Button
-                      onClick={() => setCurrentPhase('goal-setting')}
-                      size="lg"
-                      className="premium-button-primary"
-                    >
-                      Continue Journey
-                    </Button>
+                  <div className="space-y-6">
+                    <div className="text-center">
+                      <h3 className="text-2xl font-bold mb-4">Ready to Chat with Lyra?</h3>
+                      <p className="text-lg text-muted-foreground mb-6">
+                        Choose a conversation starter below or ask me anything about AI for nonprofits!
+                      </p>
+                    </div>
+                    
+                    {/* Embedded Chat Component */}
+                    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+                      <ChatSystem
+                        lessonModule={{
+                          chapterNumber: 1,
+                          title: "Meet Lyra & AI Foundations",
+                          chapterTitle: "Meet Lyra & AI Foundations",
+                          phase: "first-chat",
+                          content: "Introduction to Lyra and AI fundamentals for nonprofit professionals"
+                        }}
+                        position="bottom-right"
+                        initialExpanded={true}
+                        className="!relative !bottom-auto !right-auto !w-full !h-[500px] !max-w-none"
+                        onEngagementChange={(isEngaged, messageCount) => {
+                          if (isEngaged && messageCount >= 2) {
+                            // Auto-advance after meaningful engagement
+                            setTimeout(() => setCurrentPhase('goal-setting'), 3000);
+                          }
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>

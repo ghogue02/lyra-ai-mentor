@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, TestTube, MessageCircle, Heart, Sparkles } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import LyraFoundationsChat from '@/components/lesson/chat/lyra/LyraFoundationsChat';
+import { ChatSystem } from '@/components/chat-system/ChatSystem';
 
 const TestLyra: React.FC = () => {
   const navigate = useNavigate();
@@ -134,13 +134,22 @@ const TestLyra: React.FC = () => {
         <div
           className="animate-fade-in" style={{ animationDelay: '0.4s' }}
         >
-          <LyraFoundationsChat 
-            className="max-w-6xl mx-auto"
-            embedded={false}
-            onEngagementChange={(hasEngaged) => {
-              console.log('Engagement changed:', hasEngaged);
-            }}
-          />
+          <div className="max-w-6xl mx-auto">
+            <ChatSystem
+              lessonModule={{
+                chapterNumber: 1,
+                title: "Meet Lyra & AI Foundations",
+                chapterTitle: "Meet Lyra & AI Foundations", 
+                phase: "intro",
+                content: "Introduction to Lyra and AI fundamentals for nonprofit professionals"
+              }}
+              position="bottom-right"
+              initialExpanded={true}
+              onEngagementChange={(isEngaged, messageCount) => {
+                console.log('Engagement changed:', isEngaged, 'Messages:', messageCount);
+              }}
+            />
+          </div>
         </div>
 
         {/* Footer Info */}
