@@ -219,7 +219,60 @@ const chapter4MicroLessons = [
 ];
 
 const chapter5MicroLessons = [
-  { id: 'rachel-automation-vision', title: 'Rachel\'s Automation Vision', description: 'Map and automate key processes', difficulty: 'Beginner', completed: false, unlocked: true, route: '/chapter/5/interactive/rachel-automation-vision' }
+  {
+    id: 'rachel-automation-vision',
+    title: 'Meet Rachel & Automation Vision',
+    description: 'Discover how to map and automate your nonprofit\'s key processes',
+    difficulty: 'Beginner',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/5/interactive/rachel-automation-vision'
+  },
+  {
+    id: 'human-centered-design',
+    title: 'Human-Centered Design Workshop',
+    description: 'Build automation that enhances rather than replaces human connection',
+    difficulty: 'Beginner',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/5/interactive/human-centered-design'
+  },
+  {
+    id: 'automation-planning',
+    title: 'Automation Planning Lab',
+    description: 'Create step-by-step implementation roadmaps with AI guidance',
+    difficulty: 'Intermediate',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/5/interactive/automation-planning'
+  },
+  {
+    id: 'change-management',
+    title: 'Change Management Mastery',
+    description: 'Lead organizational transformation with AI-powered communication',
+    difficulty: 'Intermediate',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/5/interactive/workflow-design'
+  },
+  {
+    id: 'scaling-systems',
+    title: 'Scaling Systems Strategy',
+    description: 'Build a comprehensive AI automation ecosystem for your organization',
+    difficulty: 'Advanced',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/5/interactive/scaling-systems'
+  },
+  {
+    id: 'ecosystem-builder',
+    title: 'Ecosystem Builder',
+    description: 'Create comprehensive AI ecosystem for lasting organizational transformation',
+    difficulty: 'Advanced',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/5/interactive/ecosystem-builder'
+  }
 ];
 
 export const usePageContext = (): PageContext => {
@@ -272,7 +325,8 @@ export const usePageContext = (): PageContext => {
     
     // Chapter hub
     if (path.match(/^\/chapter\/\d+$/)) {
-      const chapterNum = parseInt(params.chapterId || '1');
+      const chapterMatch = path.match(/^\/chapter\/(\d+)$/);
+      const chapterNum = chapterMatch ? parseInt(chapterMatch[1]) : 1;
       
       // Enhanced context for Chapter 1
       if (chapterNum === 1) {
