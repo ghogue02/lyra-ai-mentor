@@ -45,8 +45,8 @@ const App = () => {
           <Sonner />
           <AuthProvider>
             <CharacterStoryProvider>
-              <GlobalChatProvider>
-                <BrowserRouter>
+              <BrowserRouter>
+                <GlobalChatProvider>
                 <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
@@ -167,8 +167,8 @@ const App = () => {
                <Route path="*" element={<NotFound />} />
                 </Routes>
                 <GlobalChatLyra />
+                </GlobalChatProvider>
               </BrowserRouter>
-              </GlobalChatProvider>
             </CharacterStoryProvider>
           </AuthProvider>
           
