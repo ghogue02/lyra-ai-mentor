@@ -124,7 +124,7 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
     )}>
       <div className="h-full flex flex-col nm-card-elevated nm-rounded-2xl overflow-hidden">
         {/* Header */}
-        <div className="nm-panel nm-gradient-primary p-4 nm-rounded-xl nm-rounded-b-none">
+        <div className="nm-glass p-4 nm-rounded-xl nm-rounded-b-none">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Avatar className="w-8 h-8 nm-shadow-subtle">
