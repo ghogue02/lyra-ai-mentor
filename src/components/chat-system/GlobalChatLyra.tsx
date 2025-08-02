@@ -11,13 +11,25 @@ const GlobalChatLyra: React.FC = () => {
   const { isGlobalChatExpanded, setIsGlobalChatExpanded, conversationId } = useGlobalChat();
   const previousConversationId = useRef<string>(conversationId);
   
-  // Create dynamic lesson context based on current page
+  // Add debugging for context changes
+  useEffect(() => {
+    console.log('Context updated:', {
+      type: pageContext.type,
+      chapterNumber: pageContext.chapterNumber,
+      currentLessonId: pageContext.currentLessonId,
+      journeyName: pageContext.journeyName,
+      character: pageContext.character,
+      conversationId
+    });
+  }, [pageContext, conversationId]);
+
+  // Create dynamic lesson context based on current page - force refresh with conversationId
   const lessonContext = useMemo(() => ({
     chapterTitle: pageContext.chapterTitle || pageContext.title,
     lessonTitle: pageContext.lessonTitle || pageContext.description,
     content: generateContextualContent(pageContext),
     phase: pageContext.phase || 'general'
-  }), [pageContext]);
+  }), [pageContext, conversationId]); // Add conversationId to force refresh
 
   // Generate contextual welcome message when chat opens
   const { sendMessage, clearMessages } = useChatLyra({ 
@@ -28,16 +40,24 @@ const GlobalChatLyra: React.FC = () => {
   // Clear messages when conversation ID changes (context change)
   useEffect(() => {
     if (previousConversationId.current !== conversationId) {
+      console.log('Conversation ID changed, clearing messages:', {
+        previous: previousConversationId.current,
+        new: conversationId,
+        context: pageContext.type
+      });
       clearMessages();
       previousConversationId.current = conversationId;
     }
-  }, [conversationId, clearMessages]);
+  }, [conversationId, clearMessages, pageContext.type]);
 
-  // Generate contextual greeting when chat opens (but don't auto-send)
-  const contextualGreeting = useMemo(() => 
-    generateContextualGreeting(pageContext), [pageContext]);
+  // Generate contextual greeting when chat opens - force refresh with conversationId  
+  const contextualGreeting = useMemo(() => {
+    const greeting = generateContextualGreeting(pageContext);
+    console.log('Generated greeting:', greeting, 'for context:', pageContext);
+    return greeting;
+  }, [pageContext, conversationId]); // Add conversationId to force refresh
 
-  // Generate contextual quick questions based on the current page
+  // Generate contextual quick questions based on the current page - force refresh with conversationId
   const contextualQuestions = useMemo(() => {
     if (pageContext.type === 'interactive-journey') {
       const lesson = pageContext.microLessons?.find(l => l.id === pageContext.currentLessonId);
@@ -94,6 +114,16 @@ const GlobalChatLyra: React.FC = () => {
       
       // Chapter 4 specific questions
       if (pageContext.chapterNumber === 4) {
+        // Visual Storytelling specific questions
+        if (lesson?.id === 'visual-storytelling') {
+          return [
+            "How do I create compelling data visualizations?",
+            "What makes a data story effective for nonprofits?",
+            "Can David help me with chart design principles?",
+            "How do I choose the right visualization type?",
+            "What tools should I use for data visualization?"
+          ];
+        }
         return [
           "How do I turn data into stories like David?",
           "What makes data visualization compelling?",
@@ -163,7 +193,7 @@ const GlobalChatLyra: React.FC = () => {
       "How can I get started with AI in my organization?",
       "What are the most common AI mistakes nonprofits make?"
     ];
-  }, [pageContext]);
+  }, [pageContext, conversationId]); // Add conversationId to force refresh
 
   if (isGlobalChatExpanded) {
     return (
