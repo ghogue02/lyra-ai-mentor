@@ -1,5 +1,5 @@
 import React from 'react';
-import { sanitize } from 'dompurify';
+// Using global DOMPurify since module imports are problematic
 import { marked } from 'marked';
 import { cn } from '@/lib/utils';
 
@@ -112,16 +112,27 @@ export const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> =
     // Apply markdown processing
     const htmlContent = marked(processedText);
     
-    // Sanitize the HTML for security
-    const sanitizedContent = sanitize(htmlContent, {
-      ALLOWED_TAGS: [
-        'p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
-        'strong', 'em', 'u', 'br', 'ul', 'ol', 'li', 'blockquote',
-        'a', 'pre', 'code'
-      ],
-      ALLOWED_ATTR: ['class', 'data-field-type', 'data-original', 'href', 'target'],
-      ADD_ATTR: ['data-*']
-    });
+    // Sanitize the HTML for security (fallback if DOMPurify not available)
+    let sanitizedContent = htmlContent;
+    
+    if (typeof window !== 'undefined' && (window as any).DOMPurify?.sanitize) {
+      sanitizedContent = (window as any).DOMPurify.sanitize(htmlContent, {
+        ALLOWED_TAGS: [
+          'p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
+          'strong', 'em', 'u', 'br', 'ul', 'ol', 'li', 'blockquote',
+          'a', 'pre', 'code'
+        ],
+        ALLOWED_ATTR: ['class', 'data-field-type', 'data-original', 'href', 'target'],
+        ADD_ATTR: ['data-*']
+      });
+    } else {
+      // Basic sanitization fallback - remove script tags and other dangerous elements
+      sanitizedContent = htmlContent
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+        .replace(/on\w+="[^"]*"/gi, '')
+        .replace(/javascript:/gi, '');
+    }
 
     return sanitizedContent;
   }, [content, contentType, templateVariables, enableDynamicFields, customRenderer]);
