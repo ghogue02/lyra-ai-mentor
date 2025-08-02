@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -387,7 +388,7 @@ const SofiaMissionStoryCreator: React.FC = () => {
                   <div className="bg-gradient-to-br from-rose-50 to-purple-50 p-4 rounded-lg">
                     <TemplateContentFormatter 
                       content={generatedStory}
-                      contentType="social_post"
+                      contentType="general"
                       variant="default"
                       showMergeFieldTypes={true}
                       className="formatted-ai-content"

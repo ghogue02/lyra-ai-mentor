@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -468,7 +469,7 @@ const RachelEcosystemBuilder: React.FC = () => {
                       <div className="max-h-40 overflow-y-auto">
                         <TemplateContentFormatter 
                           content={blueprint.content}
-                          contentType="ecosystem-blueprint"
+                          contentType="general"
                           variant="compact"
                           showMergeFieldTypes={false}
                           className="formatted-ai-content"

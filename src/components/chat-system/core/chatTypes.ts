@@ -181,7 +181,10 @@ export type NarrativeEmotion =
   | 'collaborative'
   | 'compassionate'
   | 'resilient'
-  | 'visionary';
+  | 'visionary'
+  | 'surprised'
+  | 'triumphant'
+  | 'wise';
 
 export interface NarrativeProgress {
   currentIndex: number;

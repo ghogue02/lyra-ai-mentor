@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Heart, MessageCircle, X, Minimize2, Maximize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FloatingLyraAvatarProps } from '@/types/ContextualChat';
@@ -178,7 +179,7 @@ export const FloatingLyraAvatar: React.FC<FloatingLyraAvatarProps> = ({
 
   return (
     <>
-      <style jsx>{`
+      <style>{`
         @keyframes breathing {
           0%, 100% { transform: scale(1); }
           50% { transform: scale(1.02); }

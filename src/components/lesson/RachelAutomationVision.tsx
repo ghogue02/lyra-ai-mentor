@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -396,7 +397,7 @@ const RachelAutomationVision: React.FC = () => {
                       <div className="bg-gray-50 p-3 rounded max-h-40 overflow-y-auto">
                         <TemplateContentFormatter 
                           content={plan.content}
-                          contentType="article"
+                          contentType="general"
                           variant="compact"
                           showMergeFieldTypes={false}
                           className="formatted-ai-content"

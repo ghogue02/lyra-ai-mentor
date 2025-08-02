@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 import { CheckCircle, Clock, Lock, Play } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { BrandedIcon } from '../ui/BrandedIcon';

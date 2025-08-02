@@ -8,7 +8,7 @@ import VideoAnimation from '@/components/ui/VideoAnimation';
 interface NarrativeMessage {
   id: string;
   content: string;
-  emotion?: 'neutral' | 'frustrated' | 'excited' | 'worried' | 'hopeful' | 'anxious' | 'disappointed' | 'thoughtful' | 'enlightened' | 'amazed' | 'concerned' | 'reflective' | 'regretful' | 'curious' | 'optimistic' | 'determined' | 'accomplished' | 'overwhelmed' | 'proud' | 'confident' | 'amused' | 'inspired' | 'grateful' | 'motivated' | 'empowered' | 'ambitious' | 'focused' | 'strategic' | 'creative' | 'innovative' | 'collaborative' | 'compassionate' | 'resilient' | 'visionary';
+  emotion?: 'neutral' | 'frustrated' | 'excited' | 'worried' | 'hopeful' | 'anxious' | 'disappointed' | 'thoughtful' | 'enlightened' | 'amazed' | 'concerned' | 'reflective' | 'regretful' | 'curious' | 'optimistic' | 'determined' | 'accomplished' | 'overwhelmed' | 'proud' | 'confident' | 'amused' | 'inspired' | 'grateful' | 'motivated' | 'empowered' | 'ambitious' | 'focused' | 'strategic' | 'creative' | 'innovative' | 'collaborative' | 'compassionate' | 'resilient' | 'visionary' | 'surprised' | 'triumphant' | 'wise';
   delay?: number;
   showAvatar?: boolean;
 }
