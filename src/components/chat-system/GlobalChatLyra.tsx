@@ -389,7 +389,9 @@ What aspect of data visualization would you like to explore together?`;
         } else if (currentLesson?.id === 'stakeholder-communication') {
           return `Hi! I see you're working on "Stakeholder Communication Mastery" with David! 📊
 
+
 This intermediate-level lesson focuses on tailoring data presentations for different audience types and contexts.
+
 
 How can I help you with data storytelling concepts?`;
         } else if (currentLesson) {
