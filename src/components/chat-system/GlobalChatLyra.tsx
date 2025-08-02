@@ -75,7 +75,7 @@ function generateContextualContent(context: any): string {
       return `User is exploring Chapter ${context.chapterNumber}: ${context.chapterTitle}. They can see available lessons and interactive journeys.`;
     
     case 'interactive-journey':
-      return `User is in an interactive learning journey with ${context.character} in Chapter ${context.chapterNumber}. The journey focuses on ${context.journeyName}.`;
+      return `User is in an interactive learning journey with ${context.character || 'Lyra'} in Chapter ${context.chapterNumber}. Current phase: ${context.phase}. The journey focuses on ${context.journeyName || 'AI foundations and capabilities'}.`;
     
     case 'lesson':
       return `User is studying a specific lesson: ${context.lessonTitle} in Chapter ${context.chapterNumber}.`;
@@ -97,7 +97,7 @@ function generateContextualGreeting(context: any): string {
       return `Welcome to Chapter ${context.chapterNumber}! I can help you understand what you'll learn in "${context.chapterTitle}" or guide you to the perfect lesson for your needs.`;
     
     case 'interactive-journey':
-      return `I see you're working through the interactive journey with ${context.character}! How can I support your learning about ${context.journeyName}?`;
+      return `I see you're working through the interactive journey${context.character ? ` with ${context.character}` : ''}! How can I support your learning about ${context.journeyName || 'AI capabilities'}?`;
     
     case 'lesson':
       return `You're studying "${context.lessonTitle}" - great choice! Need help understanding any concepts or want to explore this topic deeper?`;

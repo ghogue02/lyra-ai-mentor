@@ -27,7 +27,7 @@ const LyraIntroductionJourney: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<LyraJourneyPhase>('intro');
   const [userGoals, setUserGoals] = useState<string[]>([]);
   const [narrativePaused, setNarrativePaused] = useState(false);
-  const [showFloatingChat, setShowFloatingChat] = useState(true);
+  
 
   // Create lesson context for the floating chat
   const lessonContext: LessonContext = {
@@ -111,10 +111,6 @@ const LyraIntroductionJourney: React.FC = () => {
 
   const handlePhaseChange = (phase: LyraJourneyPhase) => {
     setCurrentPhase(phase);
-    // Show floating chat across all main phases
-    if (phase === 'intro' || phase === 'lyra-introduction' || phase === 'capabilities-demo' || phase === 'goal-setting') {
-      setShowFloatingChat(true);
-    }
   };
 
   const handleNarrativePause = () => {
@@ -403,15 +399,6 @@ const LyraIntroductionJourney: React.FC = () => {
           {renderPhase()}
         </div>
         
-        {/* Unified ChatLyra - Single source of truth */}
-        {showFloatingChat && (
-          <ChatLyra
-            lessonContext={lessonContext}
-            mode="floating"
-            position="bottom-right"
-            onEngagementChange={handleChatEngagement}
-          />
-        )}
       </div>
     </div>
   );
