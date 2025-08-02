@@ -115,7 +115,7 @@ export const ContentReviewCard = ({ content }: ContentReviewCardProps) => {
           <div className="mt-2">
             <TemplateContentFormatter 
               content={content.content}
-              contentType="article"
+              contentType="general"
               variant="compact"
               showMergeFieldTypes={true}
               className="admin-formatted-content"

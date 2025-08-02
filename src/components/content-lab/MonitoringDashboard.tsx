@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Activity, AlertTriangle, TrendingUp, Zap, Clock, DollarSign } from "lucide-react";
 import { format } from "date-fns";
+import { TemplateContentFormatter } from "@/components/ui/TemplateContentFormatter";
 
 export const MonitoringDashboard = () => {
   const { data: systemMetrics } = useQuery({
@@ -62,14 +63,15 @@ export const MonitoringDashboard = () => {
             title: `Generated ${item.content_type}`,
             timestamp: item.created_at,
             status: item.approval_status,
-            content: item.content || '',
+            content: "Generated content preview...",
           })),
-          ...jobsData.slice(-5).map(item => ({
-            type: "job",
-            title: `Scaling job: ${item.job_type}`,
-            timestamp: item.created_at,
-            status: item.status,
-          })),
+           ...jobsData.slice(-5).map(item => ({
+             type: "job",
+             title: `Scaling job: ${item.job_type}`,
+             timestamp: item.created_at,
+             status: item.status,
+             content: "Job processing status update",
+           })),
         ].sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 10),
       };
     },
@@ -214,15 +216,15 @@ export const MonitoringDashboard = () => {
                           {activity.status}
                         </Badge>
                       </div>
-                      {activity.content && (
-                        <TemplateContentFormatter 
-                          content={activity.content.slice(0, 150) + '...'}
-                          contentType="article"
-                          variant="compact"
-                          showMergeFieldTypes={false}
-                          className="admin-formatted-content text-xs bg-gray-50"
-                        />
-                      )}
+                       {activity.content && (
+                         <TemplateContentFormatter 
+                           content={activity.content.slice(0, 150) + '...'}
+                           contentType="general"
+                           variant="compact"
+                           showMergeFieldTypes={false}
+                           className="admin-formatted-content text-xs bg-gray-50"
+                         />
+                       )}
                     </div>
                   ))}
                 </div>

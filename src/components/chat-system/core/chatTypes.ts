@@ -156,7 +156,13 @@ export type NarrativeEmotion =
   | 'anxious' 
   | 'disappointed' 
   | 'thoughtful' 
-  | 'enlightened' 
+  | 'enlightened'
+  | 'amazed'
+  | 'concerned'
+  | 'reflective'
+  | 'regretful'
+  | 'curious'
+  | 'optimistic'
   | 'amazed';
 
 export interface NarrativeProgress {

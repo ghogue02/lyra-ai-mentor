@@ -163,7 +163,7 @@ export const ApprovalWorkflow = () => {
                   <div className="text-muted-foreground mb-2">No pending content to review</div>
                   <TemplateContentFormatter 
                     content="All content has been reviewed. New submissions will appear here for approval."
-                    contentType="article"
+                    contentType="general"
                     variant="compact"
                     showMergeFieldTypes={false}
                     className="admin-formatted-content text-sm"
