@@ -381,19 +381,19 @@ function generateContextualGreeting(context: any): string {
       } else if (context.chapterNumber === 4 && context.currentLessonId) {
         const currentLesson = context.microLessons?.find(l => l.id === context.currentLessonId);
         if (currentLesson?.id === 'visual-storytelling') {
-          return `Hi! I see you're working on **"Visual Storytelling Workshop"** with David! 📊
+          return `Hi! I see you're working on "Visual Storytelling Workshop" with David! 📊
 
 This lesson focuses on creating stunning data visualizations that communicate impact clearly.
 
 What aspect of data visualization would you like to explore together?`;
         } else if (currentLesson?.id === 'stakeholder-communication') {
-          return `Hi! I see you're working on **"Stakeholder Communication Mastery"** with David! 📊
+          return `Hi! I see you're working on "Stakeholder Communication Mastery" with David! 📊
 
 This intermediate-level lesson focuses on tailoring data presentations for different audience types and contexts.
 
 How can I help you with data storytelling concepts?`;
         } else if (currentLesson) {
-          return `Hi! I see you're working on **"${currentLesson.title}"** with David! 📊
+          return `Hi! I see you're working on "${currentLesson.title}" with David! 📊
 
 This ${currentLesson.difficulty.toLowerCase()}-level lesson focuses on ${currentLesson.description.toLowerCase()}.
 
