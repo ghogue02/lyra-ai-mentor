@@ -234,8 +234,21 @@ export const usePageContext = (): PageContext => {
       pathname: path,
       params,
       chapterId: params.chapterId,
-      journeyId: params.journeyId
+      journeyId: params.journeyId,
+      allParams: Object.keys(params),
+      routeMatch: path.match(/^\/chapter\/(\d+)\/interactive\/(.+)$/)
     });
+    
+    // Manual parameter extraction as fallback
+    const routeMatch = path.match(/^\/chapter\/(\d+)\/interactive\/(.+)$/);
+    const manualChapterId = routeMatch ? parseInt(routeMatch[1]) : null;
+    const manualJourneyId = routeMatch ? routeMatch[2] : null;
+    
+    console.log('Manual extraction:', { manualChapterId, manualJourneyId });
+    
+    // Use manual extraction if params are undefined
+    const chapterNum = params.chapterId ? parseInt(params.chapterId) : manualChapterId || 1;
+    const journeyKey = params.journeyId || manualJourneyId || '';
     
     // Dashboard
     if (path === '/' || path === '/dashboard') {
@@ -462,8 +475,7 @@ export const usePageContext = (): PageContext => {
     
     // Interactive journey
     if (path.match(/^\/chapter\/\d+\/interactive\/.+$/)) {
-      const chapterNum = parseInt(params.chapterId || '1');
-      const journeyKey = params.journeyId || '';
+      console.log('Matched interactive journey route, using:', { chapterNum, journeyKey });
       const character = characterMap[journeyKey];
       
       // Enhanced context for Chapter 1 interactive lessons
