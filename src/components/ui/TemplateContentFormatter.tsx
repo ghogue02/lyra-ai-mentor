@@ -1,5 +1,5 @@
 import React from 'react';
-import * as DOMPurify from 'dompurify';
+import { sanitize } from 'dompurify';
 import { marked } from 'marked';
 import { cn } from '@/lib/utils';
 
@@ -113,7 +113,7 @@ export const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> =
     const htmlContent = marked(processedText);
     
     // Sanitize the HTML for security
-    const sanitizedContent = DOMPurify.sanitize(htmlContent, {
+    const sanitizedContent = sanitize(htmlContent, {
       ALLOWED_TAGS: [
         'p', 'div', 'span', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
         'strong', 'em', 'u', 'br', 'ul', 'ol', 'li', 'blockquote',
