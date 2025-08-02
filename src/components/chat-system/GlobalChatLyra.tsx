@@ -37,6 +37,7 @@ const GlobalChatLyra: React.FC = () => {
             mode="embedded"
             position="bottom-right"
             onEngagementChange={() => {}}
+            showMinimize={true}
             className="w-full h-full shadow-2xl"
           />
         </div>
