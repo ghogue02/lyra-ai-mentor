@@ -117,7 +117,7 @@ async function provideCoaching(supabase: any, currentPrompt: string, sessionId: 
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4.1-2025-04-14',
       messages: [
         { role: 'system', content: coachingPrompt },
         { role: 'user', content: currentPrompt }
@@ -179,7 +179,7 @@ async function analyzePrompt(supabase: any, currentPrompt: string, sessionId: st
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4.1-2025-04-14',
       messages: [
         { role: 'system', content: analysisPrompt },
         { role: 'user', content: currentPrompt }
@@ -260,7 +260,7 @@ async function generateToolkit(supabase: any, sessionId: string, userId: string)
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4.1-2025-04-14',
       messages: [
         { role: 'system', content: toolkitPrompt }
       ],
@@ -317,7 +317,7 @@ async function generateAdaptedStory(userChallenge: string) {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify({
-      model: 'gpt-4o-mini',
+      model: 'gpt-4.1-2025-04-14',
       messages: [
         { role: 'system', content: storyPrompt }
       ],

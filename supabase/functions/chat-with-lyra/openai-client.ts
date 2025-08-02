@@ -10,7 +10,7 @@ const CHARACTER_MODELS = {
   'sofia': 'google/gemini-2.5-flash-lite',
   'david': 'google/gemini-2.5-flash-lite',
   'alex': 'google/gemini-2.5-flash-lite',
-  'default': 'openai/gpt-4o-mini' // Cost-effective fallback
+  'default': 'openai/gpt-4.1' // High-performance flagship model
 };
 
 export async function createOpenAIStreamingResponse(messages: any[], character?: string): Promise<Response> {
@@ -30,7 +30,7 @@ export async function createOpenAIStreamingResponse(messages: any[], character?:
     body: JSON.stringify({
       model,
       messages,
-      max_tokens: 500,
+      max_tokens: 2000,
       temperature: 0.8,
       stream: true,
     }),
