@@ -8,6 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Send, MessageCircle, X, Minimize2, RotateCcw, Sparkles } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useChatLyra } from '@/hooks/useChatLyra';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 interface ChatLyraProps {
   lessonContext?: {
@@ -224,10 +225,19 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                        ? "nm-button-primary nm-rounded-tr-none text-white" 
                        : "nm-card-subtle nm-rounded-tl-none"
                    )}>
-                     <p className={cn(
-                       "text-sm whitespace-pre-wrap",
-                       message.isUser ? "text-white" : "nm-text-primary"
-                     )}>{message.content}</p>
+                      {message.isUser ? (
+                        <p className="text-sm whitespace-pre-wrap text-white">{message.content}</p>
+                      ) : (
+                        <div className="chat-message-content">
+                          <TemplateContentFormatter 
+                            content={message.content}
+                            contentType="lesson"
+                            variant="compact"
+                            showMergeFieldTypes={false}
+                            className="nm-text-primary"
+                          />
+                        </div>
+                      )}
                      <span className={cn(
                        "text-xs mt-1 block",
                        message.isUser ? "text-white/70" : "nm-text-muted"

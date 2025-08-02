@@ -509,6 +509,74 @@ img[src=""] {
     transform: translateY(0);
   }
 
+  /* Chat Message Content Formatting */
+  .chat-message-content {
+    @apply leading-relaxed;
+  }
+
+  .chat-message-content h1,
+  .chat-message-content h2,
+  .chat-message-content h3,
+  .chat-message-content h4,
+  .chat-message-content h5,
+  .chat-message-content h6 {
+    @apply font-semibold mt-3 mb-2 first:mt-0;
+    color: hsl(var(--foreground));
+  }
+
+  .chat-message-content h1 { @apply text-base; }
+  .chat-message-content h2 { @apply text-sm; }
+  .chat-message-content h3 { @apply text-sm font-medium; }
+
+  .chat-message-content p {
+    @apply mb-3 last:mb-0 text-sm;
+    color: hsl(var(--foreground));
+    line-height: 1.6;
+  }
+
+  .chat-message-content strong {
+    @apply font-semibold;
+    color: hsl(var(--brand-purple));
+  }
+
+  .chat-message-content em {
+    @apply italic;
+    color: hsl(var(--muted-foreground));
+  }
+
+  .chat-message-content ul,
+  .chat-message-content ol {
+    @apply mb-3 pl-4 space-y-1;
+  }
+
+  .chat-message-content li {
+    @apply relative text-sm;
+    color: hsl(var(--foreground));
+    line-height: 1.5;
+  }
+
+  .chat-message-content ul li::before {
+    content: "•";
+    color: hsl(var(--brand-cyan));
+    @apply absolute -left-4 font-medium;
+  }
+
+  .chat-message-content ol li {
+    @apply list-decimal;
+  }
+
+  .chat-message-content blockquote {
+    @apply border-l-2 pl-4 italic mb-3 text-sm;
+    border-color: hsl(var(--border));
+    color: hsl(var(--muted-foreground));
+  }
+
+  .chat-message-content code {
+    @apply px-1 py-0.5 rounded text-xs font-mono;
+    background-color: hsl(var(--muted));
+    color: hsl(var(--brand-purple));
+  }
+
   /* Dark mode adjustments */
   .dark .neumorph-card,
   .dark .neumorph-button,
