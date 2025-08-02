@@ -229,6 +229,14 @@ export const usePageContext = (): PageContext => {
   return useMemo(() => {
     const path = location.pathname;
     
+    // Debug logging for route detection
+    console.log('usePageContext - Route detection:', {
+      pathname: path,
+      params,
+      chapterId: params.chapterId,
+      journeyId: params.journeyId
+    });
+    
     // Dashboard
     if (path === '/' || path === '/dashboard') {
       return {
