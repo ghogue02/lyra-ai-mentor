@@ -14,7 +14,6 @@ import NarrativeManager from './maya/NarrativeManager';
 import InteractionGateway from './maya/InteractionGateway';
 import LyraCharacter from './maya/MayaCharacter'; // Reuse the character component structure
 import GlobalNavigation, { JourneyPhase } from './maya/GlobalNavigation';
-import LyraFoundationsChat from './LyraFoundationsChat';
 import { ChatSystem } from '@/components/chat-system/ChatSystem';
 import type { LessonContext } from '@/types/ContextualChat';
 
@@ -269,15 +268,19 @@ const LyraIntroductionJourney: React.FC = () => {
               <div className="relative premium-card brand-shadow-glow">
                 <div className="absolute inset-0 brand-gradient-glow rounded-3xl" />
                 <div className="relative z-10 p-8">
-                  <LyraFoundationsChat
-                    onEngagementChange={(hasEngaged) => {
-                      if (hasEngaged) {
-                        // Auto-advance after successful chat engagement
-                        setTimeout(() => setCurrentPhase('goal-setting'), 3000);
-                      }
-                    }}
-                    embedded={true}
-                  />
+                  <div className="text-center space-y-6">
+                    <h3 className="text-2xl font-bold mb-4">Ready to Chat with Lyra?</h3>
+                    <p className="text-lg text-muted-foreground mb-6">
+                      Click on my avatar in the corner to start our conversation! Ask me anything about AI for nonprofits.
+                    </p>
+                    <Button
+                      onClick={() => setCurrentPhase('goal-setting')}
+                      size="lg"
+                      className="premium-button-primary"
+                    >
+                      Continue Journey
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -386,7 +389,7 @@ const LyraIntroductionJourney: React.FC = () => {
           {renderPhase()}
         </div>
         
-        {/* New ChatSystem - Context-aware chat */}
+        {/* Unified ChatSystem - Single source of truth */}
         {showFloatingChat && (
           <ChatSystem
             lessonModule={{
