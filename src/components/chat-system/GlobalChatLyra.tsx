@@ -30,7 +30,7 @@ const GlobalChatLyra: React.FC = () => {
 
   if (isGlobalChatExpanded) {
     return (
-      <div className="fixed bottom-4 right-4 z-50 w-96 h-[600px] max-h-[80vh]">
+      <div className="absolute bottom-4 right-4 z-50 w-96 h-[600px] max-h-[80vh]">
         <div className="w-full h-full">
           <ChatLyra
             lessonContext={lessonContext}
@@ -50,7 +50,7 @@ const GlobalChatLyra: React.FC = () => {
     <button
       onClick={() => setIsGlobalChatExpanded(true)}
       className={cn(
-        "fixed bottom-4 right-4 z-40",
+        "absolute bottom-4 right-4 z-40",
         "w-14 h-14 rounded-full",
         "nm-button-primary nm-shadow-glow",
         "flex items-center justify-center",
