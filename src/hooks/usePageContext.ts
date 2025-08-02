@@ -162,7 +162,60 @@ const chapter3MicroLessons = [
 ];
 
 const chapter4MicroLessons = [
-  { id: 'david-data-foundations', title: 'David\'s Data Foundations', description: 'Transform data into compelling narratives', difficulty: 'Beginner', completed: false, unlocked: true, route: '/chapter/4/interactive/david-data-foundations' }
+  {
+    id: 'david-data-foundations',
+    title: 'Meet David & Data Foundations',
+    description: 'Transform raw nonprofit data into compelling impact narratives',
+    difficulty: 'Beginner',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/4/interactive/david-data-foundations'
+  },
+  {
+    id: 'visual-storytelling',
+    title: 'Visual Storytelling Workshop',
+    description: 'Create stunning data visualizations that communicate impact clearly',
+    difficulty: 'Beginner',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/4/interactive/visual-storytelling'
+  },
+  {
+    id: 'narrative-construction',
+    title: 'Data Narrative Construction Lab',
+    description: 'Build compelling stories from complex datasets with AI assistance',
+    difficulty: 'Intermediate',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/4/interactive/data-revival'
+  },
+  {
+    id: 'stakeholder-communication',
+    title: 'Stakeholder Communication Mastery',
+    description: 'Tailor data presentations for different audience types and contexts',
+    difficulty: 'Intermediate',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/4/interactive/stakeholder-communication'
+  },
+  {
+    id: 'predictive-insights',
+    title: 'Predictive Insights Strategy',
+    description: 'Use AI to forecast trends and create forward-looking impact reports',
+    difficulty: 'Advanced',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/4/interactive/predictive-insights'
+  },
+  {
+    id: 'data-ecosystem',
+    title: 'Data Ecosystem Builder',
+    description: 'Create comprehensive data systems for ongoing impact measurement',
+    difficulty: 'Advanced',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/4/interactive/data-ecosystem'
+  }
 ];
 
 const chapter5MicroLessons = [
@@ -472,6 +525,117 @@ export const usePageContext = (): PageContext => {
               'Maya\'s experiences at Hope Gardens Community Center guide this lesson',
               'Focus on practical application of communication techniques',
               'Real-world scenarios help reinforce learning'
+            ]
+          };
+        }
+      }
+      
+      // Enhanced context for Chapter 3 interactive lessons
+      if (chapterNum === 3) {
+        const currentLesson = chapter3MicroLessons.find(lesson => 
+          lesson.route === path || lesson.id === journeyKey || 
+          lesson.route.includes(journeyKey)
+        );
+        
+        if (currentLesson) {
+          return {
+            type: 'interactive-journey',
+            title: `${currentLesson.title} with Sofia`,
+            description: `${currentLesson.description} - Interactive learning with Sofia Martinez`,
+            chapterNumber: chapterNum,
+            chapterTitle: chapterTitles[chapterNum.toString()],
+            journeyName: currentLesson.title,
+            character: 'Sofia',
+            phase: 'learning',
+            currentLessonId: currentLesson.id,
+            currentLesson: currentLesson,
+            microLessons: chapter3MicroLessons,
+            availableActions: [
+              'Continue with Sofia\'s guidance',
+              'Practice storytelling techniques',
+              'Review narrative principles',
+              'Return to chapter hub',
+              'Move to next lesson'
+            ],
+            contextualHints: [
+              'Sofia specializes in compelling storytelling for nonprofits',
+              'Focus on finding your organization\'s unique voice',
+              'Each lesson builds practical storytelling skills',
+              'Interactive exercises help develop narrative techniques'
+            ]
+          };
+        }
+      }
+
+      // Enhanced context for Chapter 4 interactive lessons  
+      if (chapterNum === 4) {
+        const currentLesson = chapter4MicroLessons.find(lesson => 
+          lesson.route === path || lesson.id === journeyKey || 
+          lesson.route.includes(journeyKey)
+        );
+        
+        if (currentLesson) {
+          return {
+            type: 'interactive-journey',
+            title: `${currentLesson.title} with David`,
+            description: `${currentLesson.description} - Interactive learning with David Chen`,
+            chapterNumber: chapterNum,
+            chapterTitle: chapterTitles[chapterNum.toString()],
+            journeyName: currentLesson.title,
+            character: 'David',
+            phase: currentLesson.id === 'visual-storytelling' ? 'visualizing-data' : 'learning',
+            currentLessonId: currentLesson.id,
+            currentLesson: currentLesson,
+            microLessons: chapter4MicroLessons,
+            availableActions: [
+              currentLesson.id === 'visual-storytelling' ? 'Create data visualizations' : 'Continue with David\'s guidance',
+              'Practice data storytelling techniques',
+              'Review data narrative principles',
+              'Return to chapter hub',
+              'Move to next lesson'
+            ],
+            contextualHints: [
+              currentLesson.id === 'visual-storytelling' ? 'Focus on creating compelling visual stories from nonprofit data' : 'David specializes in transforming complex data into clear narratives',
+              'Interactive exercises help you practice data visualization techniques',
+              'Each lesson builds practical skills for nonprofit data storytelling',
+              'Focus on creating impact narratives that resonate with stakeholders'
+            ]
+          };
+        }
+      }
+
+      // Enhanced context for Chapter 5 interactive lessons  
+      if (chapterNum === 5) {
+        const currentLesson = chapter5MicroLessons.find(lesson => 
+          lesson.route === path || lesson.id === journeyKey || 
+          lesson.route.includes(journeyKey)
+        );
+        
+        if (currentLesson) {
+          return {
+            type: 'interactive-journey',
+            title: `${currentLesson.title} with Rachel`,
+            description: `${currentLesson.description} - Interactive learning with Rachel Thompson`,
+            chapterNumber: chapterNum,
+            chapterTitle: chapterTitles[chapterNum.toString()],
+            journeyName: currentLesson.title,
+            character: 'Rachel',
+            phase: 'learning',
+            currentLessonId: currentLesson.id,
+            currentLesson: currentLesson,
+            microLessons: chapter5MicroLessons,
+            availableActions: [
+              'Continue with Rachel\'s guidance',
+              'Practice automation techniques',
+              'Review workflow principles',
+              'Return to chapter hub',
+              'Move to next lesson'
+            ],
+            contextualHints: [
+              'Rachel specializes in human-centered automation for nonprofits',
+              'Focus on maintaining human connection while automating processes',
+              'Each lesson builds practical workflow optimization skills',
+              'Interactive exercises help develop automation strategies'
             ]
           };
         }
