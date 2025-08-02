@@ -101,16 +101,14 @@ export const useChatActions = () => {
 
   // Sync persistent messages with local state
   useEffect(() => {
-    if (persistentMessages.length > 0) {
-      const formattedMessages = persistentMessages.map(msg => ({
-        id: msg.id,
-        content: msg.content,
-        isUser: msg.isUser,
-        timestamp: msg.timestamp,
-        characterName: msg.isUser ? undefined : 'Lyra'
-      }));
-      dispatch({ type: 'SET_MESSAGES', payload: formattedMessages });
-    }
+    const formattedMessages = persistentMessages.map(msg => ({
+      id: msg.id,
+      content: msg.content,
+      isUser: msg.isUser,
+      timestamp: msg.timestamp,
+      characterName: msg.isUser ? undefined : 'Lyra'
+    }));
+    dispatch({ type: 'SET_MESSAGES', payload: formattedMessages });
   }, [persistentMessages, dispatch]);
 
   const toggleExpanded = useCallback(() => {
