@@ -79,11 +79,11 @@ const ChatWidget: React.FC = () => {
     <div
       className={cn(
         "nm-hero-card nm-glass flex flex-col animate-scale-in-spring overflow-hidden",
-        isMinimized ? "h-auto" : "h-[600px]"
+        isMinimized ? "h-auto" : "h-[600px] w-96"
       )}
     >
         {/* Neumorphic Header */}
-        <div className="flex items-center justify-between nm-p-lg border-b border-white/20">
+        <div className="flex items-center justify-between nm-p-lg border-b border-white/20 flex-shrink-0">
           <div className="flex items-center gap-3">
             <div className="nm-avatar nm-shadow-subtle">
               <LyraAvatar size="sm" expression="helping" />
@@ -97,23 +97,25 @@ const ChatWidget: React.FC = () => {
           <div className="flex items-center gap-2">
             <button
               onClick={minimize}
-              className="nm-button-ghost w-8 h-8 flex items-center justify-center nm-rounded-md nm-interactive"
+              className="nm-button-ghost w-8 h-8 flex items-center justify-center nm-rounded-md nm-interactive hover:nm-surface-elevated transition-all duration-200"
+              title={isMinimized ? "Expand chat" : "Minimize chat"}
             >
               {isMinimized ? (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 nm-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5" />
                 </svg>
               ) : (
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 nm-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
                 </svg>
               )}
             </button>
             <button
               onClick={close}
-              className="nm-button-ghost w-8 h-8 flex items-center justify-center nm-rounded-md nm-interactive"
+              className="nm-button-ghost w-8 h-8 flex items-center justify-center nm-rounded-md nm-interactive hover:nm-surface-elevated transition-all duration-200"
+              title="Close chat"
             >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-4 h-4 nm-text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
@@ -122,40 +124,48 @@ const ChatWidget: React.FC = () => {
 
         {/* Chat Content */}
         {!isMinimized && (
-          <div className="flex-1 flex flex-col min-h-0">
+          <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
             {/* Quick Questions (shown when no messages) */}
-            {messages.length === 0 && <QuickQuestions />}
+            {messages.length === 0 && (
+              <div className="flex-shrink-0">
+                <QuickQuestions />
+              </div>
+            )}
             
-            {/* Messages Area */}
+            {/* Messages Area with proper scrolling */}
             {messages.length > 0 && (
-              <div className="flex-1 min-h-0">
-                <MessageList />
-                
-                {/* Neumorphic Typing indicator */}
-                {isTyping && (
-                  <div className="nm-p-lg">
-                    <div className="flex items-start gap-3">
-                      <div className="nm-avatar nm-shadow-subtle">
-                        <LyraAvatar size="sm" expression="thinking" />
-                      </div>
-                      <div className="nm-card nm-surface-sunken nm-p-md nm-rounded-xl">
-                        <TypewriterText 
-                          text="..." 
-                          speed={500}
-                          showCursor={true}
-                          className="nm-text-secondary"
-                        />
+              <div className="flex-1 flex flex-col min-h-0 overflow-hidden">
+                <div className="flex-1 overflow-y-auto">
+                  <MessageList />
+                  
+                  {/* Neumorphic Typing indicator */}
+                  {isTyping && (
+                    <div className="nm-p-lg">
+                      <div className="flex items-start gap-3">
+                        <div className="nm-avatar nm-shadow-subtle">
+                          <LyraAvatar size="sm" expression="thinking" />
+                        </div>
+                        <div className="nm-card nm-surface-sunken nm-p-md nm-rounded-xl">
+                          <TypewriterText 
+                            text="..." 
+                            speed={500}
+                            showCursor={true}
+                            className="nm-text-secondary"
+                          />
+                        </div>
                       </div>
                     </div>
-                  </div>
-                )}
-                
-                <div id="chat-messages-end" />
+                  )}
+                  
+                  <div id="chat-messages-end" />
+                </div>
               </div>
             )}
 
             {/* Input Area */}
-            <ChatInput />
+            <div className="flex-shrink-0">
+              <ChatInput />
+            </div>
           </div>
         )}
       </div>
