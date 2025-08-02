@@ -2,15 +2,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 
-interface Chapter {
-  id: number;
-  title: string;
-  description: string;
-  duration: string;
-  icon?: string;
-  order_index: number;
-  is_published: boolean;
-}
+import { Chapter } from '@/types/lesson';
 
 export const useChapters = () => {
   const [chapters, setChapters] = useState<Chapter[]>([]);

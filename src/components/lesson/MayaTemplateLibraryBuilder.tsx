@@ -14,7 +14,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
-import TemplateContentFormatter from '@/components/ui/TemplateContentFormatter';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 import MayaContextualChatIntegration from '@/components/lesson/chat/lyra/maya/MayaContextualChatIntegration';
 import { useMayaJourney } from '@/hooks/useMayaJourney';
 import { ChatSystem } from '@/components/chat-system/ChatSystem';

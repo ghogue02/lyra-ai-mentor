@@ -3,10 +3,24 @@
  * Main entry point for cost analysis, monitoring, and optimization
  */
 
-export { CostAnalyzer, type CostMetrics, type TokenUsage, type PricingTier } from './analysis/CostAnalyzer';
-export { PerformanceMonitor, type PerformanceMetrics, type PerformanceAlert, type AlertThreshold } from './monitoring/PerformanceMonitor';
-export { OptimizationEngine, type OptimizationStrategy, type CacheEntry, type CompressionResult } from './optimization/OptimizationEngine';
-export { BenchmarkRunner, type BenchmarkScenario, type BenchmarkResult, type BenchmarkSuite } from './benchmarks/BenchmarkRunner';
+export { 
+  CostAnalyzer, 
+  PerformanceMonitor, 
+  OptimizationEngine, 
+  BenchmarkRunner,
+  type CostMetrics, 
+  type TokenUsage, 
+  type PricingTier,
+  type PerformanceMetrics, 
+  type PerformanceAlert, 
+  type AlertThreshold,
+  type OptimizationStrategy, 
+  type CacheEntry, 
+  type CompressionResult,
+  type BenchmarkScenario, 
+  type BenchmarkResult, 
+  type BenchmarkSuite 
+} from './stubs';
 export { default as PerformanceDashboard } from './dashboard/PerformanceDashboard';
 
 /**
@@ -62,6 +76,7 @@ export class PerformanceValidationSystem {
     this.config = this.mergeConfig(config);
     
     // Initialize components
+    const { CostAnalyzer, PerformanceMonitor, OptimizationEngine, BenchmarkRunner } = require('./stubs');
     this.costAnalyzer = new CostAnalyzer();
     this.performanceMonitor = new PerformanceMonitor();
     this.optimizationEngine = new OptimizationEngine();

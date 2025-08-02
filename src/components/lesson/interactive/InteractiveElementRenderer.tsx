@@ -64,9 +64,11 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
       return (
         <ChatSystem 
           lessonModule={{
+            chapterNumber: 1,
             title: lessonContext?.lessonTitle || "Hello, I'm Lyra!",
             content: lessonContext?.content || "",
-            chapter: lessonContext?.chapterTitle || "Chapter 1"
+            chapterTitle: lessonContext?.chapterTitle || "Chapter 1",
+            phase: "interactive"
           }}
           position="bottom-right"
           className="fixed z-50"

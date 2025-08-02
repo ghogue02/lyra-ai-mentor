@@ -256,7 +256,8 @@ export const defaultConfigurations: Record<string, Partial<PerformanceConfigurat
     benchmarking: {
       enabled: true,
       autoSchedule: {
-        enabled: false
+        enabled: false,
+        frequency: "daily" as const
       },
       scenarios: {
         useDefaults: true
@@ -635,25 +636,64 @@ export class ConfigurationLoader {
   private static loadFromEnvironment(): Partial<PerformanceConfiguration> {
     return {
       api: {
-        openaiApiKey: process.env.OPENAI_API_KEY,
-        baseUrl: process.env.OPENAI_BASE_URL,
-        timeout: process.env.OPENAI_TIMEOUT ? parseInt(process.env.OPENAI_TIMEOUT) : undefined
+        openaiApiKey: process.env.OPENAI_API_KEY || '',
+        baseUrl: process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1',
+        timeout: process.env.OPENAI_TIMEOUT ? parseInt(process.env.OPENAI_TIMEOUT) : 30000,
+        retries: 3,
+        rateLimiting: {
+          requestsPerMinute: 60,
+          tokensPerMinute: 1000000
+        }
       },
       costAnalysis: {
+        enabled: true,
         budgetLimits: {
           daily: process.env.BUDGET_DAILY ? parseFloat(process.env.BUDGET_DAILY) : undefined,
           monthly: process.env.BUDGET_MONTHLY ? parseFloat(process.env.BUDGET_MONTHLY) : undefined
+        },
+        alertThresholds: {
+          percentage: 80
+        },
+        trackingGranularity: "request" as const,
+        exportSettings: {
+          enabled: true,
+          format: "json" as const,
+          schedule: "daily" as const
         }
       },
       monitoring: {
         enabled: process.env.MONITORING_ENABLED !== 'false',
+        realTimeMonitoring: true,
+        metricsCollection: {
+          intervalMs: 60000,
+          retentionPeriod: '24h',
+          batchSize: 100
+        },
         alerts: {
+          enabled: true,
+          channels: ["console" as const],
           webhookUrl: process.env.WEBHOOK_URL,
           emailSettings: process.env.SMTP_HOST ? {
             smtp: process.env.SMTP_HOST,
             from: process.env.SMTP_FROM || 'noreply@example.com',
             to: process.env.ALERT_EMAILS ? process.env.ALERT_EMAILS.split(',') : []
           } : undefined
+        },
+        thresholds: {
+          responseTime: {
+            warning: 5000,
+            critical: 15000
+          },
+          errorRate: {
+            warning: 0.05,
+            critical: 0.1
+          },
+          throughput: {
+            minimum: 1.0
+          },
+          tokenProcessingRate: {
+            minimum: 100
+          }
         }
       }
     };

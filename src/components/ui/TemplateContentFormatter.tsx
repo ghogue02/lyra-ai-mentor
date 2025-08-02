@@ -1,70 +1,86 @@
-import React, { useMemo } from 'react';
+import React from 'react';
+import * as DOMPurify from 'dompurify';
 import { marked } from 'marked';
-import { sanitize } from 'dompurify';
-import { Mail, User, Calendar, Building, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface TemplateContentFormatterProps {
   content: string;
+  contentType?: 'lesson' | 'email' | 'article' | 'general';
+  templateVariables?: Record<string, any>;
+  enableDynamicFields?: boolean;
+  customRenderer?: any;
   className?: string;
-  variant?: 'default' | 'preview' | 'compact';
-  showMergeFieldTypes?: boolean;
-  contentType?: 'email' | 'lesson' | 'general';
+  variant?: string; // Backward compatibility
+  showMergeFieldTypes?: boolean; // Backward compatibility
 }
 
-interface MergeField {
+interface FieldExtraction {
   original: string;
-  display: string;
-  type: 'personal' | 'organizational' | 'date' | 'custom';
-  icon: React.ComponentType<{ className?: string }>;
+  placeholder: string;
+  fieldType: string;
+  fieldData?: any;
 }
 
-const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> = ({
+export const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> = ({
   content,
+  contentType = 'lesson',
+  templateVariables = {},
+  enableDynamicFields = false,
+  customRenderer,
   className,
-  variant = 'default',
-  showMergeFieldTypes = true,
-  contentType = 'general'
+  variant, // Ignore for now
+  showMergeFieldTypes // Ignore for now
 }) => {
-  // Configure marked options for security and formatting
-  const configureMarked = () => {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-      sanitize: false, // We'll use DOMPurify instead for better control
-    });
+  const processedContent = React.useMemo(() => {
+    if (!content) return '';
 
-    // Custom renderer for better email-specific formatting
+    // Parse markdown with custom renderer
     const renderer = new marked.Renderer();
-    
+
     // Enhanced paragraph rendering based on content type
-    renderer.paragraph = (text: string | { text: string }) => {
-      const textString = typeof text === 'string' ? text : text.text || '';
-      
-      if (contentType === 'lesson') {
-        // Lesson-specific paragraph handling
-        if (textString.toLowerCase().startsWith('objective:') || textString.toLowerCase().startsWith('learning objective:')) {
-          return `<div class="lesson-objective">${textString}</div>`;
+    if (contentType === 'email') {
+      renderer.paragraph = ({ tokens }: { tokens: any[] }) => {
+        const text = tokens.map(t => t.text || '').join('');
+        if (typeof text === 'object' && text && 'text' in text) {
+          const textString = (text as any).text || '';
+          return `<p class="email-paragraph">${textString}</p>`;
         }
-        if (textString.toLowerCase().startsWith('takeaway:') || textString.toLowerCase().startsWith('key takeaway:')) {
-          return `<div class="lesson-takeaway">${textString}</div>`;
-        }
-        return `<p class="lesson-paragraph">${textString}</p>`;
-      } else {
-        // Email-specific paragraph handling
-        if (textString.toLowerCase().startsWith('subject:')) {
-          return `<div class="email-subject">${textString}</div>`;
-        }
-        if (textString.toLowerCase().startsWith('preheader:')) {
-          return `<div class="email-preheader">${textString}</div>`;
+        const textString = String(text);
+        
+        // Handle field extraction patterns
+        if (enableDynamicFields && textString.includes('{{')) {
+          const fieldPattern = /\{\{([^}]+)\}\}/g;
+          const extractedFields: FieldExtraction[] = [];
+          let processedText = textString;
+          
+          processedText = processedText.replace(fieldPattern, (match, fieldContent) => {
+            const parts = fieldContent.split('|');
+            const fieldType = parts[0]?.trim() || 'text';
+            const placeholder = parts[1]?.trim() || `Enter ${fieldType}`;
+            
+            const extraction: FieldExtraction = {
+              original: match,
+              placeholder,
+              fieldType,
+              fieldData: templateVariables[fieldType]
+            };
+            
+            extractedFields.push(extraction);
+            
+            return `<span class="dynamic-field" data-field-type="${fieldType}" data-original="${match}">${templateVariables[fieldType] || placeholder}</span>`;
+          });
+          
+          return `<p class="email-paragraph" data-has-fields="true">${processedText}</p>`;
         }
         return `<p class="email-paragraph">${textString}</p>`;
-      }
+      };
     };
 
     // Enhanced heading rendering based on content type
-    renderer.heading = (text: string | { text: string }, level: number) => {
-      const textString = typeof text === 'string' ? text : text.text || '';
+    renderer.heading = ({ tokens, depth }: { tokens: any[]; depth: number }) => {
+      const text = tokens.map(t => t.text || '').join('');
+      const level = depth;
+      const textString = typeof text === 'string' ? text : String(text);
       const prefix = contentType === 'lesson' ? 'lesson' : 'email';
       const classes = {
         1: `${prefix}-heading-1`,
@@ -78,75 +94,22 @@ const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> = ({
     };
 
     marked.use({ renderer });
-  };
 
-  // Parse merge fields and categorize them
-  const parseMergeFields = (text: string): { processedText: string; fields: MergeField[] } => {
-    const mergeFieldRegex = /\{\{([^}]+)\}\}/g;
-    const fields: MergeField[] = [];
+    // Apply custom renderer if provided
+    if (customRenderer) {
+      marked.use({ renderer: customRenderer });
+    }
+
+    // Process template variables
+    let processedText = content;
     
-    const fieldTypeMapping: Record<string, MergeField['type']> = {
-      'FirstName': 'personal',
-      'LastName': 'personal',
-      'Name': 'personal',
-      'Email': 'personal',
-      'Phone': 'personal',
-      'Organization': 'organizational',
-      'Company': 'organizational',
-      'Title': 'organizational',
-      'Department': 'organizational',
-      'Date': 'date',
-      'CurrentDate': 'date',
-      'EventDate': 'date',
-      'DueDate': 'date',
-    };
-
-    const iconMapping: Record<MergeField['type'], React.ComponentType<{ className?: string }>> = {
-      'personal': User,
-      'organizational': Building,
-      'date': Calendar,
-      'custom': Heart
-    };
-
-    const processedText = text.replace(mergeFieldRegex, (match, fieldName) => {
-      const trimmedField = fieldName.trim();
-      const fieldType = fieldTypeMapping[trimmedField] || 'custom';
-      const displayName = trimmedField.replace(/([A-Z])/g, ' $1').trim();
-      
-      const field: MergeField = {
-        original: match,
-        display: displayName,
-        type: fieldType,
-        icon: iconMapping[fieldType]
-      };
-      
-      // Avoid duplicates
-      if (!fields.some(f => f.original === match)) {
-        fields.push(field);
-      }
-
-      // Return styled merge field
-      const colorClass = {
-        'personal': 'bg-blue-100 text-blue-800 border-blue-200',
-        'organizational': 'bg-purple-100 text-purple-800 border-purple-200',
-        'date': 'bg-green-100 text-green-800 border-green-200',
-        'custom': 'bg-orange-100 text-orange-800 border-orange-200'
-      }[fieldType];
-
-      return `<span class="merge-field ${colorClass}" data-field-type="${fieldType}" data-original="${match}">[${displayName}]</span>`;
+    // Replace template variables like {{name}}, {{company}}, etc.
+    Object.entries(templateVariables).forEach(([key, value]) => {
+      const regex = new RegExp(`\\{\\{\\s*${key}\\s*\\}\\}`, 'g');
+      processedText = processedText.replace(regex, String(value || ''));
     });
 
-    return { processedText, fields };
-  };
-
-  // Process the content
-  const processedContent = useMemo(() => {
-    configureMarked();
-    
-    // First, parse merge fields
-    const { processedText, fields } = parseMergeFields(content);
-    
-    // Then convert markdown to HTML
+    // Apply markdown processing
     const htmlContent = marked(processedText);
     
     // Sanitize the HTML for security
@@ -157,231 +120,272 @@ const TemplateContentFormatter: React.FC<TemplateContentFormatterProps> = ({
         'a', 'pre', 'code'
       ],
       ALLOWED_ATTR: ['class', 'data-field-type', 'data-original', 'href', 'target'],
-      ALLOW_DATA_ATTR: true
+      ADD_ATTR: ['data-*']
     });
 
-    return { html: sanitizedContent, fields };
-  }, [content]);
+    return sanitizedContent;
+  }, [content, contentType, templateVariables, enableDynamicFields, customRenderer]);
 
-  // Variant-specific styling
-  const getVariantStyles = () => {
-    switch (variant) {
-      case 'preview':
-        return 'bg-white border border-gray-200 rounded-lg p-6 shadow-sm';
-      case 'compact':
-        return 'bg-gray-50 rounded p-3 text-sm';
-      default:
-        return 'bg-gray-50 rounded-md p-4';
+  // Handle dynamic field interactions
+  const handleFieldClick = React.useCallback((event: React.MouseEvent) => {
+    const target = event.target as HTMLElement;
+    if (target.classList.contains('dynamic-field')) {
+      const fieldType = target.getAttribute('data-field-type');
+      const original = target.getAttribute('data-original');
+      
+      // Could trigger editing modal or inline editing
+      console.log('Field clicked:', { fieldType, original });
     }
+  }, []);
+
+  // Enhanced content based on type
+  const getContentClasses = () => {
+    const baseClasses = 'template-content-formatter';
+    const typeClasses = {
+      lesson: 'lesson-content prose prose-lg max-w-none',
+      email: 'email-content',
+      article: 'article-content prose max-w-none',
+      general: 'general-content prose max-w-none'
+    };
+    
+    return cn(baseClasses, typeClasses[contentType], className);
   };
 
   return (
-    <div className={cn('template-content-formatter', getVariantStyles(), className)}>
-      {/* Content Display */}
-      <div 
-        className="formatted-content prose prose-sm max-w-none"
-        dangerouslySetInnerHTML={{ __html: processedContent.html }}
-        style={{
-          // Custom CSS-in-JS for email-specific styling
-        }}
+    <div 
+      className={getContentClasses()}
+      onClick={enableDynamicFields ? handleFieldClick : undefined}
+      dangerouslySetInnerHTML={{ __html: processedContent }}
+    />
+  );
+};
+
+// Helper function to extract template variables from content
+export const extractTemplateVariables = (content: string): string[] => {
+  const variablePattern = /\{\{([^}]+)\}\}/g;
+  const variables: string[] = [];
+  let match;
+  
+  while ((match = variablePattern.exec(content)) !== null) {
+    const variable = match[1].trim();
+    if (!variables.includes(variable)) {
+      variables.push(variable);
+    }
+  }
+  
+  return variables;
+};
+
+// Helper function to validate template content
+export const validateTemplateContent = (content: string, requiredVariables: string[]): {
+  isValid: boolean;
+  missingVariables: string[];
+  extraVariables: string[];
+} => {
+  const foundVariables = extractTemplateVariables(content);
+  const missingVariables = requiredVariables.filter(req => !foundVariables.includes(req));
+  const extraVariables = foundVariables.filter(found => !requiredVariables.includes(found));
+  
+  return {
+    isValid: missingVariables.length === 0,
+    missingVariables,
+    extraVariables
+  };
+};
+
+// Preview component for template editing
+export const TemplatePreview: React.FC<{
+  content: string;
+  variables: Record<string, any>;
+  contentType?: 'lesson' | 'email' | 'article';
+}> = ({ content, variables, contentType = 'lesson' }) => {
+  return (
+    <div className="template-preview border rounded-lg p-4 bg-gray-50">
+      <div className="mb-2 text-sm text-gray-600">Preview:</div>
+      <TemplateContentFormatter
+        content={content}
+        contentType={contentType}
+        templateVariables={variables}
+        enableDynamicFields={false}
       />
-
-      {/* Merge Fields Legend */}
-      {showMergeFieldTypes && processedContent.fields.length > 0 && variant !== 'compact' && (
-        <div className="mt-4 pt-4 border-t border-gray-200">
-          <h4 className="text-sm font-medium text-gray-700 mb-2 flex items-center gap-2">
-            <Mail className="w-4 h-4" />
-            Merge Fields in This Template
-          </h4>
-          <div className="flex flex-wrap gap-2">
-            {processedContent.fields.map((field, index) => {
-              const IconComponent = field.icon;
-              const colorClass = {
-                'personal': 'bg-blue-50 text-blue-700 border-blue-200',
-                'organizational': 'bg-purple-50 text-purple-700 border-purple-200',
-                'date': 'bg-green-50 text-green-700 border-green-200',
-                'custom': 'bg-orange-50 text-orange-700 border-orange-200'
-              }[field.type];
-
-              return (
-                <div
-                  key={`${field.original}-${index}`}
-                  className={cn(
-                    'inline-flex items-center gap-1 px-2 py-1 rounded-md border text-xs font-medium',
-                    colorClass
-                  )}
-                >
-                  <IconComponent className="w-3 h-3" />
-                  {field.display}
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      )}
-
-      {/* Custom Styles */}
-      <style dangerouslySetInnerHTML={{
-        __html: `
-          .template-content-formatter .merge-field {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            border: 1px solid;
-            font-size: 0.875rem;
-            font-weight: 500;
-            margin: 0 1px;
-          }
-
-          .template-content-formatter .email-subject {
-            font-weight: 600;
-            font-size: 1.125rem;
-            margin-bottom: 0.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 1px solid #e5e7eb;
-            color: #1f2937;
-          }
-
-          .template-content-formatter .email-preheader {
-            font-size: 0.875rem;
-            color: #6b7280;
-            font-style: italic;
-            margin-bottom: 1rem;
-            padding: 0.5rem;
-            background-color: #f9fafb;
-            border-left: 3px solid #d1d5db;
-            border-radius: 0 4px 4px 0;
-          }
-
-          .template-content-formatter .email-paragraph {
-            margin-bottom: 1rem;
-            line-height: 1.6;
-            color: #374151;
-          }
-
-          .template-content-formatter .email-heading-1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin: 1.5rem 0 1rem 0;
-            color: #1f2937;
-          }
-
-          .template-content-formatter .email-heading-2 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 1.25rem 0 0.75rem 0;
-            color: #1f2937;
-          }
-
-          .template-content-formatter .email-heading-3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin: 1rem 0 0.5rem 0;
-            color: #374151;
-          }
-
-          .template-content-formatter .email-heading-4,
-          .template-content-formatter .email-heading-5,
-          .template-content-formatter .email-heading-6 {
-            font-size: 1rem;
-            font-weight: 600;
-            margin: 0.75rem 0 0.5rem 0;
-            color: #374151;
-          }
-
-          .template-content-formatter .prose {
-            color: #374151;
-          }
-
-          .template-content-formatter .prose strong {
-            color: #1f2937;
-          }
-
-          .template-content-formatter .prose blockquote {
-            border-left: 4px solid #d1d5db;
-            padding-left: 1rem;
-            font-style: italic;
-            color: #6b7280;
-          }
-
-          .template-content-formatter .prose ul,
-          .template-content-formatter .prose ol {
-            margin: 1rem 0;
-            padding-left: 1.5rem;
-          }
-
-          .template-content-formatter .prose li {
-            margin: 0.25rem 0;
-          }
-
-          /* Lesson-specific styles */
-          .template-content-formatter .lesson-objective {
-            font-weight: 600;
-            font-size: 1.125rem;
-            margin-bottom: 0.75rem;
-            padding: 0.75rem;
-            background-color: #dbeafe;
-            border-left: 4px solid #3b82f6;
-            border-radius: 0 6px 6px 0;
-            color: #1e40af;
-          }
-
-          .template-content-formatter .lesson-takeaway {
-            font-weight: 600;
-            font-size: 1rem;
-            margin: 1rem 0;
-            padding: 0.75rem;
-            background-color: #dcfce7;
-            border-left: 4px solid #16a34a;
-            border-radius: 0 6px 6px 0;
-            color: #15803d;
-          }
-
-          .template-content-formatter .lesson-paragraph {
-            margin-bottom: 1rem;
-            line-height: 1.7;
-            color: #374151;
-            font-size: 1rem;
-          }
-
-          .template-content-formatter .lesson-heading-1 {
-            font-size: 1.75rem;
-            font-weight: 700;
-            margin: 2rem 0 1.5rem 0;
-            color: #1f2937;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 0.5rem;
-          }
-
-          .template-content-formatter .lesson-heading-2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin: 1.5rem 0 1rem 0;
-            color: #1f2937;
-            border-left: 4px solid #6366f1;
-            padding-left: 1rem;
-          }
-
-          .template-content-formatter .lesson-heading-3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin: 1.25rem 0 0.75rem 0;
-            color: #374151;
-          }
-
-          .template-content-formatter .lesson-heading-4,
-          .template-content-formatter .lesson-heading-5,
-          .template-content-formatter .lesson-heading-6 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            margin: 1rem 0 0.5rem 0;
-            color: #374151;
-          }
-        `
-      }} />
     </div>
   );
 };
 
-export { TemplateContentFormatter };
-export default TemplateContentFormatter;
+// Enhanced field editor component
+interface FieldEditorProps {
+  fieldType: string;
+  placeholder: string;
+  value: any;
+  onChange: (value: any) => void;
+}
+
+export const FieldEditor: React.FC<FieldEditorProps> = ({
+  fieldType,
+  placeholder,
+  value,
+  onChange
+}) => {
+  const getFieldInput = () => {
+    switch (fieldType) {
+      case 'text':
+      case 'name':
+      case 'company':
+        return (
+          <input
+            type="text"
+            placeholder={placeholder}
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+      
+      case 'email':
+        return (
+          <input
+            type="email"
+            placeholder={placeholder}
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+      
+      case 'textarea':
+      case 'description':
+        return (
+          <textarea
+            placeholder={placeholder}
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            rows={3}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+      
+      case 'number':
+        return (
+          <input
+            type="number"
+            placeholder={placeholder}
+            value={value || ''}
+            onChange={(e) => onChange(parseFloat(e.target.value) || '')}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+      
+      case 'date':
+        return (
+          <input
+            type="date"
+            placeholder={placeholder}
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+      
+      default:
+        return (
+          <input
+            type="text"
+            placeholder={placeholder}
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+        );
+    }
+  };
+
+  return (
+    <div className="field-editor">
+      <label className="block text-sm font-medium text-gray-700 mb-1">
+        {fieldType.charAt(0).toUpperCase() + fieldType.slice(1)}
+      </label>
+      {getFieldInput()}
+    </div>
+  );
+};
+
+// Template manager component for organizing multiple templates
+interface Template {
+  id: string;
+  name: string;
+  content: string;
+  type: 'lesson' | 'email' | 'article';
+  variables: string[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export const TemplateManager: React.FC<{
+  templates: Template[];
+  onSelect: (template: Template) => void;
+  onEdit: (template: Template) => void;
+  onDelete: (templateId: string) => void;
+  onCreate: () => void;
+}> = ({ templates, onSelect, onEdit, onDelete, onCreate }) => {
+  return (
+    <div className="template-manager">
+      <div className="flex justify-between items-center mb-4">
+        <h3 className="text-lg font-semibold">Template Library</h3>
+        <button
+          onClick={onCreate}
+          className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+        >
+          New Template
+        </button>
+      </div>
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {templates.map((template) => (
+          <div
+            key={template.id}
+            className="template-card border rounded-lg p-4 hover:shadow-md transition-shadow cursor-pointer"
+            onClick={() => onSelect(template)}
+          >
+            <div className="flex justify-between items-start mb-2">
+              <h4 className="font-medium text-gray-900">{template.name}</h4>
+              <span className="px-2 py-1 text-xs bg-gray-100 text-gray-600 rounded">
+                {template.type}
+              </span>
+            </div>
+            
+            <p className="text-sm text-gray-600 mb-3 line-clamp-2">
+              {template.content.substring(0, 100)}...
+            </p>
+            
+            <div className="flex justify-between items-center">
+              <div className="text-xs text-gray-500">
+                {template.variables.length} variables
+              </div>
+              
+              <div className="flex gap-2">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onEdit(template);
+                  }}
+                  className="text-blue-600 hover:text-blue-800 text-sm"
+                >
+                  Edit
+                </button>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(template.id);
+                  }}
+                  className="text-red-600 hover:text-red-800 text-sm"
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

@@ -1,5 +1,5 @@
 import React from 'react';
-import TemplateContentFormatter from '@/components/ui/TemplateContentFormatter';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 const TemplateFormatterDemo: React.FC = () => {
   const sampleTemplate = `
