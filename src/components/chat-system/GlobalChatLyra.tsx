@@ -30,7 +30,7 @@ const GlobalChatLyra: React.FC = () => {
 
   if (isGlobalChatExpanded) {
     return (
-      <div className="absolute bottom-4 right-4 z-50 w-96 h-[600px] max-h-[80vh]">
+      <div className="fixed bottom-4 right-4 z-50 w-96 h-[600px] max-h-[80vh]">
         <div className="w-full h-full">
           <ChatLyra
             lessonContext={lessonContext}
@@ -47,10 +47,10 @@ const GlobalChatLyra: React.FC = () => {
   }
 
   return (
-    <button
-      onClick={() => setIsGlobalChatExpanded(true)}
-      className={cn(
-        "absolute bottom-4 right-4 z-40",
+    <div className="fixed bottom-4 right-4 z-40">
+      <button
+        onClick={() => setIsGlobalChatExpanded(true)}
+        className={cn(
         "w-14 h-14 rounded-full",
         "nm-button-primary nm-shadow-glow",
         "flex items-center justify-center",
@@ -65,6 +65,7 @@ const GlobalChatLyra: React.FC = () => {
       {/* Subtle pulsing animation */}
       <div className="absolute inset-0 rounded-full nm-button-primary opacity-50 animate-ping" />
     </button>
+    </div>
   );
 };
 
