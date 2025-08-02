@@ -48,6 +48,55 @@ const chapterTitles: Record<string, string> = {
   '5': 'Advanced AI Applications'
 };
 
+// Chapter 1 micro-lessons data for context awareness
+const chapter1MicroLessons = [
+  {
+    id: 'ai-ethics',
+    title: 'AI Ethics for Nonprofits',
+    description: 'Understand ethical AI principles and their application in nonprofit organizations',
+    difficulty: 'Beginner',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/1/interactive/ai-ethics'
+  },
+  {
+    id: 'ai-basics',
+    title: 'AI Fundamentals & Terminology',
+    description: 'Learn core AI concepts and terminology essential for nonprofit leaders',
+    difficulty: 'Beginner',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/1/interactive/ai-basics'
+  },
+  {
+    id: 'nonprofit-applications',
+    title: 'AI Applications in Nonprofits',
+    description: 'Explore practical AI use cases specific to nonprofit organizations',
+    difficulty: 'Intermediate',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/1/interactive/nonprofit-applications'
+  },
+  {
+    id: 'getting-started',
+    title: 'Getting Started with AI Tools',
+    description: 'Hands-on introduction to AI tools that nonprofits can use immediately',
+    difficulty: 'Beginner',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/1/interactive/getting-started'
+  },
+  {
+    id: 'implementation-roadmap',
+    title: 'AI Implementation Roadmap',
+    description: 'Create a strategic plan for implementing AI in your nonprofit',
+    difficulty: 'Advanced',
+    completed: false,
+    unlocked: true,
+    route: '/chapter/1/interactive/implementation-roadmap'
+  }
+];
+
 // Chapter 2 micro-lessons data for context awareness
 const chapter2MicroLessons = [
   {
@@ -128,6 +177,42 @@ export const usePageContext = (): PageContext => {
     if (path.match(/^\/chapter\/\d+$/)) {
       const chapterNum = parseInt(params.chapterId || '1');
       
+      // Enhanced context for Chapter 1
+      if (chapterNum === 1) {
+        const completedCount = chapter1MicroLessons.filter(lesson => lesson.completed).length;
+        const totalCount = chapter1MicroLessons.length;
+        const progressPercentage = (completedCount / totalCount) * 100;
+        
+        return {
+          type: 'chapter-hub',
+          title: `Chapter ${chapterNum} Hub`,
+          description: `Chapter ${chapterNum}: ${chapterTitles[chapterNum.toString()]} - Begin your AI journey with Lyra, your AI foundations guide`,
+          chapterNumber: chapterNum,
+          chapterTitle: chapterTitles[chapterNum.toString()],
+          phase: 'exploration',
+          microLessons: chapter1MicroLessons,
+          progressSummary: {
+            completed: completedCount,
+            total: totalCount,
+            percentage: progressPercentage
+          },
+          availableActions: [
+            'Start with AI Ethics',
+            'Explore AI fundamentals',
+            'Learn about nonprofit applications',
+            'Get hands-on with AI tools',
+            'Build implementation roadmap'
+          ],
+          contextualHints: [
+            'AI Ethics provides the foundation for responsible AI use',
+            'Start with fundamentals if you\'re new to AI concepts',
+            'Implementation Roadmap is the most advanced lesson',
+            'All lessons focus on nonprofit-specific applications',
+            'Lyra provides practical examples and guidance'
+          ]
+        };
+      }
+      
       // Enhanced context for Chapter 2
       if (chapterNum === 2) {
         const completedCount = chapter2MicroLessons.filter(lesson => lesson.completed).length;
@@ -182,6 +267,42 @@ export const usePageContext = (): PageContext => {
       const journeyKey = params.journeyId || '';
       const character = characterMap[journeyKey];
       
+      // Enhanced context for Chapter 1 interactive lessons
+      if (chapterNum === 1) {
+        const currentLesson = chapter1MicroLessons.find(lesson => 
+          lesson.route === path || lesson.id === journeyKey || 
+          lesson.route.includes(journeyKey)
+        );
+        
+        if (currentLesson) {
+          return {
+            type: 'interactive-journey',
+            title: `${currentLesson.title} with Lyra`,
+            description: `${currentLesson.description} - Interactive learning with Lyra`,
+            chapterNumber: chapterNum,
+            chapterTitle: chapterTitles[chapterNum.toString()],
+            journeyName: currentLesson.title,
+            character: 'Lyra',
+            phase: currentLesson.id === 'ai-ethics' ? 'exploring-principles' : 'learning',
+            currentLessonId: currentLesson.id,
+            microLessons: chapter1MicroLessons,
+            availableActions: [
+              currentLesson.id === 'ai-ethics' ? 'Explore ethical principles' : 'Continue lesson',
+              'Ask Lyra for guidance',
+              'Review lesson objectives',
+              'Return to chapter hub',
+              'Move to next lesson'
+            ],
+            contextualHints: [
+              currentLesson.id === 'ai-ethics' ? 'Focus on how ethical AI principles apply to nonprofit work' : `This is a ${currentLesson.difficulty.toLowerCase()}-level lesson`,
+              'Lyra provides nonprofit-specific examples and insights',
+              'Interactive exercises help reinforce AI concepts',
+              'Each lesson builds foundational knowledge for responsible AI use'
+            ]
+          };
+        }
+      }
+      
       // Enhanced context for Chapter 2 interactive lessons
       if (chapterNum === 2) {
         const currentLesson = chapter2MicroLessons.find(lesson => 
@@ -220,12 +341,12 @@ export const usePageContext = (): PageContext => {
       
       return {
         type: 'interactive-journey',
-        title: `Interactive Journey with ${character}`,
-        description: `an interactive learning journey with ${character} in Chapter ${chapterNum}`,
+        title: `Interactive Journey with ${character || 'Lyra'}`,
+        description: `an interactive learning journey with ${character || 'Lyra'} in Chapter ${chapterNum}`,
         chapterNumber: chapterNum,
         chapterTitle: chapterTitles[chapterNum.toString()],
         journeyName: journeyKey.replace('-', ' '),
-        character,
+        character: character || 'Lyra',
         phase: 'learning'
       };
     }

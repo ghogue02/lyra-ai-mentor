@@ -75,7 +75,25 @@ function generateContextualContent(context: any): string {
       return `User is on their learning dashboard, viewing their progress and available chapters. Help them navigate their learning journey.`;
     
     case 'chapter-hub':
-      if (context.chapterNumber === 2 && context.microLessons) {
+      if (context.chapterNumber === 1 && context.microLessons) {
+        const progress = context.progressSummary;
+        const availableLessons = context.microLessons.map(lesson => `${lesson.title} (${lesson.difficulty})`).join(', ');
+        
+        return `User is on Chapter 1: Introduction to AI for Nonprofits hub. Progress: ${progress.completed} of ${progress.total} micro-lessons completed (${Math.round(progress.percentage)}%).
+
+Available micro-lessons: ${availableLessons}
+
+Context: Beginning the AI journey with Lyra as their guide through foundational AI concepts and ethical considerations for nonprofit organizations.
+
+Learning paths:
+- AI Ethics for Nonprofits: Essential foundation for responsible AI implementation
+- AI Fundamentals & Terminology: Core concepts every nonprofit leader should know
+- AI Applications in Nonprofits: Practical use cases and real-world examples
+- Getting Started with AI Tools: Hands-on introduction to immediately useful AI tools
+- AI Implementation Roadmap: Advanced strategic planning for organizational AI adoption
+
+User can start with AI Ethics for a strong foundation, explore fundamentals, or get guidance on the best learning path. All lessons focus on nonprofit-specific applications and ethical considerations.`;
+      } else if (context.chapterNumber === 2 && context.microLessons) {
         const progress = context.progressSummary;
         const availableLessons = context.microLessons.map(lesson => `${lesson.title} (${lesson.difficulty})`).join(', ');
         
@@ -96,7 +114,25 @@ User can start any lesson, review completed ones, or get guidance on the best pa
       return `User is exploring Chapter ${context.chapterNumber}: ${context.chapterTitle}. They can see available lessons and interactive journeys.`;
     
     case 'interactive-journey':
-      if (context.chapterNumber === 2 && context.currentLessonId && context.microLessons) {
+      if (context.chapterNumber === 1 && context.currentLessonId && context.microLessons) {
+        const currentLesson = context.microLessons.find(l => l.id === context.currentLessonId);
+        if (currentLesson) {
+          return `User is in "${currentLesson.title}" with Lyra.
+
+Lesson details:
+- Focus: ${currentLesson.description}
+- Difficulty: ${currentLesson.difficulty}
+- Status: ${currentLesson.completed ? 'Completed' : 'In Progress'}
+- Current phase: ${context.phase}
+
+${currentLesson.id === 'ai-ethics' ? 
+  'Learning context: Exploring fundamental ethical principles for AI in nonprofit organizations. This lesson covers responsible AI implementation, bias prevention, transparency, and accountability in nonprofit contexts.' :
+  'Learning context: Building foundational AI knowledge specifically tailored for nonprofit organizations and their unique challenges and opportunities.'
+}
+
+Available guidance: Lesson-specific help, ethical considerations, practical examples for nonprofits, next steps, or navigation back to chapter hub. Focus on responsible AI implementation and nonprofit-specific applications.`;
+        }
+      } else if (context.chapterNumber === 2 && context.currentLessonId && context.microLessons) {
         const currentLesson = context.microLessons.find(l => l.id === context.currentLessonId);
         if (currentLesson) {
           return `User is in "${currentLesson.title}" with Maya Rodriguez.
@@ -130,7 +166,16 @@ function generateContextualGreeting(context: any): string {
       return "Hi! I can see you're on your learning dashboard. Ready to dive into your next chapter or need help navigating your progress?";
     
     case 'chapter-hub':
-      if (context.chapterNumber === 2 && context.progressSummary) {
+      if (context.chapterNumber === 1 && context.progressSummary) {
+        const { completed, total, percentage } = context.progressSummary;
+        if (percentage === 100) {
+          return `Excellent! You've completed all ${total} micro-lessons in Chapter 1! 🎉 You now have a solid foundation in AI concepts. Ready to move to the next chapter or review anything?`;
+        } else if (completed > 0) {
+          return `Welcome back to your AI journey! You've completed ${completed} of ${total} lessons (${Math.round(percentage)}% done). Which AI concept would you like to explore next, or need guidance on your learning path?`;
+        } else {
+          return `Welcome to Chapter 1: Introduction to AI for Nonprofits! 🤖 I'm Lyra, your AI guide. You have 5 foundational lessons ahead. Want to start with AI Ethics to build a strong foundation, or need help choosing the right starting point?`;
+        }
+      } else if (context.chapterNumber === 2 && context.progressSummary) {
         const { completed, total, percentage } = context.progressSummary;
         if (percentage === 100) {
           return `Congratulations! You've completed all ${total} micro-lessons in Maya's Communication Mastery! 🎉 Ready to move to the next chapter or want to review any concepts?`;
@@ -143,7 +188,14 @@ function generateContextualGreeting(context: any): string {
       return `Welcome to Chapter ${context.chapterNumber}! I can help you understand what you'll learn in "${context.chapterTitle}" or guide you to the perfect lesson for your needs.`;
     
     case 'interactive-journey':
-      if (context.chapterNumber === 2 && context.currentLessonId) {
+      if (context.chapterNumber === 1 && context.currentLessonId) {
+        const currentLesson = context.microLessons?.find(l => l.id === context.currentLessonId);
+        if (currentLesson?.id === 'ai-ethics') {
+          return `Hi! I see you're exploring "AI Ethics for Nonprofits" with me! 🤖 This is such an important foundation for responsible AI use. The ethical principles we're covering will guide all your future AI decisions. What aspect of AI ethics would you like to dive deeper into?`;
+        } else if (currentLesson) {
+          return `Hi! I see you're working on "${currentLesson.title}" with me! 🤖 This ${currentLesson.difficulty.toLowerCase()}-level lesson focuses on ${currentLesson.description.toLowerCase()}. How can I help you understand these AI concepts better?`;
+        }
+      } else if (context.chapterNumber === 2 && context.currentLessonId) {
         const currentLesson = context.microLessons?.find(l => l.id === context.currentLessonId);
         if (currentLesson) {
           return `Hi! I see you're working on "${currentLesson.title}" with Maya! 📧 This ${currentLesson.difficulty.toLowerCase()}-level lesson focuses on ${currentLesson.description.toLowerCase()}. Need help with any specific aspect or want Maya's insights?`;
