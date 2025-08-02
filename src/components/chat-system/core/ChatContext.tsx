@@ -78,12 +78,40 @@ export const useChatActions = () => {
 
   const { state, dispatch } = context;
 
-  // Initialize persistent chat hook
-  const { sendMessage: persistentSendMessage, clearChat, isLoading } = usePersistentChat(
-    1, // Default lesson ID
-    1, // Default chapter ID 
-    undefined
+  // Get dynamic lesson/chapter IDs from current lesson
+  const lessonId = state.currentLesson?.chapterNumber || 1;
+  const chapterId = state.currentLesson?.chapterNumber || 1;
+  
+  // Initialize persistent chat hook with proper context
+  const { 
+    sendMessage: persistentSendMessage, 
+    clearChat, 
+    isLoading,
+    messages: persistentMessages 
+  } = usePersistentChat(
+    lessonId,
+    chapterId,
+    {
+      chapterTitle: state.currentLesson?.chapterTitle,
+      lessonTitle: state.currentLesson?.title,
+      content: state.currentLesson?.content,
+      phase: state.currentLesson?.phase
+    }
   );
+
+  // Sync persistent messages with local state
+  useEffect(() => {
+    if (persistentMessages.length > 0) {
+      const formattedMessages = persistentMessages.map(msg => ({
+        id: msg.id,
+        content: msg.content,
+        isUser: msg.isUser,
+        timestamp: msg.timestamp,
+        characterName: msg.isUser ? undefined : 'Lyra'
+      }));
+      dispatch({ type: 'SET_MESSAGES', payload: formattedMessages });
+    }
+  }, [persistentMessages, dispatch]);
 
   const toggleExpanded = useCallback(() => {
     dispatch({ type: 'TOGGLE_EXPANDED' });
@@ -100,16 +128,10 @@ export const useChatActions = () => {
 
   const sendMessage = useCallback(async (text: string) => {
     dispatch({ type: 'SET_TYPING', payload: true });
-    dispatch({ type: 'ADD_MESSAGE', payload: {
-      id: Date.now().toString(),
-      content: text,
-      isUser: true,
-      timestamp: new Date()
-    }});
 
     try {
       await persistentSendMessage(text);
-      // Message will be added by the persistent chat hook
+      // Messages will be synced automatically via useEffect above
     } catch (error) {
       console.error('Failed to send message:', error);
       dispatch({ type: 'SET_ERROR', payload: 'Failed to send message. Please try again.' });
