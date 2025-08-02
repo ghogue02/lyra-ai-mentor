@@ -145,9 +145,9 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                       <AvatarFallback className="bg-primary text-white text-xs">LY</AvatarFallback>
                     </Avatar>
                     <div className="nm-card-subtle nm-rounded-2xl nm-rounded-tl-none nm-p-md max-w-[80%]">
-                      <p className="text-sm nm-text-primary">
+                      <div className="text-sm nm-text-primary whitespace-pre-line">
                         {welcomeMessage || "Hi! I'm Lyra, your AI learning companion. I'm here to help you explore AI's potential for nonprofit work. What would you like to know?"}
-                      </p>
+                      </div>
                     </div>
                   </div>
                   
