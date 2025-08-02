@@ -26,14 +26,14 @@ export const QuickQuestions: React.FC = () => {
 
   return (
     <div
-      className="p-6 space-y-4 animate-fade-in"
+      className="nm-p-xl space-y-4 animate-fade-in nm-surface-elevated"
       style={{ animationDelay: '0.2s' }}
     >
       <div className="text-center">
-        <h4 className="font-medium text-gray-900 mb-2">
+        <h4 className="font-medium nm-text-primary mb-2">
           I'm here to help! 
         </h4>
-        <p className="text-sm text-gray-600 mb-6">
+        <p className="text-sm nm-text-secondary mb-6">
           Choose a question below or ask me anything about this lesson
         </p>
       </div>
@@ -45,24 +45,24 @@ export const QuickQuestions: React.FC = () => {
           return (
             <button
               key={question.id}
-              className="w-full text-left p-4 rounded-xl bg-gray-50 hover:bg-gray-100 border border-transparent hover:border-gray-200 transition-all duration-200 group animate-slide-up hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full text-left nm-card nm-interactive nm-p-lg nm-rounded-xl group animate-slide-up nm-transition-normal"
               onClick={() => handleQuestionClick(question)}
               style={{ animationDelay: `${0.1 * index}s` }}
             >
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-100 to-pink-100 flex items-center justify-center group-hover:scale-110 transition-transform">
-                  <IconComponent className="w-4 h-4 text-purple-600" />
+                <div className="nm-avatar nm-surface-purple nm-shadow-subtle flex items-center justify-center group-hover:nm-animate-float nm-transition-normal">
+                  <IconComponent className="w-4 h-4 nm-text-accent" />
                 </div>
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900 group-hover:text-purple-700 transition-colors">
+                  <p className="text-sm font-medium nm-text-primary group-hover:nm-text-accent nm-transition-normal">
                     {question.text}
                   </p>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-xs text-gray-500">
+                    <span className="text-xs nm-text-secondary">
                       {question.category}
                     </span>
                     {question.priority === 'high' && (
-                      <span className="w-2 h-2 bg-purple-400 rounded-full"></span>
+                      <span className="w-2 h-2 nm-surface-purple nm-rounded-full"></span>
                     )}
                   </div>
                 </div>
@@ -73,7 +73,7 @@ export const QuickQuestions: React.FC = () => {
       </div>
 
       <div className="text-center pt-2">
-        <p className="text-xs text-gray-500">
+        <p className="text-xs nm-text-muted">
           💬 These suggestions are tailored to your current lesson
         </p>
       </div>

@@ -31,8 +31,8 @@ export const ChatInput: React.FC = () => {
   const isDisabled = isLoading || state.isTyping;
 
   return (
-    <div className="nm-p-lg border-t border-white/20 nm-surface-elevated">
-      <div className="flex gap-3 items-end">
+    <div className="p-4 border-t border-gray-100 bg-gray-50/50">
+      <div className="flex gap-2 items-end">
         <div className="flex-1">
           <textarea
             value={inputValue}
@@ -40,9 +40,10 @@ export const ChatInput: React.FC = () => {
             onKeyPress={handleKeyPress}
             placeholder="Ask me anything about this lesson..."
             className={cn(
-              "nm-input w-full nm-rounded-xl nm-text-primary",
-              "resize-none nm-transition-normal",
-              "text-sm min-h-[44px] max-h-[120px]",
+              "w-full px-4 py-3 rounded-xl border border-gray-200 bg-white",
+              "resize-none focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent",
+              "text-sm placeholder-gray-500 transition-all duration-200",
+              "min-h-[44px] max-h-[120px]",
               isDisabled && "opacity-50 cursor-not-allowed"
             )}
             rows={1}
@@ -63,43 +64,45 @@ export const ChatInput: React.FC = () => {
           onClick={handleSendMessage}
           disabled={!inputValue.trim() || isDisabled}
           className={cn(
-            "nm-button nm-button-primary w-11 h-11 nm-rounded-xl flex items-center justify-center nm-interactive",
-            isDisabled && "opacity-50 cursor-not-allowed"
+            "w-11 h-11 rounded-xl flex items-center justify-center transition-all duration-200",
+            "bg-purple-500 hover:bg-purple-600 disabled:bg-gray-300",
+            "text-white disabled:text-gray-500",
+            "disabled:cursor-not-allowed hover:scale-105 active:scale-95"
           )}
         >
           <Send className="w-4 h-4" />
         </button>
       </div>
       
-      {/* Neumorphic Footer with controls */}
-      <div className="flex items-center justify-between nm-m-md text-xs nm-text-muted">
+      {/* Footer with controls */}
+      <div className="flex items-center justify-between mt-3 text-xs text-gray-500">
         <span>Press Enter to send, Shift+Enter for new line</span>
         {state.messages.length > 0 && (
           <button
             onClick={clearMessages}
-            className="nm-text-accent hover:nm-text-primary font-medium nm-interactive transition-colors"
+            className="text-purple-500 hover:text-purple-600 font-medium transition-colors"
           >
             Clear Chat
           </button>
         )}
       </div>
 
-      {/* Neumorphic Loading indicator */}
+      {/* Loading indicator */}
       {isLoading && (
         <div
-          className="flex items-center gap-2 nm-m-sm text-xs nm-text-secondary nm-animate-pulse"
+          className="flex items-center gap-2 mt-2 text-xs text-gray-600 animate-fade-in"
         >
           <div className="flex gap-1">
             <div
-              className="w-1 h-1 nm-surface-purple nm-rounded-full nm-animate-pulse"
+              className="w-1 h-1 bg-purple-500 rounded-full animate-pulse"
               style={{ animationDelay: '0s' }}
             />
             <div
-              className="w-1 h-1 nm-surface-purple nm-rounded-full nm-animate-pulse"
+              className="w-1 h-1 bg-purple-500 rounded-full animate-pulse"
               style={{ animationDelay: '0.2s' }}
             />
             <div
-              className="w-1 h-1 nm-surface-purple nm-rounded-full nm-animate-pulse"
+              className="w-1 h-1 bg-purple-500 rounded-full animate-pulse"
               style={{ animationDelay: '0.4s' }}
             />
           </div>

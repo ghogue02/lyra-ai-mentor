@@ -48,24 +48,27 @@ vi.mock('@/components/ui/button', () => ({
   )
 }));
 
+// Note: NarrativeManager does not use framer-motion, but mock if needed for other dependencies
 vi.mock('framer-motion', () => ({
   motion: {
-    div: ({ children, onClick, className, initial, animate, exit, transition }: any) => (
+    div: ({ children, onClick, className, initial, animate, exit, transition, ...props }: any) => (
       <div 
         onClick={onClick}
         className={className}
         data-testid="motion-div"
         data-motion-props={JSON.stringify({ initial, animate, exit, transition })}
+        {...props}
       >
         {children}
       </div>
     ),
-    span: ({ children, className, animate, transition }: any) => (
+    span: ({ children, className, animate, transition, ...props }: any) => (
       <span 
         className={className}
         data-testid="motion-span"
         data-animate={JSON.stringify(animate)}
         data-transition={JSON.stringify(transition)}
+        {...props}
       >
         {children}
       </span>
@@ -73,6 +76,9 @@ vi.mock('framer-motion', () => ({
   },
   AnimatePresence: ({ children }: any) => <div data-testid="animate-presence">{children}</div>
 }));
+
+// Global AnimatePresence for any components that might import it
+global.AnimatePresence = ({ children }: any) => <div data-testid="animate-presence">{children}</div>;
 
 // Mock timers
 vi.useFakeTimers();

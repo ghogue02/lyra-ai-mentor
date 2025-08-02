@@ -378,73 +378,52 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
 
   return (
     <div className="max-w-3xl mx-auto p-6">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={currentMessageIndex}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -20 }}
-          transition={{ duration: 0.4 }}
-        >
-          <Card className={`bg-gradient-to-r ${getEmotionColor(currentMessage.emotion || 'neutral')}`}>
-            <CardContent className="p-6">
-              <div className="flex items-start gap-4">
-                {currentMessage.showAvatar !== false && (
-                  <div className="w-20 h-20 flex-shrink-0">
-                    <VideoAnimation
-                      src={getAnimationUrl(getLyraEmotionAnimation(currentMessage.emotion || 'neutral'))}
-                      fallbackIcon={<LyraAvatar size="md" />}
-                      className="w-full h-full"
-                      context="character"
-                    />
-                  </div>
-                )}
-                
-                <div className="flex-1 min-h-[60px]">
-                  <div className="flex items-center gap-2 mb-2">
-                    <h3 className="font-semibold text-gray-800">{characterName}</h3>
-                    {getEmotionIcon(currentMessage.emotion || 'neutral')}
-                  </div>
-                  
-                  <p className="text-gray-700 leading-relaxed">
-                    {displayedText}
-                    {isTyping && (
-                      <motion.span
-                        animate={{ opacity: [0, 1, 0] }}
-                        transition={{ duration: 0.8, repeat: Infinity }}
-                        className="inline-block w-2 h-5 bg-purple-500 ml-1"
-                      />
-                    )}
-                  </p>
+      <div 
+        key={currentMessageIndex}
+        className="animate-fade-in-up"
+      >
+        <Card className={`bg-gradient-to-r ${getEmotionColor(currentMessage.emotion || 'neutral')}`}>
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              {currentMessage.showAvatar !== false && (
+                <div className="w-20 h-20 flex-shrink-0">
+                  <VideoAnimation
+                    src={getAnimationUrl(getLyraEmotionAnimation(currentMessage.emotion || 'neutral'))}
+                    fallbackIcon={<LyraAvatar size="md" />}
+                    className="w-full h-full"
+                    context="character"
+                  />
                 </div>
+              )}
+              
+              <div className="flex-1 min-h-[60px]">
+                <div className="flex items-center gap-2 mb-2">
+                  <h3 className="font-semibold text-gray-800">{characterName}</h3>
+                  {getEmotionIcon(currentMessage.emotion || 'neutral')}
+                </div>
+                
+                <p className="text-gray-700 leading-relaxed">
+                  {displayedText}
+                  {isTyping && (
+                    <span className="inline-block w-2 h-5 bg-purple-500 ml-1 animate-pulse" />
+                  )}
+                </p>
               </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </AnimatePresence>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
 
       {/* Interaction Point */}
-      <AnimatePresence>
-        {showInteraction && currentInteraction && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="mt-6"
-          >
-            {interactionPoints.find(p => p.id === currentInteraction)?.content}
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {showInteraction && currentInteraction && (
+        <div className="mt-6 animate-fade-in-up">
+          {interactionPoints.find(p => p.id === currentInteraction)?.content}
+        </div>
+      )}
 
       {/* Navigation Buttons */}
       {!isTyping && !showInteraction && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3 }}
-          className="mt-6 flex justify-center gap-3"
-        >
+        <div className="mt-6 flex justify-center gap-3 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>
           {currentMessageIndex > 0 && (
             <Button
               onClick={handleGoBack}
@@ -474,20 +453,16 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
               Reset
             </Button>
           )}
-        </motion.div>
+        </div>
       )}
       
       {/* Pause indicator */}
       {paused && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="mt-6 flex justify-center"
-        >
+        <div className="mt-6 flex justify-center animate-fade-in">
           <div className="px-4 py-2 bg-brand-cyan/10 border border-brand-cyan/20 rounded-lg text-brand-cyan text-sm font-medium">
             Narrative paused - chatting with Lyra
           </div>
-        </motion.div>
+        </div>
       )}
     </div>
   );

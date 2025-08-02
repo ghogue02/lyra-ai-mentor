@@ -31,11 +31,9 @@ const AnimatedProgress: React.FC<AnimatedProgressProps> = ({
   return (
     <div className={`w-full ${className}`}>
       <div className={`bg-surface-secondary rounded-full overflow-hidden ${sizeClasses[size]}`}>
-        <motion.div
-          className="h-full bg-gradient-to-r from-primary to-brand-cyan rounded-full relative"
-          initial={{ width: 0 }}
-          animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+        <div 
+          className="h-full bg-gradient-to-r from-primary to-brand-cyan rounded-full relative transition-all duration-700 ease-out"
+          style={{ width: `${percentage}%` }}
         >
           {showAnimation && percentage > 0 && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 w-6 h-6 -mr-3">
@@ -47,7 +45,7 @@ const AnimatedProgress: React.FC<AnimatedProgressProps> = ({
               />
             </div>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );

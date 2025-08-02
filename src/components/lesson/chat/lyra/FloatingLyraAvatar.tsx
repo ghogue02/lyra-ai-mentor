@@ -50,45 +50,12 @@ const FloatingLyraAvatarComponent: React.FC<FloatingLyraAvatarProps> = ({
     }
   };
 
-  // Animation variants for different states
-  const avatarVariants = {
-    idle: {
-      scale: 1,
-      boxShadow: '0 10px 25px rgba(0, 0, 0, 0.1), 0 20px 48px rgba(0, 0, 0, 0.1)',
-      filter: 'brightness(1)',
-    },
-    pulsing: {
-      scale: [1, 1.05, 1],
-      boxShadow: [
-        '0 10px 25px rgba(0, 0, 0, 0.1), 0 20px 48px rgba(0, 0, 0, 0.1)',
-        '0 10px 25px rgba(139, 92, 246, 0.3), 0 20px 48px rgba(139, 92, 246, 0.2)',
-        '0 10px 25px rgba(0, 0, 0, 0.1), 0 20px 48px rgba(0, 0, 0, 0.1)'
-      ],
-      filter: ['brightness(1)', 'brightness(1.1)', 'brightness(1)'],
-    },
-    active: {
-      scale: 1.1,
-      boxShadow: '0 15px 35px rgba(139, 92, 246, 0.25), 0 25px 55px rgba(139, 92, 246, 0.15)',
-      filter: 'brightness(1.15)',
-    }
-  };
-
-  // Breathing animation for idle state
-  const breathingVariants = {
-    idle: {
-      scale: [1, 1.02, 1],
-      transition: {
-        duration: 3,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }
-    }
-  };
+  // CSS animations replace framer-motion variants
 
   return (
-    <AnimatePresence>
+    <>
       {!hidden && (
-        <motion.div
+        <div
           className={cn(
             // Fixed positioning - bottom right corner
             "fixed bottom-6 right-6 z-50",
@@ -98,19 +65,10 @@ const FloatingLyraAvatarComponent: React.FC<FloatingLyraAvatarProps> = ({
             "cursor-pointer",
             // Focus styles for accessibility
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2 rounded-full",
+            // CSS animations
+            "animate-scale-in-spring hover:scale-105 active:scale-95 transition-transform duration-200",
             className
           )}
-          initial={{ opacity: 0, scale: 0.8, y: 20 }}
-          animate={{ opacity: 1, scale: 1, y: 0 }}
-          exit={{ opacity: 0, scale: 0.8, y: 20 }}
-          transition={{ 
-            type: "spring", 
-            stiffness: 300, 
-            damping: 25,
-            duration: 0.3 
-          }}
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
           onClick={handleClick}
           onKeyDown={handleKeyDown}
           tabIndex={0}
@@ -119,37 +77,29 @@ const FloatingLyraAvatarComponent: React.FC<FloatingLyraAvatarProps> = ({
           aria-pressed={state === 'active'}
         >
           {/* Outer container with state-based animations */}
-          <motion.div
-            className="relative rounded-full"
-            variants={avatarVariants}
-            animate={state}
-            transition={{
-              duration: state === 'pulsing' ? 2 : 0.3,
-              repeat: state === 'pulsing' ? Infinity : 0,
-              ease: "easeInOut"
+          <div
+            className={cn(
+              "relative rounded-full transition-all duration-300",
+              state === 'pulsing' && "animate-pulse",
+              state === 'active' && "scale-110 brightness-115"
+            )}
+            style={{
+              boxShadow: state === 'active' 
+                ? '0 15px 35px rgba(139, 92, 246, 0.25), 0 25px 55px rgba(139, 92, 246, 0.15)'
+                : '0 10px 25px rgba(0, 0, 0, 0.1), 0 20px 48px rgba(0, 0, 0, 0.1)'
             }}
           >
             {/* Background glow effect for pulsing state */}
             {state === 'pulsing' && (
-              <motion.div
-                className="absolute inset-0 rounded-full bg-purple-400 blur-lg opacity-20"
-                animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.2, 0.4, 0.2]
-                }}
-                transition={{
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
+              <div className="absolute inset-0 rounded-full bg-purple-400 blur-lg opacity-20 animate-pulse" />
             )}
 
             {/* Avatar container with breathing animation for idle state */}
-            <motion.div
-              variants={breathingVariants}
-              animate={state === 'idle' ? 'idle' : undefined}
-              className="relative"
+            <div
+              className={cn(
+                "relative",
+                state === 'idle' && "animate-pulse"
+              )}
             >
               {/* Avatar component with responsive sizing */}
               <div className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24">
@@ -163,56 +113,42 @@ const FloatingLyraAvatarComponent: React.FC<FloatingLyraAvatarProps> = ({
               </div>
 
               {/* Status indicator dot */}
-              <motion.div
+              <div
                 className={cn(
-                  "absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white",
+                  "absolute -top-1 -right-1 w-4 h-4 rounded-full border-2 border-white animate-scale-in",
                   state === 'active' && "bg-green-500",
                   state === 'pulsing' && "bg-yellow-500",
                   state === 'idle' && "bg-gray-400"
                 )}
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 300, damping: 25 }}
+                style={{ animationDelay: '0.2s' }}
               >
                 {/* Pulse animation for active and pulsing states */}
                 {(state === 'active' || state === 'pulsing') && (
-                  <motion.div
+                  <div
                     className={cn(
-                      "absolute inset-0 rounded-full",
+                      "absolute inset-0 rounded-full animate-ping",
                       state === 'active' && "bg-green-500",
                       state === 'pulsing' && "bg-yellow-500"
                     )}
-                    animate={{
-                      scale: [1, 1.8, 1],
-                      opacity: [0.7, 0, 0.7]
-                    }}
-                    transition={{
-                      duration: 2,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
                   />
                 )}
-              </motion.div>
-            </motion.div>
-          </motion.div>
+              </div>
+            </div>
+          </div>
 
           {/* Tooltip-like hint for pulsing state */}
           {state === 'pulsing' && (
-            <motion.div
-              className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-black text-white text-xs rounded-lg whitespace-nowrap"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 10 }}
-              transition={{ delay: 1 }}
+            <div
+              className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-black text-white text-xs rounded-lg whitespace-nowrap animate-slide-up"
+              style={{ animationDelay: '1s' }}
             >
               Click to chat with Lyra
               <div className="absolute top-full right-4 border-l-4 border-r-4 border-t-4 border-transparent border-t-black" />
-            </motion.div>
+            </div>
           )}
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 };
 
