@@ -1,5 +1,6 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface VideoAnimationProps {
   src: string;

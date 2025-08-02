@@ -1,6 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 import { Loader2, Sparkles } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 interface PremiumButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'accent' | 'ghost' | 'gradient';

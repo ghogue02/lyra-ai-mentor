@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { BrandedIcon } from './BrandedIcon';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { motion } from 'framer-motion';
 
 interface BrandedButtonProps extends ButtonProps {
   icon?: 'achievement' | 'learning' | 'growth' | 'mission' | 'network' | 'communication' | 'data' | 'workflow';

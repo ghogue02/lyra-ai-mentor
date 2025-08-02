@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { marked } from 'marked';
-import DOMPurify from 'dompurify';
+import { sanitize } from 'dompurify';
 import { Mail, User, Calendar, Building, Heart } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { BrandedIcon } from "./BrandedIcon"
 import { OptimizedVideoAnimation } from "../performance/OptimizedVideoAnimation"
 import { getAnimationUrl } from "@/utils/supabaseIcons"
+import { motion } from 'framer-motion';
 
 const BrandedDialog = DialogPrimitive.Root
 

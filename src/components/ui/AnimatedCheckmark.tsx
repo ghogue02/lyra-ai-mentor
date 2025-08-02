@@ -1,6 +1,7 @@
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
+import { motion } from 'framer-motion';
 
 const getAnimationUrl = (filename: string) => {
   return `https://zkwwjzbrygxqrfxkxozk.supabase.co/storage/v1/object/public/app-icons/animations/${filename}`;
