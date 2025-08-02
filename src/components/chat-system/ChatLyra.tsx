@@ -24,6 +24,8 @@ interface ChatLyraProps {
   onEngagementChange?: (engaged: boolean, messageCount: number) => void;
   showMinimize?: boolean;
   onMinimize?: () => void;
+  welcomeMessage?: string;
+  contextualQuestions?: string[];
 }
 
 const conversationStarters = [
@@ -49,7 +51,9 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
   initialExpanded = false,
   onEngagementChange,
   showMinimize = false,
-  onMinimize
+  onMinimize,
+  welcomeMessage,
+  contextualQuestions
 }) => {
   const [isExpanded, setIsExpanded] = useState(initialExpanded || mode === 'embedded');
   const [inputValue, setInputValue] = useState('');
@@ -142,7 +146,7 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                     </Avatar>
                     <div className="nm-card-subtle nm-rounded-2xl nm-rounded-tl-none nm-p-md max-w-[80%]">
                       <p className="text-sm nm-text-primary">
-                        Hi! I'm Lyra, your AI learning companion. I'm here to help you explore AI's potential for nonprofit work. What would you like to know?
+                        {welcomeMessage || "Hi! I'm Lyra, your AI learning companion. I'm here to help you explore AI's potential for nonprofit work. What would you like to know?"}
                       </p>
                     </div>
                   </div>
@@ -153,7 +157,7 @@ const ChatLyra: React.FC<ChatLyraProps> = ({
                        <Sparkles className="w-3 h-3" />
                        <span>Quick questions to get started:</span>
                      </div>
-                     {conversationStarters.slice(0, 3).map((starter, index) => (
+                     {(contextualQuestions || conversationStarters).slice(0, 3).map((starter, index) => (
                        <button
                          key={index}
                          onClick={() => handleStarterClick(starter)}

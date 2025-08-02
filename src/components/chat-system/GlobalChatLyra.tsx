@@ -28,6 +28,46 @@ const GlobalChatLyra: React.FC = () => {
   const contextualGreeting = useMemo(() => 
     generateContextualGreeting(pageContext), [pageContext]);
 
+  // Generate contextual quick questions based on the current page
+  const contextualQuestions = useMemo(() => {
+    if (pageContext.type === 'interactive-journey' && pageContext.chapterNumber === 1) {
+      const lesson = pageContext.microLessons?.find(l => l.id === pageContext.currentLessonId);
+      if (lesson?.id === 'ai-ethics') {
+        return [
+          "I'm worried about AI ethics - can you help?",
+          "What are the most important ethical principles for nonprofits?",
+          "How do I prevent bias in AI systems?",
+          "What does transparency mean in AI?",
+          "How can I ensure AI accountability in my organization?"
+        ];
+      }
+      if (lesson) {
+        return [
+          "What makes AI so powerful for nonprofits?",
+          "How do I start implementing AI ethically?",
+          "What are common AI misconceptions?",
+          "Can you explain AI foundations simply?"
+        ];
+      }
+    }
+    
+    if (pageContext.type === 'chapter-hub' && pageContext.chapterNumber === 1) {
+      return [
+        "What will I learn in Chapter 1?",
+        "Why are AI foundations important?",
+        "How does this prepare me for advanced AI?",
+        "What's the difference between AI types?"
+      ];
+    }
+    
+    // Default questions
+    return [
+      "What makes AI so powerful for nonprofit work?",
+      "How can I get started with AI in my organization?",
+      "What are the most common AI mistakes nonprofits make?"
+    ];
+  }, [pageContext]);
+
   if (isGlobalChatExpanded) {
     return (
       <div className="fixed bottom-4 right-4 z-50 w-96 h-[600px] max-h-[80vh]">
@@ -40,6 +80,8 @@ const GlobalChatLyra: React.FC = () => {
             showMinimize={true}
             onMinimize={() => setIsGlobalChatExpanded(false)}
             className="w-full h-full shadow-2xl"
+            welcomeMessage={contextualGreeting}
+            contextualQuestions={contextualQuestions}
           />
         </div>
       </div>
