@@ -1,5 +1,4 @@
 import React from 'react';
-import { LyraChatRenderer } from './LyraChatRenderer';
 import { AIEmailComposerRenderer } from './AIEmailComposerRenderer';
 import { PromptBuilderRenderer } from './PromptBuilderRenderer';
 import { CalloutBoxRenderer } from './CalloutBoxRenderer';
@@ -85,13 +84,21 @@ export const InteractiveElementRenderer: React.FC<InteractiveElementRendererProp
     switch (element.type) {
       case 'lyra_chat':
         return (
-          <LyraChatRenderer
-            element={element}
-            lessonContext={lessonContext}
-            chatEngagement={chatEngagement || { hasReachedMinimum: false, exchangeCount: 0 }}
-            isBlockingContent={isBlockingContent || false}
-            onEngagementChange={onEngagementChange || (() => {})}
-            initialEngagementCount={initialEngagementCount || 0}
+          <ChatSystem 
+            lessonModule={{
+              chapterNumber: parseInt(window.location.pathname.split('/')[2]) || 1,
+              title: lessonContext?.lessonTitle || element.title,
+              content: lessonContext?.content || element.content,
+              chapterTitle: lessonContext?.chapterTitle || "",
+              phase: "interactive"
+            }}
+            position="bottom-right"
+            onEngagementChange={(isEngaged, messageCount) => {
+              onEngagementChange?.({ 
+                hasReachedMinimum: messageCount >= 3, 
+                exchangeCount: messageCount 
+              });
+            }}
           />
         );
       

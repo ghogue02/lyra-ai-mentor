@@ -77,7 +77,10 @@ const ChatWidget: React.FC = () => {
   // Expanded chat interface - neumorphic glass design
   return (
     <div
-      className="nm-hero-card nm-glass flex flex-col h-full animate-scale-in-spring overflow-hidden"
+      className={cn(
+        "nm-hero-card nm-glass flex flex-col animate-scale-in-spring overflow-hidden",
+        isMinimized ? "h-auto" : "h-[600px]"
+      )}
     >
         {/* Neumorphic Header */}
         <div className="flex items-center justify-between nm-p-lg border-b border-white/20">
@@ -183,7 +186,7 @@ export const ChatSystem: React.FC<ChatSystemProps> = ({
       initialExpanded={initialExpanded}
     >
       <div className={cn(
-        "fixed z-50 max-w-sm w-full h-[500px]",
+        "fixed z-50 max-w-sm w-full",
         positionClasses[position],
         className
       )}>
