@@ -19,23 +19,23 @@ interface ChapterGridProps {
 const placeholderChapters: Chapter[] = [
   {
     id: 3,
-    title: "Communication & Storytelling",
-    description: "Connect with your community using AI-enhanced content creation and storytelling techniques.",
+    title: "Sofia's Storytelling Mastery",
+    description: "Master AI-enhanced storytelling with Sofia to create compelling narratives that engage donors, inspire volunteers, and amplify your mission's impact.",
   },
   {
     id: 4,
-    title: "Data & Decision Making",
-    description: "Make smarter decisions with AI insights for program analysis and impact measurement.",
+    title: "David's Data Storytelling Mastery",
+    description: "Transform spreadsheets into compelling narratives with David's proven strategies for data visualization, funding proposals, and strategic decision-making.",
   },
   {
     id: 5,
-    title: "Automation & Efficiency",
-    description: "Build AI-powered workflows that handle routine work automatically.",
+    title: "Rachel's Workflow Automation Mastery",
+    description: "Build human-centered automation systems with Rachel to streamline operations while preserving the personal touch that makes nonprofits special.",
   },
   {
     id: 6,
-    title: "Organizational Transformation",
-    description: "Become an AI champion and lead the integration of AI tools across your organization.",
+    title: "Alex's AI Leadership Mastery",
+    description: "Lead sustainable AI transformation with Alex's proven framework for organizational change, team adoption, and strategic vision implementation.",
   }
 ];
 
