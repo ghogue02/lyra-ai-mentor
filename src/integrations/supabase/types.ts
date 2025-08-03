@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           created_at: string | null
           description: string | null
+          duration: string | null
           icon: string | null
           id: number
           is_published: boolean | null
@@ -28,6 +29,7 @@ export type Database = {
         Insert: {
           created_at?: string | null
           description?: string | null
+          duration?: string | null
           icon?: string | null
           id?: number
           is_published?: boolean | null
@@ -38,6 +40,7 @@ export type Database = {
         Update: {
           created_at?: string | null
           description?: string | null
+          duration?: string | null
           icon?: string | null
           id?: number
           is_published?: boolean | null
@@ -230,7 +233,7 @@ export type Database = {
           source_lesson_id: number | null
           title: string
           updated_at: string
-          user_id: string
+          user_id: string | null
         }
         Insert: {
           approval_status?: string
@@ -245,7 +248,7 @@ export type Database = {
           source_lesson_id?: number | null
           title: string
           updated_at?: string
-          user_id: string
+          user_id?: string | null
         }
         Update: {
           approval_status?: string
@@ -260,7 +263,7 @@ export type Database = {
           source_lesson_id?: number | null
           title?: string
           updated_at?: string
-          user_id?: string
+          user_id?: string | null
         }
         Relationships: []
       }
@@ -352,6 +355,7 @@ export type Database = {
           created_at: string
           description: string
           difficulty_level: string
+          estimated_duration: number | null
           id: string
           is_active: boolean
           journey_key: string
@@ -369,6 +373,7 @@ export type Database = {
           created_at?: string
           description: string
           difficulty_level?: string
+          estimated_duration?: number | null
           id?: string
           is_active?: boolean
           journey_key: string
@@ -386,6 +391,7 @@ export type Database = {
           created_at?: string
           description?: string
           difficulty_level?: string
+          estimated_duration?: number | null
           id?: string
           is_active?: boolean
           journey_key?: string
@@ -486,6 +492,7 @@ export type Database = {
         Row: {
           chapter_id: number | null
           created_at: string | null
+          estimated_duration: number | null
           id: number
           is_published: boolean | null
           order_index: number
@@ -496,6 +503,7 @@ export type Database = {
         Insert: {
           chapter_id?: number | null
           created_at?: string | null
+          estimated_duration?: number | null
           id?: number
           is_published?: boolean | null
           order_index: number
@@ -506,6 +514,7 @@ export type Database = {
         Update: {
           chapter_id?: number | null
           created_at?: string | null
+          estimated_duration?: number | null
           id?: number
           is_published?: boolean | null
           order_index?: number
