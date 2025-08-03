@@ -59,7 +59,7 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
 
   return (
     <div className={cn(
-      "nm-card h-80 flex flex-col p-6", // Fixed height and flex layout
+      "nm-card min-h-96 flex flex-col p-6", // Increased minimum height for full descriptions
       (isLocked || isPlaceholder) ? "opacity-60" : ""
     )}>
       <div className="pb-4 flex-shrink-0">
@@ -97,15 +97,11 @@ export const ChapterCard: React.FC<ChapterCardProps> = ({
           </div>
         </div>
         
-        <h3 className="text-lg font-semibold mt-4 h-14 overflow-hidden">
-          <div className="line-clamp-2">
-            Chapter {chapter.id}: {chapter.title}
-          </div>
+        <h3 className="text-lg font-semibold mt-4 leading-tight">
+          Chapter {chapter.id}: {chapter.title}
         </h3>
-        <p className="text-gray-600 text-sm h-16 overflow-hidden">
-          <div className="line-clamp-3">
-            {chapter.description}
-          </div>
+        <p className="text-gray-600 text-sm mt-3 leading-relaxed">
+          {chapter.description}
         </p>
       </div>
       

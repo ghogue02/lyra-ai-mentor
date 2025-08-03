@@ -96,7 +96,7 @@ export const ChapterGrid: React.FC<ChapterGridProps> = ({
   }
 
   return (
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto items-stretch">
       {allChapters.map((chapter, index) => {
         const progress = chapterProgress[chapter.id];
         const isCompleted = progress?.isCompleted || false;
