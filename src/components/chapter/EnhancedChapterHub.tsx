@@ -154,19 +154,20 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
             shouldShowNavigation ? 'translate-y-0' : '-translate-y-full'
           }`}>
             <div className="container mx-auto px-4 py-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-3">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-center">
                   <button
                     onClick={() => navigate('/dashboard')}
-                    className="nm-button nm-button-ghost hover:bg-muted/50 text-muted-foreground hover:text-foreground"
+                    className="nm-button nm-button-ghost hover:bg-muted/50 text-muted-foreground hover:text-foreground flex items-center gap-2 text-sm sm:text-base"
                   >
-                    <ChevronLeft className="w-4 h-4 mr-2" />
-                    Back to Dashboard
+                    <ChevronLeft className="w-4 h-4 flex-shrink-0" />
+                    <span className="hidden xs:inline">Back to Dashboard</span>
+                    <span className="xs:hidden">Back</span>
                   </button>
                 </div>
                 
-                <div className="flex items-center">
-                  <h2 className="font-medium text-foreground truncate max-w-xs sm:max-w-md">
+                <div className="flex items-center min-w-0 flex-1 justify-center sm:justify-end">
+                  <h2 className="font-medium text-foreground text-center sm:text-right text-sm sm:text-base truncate px-2">
                     Chapter {chapterNumber}: {title}
                   </h2>
                 </div>
