@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CheckCircle, PlayCircle, ArrowRight, Lock, ChevronLeft } from 'lucide-react';
+import { CornerIcon } from '@/components/CornerIcon';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
@@ -166,10 +167,8 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
                   </button>
                 </div>
                 
-                <div className="flex items-center min-w-0 flex-1 justify-center sm:justify-end">
-                  <h2 className="font-medium text-foreground text-center sm:text-right text-sm sm:text-base truncate px-2">
-                    Chapter {chapterNumber}: {title}
-                  </h2>
+                <div className="flex items-center">
+                  <CornerIcon />
                 </div>
               </div>
             </div>
