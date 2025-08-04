@@ -29,10 +29,10 @@ const Index = () => {
                   <img 
                     src={getSupabaseIconUrl(SUPABASE_ICONS.heroMain)} 
                     alt="Lyra AI Mentor - Your intelligent learning companion" 
-                    className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96 object-contain" 
+                    className="w-61 h-61 sm:w-68 sm:h-68 md:w-82 md:h-82 object-contain" 
                   />
                 }
-                className="w-72 h-72 sm:w-80 sm:h-80 md:w-96 md:h-96"
+                className="w-61 h-61 sm:w-68 sm:h-68 md:w-82 md:h-82"
                 context="ui"
                 autoPlay={true}
                 loop={true}
