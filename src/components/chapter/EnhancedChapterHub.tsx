@@ -184,13 +184,11 @@ export const EnhancedChapterHub: React.FC<EnhancedChapterHubProps> = ({
           {/* Character Avatar - Centered and Larger */}
           <div className="flex justify-center mb-6 mt-4 sm:mt-2 lg:mt-0">
             <div className="w-28 h-28">
-              <div className="w-full h-full rounded-full bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center border-2 border-primary/30">
-                <img 
-                  src={getLyraIconUrl('default')} 
-                  alt={characterName}
-                  className="w-20 h-20 rounded-full object-cover"
-                />
-              </div>
+              <img 
+                src={getLyraIconUrl('default')} 
+                alt={characterName}
+                className="w-full h-full rounded-full object-cover"
+              />
             </div>
           </div>
           
