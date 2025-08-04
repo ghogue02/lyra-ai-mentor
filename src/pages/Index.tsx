@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PersonalizationFlow } from '@/components/PersonalizationFlow';
-import { MinimalHeader } from '@/components/MinimalHeader';
+import { CornerIcon } from '@/components/CornerIcon';
 import { OptimizedVideoAnimation } from '@/components/performance/OptimizedVideoAnimation';
 
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +15,7 @@ const Index = () => {
     return <PersonalizationFlow onComplete={() => setShowPersonalization(false)} />;
   }
   return <div className="min-h-screen" style={{background: 'var(--nm-bg)'}}>
-      <MinimalHeader />
+      <CornerIcon />
       
       {/* Hero Section - Neumorphic styled with enhanced spacing */}
       <section className="container mx-auto spacing-mobile spacing-mobile-y pt-24 sm:pt-32 lg:pt-40 pb-8 sm:pb-16">
