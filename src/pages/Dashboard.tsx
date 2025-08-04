@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useAuth } from '@/contexts/AuthContext';
-import { MinimalHeader } from '@/components/MinimalHeader';
+import { CornerIcon } from '@/components/CornerIcon';
 import { OnboardingProgress } from '@/components/OnboardingProgress';
 import { DashboardHeader } from '@/components/dashboard/DashboardHeader';
 import { JourneyTab } from '@/components/dashboard/JourneyTab';
@@ -153,7 +153,7 @@ export const Dashboard = () => {
   return (
     <ProgressProvider>
       <div className="min-h-screen" style={{background: 'var(--nm-bg)'}}>
-        <MinimalHeader />
+        <CornerIcon />
       
       {/* Header Section - Fixed spacing to prevent header overlap */}
       <section className="container mx-auto px-4 pt-40 pb-8">
