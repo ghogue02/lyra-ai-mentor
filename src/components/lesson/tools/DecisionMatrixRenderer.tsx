@@ -173,271 +173,177 @@ const DecisionMatrixRenderer: React.FC = () => {
       {phase === 'workshop' && (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6">
           <MicroLessonNavigator chapterNumber={3} chapterTitle="Sofia's Storytelling Mastery" lessonTitle="Decision Matrix" characterName="Sofia" progress={progress} />
-          <div className="container mx-auto max-w-6xl pt-20 space-y-6">
-            <div className="mb-2"><Progress value={progress} className="h-2" /></div>
+          <div className="container mx-auto max-w-2xl pt-20 space-y-8">
+            <div className="mb-4"><Progress value={progress} className="h-2" /></div>
 
-            <div className="grid lg:grid-cols-2 gap-3">
-              {/* Builder */}
-              <Card className="border-border/40">
-                 <CardContent className="p-3 space-y-3">
-                   {/* Quick Setup */}
-                   <section>
-                     <div className="flex items-center gap-2 mb-2">
-                       <Sparkles className="w-5 h-5 text-primary" />
-                       <h3 className="font-semibold">Quick Setup</h3>
-                     </div>
-                     <div className="grid grid-cols-3 gap-1">
-                       {quickSetups.map((setup, i) => (
-                         <Button 
-                           key={i} 
-                           variant="outline" 
-                           size="sm" 
-                           className="h-16 text-xs flex-col gap-1" 
-                           onClick={() => {
-                             setCriteria(setup.criteria);
-                             setWeights(setup.criteria.map(c => criteriaPresets.find(p => p.name === c)?.weight || 5));
-                             setPrograms(setup.programs);
-                             setScores(setup.programs.map(() => setup.criteria.map(() => 5)));
-                             setCurrentStep(2);
-                           }}
-                         >
-                           <span className="font-medium">{setup.name}</span>
-                           <span className="text-xs opacity-70">{setup.criteria.length} criteria</span>
-                         </Button>
-                       ))}
-                     </div>
-                   </section>
-
-                   {/* Criteria Selection */}
-                   <section>
-                     <div className="flex items-center gap-2 mb-2">
-                       <Target className="w-5 h-5 text-primary" />
-                       <h3 className="font-semibold">Select Criteria</h3>
-                     </div>
-                     <div className="grid grid-cols-2 gap-1 max-h-40 overflow-y-auto">
-                       {criteriaPresets.map((preset, i) => {
-                         const isSelected = criteria.includes(preset.name);
-                         return (
-                           <Button
-                             key={i}
-                             variant={isSelected ? "default" : "outline"}
-                             size="sm"
-                             className="h-12 text-xs flex-col gap-1 relative"
-                             onClick={() => {
-                               if (isSelected) {
-                                 const idx = criteria.indexOf(preset.name);
-                                 setCriteria(criteria.filter((_, i) => i !== idx));
-                                 setWeights(weights.filter((_, i) => i !== idx));
-                                 setScores(scores.map(row => row.filter((_, i) => i !== idx)));
-                               } else {
-                                 setCriteria([...criteria, preset.name]);
-                                 setWeights([...weights, preset.weight]);
-                                 setScores(scores.map(row => [...row, 5]));
-                               }
-                               setCurrentStep(Math.min(4, currentStep + 1));
-                             }}
-                           >
-                             {isSelected && <CheckCircle2 className="w-3 h-3 absolute top-1 right-1" />}
-                             <span>{preset.icon}</span>
-                             <span className="leading-tight">{preset.name.split(' ').slice(0, 2).join(' ')}</span>
-                           </Button>
-                         );
-                       })}
-                     </div>
-                     
-                     {/* Weight Adjustment for Selected Criteria */}
-                     {criteria.length > 0 && (
-                       <div className="space-y-1 mt-2">
-                         <p className="text-xs text-muted-foreground">Adjust importance (1-10):</p>
-                         {criteria.map((c, i) => (
-                           <div key={i} className="flex items-center gap-2">
-                             <span className="text-xs flex-1 truncate">{c}</span>
-                             <div className="flex items-center gap-1">
-                               {[1,2,3,4,5,6,7,8,9,10].map(star => (
-                                 <button
-                                   key={star}
-                                   className={`w-3 h-3 text-xs ${weights[i] >= star ? 'text-primary' : 'text-muted-foreground'}`}
-                                   onClick={() => setWeights(weights.map((w, idx) => idx === i ? star : w))}
-                                 >
-                                   ⭐
-                                 </button>
-                               ))}
-                               <Badge variant="secondary" className="w-6 h-4 text-xs">{weights[i]}</Badge>
-                             </div>
-                           </div>
-                         ))}
-                       </div>
-                     )}
-                   </section>
-
-                   {/* Program Selection */}
-                   <section>
-                     <div className="flex items-center gap-2 mb-2">
-                       <BarChart3 className="w-5 h-5 text-primary" />
-                       <h3 className="font-semibold">Select Initiatives</h3>
-                     </div>
-                     <div className="grid grid-cols-1 gap-1 max-h-32 overflow-y-auto">
-                       {programPresets.map((preset, i) => {
-                         const isSelected = programs.includes(preset.name);
-                         return (
-                           <Button
-                             key={i}
-                             variant={isSelected ? "default" : "outline"}
-                             size="sm"
-                             className="h-14 text-xs justify-start flex-col gap-1 relative p-2"
-                             onClick={() => {
-                               if (isSelected) {
-                                 const idx = programs.indexOf(preset.name);
-                                 setPrograms(programs.filter((_, i) => i !== idx));
-                                 setScores(scores.filter((_, i) => i !== idx));
-                               } else {
-                                 setPrograms([...programs, preset.name]);
-                                 setScores([...scores, criteria.map(() => 5)]);
-                               }
-                               setCurrentStep(Math.min(4, currentStep + 1));
-                             }}
-                           >
-                             {isSelected && <CheckCircle2 className="w-3 h-3 absolute top-1 right-1" />}
-                             <div className="flex items-center gap-2 w-full">
-                               <span className="text-sm">{preset.icon}</span>
-                               <div className="text-left flex-1">
-                                 <div className="font-medium leading-tight">{preset.name}</div>
-                                 <div className="text-xs opacity-70">{preset.desc}</div>
-                               </div>
-                             </div>
-                           </Button>
-                         );
-                       })}
-                     </div>
-                     
-                     {/* Visual Scoring for Selected Programs */}
-                     {programs.length > 0 && criteria.length > 0 && (
-                       <div className="space-y-2 mt-2">
-                         <p className="text-xs text-muted-foreground">Rate each initiative (1-10 stars):</p>
-                         {programs.map((p, pIdx) => (
-                           <div key={pIdx} className="border border-border/30 rounded p-2">
-                             <div className="font-medium text-sm mb-1">{p}</div>
-                             <div className="space-y-1">
-                               {criteria.map((c, cIdx) => (
-                                 <div key={cIdx} className="flex items-center gap-2">
-                                   <span className="text-xs flex-1 truncate">{c}</span>
-                                   <div className="flex">
-                                     {[1,2,3,4,5,6,7,8,9,10].map(star => (
-                                       <button
-                                         key={star}
-                                         className={`w-3 h-3 text-xs ${(scores[pIdx][cIdx] || 0) >= star ? 'text-primary' : 'text-muted-foreground'}`}
-                                         onClick={() => setScores(scores.map((row, ri) => ri === pIdx ? row.map((sv, ci) => ci === cIdx ? star : sv) : row))}
-                                       >
-                                         ⭐
-                                       </button>
-                                     ))}
-                                   </div>
-                                 </div>
-                               ))}
-                             </div>
-                           </div>
-                         ))}
-                       </div>
-                     )}
-                   </section>
-
-                   {/* Memo options */}
-                   <section>
-                     <div className="flex items-center gap-2 mb-2">
-                       <FileText className="w-5 h-5 text-primary" />
-                       <h3 className="font-semibold">Memo Setup</h3>
-                     </div>
-                    <div className="grid grid-cols-3 gap-1">
-                      <Select value={audience} onValueChange={setAudience}>
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {audienceOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
-                        </SelectContent>
-                      </Select>
-                      <Select value={tone} onValueChange={setTone}>
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {toneOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
-                        </SelectContent>
-                      </Select>
-                      <Select value={format} onValueChange={setFormat}>
-                        <SelectTrigger className="h-8 text-xs">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {formatOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
-                        </SelectContent>
-                      </Select>
+            <Card>
+              <CardContent className="p-8 space-y-8">
+                
+                {/* Step 1: Quick Setup */}
+                {currentStep === 0 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <h3 className="text-xl font-semibold mb-6">Choose Your Decision Scenario</h3>
+                    <div className="space-y-4">
+                      {quickSetups.slice(0, 3).map((setup, i) => (
+                        <Button 
+                          key={i} 
+                          variant="outline" 
+                          className="w-full h-20 justify-start p-6"
+                          onClick={() => {
+                            setCriteria(setup.criteria);
+                            setWeights(setup.criteria.map(c => criteriaPresets.find(p => p.name === c)?.weight || 5));
+                            setPrograms(setup.programs);
+                            setScores(setup.programs.map(() => setup.criteria.map(() => 5)));
+                            setCurrentStep(1);
+                          }}
+                        >
+                          <div className="text-left space-y-1">
+                            <div className="font-medium text-base">{setup.name}</div>
+                            <div className="text-sm text-muted-foreground">
+                              Compare {setup.programs.length} options using {setup.criteria.length} criteria
+                            </div>
+                          </div>
+                        </Button>
+                      ))}
                     </div>
-                  </section>
-                </CardContent>
-              </Card>
+                  </motion.div>
+                )}
 
-              {/* Guidance + Prompt */}
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Sofia’s Guidance</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                     <ul className="list-disc pl-5 text-sm nm-text-secondary space-y-2">
-                       <li><strong>Stories that resonate secure funding</strong> — weight emotional impact and authenticity highly</li>
-                       <li><strong>Community voices outweigh polish</strong> — donors fund authentic connection, not production value</li>
-                       <li><strong>Your memo tells the story behind the numbers</strong> — explain why this choice builds lasting relationships</li>
-                     </ul>
-                  </CardContent>
-                </Card>
-
-                <Card className="border-border/40">
-                  <CardContent className="p-4 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Sparkles className="w-4 h-4 text-primary" />
-                        <h4 className="font-medium">AI Analysis</h4>
-                      </div>
-                      <Button onClick={runAI} disabled={isGenerating} size="sm" className="h-8">
-                        <Sparkles className={`w-3 h-3 mr-1 ${isGenerating ? 'animate-spin' : ''}`} />
-                        {isGenerating ? 'Generating...' : 'Generate'}
-                      </Button>
-                    </div>
-                    {aiContent && (
-                      <div className="border border-border/30 rounded-md p-3 text-sm">
-                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={false} />
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
-
-                <Card className="border-border/40">
-                  <CardContent className="p-4 space-y-3">
-                    <h4 className="font-medium">Results</h4>
-                    <div className="grid gap-2">
-                      {programs.map((p, i) => (
-                        <div key={i} className={`flex items-center justify-between p-2 rounded border ${i===bestIndex? 'border-primary bg-primary/5' : 'border-border/30'}`}>
-                          <span className="text-sm font-medium">{p}</span>
-                          <Badge variant={i===bestIndex ? "default" : "secondary"} className="text-xs">{totals[i]}</Badge>
+                {/* Step 2: Adjust Weights */}
+                {currentStep === 1 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <h3 className="text-xl font-semibold mb-6">Rate What Matters Most</h3>
+                    <div className="space-y-6">
+                      {criteria.map((c, i) => (
+                        <div key={i} className="space-y-3">
+                          <div className="flex justify-between items-center">
+                            <span className="font-medium">{c}</span>
+                            <Badge variant="secondary" className="text-base px-3 py-1">{weights[i]}/10</Badge>
+                          </div>
+                          <div className="grid grid-cols-10 gap-2">
+                            {[1,2,3,4,5,6,7,8,9,10].map(value => (
+                              <button
+                                key={value}
+                                className={`h-12 rounded font-medium transition-colors ${
+                                  weights[i] >= value 
+                                    ? 'bg-primary text-primary-foreground' 
+                                    : 'bg-muted hover:bg-muted/80'
+                                }`}
+                                onClick={() => setWeights(weights.map((w, idx) => idx === i ? value : w))}
+                              >
+                                {value}
+                              </button>
+                            ))}
+                          </div>
                         </div>
                       ))}
                     </div>
-                    <div className="border border-border/30 rounded p-3 bg-background/50">
-                      <div className="text-sm space-y-2">
-                        <div><strong>RECOMMENDATION:</strong> {programs[bestIndex]} (weighted score: {totals[bestIndex]})</div>
-                        <div><strong>WHY:</strong> This initiative scores highest on authentic community voice and donor engagement potential, aligning with our $400K grant requirements.</div>
-                        <div><strong>NEXT STEPS:</strong> Present to board with community partner commitments and budget projections.</div>
-                      </div>
-                    </div>
-                    <Button onClick={handleComplete} className="w-full h-9" size="sm">
-                      <CheckCircle2 className="w-4 h-4 mr-2" />
-                      Complete Matrix
+                    <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(2)}>
+                      Continue to Scoring
                     </Button>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+                  </motion.div>
+                )}
+
+                {/* Step 3: Score Programs */}
+                {currentStep === 2 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <h3 className="text-xl font-semibold mb-6">Score Each Option</h3>
+                    <div className="space-y-6">
+                      {programs.map((program, pIdx) => (
+                        <div key={pIdx} className="border rounded-lg p-6 space-y-4">
+                          <h4 className="font-semibold text-lg">{program}</h4>
+                          {criteria.map((criterion, cIdx) => (
+                            <div key={cIdx} className="space-y-3">
+                              <div className="flex justify-between items-center">
+                                <span className="text-sm font-medium">{criterion}</span>
+                                <Badge variant="outline" className="text-base px-3 py-1">
+                                  {scores[pIdx][cIdx]}/10
+                                </Badge>
+                              </div>
+                              <div className="grid grid-cols-10 gap-1">
+                                {[1,2,3,4,5,6,7,8,9,10].map(value => (
+                                  <button
+                                    key={value}
+                                    className={`h-8 rounded text-sm font-medium transition-colors ${
+                                      scores[pIdx][cIdx] >= value 
+                                        ? 'bg-primary text-primary-foreground' 
+                                        : 'bg-muted hover:bg-muted/80'
+                                    }`}
+                                    onClick={() => {
+                                      const newScores = [...scores];
+                                      newScores[pIdx][cIdx] = value;
+                                      setScores(newScores);
+                                    }}
+                                  >
+                                    {value}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ))}
+                    </div>
+                    <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(3)}>
+                      View Recommendation
+                    </Button>
+                  </motion.div>
+                )}
+
+                {/* Step 4: Results */}
+                {currentStep === 3 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <h3 className="text-xl font-semibold mb-6">Sofia's Recommendation</h3>
+                    
+                    <div className="space-y-4 mb-8">
+                      {programs.map((program, idx) => (
+                        <div key={idx} className={`p-6 rounded-lg border-2 transition-all ${
+                          idx === bestIndex 
+                            ? 'border-primary bg-primary/5' 
+                            : 'border-border bg-muted/20'
+                        }`}>
+                          <div className="flex justify-between items-center">
+                            <span className="font-semibold text-lg">{program}</span>
+                            <div className="flex items-center gap-3">
+                              <Badge 
+                                variant={idx === bestIndex ? "default" : "secondary"} 
+                                className="text-base px-4 py-2"
+                              >
+                                {totals[idx]} points
+                              </Badge>
+                              {idx === bestIndex && <Award className="w-6 h-6 text-primary" />}
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div className="p-6 bg-primary/5 border border-primary/20 rounded-lg space-y-4">
+                      <h4 className="font-semibold text-lg">Executive Summary</h4>
+                      <p className="text-muted-foreground">
+                        Based on your weighted criteria analysis, <strong>{programs[bestIndex]}</strong> emerges 
+                        as the top choice with {totals[bestIndex]} points. This aligns with Sofia's proven approach 
+                        that secured Casa de Esperanza their largest grant.
+                      </p>
+                      <Button onClick={runAI} disabled={isGenerating} className="w-full" size="lg">
+                        {isGenerating ? 'Generating Memo...' : 'Generate Detailed Memo'}
+                      </Button>
+                    </div>
+
+                    {aiContent && (
+                      <div className="mt-6 p-6 border rounded-lg bg-background">
+                        <h4 className="font-semibold mb-4">Recommendation Memo</h4>
+                        <TemplateContentFormatter content={aiContent} />
+                        <Button onClick={handleComplete} className="w-full mt-6" size="lg">
+                          Complete Matrix
+                        </Button>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+
+              </CardContent>
+            </Card>
           </div>
         </motion.div>
       )}
