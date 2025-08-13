@@ -91,9 +91,9 @@ const DecisionMatrixRenderer: React.FC = () => {
     }
   };
   const narrativeMessages = [
-    { id: '1', content: "We had five great storytelling ideas — but no shared way to choose.", emotion: 'thoughtful' as const, showAvatar: true },
-    { id: '2', content: "Using a simple weighted matrix, our team aligned in minutes.", emotion: 'confident' as const },
-    { id: '3', content: "Now I justify decisions with a short memo tailored to my audience.", emotion: 'empowered' as const },
+    { id: '1', content: "We kept debating ideas without criteria — decisions felt subjective.", emotion: 'thoughtful' as const, showAvatar: true },
+    { id: '2', content: "A simple weighted matrix made trade‑offs clear and consensus fast.", emotion: 'confident' as const },
+    { id: '3', content: "I wrap it with a memo so leaders see the why, not just the what.", emotion: 'empowered' as const },
   ];
 
   const progress = 66 + Math.min(34, currentStep * 8);
@@ -111,7 +111,7 @@ const DecisionMatrixRenderer: React.FC = () => {
                 <div className="w-12 h-12 rounded-xl nm-card-subtle flex items-center justify-center"><Scale className="w-6 h-6 text-primary" /></div>
                 <div>
                   <h1 className="text-3xl font-bold">Decision Matrix</h1>
-                  <p className="nm-text-secondary mt-2">{sofia?.quote || 'I needed a fair way to pick the right story to lead. The matrix made it obvious — and defensible.'}</p>
+                  <p className="nm-text-secondary mt-2">Prioritize storytelling initiatives with a weighted criteria matrix and produce a memo-ready recommendation.</p>
                 </div>
               </div>
               <div className="mt-6 flex justify-end">

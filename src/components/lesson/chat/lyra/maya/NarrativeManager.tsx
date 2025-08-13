@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { LyraAvatar } from '@/components/LyraAvatar';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ChevronRight, ChevronLeft, Clock, AlertCircle, Lightbulb } from 'lucide-react';
+import { ChevronRight, ChevronLeft, ChevronsRight, Clock, AlertCircle, Lightbulb } from 'lucide-react';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 
 interface NarrativeMessage {
@@ -310,6 +310,20 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   };
 
+  const handleSkipForward = () => {
+    // Fast-forward directly to interactive/workshop phase
+    sessionStorage.removeItem(`narrative-${phaseId}`);
+    if (onComplete) {
+      onComplete();
+      return;
+    }
+    // Fallback: jump to last message
+    setCurrentMessageIndex(messages.length - 1);
+    const last = messages[messages.length - 1];
+    setDisplayedText(last?.content || '');
+    setIsTyping(false);
+  };
+
   // Cleanup timeouts on unmount
   useEffect(() => {
     return () => {
@@ -440,6 +454,16 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
             size="icon"
           >
             <ChevronRight className="w-4 h-4 text-gray-600" />
+          </Button>
+
+          <Button
+            onClick={handleSkipForward}
+            className="w-10 h-10 bg-gray-100 hover:bg-gray-200 rounded-full shadow-sm"
+            size="icon"
+            aria-label="Skip to interactive"
+            title="Skip to interactive"
+          >
+            <ChevronsRight className="w-4 h-4 text-gray-600" />
           </Button>
 
           {/* Reset button when stuck */}
