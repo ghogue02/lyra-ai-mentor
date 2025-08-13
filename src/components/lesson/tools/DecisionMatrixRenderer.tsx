@@ -247,7 +247,7 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                 <div className="w-12 h-12 rounded-xl nm-card-subtle flex items-center justify-center"><Scale className="w-6 h-6 text-primary" /></div>
                 <div>
                   <h1 className="text-3xl font-bold">Storytelling Initiative Decision Matrix</h1>
-                  <p className="nm-text-secondary mt-2">Choose between competing storytelling proposals using Sofia's proven criteria framework. Generate a funding-ready recommendation memo that secured Casa de Esperanza $2.5M.</p>
+                  <p className="nm-text-secondary mt-2">Make data-driven decisions like Sofia. Weight your criteria, score your options, and generate an executive-ready recommendation memo. Walk through the same framework that helped Sofia secure $2.5M in funding by turning competing proposals into clear, justified choices.</p>
                 </div>
               </div>
               <div className="mt-6 flex justify-end">
