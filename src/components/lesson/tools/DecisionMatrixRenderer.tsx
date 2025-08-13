@@ -109,7 +109,19 @@ const DecisionMatrixRenderer: React.FC = () => {
           characterType: 'sofia',
           contentType: 'article',
           topic: 'Storytelling initiative recommendation memo',
-          context: `Sofia needs to write a compelling memo recommending a storytelling initiative based on weighted criteria analysis. The memo should connect to funding success and community impact.\n\nContext: ${promptPreview}\n\nWrite in Sofia's voice: warm, strategic, focused on authentic community stories that secure funding. Reference how authentic voices outweigh production polish, and connect the recommendation to long-term donor relationships.`
+          context: `Sofia needs to write a concise, executive-level memo recommending a storytelling initiative. Keep it brief and actionable.
+
+MEMO STRUCTURE (under 200 words total):
+- Subject line
+- Opening (1 sentence)
+- Recommendation with key metrics (2-3 sentences)
+- Top 2 reasons why (2 bullet points max)
+- Next steps (2-3 action items)
+- Professional closing
+
+Context: ${promptPreview}
+
+Write in Sofia's voice: warm but professional, data-driven, focused on authentic community impact that drives funding success.`
         }
       });
       if (error) throw error;
@@ -331,13 +343,17 @@ const DecisionMatrixRenderer: React.FC = () => {
                     </div>
 
                     {aiContent && (
-                      <div className="mt-6 p-6 border rounded-lg bg-background">
-                        <h4 className="font-semibold mb-4">Recommendation Memo</h4>
-                        <TemplateContentFormatter content={aiContent} />
-                        <Button onClick={handleComplete} className="w-full mt-6" size="lg">
-                          Complete Matrix
-                        </Button>
-                      </div>
+                       <div className="mt-6 p-6 border rounded-lg bg-background">
+                         <h4 className="font-semibold mb-4">Recommendation Memo</h4>
+                         <div className="prose prose-sm max-w-none">
+                           <div className="whitespace-pre-line leading-relaxed text-sm">
+                             {aiContent}
+                           </div>
+                         </div>
+                         <Button onClick={handleComplete} className="w-full mt-6" size="lg">
+                           Complete Matrix
+                         </Button>
+                       </div>
                     )}
                   </motion.div>
                 )}
