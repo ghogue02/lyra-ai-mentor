@@ -6,6 +6,7 @@ import { Slider } from '@/components/ui/slider';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { CheckCircle2, ListChecks, Scale, Play } from 'lucide-react';
+import { useCharacterStory } from '@/contexts/CharacterStoryContext';
 
 const criteriaTemplates = [
   'Impact on mission',
@@ -24,6 +25,42 @@ const Section: React.FC<SectionProps> = ({ title, subtitle, children }) => (
     {subtitle && <p className="text-sm nm-text-secondary">{subtitle}</p>}
     <div className="nm-card-subtle p-4">{children}</div>
   </section>
+);
+
+// Step navigation and quick-pick chips
+const phases = ['hook', 'build', 'preview', 'celebrate'] as const;
+
+type Phase = typeof phases[number];
+
+const StepNav: React.FC<{ phase: Phase; onPrev: () => void; onNext: () => void }> = ({ phase, onPrev, onNext }) => {
+  const idx = phases.indexOf(phase);
+  return (
+    <nav className="flex items-center justify-between nm-card-subtle p-3 rounded-md">
+      <div className="flex items-center gap-2 text-sm nm-text-secondary">
+        {phases.map((p, i) => (
+          <div key={p} className={`flex items-center gap-2 ${i === idx ? 'font-semibold nm-text-primary' : ''}`}>
+            <span className="rounded-full w-6 h-6 flex items-center justify-center nm-card">{i + 1}</span>
+            <span className="hidden sm:inline capitalize">{p}</span>
+            {i < phases.length - 1 && <span className="opacity-50">›</span>}
+          </div>
+        ))}
+      </div>
+      <div className="flex items-center gap-2">
+        <Button variant="outline" onClick={onPrev} disabled={idx === 0}>Back</Button>
+        <Button onClick={onNext}>{idx === phases.length - 1 ? 'Finish' : 'Next'}</Button>
+      </div>
+    </nav>
+  );
+};
+
+const SuggestChips: React.FC<{ options: string[]; onPick: (v: string) => void; ariaLabel?: string }> = ({ options, onPick, ariaLabel }) => (
+  <div className="flex flex-wrap gap-2 mt-2" aria-label={ariaLabel}>
+    {options.map((opt, i) => (
+      <Button key={i} type="button" variant="outline" size="sm" onClick={() => onPick(opt)}>
+        + {opt}
+      </Button>
+    ))}
+  </div>
 );
 
 const WeightSlider: React.FC<{ value: number; onChange: (v: number) => void }> = ({ value, onChange }) => (
@@ -53,6 +90,22 @@ const DecisionMatrixRenderer: React.FC = () => {
 
   const bestIndex = totalScores.indexOf(Math.max(...totalScores));
 
+  // Storyline context
+  const { getStory } = useCharacterStory();
+  const sofia = getStory('sofia');
+
+  // Quick-pick suggestions
+  const criterionSuggestions = ['Audience reach', 'Grant alignment', 'Risk level', 'Data availability'];
+  const memoAudienceOptions = ['Executive Director', 'Board', 'Program Directors'];
+  const memoToneOptions = ['Professional and concise', 'Inspiring and mission-centered', 'Data-driven and neutral'];
+  const memoFormatOptions = ['Email memo', 'Board slide', 'Slack update'];
+
+  // LLM prompt preview (educational)
+  const llmPrompt = `You are assisting a nonprofit communications leader. Create a ${format} for ${audience} in a ${tone} tone.
+Weighted criteria: ${criteria.map((c, i) => `${c} (w:${weights[i]})`).join('; ')}.
+Options and scores: ${programs.map((p, i) => `${p} [total:${totalScores[i]}]`).join('; ')}.
+Recommend: ${programs[bestIndex]} based on the matrix, include brief rationale and next steps.`;
+
   return (
     <main className="container mx-auto max-w-4xl p-4 space-y-6">
       <header className="flex items-center gap-3">
@@ -60,9 +113,22 @@ const DecisionMatrixRenderer: React.FC = () => {
         <h1 className="text-2xl font-bold">Decision Matrix</h1>
       </header>
 
+      <StepNav
+        phase={phase}
+        onPrev={() => setPhase(phases[Math.max(0, phases.indexOf(phase) - 1)])}
+        onNext={() => setPhase(phases[Math.min(phases.length - 1, phases.indexOf(phase) + 1)])}
+      />
+
       {phase === 'hook' && (
-        <Card className="p-6 nm-card">
-          <p className="nm-text-secondary mb-4">Sofia needs to choose which story initiative to lead next. Help her pick the most impactful option using a weighted decision matrix.</p>
+        <Card className="p-6 nm-card space-y-4">
+          <div className="flex items-start gap-4">
+            <div className="nm-card-subtle w-14 h-14 rounded-xl flex items-center justify-center">👩‍💼</div>
+            <div>
+              <h3 className="font-semibold">{sofia?.name ?? 'Sofia'}</h3>
+              <p className="nm-text-secondary">{sofia?.quote || 'I used to struggle with a painful truth about our work...'}</p>
+            </div>
+          </div>
+          <p className="text-sm nm-text-secondary">Challenge: {sofia?.challenge || 'Choosing which story initiative to lead next without a clear framework.'}</p>
           <div className="flex justify-end">
             <Button onClick={() => setPhase('build')} className="flex items-center gap-2">
               <Play className="w-4 h-4" /> Start
@@ -82,10 +148,18 @@ const DecisionMatrixRenderer: React.FC = () => {
                 </div>
               ))}
             </div>
-            <div className="flex gap-2 mt-2">
+            <div className="flex flex-wrap gap-2 mt-2">
               <Button variant="outline" onClick={() => setCriteria([...criteria, 'New criterion'])}>Add criterion</Button>
               <Button variant="outline" onClick={() => setWeights([...weights, 5])}>Add weight</Button>
             </div>
+            <SuggestChips
+              ariaLabel="Quick add criteria"
+              options={criterionSuggestions.filter((s) => !criteria.includes(s))}
+              onPick={(opt) => {
+                setCriteria((prev) => [...prev, opt]);
+                setWeights((prev) => [...prev, 5]);
+              }}
+            />
           </Section>
 
           <Section title="2) Programs/Options" subtitle="Score each 0-10 for every criterion.">
@@ -95,7 +169,15 @@ const DecisionMatrixRenderer: React.FC = () => {
                 setScores([...scores, criteria.map(() => 5)]);
               }}>Add program</Button>
             </div>
-            <div className="space-y-4">
+            <SuggestChips
+              ariaLabel="Quick add programs"
+              options={[...programsTemplates, 'Annual Gala Campaign', 'Community Story Series', 'Donor Impact Report'].filter((p) => !programs.includes(p))}
+              onPick={(opt) => {
+                setPrograms((prev) => [...prev, opt]);
+                setScores((prev) => [...prev, criteria.map(() => 5)]);
+              }}
+            />
+            <div className="space-y-4 mt-4">
               {programs.map((p, pIdx) => (
                 <div key={pIdx} className="nm-card-subtle p-4 space-y-2">
                   <Input value={p} onChange={(e) => setPrograms(programs.map((v, i) => (i === pIdx ? e.target.value : v)))} />
