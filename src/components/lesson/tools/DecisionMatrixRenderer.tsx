@@ -21,8 +21,8 @@ import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatt
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
-const defaultCriteria = ['Impact on mission', 'Cost/ROI', 'Feasibility', 'Time to implement'];
-const defaultPrograms = ['Program A', 'Program B', 'Program C'];
+const defaultCriteria = ['Authentic voice alignment', 'Community representation', 'Donor engagement factor', 'Cultural authenticity'];
+const defaultPrograms = ['Community Impact Documentary', 'Bilingual Family Stories Campaign', 'Youth Leadership Spotlight Series'];
 
 const DecisionMatrixRenderer: React.FC = () => {
   const navigate = useNavigate();
@@ -43,8 +43,8 @@ const DecisionMatrixRenderer: React.FC = () => {
   const [format, setFormat] = useState('Email memo');
 
   // Quick-pick options
-  const criteriaSuggestions = ['Audience reach', 'Grant alignment', 'Risk level', 'Equity impact', 'Data availability'];
-  const programSuggestions = ['Annual Gala Campaign', 'Community Story Series', 'Donor Impact Report', 'Volunteer Spotlight Series'];
+  const criteriaSuggestions = ['Emotional resonance potential', 'Production feasibility', 'Grant alignment', 'Equity impact', 'Measurable outcomes'];
+  const programSuggestions = ['Donor Journey Video Collection', 'Alumni Success Story Series', 'Community Voices Podcast', 'Impact Documentary Film'];
   const audienceOptions = ['Executive Director', 'Board', 'Program Directors'];
   const toneOptions = ['Professional and concise', 'Inspiring and mission-centered', 'Data-driven and neutral'];
   const formatOptions = ['Email memo', 'Board slide', 'Slack update'];
@@ -77,8 +77,8 @@ const DecisionMatrixRenderer: React.FC = () => {
         body: {
           characterType: 'sofia',
           contentType: 'article',
-          topic: 'Decision matrix recommendation memo',
-          context: `Use this prompt to produce a concise memo.\n${promptPreview}`
+          topic: 'Storytelling initiative recommendation memo',
+          context: `Sofia needs to write a compelling memo recommending a storytelling initiative based on weighted criteria analysis. The memo should connect to funding success and community impact.\n\nContext: ${promptPreview}\n\nWrite in Sofia's voice: warm, strategic, focused on authentic community stories that secure funding. Reference how authentic voices outweigh production polish, and connect the recommendation to long-term donor relationships.`
         }
       });
       if (error) throw error;
@@ -91,9 +91,9 @@ const DecisionMatrixRenderer: React.FC = () => {
     }
   };
   const narrativeMessages = [
-    { id: '1', content: "We kept debating ideas without criteria — decisions felt subjective.", emotion: 'thoughtful' as const, showAvatar: true },
-    { id: '2', content: "A simple weighted matrix made trade‑offs clear and consensus fast.", emotion: 'confident' as const },
-    { id: '3', content: "I wrap it with a memo so leaders see the why, not just the what.", emotion: 'empowered' as const },
+    { id: '1', content: "At Casa de Esperanza, we had three storytelling proposals but couldn't agree on which would secure the $400K grant.", emotion: 'thoughtful' as const, showAvatar: true },
+    { id: '2', content: "A weighted matrix clarified what mattered most: authentic community voices over polished production.", emotion: 'confident' as const },
+    { id: '3', content: "My memo connected the choice to funding success — board approved in 24 hours, grant secured in 3 months.", emotion: 'empowered' as const },
   ];
 
   const progress = 66 + Math.min(34, currentStep * 8);
@@ -110,8 +110,8 @@ const DecisionMatrixRenderer: React.FC = () => {
               <div className="flex items-start gap-4">
                 <div className="w-12 h-12 rounded-xl nm-card-subtle flex items-center justify-center"><Scale className="w-6 h-6 text-primary" /></div>
                 <div>
-                  <h1 className="text-3xl font-bold">Decision Matrix</h1>
-                  <p className="nm-text-secondary mt-2">Prioritize storytelling initiatives with a weighted criteria matrix and produce a memo-ready recommendation.</p>
+                  <h1 className="text-3xl font-bold">Storytelling Initiative Decision Matrix</h1>
+                  <p className="nm-text-secondary mt-2">Choose between competing storytelling proposals using Sofia's proven criteria framework. Generate a funding-ready recommendation memo that secured Casa de Esperanza $2.5M.</p>
                 </div>
               </div>
               <div className="mt-6 flex justify-end">
@@ -141,12 +141,15 @@ const DecisionMatrixRenderer: React.FC = () => {
               {/* Builder */}
               <Card className="border-border/40">
                 <CardContent className="p-4 space-y-4">
-                  {/* Criteria */}
-                  <section>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Target className="w-4 h-4 text-primary" />
-                      <h3 className="font-semibold">Criteria</h3>
-                    </div>
+                   {/* Criteria */}
+                   <section>
+                     <div className="flex items-center gap-2 mb-3">
+                       <Target className="w-4 h-4 text-primary" />
+                       <div>
+                         <h3 className="font-semibold">Impact Criteria</h3>
+                         <p className="text-xs nm-text-secondary">What matters most for securing funding and authentic community engagement?</p>
+                       </div>
+                     </div>
                     <div className="grid sm:grid-cols-2 gap-3">
                       {criteria.map((c, i) => (
                         <div key={i} className="space-y-2">
@@ -170,12 +173,15 @@ const DecisionMatrixRenderer: React.FC = () => {
                     </div>
                   </section>
 
-                  {/* Programs */}
-                  <section>
-                    <div className="flex items-center gap-2 mb-3">
-                      <Layers className="w-4 h-4 text-primary" />
-                      <h3 className="font-semibold">Options</h3>
-                    </div>
+                   {/* Programs */}
+                   <section>
+                     <div className="flex items-center gap-2 mb-3">
+                       <Layers className="w-4 h-4 text-primary" />
+                       <div>
+                         <h3 className="font-semibold">Storytelling Initiatives</h3>
+                         <p className="text-xs nm-text-secondary">Rate each proposal against your criteria (0-10 scale)</p>
+                       </div>
+                     </div>
                     <div className="space-y-3">
                       {programs.map((p, pIdx) => (
                         <div key={pIdx} className="border border-border/30 rounded-lg p-3 space-y-2">
@@ -201,21 +207,24 @@ const DecisionMatrixRenderer: React.FC = () => {
                           </div>
                         </div>
                       ))}
-                      <div className="flex flex-wrap gap-2">
-                        <Button variant="outline" size="sm" onClick={()=>{ setPrograms([...programs, `Program ${String.fromCharCode(65 + programs.length)}`]); setScores([...scores, criteria.map(()=>5)]); }}>Add</Button>
-                        {programSuggestions.filter(p => !programs.includes(p)).slice(0, 2).map((p, i) => (
-                          <Button key={i} variant="ghost" size="sm" className="text-xs" onClick={()=> { setPrograms([...programs, p]); setScores([...scores, criteria.map(()=>5)]); }}>+ {p}</Button>
-                        ))}
-                      </div>
+                       <div className="flex flex-wrap gap-2">
+                         <Button variant="outline" size="sm" onClick={()=>{ setPrograms([...programs, `Initiative ${programs.length + 1}`]); setScores([...scores, criteria.map(()=>5)]); }}>Add Initiative</Button>
+                         {programSuggestions.filter(p => !programs.includes(p)).slice(0, 2).map((p, i) => (
+                           <Button key={i} variant="ghost" size="sm" className="text-xs" onClick={()=> { setPrograms([...programs, p]); setScores([...scores, criteria.map(()=>5)]); }}>+ {p}</Button>
+                         ))}
+                       </div>
                     </div>
                   </section>
 
-                  {/* Memo options */}
-                  <section>
-                    <div className="flex items-center gap-2 mb-3">
-                      <FileText className="w-4 h-4 text-primary" />
-                      <h3 className="font-semibold">Output</h3>
-                    </div>
+                   {/* Memo options */}
+                   <section>
+                     <div className="flex items-center gap-2 mb-3">
+                       <FileText className="w-4 h-4 text-primary" />
+                       <div>
+                         <h3 className="font-semibold">Recommendation Memo</h3>
+                         <p className="text-xs nm-text-secondary">How should Sofia present the winning proposal to leadership?</p>
+                       </div>
+                     </div>
                     <div className="grid grid-cols-3 gap-2">
                       <Select value={audience} onValueChange={setAudience}>
                         <SelectTrigger className="h-9">
@@ -253,11 +262,11 @@ const DecisionMatrixRenderer: React.FC = () => {
                     <CardTitle>Sofia’s Guidance</CardTitle>
                   </CardHeader>
                   <CardContent>
-                    <ul className="list-disc pl-5 text-sm nm-text-secondary space-y-1">
-                      <li>Weights reflect importance — not scores.</li>
-                      <li>Keep criteria independent to avoid double counting.</li>
-                      <li>Use the memo to explain trade-offs succinctly.</li>
-                    </ul>
+                     <ul className="list-disc pl-5 text-sm nm-text-secondary space-y-2">
+                       <li><strong>Stories that resonate secure funding</strong> — weight emotional impact and authenticity highly</li>
+                       <li><strong>Community voices outweigh polish</strong> — donors fund authentic connection, not production value</li>
+                       <li><strong>Your memo tells the story behind the numbers</strong> — explain why this choice builds lasting relationships</li>
+                     </ul>
                   </CardContent>
                 </Card>
 
@@ -294,7 +303,7 @@ const DecisionMatrixRenderer: React.FC = () => {
                     </div>
                     <Textarea 
                       className="min-h-[100px] text-sm" 
-                      placeholder={`Decision: ${programs[bestIndex]} (score: ${totals[bestIndex]})\nRationale: [Explain top criteria]\nNext: Stakeholder approval`}
+                      placeholder={`RECOMMENDATION: ${programs[bestIndex]} (weighted score: ${totals[bestIndex]})\n\nWHY: This initiative scores highest on authentic community voice and donor engagement potential, aligning with our $400K grant requirements.\n\nNEXT STEPS: Present to board with community partner commitments and budget projections.`}
                     />
                     <Button onClick={handleComplete} className="w-full h-9" size="sm">
                       <CheckCircle2 className="w-4 h-4 mr-2" />
