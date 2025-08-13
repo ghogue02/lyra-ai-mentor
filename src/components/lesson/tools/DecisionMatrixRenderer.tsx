@@ -444,8 +444,36 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                        <div className="mt-6 p-6 border rounded-lg bg-background">
                          <h4 className="font-semibold mb-4">Recommendation Memo</h4>
                          <div className="prose prose-sm max-w-none">
-                           <div className="whitespace-pre-line leading-relaxed text-sm font-normal">
-                             {aiContent.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')}
+                           <div className="leading-relaxed text-sm font-normal space-y-4">
+                             {aiContent.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')
+                               .split('\n\n')
+                               .map((paragraph, index) => {
+                                 // Handle bullet points
+                                 if (paragraph.includes('* ')) {
+                                   const bulletItems = paragraph.split('\n').filter(line => line.trim());
+                                   return (
+                                     <div key={index} className="space-y-2">
+                                       {bulletItems.map((item, itemIndex) => {
+                                         if (item.trim().startsWith('* ')) {
+                                           return (
+                                             <div key={itemIndex} className="flex items-start gap-3 ml-4">
+                                               <span className="text-primary mt-1">•</span>
+                                               <span className="flex-1">{item.trim().substring(2)}</span>
+                                             </div>
+                                           );
+                                         } else {
+                                           return <div key={itemIndex} className="font-medium">{item.trim()}</div>;
+                                         }
+                                       })}
+                                     </div>
+                                   );
+                                 }
+                                 // Handle regular paragraphs
+                                 return paragraph.trim() ? (
+                                   <div key={index} className="whitespace-pre-line">{paragraph.trim()}</div>
+                                 ) : null;
+                               })
+                               .filter(Boolean)}
                            </div>
                          </div>
                          <Button onClick={handleComplete} className="w-full mt-6" size="lg">
