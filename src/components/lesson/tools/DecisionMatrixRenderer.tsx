@@ -215,7 +215,7 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                         <Button 
                           key={i} 
                           variant="outline" 
-                          className="w-full h-auto justify-start p-6"
+                          className="w-full h-auto justify-start p-6 text-left"
                           onClick={() => {
                             setCriteria(setup.criteria);
                             setWeights(setup.criteria.map(c => criteriaPresets.find(p => p.name === c)?.weight || 5));
@@ -224,9 +224,9 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                             setCurrentStep(1);
                           }}
                         >
-                          <div className="text-left space-y-2">
-                            <div className="font-medium text-base">{setup.name}</div>
-                            <div className="text-sm text-muted-foreground leading-relaxed">
+                          <div className="w-full space-y-2">
+                            <div className="font-medium text-base text-left">{setup.name}</div>
+                            <div className="text-sm text-muted-foreground leading-relaxed text-left whitespace-normal">
                               {setup.description}
                             </div>
                           </div>
