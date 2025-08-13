@@ -71,9 +71,24 @@ const DecisionMatrixRenderer: React.FC = () => {
   ];
 
   const quickSetups = [
-    { name: 'Video Comparison', criteria: ['Authentic voice alignment', 'Production feasibility', 'Donor engagement factor'], programs: ['Community Impact Documentary', 'Youth Leadership Spotlight Series', 'Social Media Story Campaign'] },
-    { name: 'Grant Proposal Decision', criteria: ['Grant alignment', 'Measurable outcomes', 'Community representation'], programs: ['Bilingual Family Stories Campaign', 'Impact Documentary Film', 'Alumni Success Story Series'] },
-    { name: 'Donor Engagement Focus', criteria: ['Donor engagement factor', 'Emotional resonance potential', 'Story accessibility'], programs: ['Donor Journey Video Collection', 'Community Voices Podcast', 'Interactive Story Hub'] }
+    { 
+      name: 'Video Comparison', 
+      description: "Sofia needs to recommend a video storytelling approach for the new campaign. Help her evaluate production complexity vs. community impact to secure board approval.",
+      criteria: ['Authentic voice alignment', 'Production feasibility', 'Donor engagement factor'], 
+      programs: ['Community Impact Documentary', 'Youth Leadership Spotlight Series', 'Social Media Story Campaign'] 
+    },
+    { 
+      name: 'Grant Proposal Decision', 
+      description: "A major foundation is requesting Sofia's top storytelling initiative for a $50K grant. Help her choose which project will demonstrate the strongest measurable community impact.",
+      criteria: ['Grant alignment', 'Measurable outcomes', 'Community representation'], 
+      programs: ['Bilingual Family Stories Campaign', 'Impact Documentary Film', 'Alumni Success Story Series'] 
+    },
+    { 
+      name: 'Donor Engagement Focus', 
+      description: "Sofia's major donors want more personal connection to the community. Help her select the storytelling format that will deepen donor relationships and increase retention.",
+      criteria: ['Donor engagement factor', 'Emotional resonance potential', 'Story accessibility'], 
+      programs: ['Donor Journey Video Collection', 'Community Voices Podcast', 'Interactive Story Hub'] 
+    }
   ];
 
   const audienceOptions = ['Executive Director', 'Board', 'Program Directors'];
@@ -200,7 +215,7 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                         <Button 
                           key={i} 
                           variant="outline" 
-                          className="w-full h-20 justify-start p-6"
+                          className="w-full h-auto justify-start p-6"
                           onClick={() => {
                             setCriteria(setup.criteria);
                             setWeights(setup.criteria.map(c => criteriaPresets.find(p => p.name === c)?.weight || 5));
@@ -209,10 +224,10 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                             setCurrentStep(1);
                           }}
                         >
-                          <div className="text-left space-y-1">
+                          <div className="text-left space-y-2">
                             <div className="font-medium text-base">{setup.name}</div>
-                            <div className="text-sm text-muted-foreground">
-                              Compare {setup.programs.length} options using {setup.criteria.length} criteria
+                            <div className="text-sm text-muted-foreground leading-relaxed">
+                              {setup.description}
                             </div>
                           </div>
                         </Button>
