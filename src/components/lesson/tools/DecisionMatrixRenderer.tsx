@@ -149,6 +149,8 @@ MEMO STRUCTURE (under 200 words total):
 
 Context: ${promptPreview}
 
+IMPORTANT: Do not use any markdown formatting (no **, __, *, etc.). Use plain text only with proper line breaks and spacing for readability.
+
 Write in Sofia's voice: warm but professional, data-driven, focused on authentic community impact that drives funding success.`
         }
       });
@@ -438,12 +440,12 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                       </Button>
                     </div>
 
-                    {aiContent && (
+                     {aiContent && (
                        <div className="mt-6 p-6 border rounded-lg bg-background">
                          <h4 className="font-semibold mb-4">Recommendation Memo</h4>
                          <div className="prose prose-sm max-w-none">
-                           <div className="whitespace-pre-line leading-relaxed text-sm">
-                             {aiContent}
+                           <div className="whitespace-pre-line leading-relaxed text-sm font-normal">
+                             {aiContent.replace(/\*\*(.*?)\*\*/g, '$1').replace(/\*(.*?)\*/g, '$1')}
                            </div>
                          </div>
                          <Button onClick={handleComplete} className="w-full mt-6" size="lg">
