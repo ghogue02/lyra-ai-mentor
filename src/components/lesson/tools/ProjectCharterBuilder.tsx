@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import { useToast } from '@/hooks/use-toast';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { supabase } from '@/integrations/supabase/client';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 // Aligned with Voice Discovery: intro -> narrative -> workshop
 
@@ -37,6 +39,9 @@ const ProjectCharterBuilder: React.FC = () => {
     `Draft a concise nonprofit project charter. Project: ${projectName}. Goals: ${goals}. KPIs: ${kpis}. SMART: ${smart}. Roles: ${roles}. Risks: ${risks}. Mark uncertain details with [AI Generated] for review.`
   ), [projectName, goals, kpis, smart, roles, risks]);
 
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiContent, setAiContent] = useState<string>('');
+
   const narrativeMessages = [
     { id: '1', content: 'When everyone sees the same one-page charter, alignment happens fast.', emotion: 'confident' as const, showAvatar: true },
     { id: '2', content: 'I add AI placeholders where we need decisions — it invites collaboration.', emotion: 'thoughtful' as const },
@@ -44,6 +49,27 @@ const ProjectCharterBuilder: React.FC = () => {
   ];
 
   const progress = 66 + Math.min(34, currentStep * 8);
+
+  const runAI = async () => {
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-character-content', {
+        body: {
+          characterType: 'sofia',
+          contentType: 'document',
+          topic: 'Project charter draft',
+          context: `Use this context to produce a charter draft.\n${promptPreview}`
+        }
+      });
+      if (error) throw error;
+      setAiContent(data.content || '');
+      toast({ title: 'AI charter ready', description: 'Review the draft below.' });
+    } catch (e) {
+      toast({ title: 'Generation failed', description: 'Please try again.', variant: 'destructive' });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleComplete = () => {
     toast({ title: 'Charter Draft Complete!', description: 'Placeholders marked — ready for review.' });
@@ -147,8 +173,18 @@ const ProjectCharterBuilder: React.FC = () => {
 
                 <Card>
                   <CardHeader><CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4"/> LLM Prompt Preview</CardTitle></CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-3">
                     <pre className="text-xs whitespace-pre-wrap nm-card-subtle p-3 rounded-md">{promptPreview}</pre>
+                    <div className="flex justify-end">
+                      <Button onClick={runAI} disabled={isGenerating} className="flex items-center gap-2">
+                        <Sparkles className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} /> {isGenerating ? 'Generating...' : 'Generate AI Charter'}
+                      </Button>
+                    </div>
+                    {aiContent && (
+                      <div className="nm-card-subtle p-4 rounded-md">
+                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -156,7 +192,14 @@ const ProjectCharterBuilder: React.FC = () => {
                   <CardHeader><CardTitle>Draft Charter</CardTitle></CardHeader>
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between"><h3 className="font-semibold">{projectName}</h3><Badge variant="secondary">Review Required</Badge></div>
-                    <div className="prose max-w-none text-sm whitespace-pre-wrap nm-card-subtle p-4 rounded-md">{`${reviewNotice}\n\nProject: ${projectName}\n\nGoals:\n- ${goals}\n- [AI Generated] Audience segmentation plan\n\nKPIs:\n- ${kpis}\n- [AI Generated] Story resonance index\n\nSMART Objectives:\n- ${smart}\n\nRoles & Responsibilities:\n- ${roles}\n- [AI Generated] QA reviewer assigned\n\nRisks & Mitigations:\n- ${risks}`}</div>
+                    {aiContent && (
+                      <div className="nm-card-subtle p-4 rounded-md">
+                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
+                      </div>
+                    )}
+                    {!aiContent && (
+                      <div className="prose max-w-none text-sm whitespace-pre-wrap nm-card-subtle p-4 rounded-md">{`${reviewNotice}\n\nProject: ${projectName}\n\nGoals:\n- ${goals}\n- [AI Generated] Audience segmentation plan\n\nKPIs:\n- ${kpis}\n- [AI Generated] Story resonance index\n\nSMART Objectives:\n- ${smart}\n\nRoles & Responsibilities:\n- ${roles}\n- [AI Generated] QA reviewer assigned\n\nRisks & Mitigations:\n- ${risks}`}</div>
+                    )}
                     <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
                   </CardContent>
                 </Card>

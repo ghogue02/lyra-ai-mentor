@@ -7,12 +7,15 @@ import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Scale, Play, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import { useToast } from '@/hooks/use-toast';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { useCharacterStory } from '@/contexts/CharacterStoryContext';
+import { supabase } from '@/integrations/supabase/client';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 // New structure aligned with SofiaVoiceDiscovery: intro -> narrative -> workshop
 
@@ -46,6 +49,9 @@ const DecisionMatrixRenderer: React.FC = () => {
   const toneOptions = ['Professional and concise', 'Inspiring and mission-centered', 'Data-driven and neutral'];
   const formatOptions = ['Email memo', 'Board slide', 'Slack update'];
 
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiContent, setAiContent] = useState<string>('');
+
   const totals = useMemo(() => programs.map((_, pIdx) => (
     criteria.reduce((sum, _c, cIdx) => sum + (scores[pIdx][cIdx] || 0) * (weights[cIdx] || 0), 0)
   )), [programs, scores, criteria, weights]);
@@ -64,6 +70,26 @@ const DecisionMatrixRenderer: React.FC = () => {
     navigate('/chapter/3');
   };
 
+  const runAI = async () => {
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-character-content', {
+        body: {
+          characterType: 'sofia',
+          contentType: 'article',
+          topic: 'Decision matrix recommendation memo',
+          context: `Use this prompt to produce a concise memo.\n${promptPreview}`
+        }
+      });
+      if (error) throw error;
+      setAiContent(data.content || '');
+      toast({ title: 'AI memo ready', description: 'Review and refine as needed.' });
+    } catch (e) {
+      toast({ title: 'Generation failed', description: 'Please try again.', variant: 'destructive' });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
   const narrativeMessages = [
     { id: '1', content: "We had five great storytelling ideas — but no shared way to choose.", emotion: 'thoughtful' as const, showAvatar: true },
     { id: '2', content: "Using a simple weighted matrix, our team aligned in minutes.", emotion: 'confident' as const },
@@ -171,28 +197,31 @@ const DecisionMatrixRenderer: React.FC = () => {
                     <h3 className="font-semibold mb-2">3) Memo Options</h3>
                     <div className="grid sm:grid-cols-3 gap-3">
                       <div>
-                        <Input value={audience} onChange={(e)=>setAudience(e.target.value)} placeholder="Audience" />
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {audienceOptions.map((o, i) => (
-                            <Button key={i} variant="outline" size="sm" onClick={()=> setAudience(o)}>+ {o}</Button>
-                          ))}
-                        </div>
+                        <label className="text-xs nm-text-secondary">Audience</label>
+                        <Select value={audience} onValueChange={setAudience}>
+                          <SelectTrigger><SelectValue placeholder="Select audience" /></SelectTrigger>
+                          <SelectContent>
+                            {audienceOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
-                        <Input value={tone} onChange={(e)=>setTone(e.target.value)} placeholder="Tone" />
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {toneOptions.map((o, i) => (
-                            <Button key={i} variant="outline" size="sm" onClick={()=> setTone(o)}>+ {o}</Button>
-                          ))}
-                        </div>
+                        <label className="text-xs nm-text-secondary">Tone</label>
+                        <Select value={tone} onValueChange={setTone}>
+                          <SelectTrigger><SelectValue placeholder="Select tone" /></SelectTrigger>
+                          <SelectContent>
+                            {toneOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
+                          </SelectContent>
+                        </Select>
                       </div>
                       <div>
-                        <Input value={format} onChange={(e)=>setFormat(e.target.value)} placeholder="Format" />
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {formatOptions.map((o, i) => (
-                            <Button key={i} variant="outline" size="sm" onClick={()=> setFormat(o)}>+ {o}</Button>
-                          ))}
-                        </div>
+                        <label className="text-xs nm-text-secondary">Format</label>
+                        <Select value={format} onValueChange={setFormat}>
+                          <SelectTrigger><SelectValue placeholder="Select format" /></SelectTrigger>
+                          <SelectContent>
+                            {formatOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
+                          </SelectContent>
+                        </Select>
                       </div>
                     </div>
                   </section>
@@ -218,8 +247,18 @@ const DecisionMatrixRenderer: React.FC = () => {
                   <CardHeader>
                     <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4"/> LLM Prompt Preview</CardTitle>
                   </CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-3">
                     <pre className="text-xs whitespace-pre-wrap nm-card-subtle p-3 rounded-md">{promptPreview}</pre>
+                    <div className="flex justify-end">
+                      <Button onClick={runAI} disabled={isGenerating} className="flex items-center gap-2">
+                        <Sparkles className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} /> {isGenerating ? 'Generating...' : 'Generate AI Memo'}
+                      </Button>
+                    </div>
+                    {aiContent && (
+                      <div className="nm-card-subtle p-4 rounded-md">
+                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 

@@ -11,6 +11,8 @@ import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import { useToast } from '@/hooks/use-toast';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { supabase } from '@/integrations/supabase/client';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 
 // Aligned with Voice Discovery: intro -> narrative -> workshop
 
@@ -40,6 +42,9 @@ const TeamCapacityCalculator: React.FC = () => {
 
   const promptPreview = `Analyze feasibility for a nonprofit campaign. Available weekly hours: ${available}. Required hours: ${reqHours}. Team: ${team.map(t=>`${t.name}(${t.role}:${t.hoursPerWeek}h/wk)`).join(', ')}. Recommend adjustments and risks.`;
 
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [aiContent, setAiContent] = useState<string>('');
+
   const narrativeMessages = [
     { id: '1', content: 'Before I pitch a new story sprint, I sanity-check our capacity.', emotion: 'thoughtful' as const, showAvatar: true },
     { id: '2', content: 'A quick tally of weekly bandwidth avoids painful mid-sprint surprises.', emotion: 'confident' as const },
@@ -47,6 +52,27 @@ const TeamCapacityCalculator: React.FC = () => {
   ];
 
   const progress = 66 + Math.min(34, currentStep * 8);
+
+  const runAI = async () => {
+    setIsGenerating(true);
+    try {
+      const { data, error } = await supabase.functions.invoke('generate-character-content', {
+        body: {
+          characterType: 'sofia',
+          contentType: 'analysis',
+          topic: 'Team capacity and feasibility summary',
+          context: `Use this context to produce a concise feasibility note.\n${promptPreview}`
+        }
+      });
+      if (error) throw error;
+      setAiContent(data.content || '');
+      toast({ title: 'AI analysis ready', description: 'Review the summary below.' });
+    } catch (e) {
+      toast({ title: 'Generation failed', description: 'Please try again.', variant: 'destructive' });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
 
   const handleComplete = () => {
     toast({ title: 'Capacity Analysis Complete!', description: 'Summary saved. Great job validating feasibility.' });
@@ -160,8 +186,18 @@ const TeamCapacityCalculator: React.FC = () => {
 
                 <Card>
                   <CardHeader><CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4"/> LLM Prompt Preview</CardTitle></CardHeader>
-                  <CardContent>
+                  <CardContent className="space-y-3">
                     <pre className="text-xs whitespace-pre-wrap nm-card-subtle p-3 rounded-md">{promptPreview}</pre>
+                    <div className="flex justify-end">
+                      <Button onClick={runAI} disabled={isGenerating} className="flex items-center gap-2">
+                        <Sparkles className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} /> {isGenerating ? 'Generating...' : 'Generate AI Analysis'}
+                      </Button>
+                    </div>
+                    {aiContent && (
+                      <div className="nm-card-subtle p-4 rounded-md">
+                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -170,6 +206,11 @@ const TeamCapacityCalculator: React.FC = () => {
                   <CardContent className="space-y-2">
                     <div className="flex items-center justify-between"><span className="text-sm nm-text-secondary">Available / week</span><Badge variant="secondary">{available} hrs</Badge></div>
                     <div className="flex items-center justify-between"><span className="text-sm nm-text-secondary">Required</span><Badge>{reqHours} hrs</Badge></div>
+                    {aiContent && (
+                      <div className="nm-card-subtle p-4 rounded-md">
+                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
+                      </div>
+                    )}
                     <Textarea className="min-h-[120px] mt-2" defaultValue={`Recommendation: ${recommendation}\nRisks: [List risks] \nAdjustments: [Proposed changes]`} />
                     <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
                   </CardContent>
