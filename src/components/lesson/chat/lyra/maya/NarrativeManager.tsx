@@ -46,8 +46,10 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
   const [showInteraction, setShowInteraction] = useState(false);
   const [currentInteraction, setCurrentInteraction] = useState<string | null>(null);
   const [isStuck, setIsStuck] = useState(false);
+  const [lastProcessedIndex, setLastProcessedIndex] = useState(-1);
   const completionTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const stuckTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   // State persistence - only restore if within same session (< 5 minutes old)
   useEffect(() => {
@@ -150,6 +152,8 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     if (currentMessageIndex < messages.length - 1) {
       console.log('Advancing to next message:', currentMessageIndex + 1);
       setCurrentMessageIndex(prev => prev + 1);
+      setDisplayedText(''); // Reset text for new message
+      setLastProcessedIndex(currentMessageIndex); // Track what we just processed
     } else if (onComplete) {
       console.log('Completing narrative');
       
@@ -187,15 +191,28 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   }, [currentMessageIndex, isTyping, interactionPoints]);
 
-  // Typing effect - enhanced with paused state handling and stuck cursor fix
+  // Typing effect - enhanced with better state management
   useEffect(() => {
     if (!currentMessage?.content) return;
+
+    // Clear any existing typing interval
+    if (typingIntervalRef.current) {
+      clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
 
     // If paused, stop typing immediately but maintain current displayed text
     if (paused) {
       console.log('NarrativeManager: paused, stopping typing');
       setIsTyping(false);
       return;
+    }
+
+    // If we've switched to a new message, reset displayed text
+    if (lastProcessedIndex !== currentMessageIndex) {
+      console.log('NarrativeManager: new message detected, resetting displayed text');
+      setDisplayedText('');
+      setLastProcessedIndex(currentMessageIndex);
     }
 
     // Only start typing if we don't already have the full text displayed
@@ -221,18 +238,16 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     console.log('NarrativeManager: starting typing effect for message', currentMessageIndex);
     setIsTyping(true);
     
-    // Only reset text if we're starting fresh (not resuming)
-    if (displayedText === '' || !displayedText.startsWith(currentMessage.content.substring(0, 1))) {
-      setDisplayedText('');
-    }
-    
     const text = currentMessage.content;
     let index = displayedText.length; // Resume from current position
     
-    const typingInterval = setInterval(() => {
+    typingIntervalRef.current = setInterval(() => {
       if (paused) {
         // Stop typing if paused mid-way
-        clearInterval(typingInterval);
+        if (typingIntervalRef.current) {
+          clearInterval(typingIntervalRef.current);
+          typingIntervalRef.current = null;
+        }
         setIsTyping(false);
         return;
       }
@@ -241,7 +256,10 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
         setDisplayedText(text.substring(0, index + 1));
         index++;
       } else {
-        clearInterval(typingInterval);
+        if (typingIntervalRef.current) {
+          clearInterval(typingIntervalRef.current);
+          typingIntervalRef.current = null;
+        }
         setIsTyping(false);
         console.log('NarrativeManager: typing complete for message', currentMessageIndex);
         
@@ -263,9 +281,12 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
 
     return () => {
       console.log('NarrativeManager: cleaning up typing interval');
-      clearInterval(typingInterval);
+      if (typingIntervalRef.current) {
+        clearInterval(typingIntervalRef.current);
+        typingIntervalRef.current = null;
+      }
     };
-  }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex, displayedText, handleAdvance]);
+  }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex, displayedText, handleAdvance, lastProcessedIndex]);
 
   // Force re-render when displayedText changes to ensure UI updates
   useEffect(() => {
@@ -287,6 +308,8 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     if (currentMessageIndex > 0) {
       console.log('Going back to message:', currentMessageIndex - 1);
       setCurrentMessageIndex(prev => prev - 1);
+      setDisplayedText(''); // Reset text for previous message
+      setLastProcessedIndex(currentMessageIndex - 1); // Update tracking
     }
   };
 
@@ -332,6 +355,9 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       }
       if (stuckTimeoutRef.current) {
         clearTimeout(stuckTimeoutRef.current);
+      }
+      if (typingIntervalRef.current) {
+        clearInterval(typingIntervalRef.current);
       }
     };
   }, []);
