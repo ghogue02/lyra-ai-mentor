@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Scale, Play, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Scale, Play, Sparkles, CheckCircle2, Target, Layers, FileText, Lightbulb } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import { useToast } from '@/hooks/use-toast';
@@ -137,56 +137,74 @@ const DecisionMatrixRenderer: React.FC = () => {
           <div className="container mx-auto max-w-6xl pt-20 space-y-6">
             <div className="mb-2"><Progress value={progress} className="h-2" /></div>
 
-            <div className="grid lg:grid-cols-2 gap-6">
+            <div className="grid lg:grid-cols-2 gap-4">
               {/* Builder */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Build Your Matrix</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
+              <Card className="border-border/40">
+                <CardContent className="p-4 space-y-4">
                   {/* Criteria */}
                   <section>
-                    <h3 className="font-semibold mb-2">1) Criteria and Weights</h3>
-                    <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Target className="w-4 h-4 text-primary" />
+                      <h3 className="font-semibold">Criteria</h3>
+                    </div>
+                    <div className="grid sm:grid-cols-2 gap-3">
                       {criteria.map((c, i) => (
                         <div key={i} className="space-y-2">
-                          <Input value={c} onChange={(e)=>{ setCriteria(criteria.map((v, idx)=> idx===i? e.target.value : v)); setCurrentStep((s)=>Math.min(4, s+1)); }} />
-                          <div className="flex items-center gap-3">
+                          <Input 
+                            value={c} 
+                            onChange={(e)=>{ setCriteria(criteria.map((v, idx)=> idx===i? e.target.value : v)); setCurrentStep((s)=>Math.min(4, s+1)); }}
+                            className="h-9"
+                          />
+                          <div className="flex items-center gap-2">
                             <Slider value={[weights[i]]} onValueChange={(v)=>{ setWeights(weights.map((w, idx)=> idx===i? (v[0]||0) : w)); }} max={10} step={1} className="flex-1" />
-                            <Badge variant="secondary">{weights[i]}</Badge>
+                            <Badge variant="secondary" className="min-w-6 text-xs">{weights[i]}</Badge>
                           </div>
                         </div>
                       ))}
                     </div>
-                    <div className="flex flex-wrap items-center gap-2 mt-3">
-                      <Button variant="outline" onClick={()=>{ setCriteria([...criteria, 'New criterion']); setWeights([...weights, 5]); }}>Add criterion</Button>
-                      {criteriaSuggestions.filter(s => !criteria.includes(s)).map((s, i) => (
-                        <Button key={i} variant="outline" size="sm" onClick={()=> { setCriteria([...criteria, s]); setWeights([...weights, 5]); }}>+ {s}</Button>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      <Button variant="outline" size="sm" onClick={()=>{ setCriteria([...criteria, 'New criterion']); setWeights([...weights, 5]); }}>Add</Button>
+                      {criteriaSuggestions.filter(s => !criteria.includes(s)).slice(0, 3).map((s, i) => (
+                        <Button key={i} variant="ghost" size="sm" className="text-xs" onClick={()=> { setCriteria([...criteria, s]); setWeights([...weights, 5]); }}>+ {s}</Button>
                       ))}
                     </div>
                   </section>
 
                   {/* Programs */}
                   <section>
-                    <h3 className="font-semibold mb-2">2) Programs/Options</h3>
-                    <div className="space-y-4">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Layers className="w-4 h-4 text-primary" />
+                      <h3 className="font-semibold">Options</h3>
+                    </div>
+                    <div className="space-y-3">
                       {programs.map((p, pIdx) => (
-                        <div key={pIdx} className="nm-card-subtle p-4 space-y-2">
-                          <Input value={p} onChange={(e)=> setPrograms(programs.map((v,i)=> i===pIdx? e.target.value : v))} />
-                          <div className="grid sm:grid-cols-2 gap-3">
+                        <div key={pIdx} className="border border-border/30 rounded-lg p-3 space-y-2">
+                          <Input 
+                            value={p} 
+                            onChange={(e)=> setPrograms(programs.map((v,i)=> i===pIdx? e.target.value : v))}
+                            className="h-9 font-medium"
+                          />
+                          <div className="grid sm:grid-cols-2 gap-2">
                             {criteria.map((c, cIdx) => (
-                              <div key={cIdx} className="flex items-center justify-between gap-3">
-                                <span className="text-sm nm-text-secondary truncate">{c}</span>
-                                <Input type="number" min={0} max={10} value={scores[pIdx][cIdx] || 0} onChange={(e)=> setScores(scores.map((row, ri)=> ri===pIdx? row.map((sv, ci)=> ci===cIdx? parseInt(e.target.value||'0') : sv) : row))} />
+                              <div key={cIdx} className="flex items-center gap-2">
+                                <span className="text-xs nm-text-secondary flex-1 truncate">{c}</span>
+                                <Input 
+                                  type="number" 
+                                  min={0} 
+                                  max={10} 
+                                  value={scores[pIdx][cIdx] || 0} 
+                                  onChange={(e)=> setScores(scores.map((row, ri)=> ri===pIdx? row.map((sv, ci)=> ci===cIdx? parseInt(e.target.value||'0') : sv) : row))}
+                                  className="w-16 h-8 text-center"
+                                />
                               </div>
                             ))}
                           </div>
                         </div>
                       ))}
-                      <Button variant="outline" onClick={()=>{ setPrograms([...programs, `Program ${String.fromCharCode(65 + programs.length)}`]); setScores([...scores, criteria.map(()=>5)]); }}>Add program</Button>
                       <div className="flex flex-wrap gap-2">
-                        {programSuggestions.filter(p => !programs.includes(p)).map((p, i) => (
-                          <Button key={i} variant="outline" size="sm" onClick={()=> { setPrograms([...programs, p]); setScores([...scores, criteria.map(()=>5)]); }}>+ {p}</Button>
+                        <Button variant="outline" size="sm" onClick={()=>{ setPrograms([...programs, `Program ${String.fromCharCode(65 + programs.length)}`]); setScores([...scores, criteria.map(()=>5)]); }}>Add</Button>
+                        {programSuggestions.filter(p => !programs.includes(p)).slice(0, 2).map((p, i) => (
+                          <Button key={i} variant="ghost" size="sm" className="text-xs" onClick={()=> { setPrograms([...programs, p]); setScores([...scores, criteria.map(()=>5)]); }}>+ {p}</Button>
                         ))}
                       </div>
                     </div>
@@ -194,35 +212,35 @@ const DecisionMatrixRenderer: React.FC = () => {
 
                   {/* Memo options */}
                   <section>
-                    <h3 className="font-semibold mb-2">3) Memo Options</h3>
-                    <div className="grid sm:grid-cols-3 gap-3">
-                      <div>
-                        <label className="text-xs nm-text-secondary">Audience</label>
-                        <Select value={audience} onValueChange={setAudience}>
-                          <SelectTrigger><SelectValue placeholder="Select audience" /></SelectTrigger>
-                          <SelectContent>
-                            {audienceOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <label className="text-xs nm-text-secondary">Tone</label>
-                        <Select value={tone} onValueChange={setTone}>
-                          <SelectTrigger><SelectValue placeholder="Select tone" /></SelectTrigger>
-                          <SelectContent>
-                            {toneOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
-                          </SelectContent>
-                        </Select>
-                      </div>
-                      <div>
-                        <label className="text-xs nm-text-secondary">Format</label>
-                        <Select value={format} onValueChange={setFormat}>
-                          <SelectTrigger><SelectValue placeholder="Select format" /></SelectTrigger>
-                          <SelectContent>
-                            {formatOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
-                          </SelectContent>
-                        </Select>
-                      </div>
+                    <div className="flex items-center gap-2 mb-3">
+                      <FileText className="w-4 h-4 text-primary" />
+                      <h3 className="font-semibold">Output</h3>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2">
+                      <Select value={audience} onValueChange={setAudience}>
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder="Audience" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {audienceOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
+                        </SelectContent>
+                      </Select>
+                      <Select value={tone} onValueChange={setTone}>
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder="Tone" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {toneOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
+                        </SelectContent>
+                      </Select>
+                      <Select value={format} onValueChange={setFormat}>
+                        <SelectTrigger className="h-9">
+                          <SelectValue placeholder="Format" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {formatOptions.map((o)=> (<SelectItem key={o} value={o}>{o}</SelectItem>))}
+                        </SelectContent>
+                      </Select>
                     </div>
                   </section>
                 </CardContent>
@@ -243,39 +261,45 @@ const DecisionMatrixRenderer: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4"/> LLM Prompt Preview</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <pre className="text-xs whitespace-pre-wrap nm-card-subtle p-3 rounded-md">{promptPreview}</pre>
-                    <div className="flex justify-end">
-                      <Button onClick={runAI} disabled={isGenerating} className="flex items-center gap-2">
-                        <Sparkles className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} /> {isGenerating ? 'Generating...' : 'Generate AI Memo'}
+                <Card className="border-border/40">
+                  <CardContent className="p-4 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Sparkles className="w-4 h-4 text-primary" />
+                        <h4 className="font-medium">AI Analysis</h4>
+                      </div>
+                      <Button onClick={runAI} disabled={isGenerating} size="sm" className="h-8">
+                        <Sparkles className={`w-3 h-3 mr-1 ${isGenerating ? 'animate-spin' : ''}`} />
+                        {isGenerating ? 'Generating...' : 'Generate'}
                       </Button>
                     </div>
                     {aiContent && (
-                      <div className="nm-card-subtle p-4 rounded-md">
-                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
+                      <div className="border border-border/30 rounded-md p-3 text-sm">
+                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={false} />
                       </div>
                     )}
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Results</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="grid sm:grid-cols-2 gap-3">
+                <Card className="border-border/40">
+                  <CardContent className="p-4 space-y-3">
+                    <h4 className="font-medium">Results</h4>
+                    <div className="grid gap-2">
                       {programs.map((p, i) => (
-                        <div key={i} className={`nm-card p-3 ${i===bestIndex? 'ring-1 ring-primary' : ''}`}>
-                          <div className="flex items-center justify-between"><span className="font-medium">{p}</span><Badge>{totals[i]}</Badge></div>
+                        <div key={i} className={`flex items-center justify-between p-2 rounded border ${i===bestIndex? 'border-primary bg-primary/5' : 'border-border/30'}`}>
+                          <span className="text-sm font-medium">{p}</span>
+                          <Badge variant={i===bestIndex ? "default" : "secondary"} className="text-xs">{totals[i]}</Badge>
                         </div>
                       ))}
                     </div>
-                    <Textarea className="min-h-[140px]" defaultValue={`Decision: Proceed with ${programs[bestIndex]} (highest weighted score).\nRationale: [Add a sentence per top criteria]\nNext steps: Confirm with stakeholders, pilot, prepare update.`} />
-                    <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
+                    <Textarea 
+                      className="min-h-[100px] text-sm" 
+                      placeholder={`Decision: ${programs[bestIndex]} (score: ${totals[bestIndex]})\nRationale: [Explain top criteria]\nNext: Stakeholder approval`}
+                    />
+                    <Button onClick={handleComplete} className="w-full h-9" size="sm">
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      Complete Matrix
+                    </Button>
                   </CardContent>
                 </Card>
               </div>
