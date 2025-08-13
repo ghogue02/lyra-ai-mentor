@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Slider } from '@/components/ui/slider';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Scale, Play, Sparkles, CheckCircle2, Target, BarChart3, Award, FileText, User } from 'lucide-react';
+import { Scale, Play, Sparkles, CheckCircle2, Target, BarChart3, Award, FileText, User, ChevronDown, ChevronUp, Copy, Code } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import { useToast } from '@/hooks/use-toast';
@@ -97,6 +97,8 @@ const DecisionMatrixRenderer: React.FC = () => {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiContent, setAiContent] = useState<string>('');
+  const [showPrompt, setShowPrompt] = useState(false);
+  const [promptCopied, setPromptCopied] = useState(false);
 
   const totals = useMemo(() => programs.map((_, pIdx) => (
     criteria.reduce((sum, _c, cIdx) => sum + (scores[pIdx][cIdx] || 0) * (weights[cIdx] || 0), 0)
@@ -104,12 +106,23 @@ const DecisionMatrixRenderer: React.FC = () => {
 
   const bestIndex = totals.length ? totals.indexOf(Math.max(...totals)) : 0;
 
-  const promptPreview = useMemo(() => (
-    `You are assisting a nonprofit communications leader. Create a ${format} for ${audience} in a ${tone} tone.\n` +
-    `Weighted criteria: ${criteria.map((c, i) => `${c} (w:${weights[i]})`).join('; ')}.\n` +
-    `Options and scores: ${programs.map((p, i) => `${p} [total:${totals[i]}]`).join('; ')}.\n` +
-    `Recommend: ${programs[bestIndex]} based on the matrix, include rationale and next steps.`
-  ), [format, audience, tone, criteria, weights, programs, totals, bestIndex]);
+  const promptPreview = useMemo(() => {
+    const basePrompt = `You are assisting a nonprofit communications leader. Create a ${format} for ${audience} in a ${tone} tone.`;
+    
+    if (currentStep === 0) {
+      return basePrompt + `\n\nWeighted criteria: [To be determined based on scenario selection]\nOptions: [To be determined based on scenario selection]\nRecommend the best option based on weighted decision matrix analysis.`;
+    }
+    
+    if (currentStep === 1) {
+      return basePrompt + `\n\nWeighted criteria: ${criteria.map((c, i) => `${c} (weight: ${weights[i]}/10)`).join('; ')}.\nOptions: [Scores pending user input]\nRecommend the highest-scoring option with detailed rationale.`;
+    }
+    
+    if (currentStep === 2) {
+      return basePrompt + `\n\nWeighted criteria: ${criteria.map((c, i) => `${c} (weight: ${weights[i]}/10)`).join('; ')}.\nOptions and scores: ${programs.map((p, i) => `${p} [weighted total: ${totals[i]}]`).join('; ')}.\nRecommend: ${programs[bestIndex]} based on the decision matrix analysis, include rationale and next steps.`;
+    }
+    
+    return basePrompt + `\n\nWeighted criteria: ${criteria.map((c, i) => `${c} (weight: ${weights[i]}/10)`).join('; ')}.\nOptions and scores: ${programs.map((p, i) => `${p} [weighted total: ${totals[i]}]`).join('; ')}.\nFinal recommendation: ${programs[bestIndex]} with complete justification and implementation steps.`;
+  }, [format, audience, tone, criteria, weights, programs, totals, bestIndex, currentStep]);
 
   const handleComplete = () => {
     toast({ title: 'Decision Matrix Complete!', description: 'Saved a memo-ready recommendation.' });
@@ -148,6 +161,72 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
       setIsGenerating(false);
     }
   };
+
+  const copyPromptToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(promptPreview);
+      setPromptCopied(true);
+      toast({ title: 'Prompt copied!', description: 'You can now paste this into any AI tool.' });
+      setTimeout(() => setPromptCopied(false), 2000);
+    } catch (error) {
+      toast({ title: 'Copy failed', description: 'Please try again.', variant: 'destructive' });
+    }
+  };
+
+  const PromptPreviewBox = () => (
+    <Card className="mt-8 border-dashed border-2 border-primary/30 bg-primary/5">
+      <CardContent className="p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <Code className="w-5 h-5 text-primary" />
+            <span className="font-semibold text-primary">AI Prompt Preview</span>
+            <Badge variant="secondary" className="text-xs">Live Update</Badge>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={copyPromptToClipboard}
+              className="h-8 px-3"
+            >
+              <Copy className="w-4 h-4" />
+              {promptCopied ? 'Copied!' : 'Copy'}
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => setShowPrompt(!showPrompt)}
+              className="h-8 px-3"
+            >
+              {showPrompt ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
+              {showPrompt ? 'Hide' : 'Show'}
+            </Button>
+          </div>
+        </div>
+        
+        <AnimatePresence>
+          {showPrompt && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              className="overflow-hidden"
+            >
+              <div className="bg-background/50 rounded-lg p-4 border border-border/50">
+                <pre className="text-sm whitespace-pre-wrap font-mono leading-relaxed text-muted-foreground">
+                  {promptPreview}
+                </pre>
+              </div>
+              <div className="mt-3 text-xs text-muted-foreground">
+                💡 This prompt updates automatically as you make selections. Use it in ChatGPT, Claude, or any AI tool.
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </CardContent>
+    </Card>
+  );
   const narrativeMessages = [
     { id: '1', content: "At Casa de Esperanza, we had three storytelling proposals but couldn't agree on which would secure the $400K grant.", emotion: 'thoughtful' as const, showAvatar: true },
     { id: '2', content: "A weighted matrix clarified what mattered most: authentic community voices over polished production.", emotion: 'confident' as const },
@@ -232,9 +311,10 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                           </div>
                         </Button>
                       ))}
-                    </div>
-                  </motion.div>
-                )}
+                     </div>
+                     <PromptPreviewBox />
+                   </motion.div>
+                 )}
 
                 {/* Step 2: Adjust Weights */}
                 {currentStep === 1 && (
@@ -265,11 +345,12 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                         </div>
                       ))}
                     </div>
-                    <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(2)}>
-                      Continue to Scoring
-                    </Button>
-                  </motion.div>
-                )}
+                     <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(2)}>
+                       Continue to Scoring
+                     </Button>
+                     <PromptPreviewBox />
+                   </motion.div>
+                 )}
 
                 {/* Step 3: Score Programs */}
                 {currentStep === 2 && (
@@ -311,11 +392,12 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                         </div>
                       ))}
                     </div>
-                    <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(3)}>
-                      View Recommendation
-                    </Button>
-                  </motion.div>
-                )}
+                     <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(3)}>
+                       View Recommendation
+                     </Button>
+                     <PromptPreviewBox />
+                   </motion.div>
+                 )}
 
                 {/* Step 4: Results */}
                 {currentStep === 3 && (
@@ -369,11 +451,12 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                            Complete Matrix
                          </Button>
                        </div>
-                    )}
-                  </motion.div>
-                )}
+                     )}
+                     <PromptPreviewBox />
+                   </motion.div>
+                 )}
 
-              </CardContent>
+               </CardContent>
             </Card>
           </div>
         </motion.div>
