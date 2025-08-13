@@ -1,247 +1,207 @@
-import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
+import React, { useMemo, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Slider } from '@/components/ui/slider';
+import { Progress } from '@/components/ui/progress';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { CheckCircle2, ListChecks, Scale, Play } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Scale, Play, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { useCharacterStory } from '@/contexts/CharacterStoryContext';
 
-const criteriaTemplates = [
-  'Impact on mission',
-  'Cost/ROI',
-  'Feasibility',
-  'Time to implement',
-  'Stakeholder alignment'
-];
+// New structure aligned with SofiaVoiceDiscovery: intro -> narrative -> workshop
 
-const programsTemplates = ['Program A', 'Program B', 'Program C'];
+type Phase = 'intro' | 'narrative' | 'workshop';
 
-interface SectionProps { title: string; subtitle?: string; children?: React.ReactNode }
-const Section: React.FC<SectionProps> = ({ title, subtitle, children }) => (
-  <section className="space-y-2">
-    <h2 className="text-xl font-semibold nm-text-primary">{title}</h2>
-    {subtitle && <p className="text-sm nm-text-secondary">{subtitle}</p>}
-    <div className="nm-card-subtle p-4">{children}</div>
-  </section>
-);
-
-// Step navigation and quick-pick chips
-const phases = ['hook', 'build', 'preview', 'celebrate'] as const;
-
-type Phase = typeof phases[number];
-
-const StepNav: React.FC<{ phase: Phase; onPrev: () => void; onNext: () => void }> = ({ phase, onPrev, onNext }) => {
-  const idx = phases.indexOf(phase);
-  return (
-    <nav className="flex items-center justify-between nm-card-subtle p-3 rounded-md">
-      <div className="flex items-center gap-2 text-sm nm-text-secondary">
-        {phases.map((p, i) => (
-          <div key={p} className={`flex items-center gap-2 ${i === idx ? 'font-semibold nm-text-primary' : ''}`}>
-            <span className="rounded-full w-6 h-6 flex items-center justify-center nm-card">{i + 1}</span>
-            <span className="hidden sm:inline capitalize">{p}</span>
-            {i < phases.length - 1 && <span className="opacity-50">›</span>}
-          </div>
-        ))}
-      </div>
-      <div className="flex items-center gap-2">
-        <Button variant="outline" onClick={onPrev} disabled={idx === 0}>Back</Button>
-        <Button onClick={onNext}>{idx === phases.length - 1 ? 'Finish' : 'Next'}</Button>
-      </div>
-    </nav>
-  );
-};
-
-const SuggestChips: React.FC<{ options: string[]; onPick: (v: string) => void; ariaLabel?: string }> = ({ options, onPick, ariaLabel }) => (
-  <div className="flex flex-wrap gap-2 mt-2" aria-label={ariaLabel}>
-    {options.map((opt, i) => (
-      <Button key={i} type="button" variant="outline" size="sm" onClick={() => onPick(opt)}>
-        + {opt}
-      </Button>
-    ))}
-  </div>
-);
-
-const WeightSlider: React.FC<{ value: number; onChange: (v: number) => void }> = ({ value, onChange }) => (
-  <div className="flex items-center gap-3">
-    <Slider value={[value]} onValueChange={(v) => onChange(v[0] || 0)} max={10} step={1} className="flex-1" />
-    <Badge variant="secondary">{value}</Badge>
-  </div>
-);
-
-const ScoreInput: React.FC<{ value: number; onChange: (v: number) => void }> = ({ value, onChange }) => (
-  <Input type="number" min={0} max={10} value={value} onChange={(e) => onChange(parseInt(e.target.value || '0'))} />
-);
+const defaultCriteria = ['Impact on mission', 'Cost/ROI', 'Feasibility', 'Time to implement'];
+const defaultPrograms = ['Program A', 'Program B', 'Program C'];
 
 const DecisionMatrixRenderer: React.FC = () => {
-  const [phase, setPhase] = useState<'hook' | 'build' | 'preview' | 'celebrate'>('hook');
-  const [audience, setAudience] = useState('Executive Director');
-  const [tone, setTone] = useState('Professional and concise');
-  const [format, setFormat] = useState('Email memo');
-  const [criteria, setCriteria] = useState<string[]>(criteriaTemplates);
-  const [weights, setWeights] = useState<number[]>(criteria.map(() => 5));
-  const [programs, setPrograms] = useState<string[]>(programsTemplates);
-  const [scores, setScores] = useState<number[][]>(programs.map(() => criteria.map(() => 5)));
-
-  const totalScores = programs.map((_, pIdx) => {
-    return criteria.reduce((sum, _c, cIdx) => sum + (scores[pIdx][cIdx] || 0) * (weights[cIdx] || 0), 0);
-  });
-
-  const bestIndex = totalScores.indexOf(Math.max(...totalScores));
-
-  // Storyline context
+  const navigate = useNavigate();
   const { getStory } = useCharacterStory();
   const sofia = getStory('sofia');
 
-  // Quick-pick suggestions
-  const criterionSuggestions = ['Audience reach', 'Grant alignment', 'Risk level', 'Data availability'];
-  const memoAudienceOptions = ['Executive Director', 'Board', 'Program Directors'];
-  const memoToneOptions = ['Professional and concise', 'Inspiring and mission-centered', 'Data-driven and neutral'];
-  const memoFormatOptions = ['Email memo', 'Board slide', 'Slack update'];
+  const [phase, setPhase] = useState<Phase>('intro');
+  const [currentStep, setCurrentStep] = useState(0);
 
-  // LLM prompt preview (educational)
-  const llmPrompt = `You are assisting a nonprofit communications leader. Create a ${format} for ${audience} in a ${tone} tone.
-Weighted criteria: ${criteria.map((c, i) => `${c} (w:${weights[i]})`).join('; ')}.
-Options and scores: ${programs.map((p, i) => `${p} [total:${totalScores[i]}]`).join('; ')}.
-Recommend: ${programs[bestIndex]} based on the matrix, include brief rationale and next steps.`;
+  // Builder state
+  const [criteria, setCriteria] = useState<string[]>(defaultCriteria);
+  const [weights, setWeights] = useState<number[]>(defaultCriteria.map(() => 5));
+  const [programs, setPrograms] = useState<string[]>(defaultPrograms);
+  const [scores, setScores] = useState<number[][]>(defaultPrograms.map(() => defaultCriteria.map(() => 5)));
+  const [audience, setAudience] = useState('Executive Director');
+  const [tone, setTone] = useState('Professional and concise');
+  const [format, setFormat] = useState('Email memo');
+
+  const totals = useMemo(() => programs.map((_, pIdx) => (
+    criteria.reduce((sum, _c, cIdx) => sum + (scores[pIdx][cIdx] || 0) * (weights[cIdx] || 0), 0)
+  )), [programs, scores, criteria, weights]);
+
+  const bestIndex = totals.length ? totals.indexOf(Math.max(...totals)) : 0;
+
+  const promptPreview = useMemo(() => (
+    `You are assisting a nonprofit communications leader. Create a ${format} for ${audience} in a ${tone} tone.\n` +
+    `Weighted criteria: ${criteria.map((c, i) => `${c} (w:${weights[i]})`).join('; ')}.\n` +
+    `Options and scores: ${programs.map((p, i) => `${p} [total:${totals[i]}]`).join('; ')}.\n` +
+    `Recommend: ${programs[bestIndex]} based on the matrix, include rationale and next steps.`
+  ), [format, audience, tone, criteria, weights, programs, totals, bestIndex]);
+
+  const narrativeMessages = [
+    { id: '1', content: "We had five great storytelling ideas — but no shared way to choose.", emotion: 'thoughtful' as const, showAvatar: true },
+    { id: '2', content: "Using a simple weighted matrix, our team aligned in minutes.", emotion: 'confident' as const },
+    { id: '3', content: "Now I justify decisions with a short memo tailored to my audience.", emotion: 'empowered' as const },
+  ];
+
+  const progress = 66 + Math.min(34, currentStep * 8);
 
   return (
-    <main className="container mx-auto max-w-4xl p-4 space-y-6">
-      <header className="flex items-center gap-3">
-        <Scale className="w-6 h-6 text-primary" />
-        <h1 className="text-2xl font-bold">Decision Matrix</h1>
-      </header>
-
-      <StepNav
-        phase={phase}
-        onPrev={() => setPhase(phases[Math.max(0, phases.indexOf(phase) - 1)])}
-        onNext={() => setPhase(phases[Math.min(phases.length - 1, phases.indexOf(phase) + 1)])}
-      />
-
-      {phase === 'hook' && (
-        <Card className="p-6 nm-card space-y-4">
-          <div className="flex items-start gap-4">
-            <div className="nm-card-subtle w-14 h-14 rounded-xl flex items-center justify-center">👩‍💼</div>
-            <div>
-              <h3 className="font-semibold">{sofia?.name ?? 'Sofia'}</h3>
-              <p className="nm-text-secondary">{sofia?.quote || 'I used to struggle with a painful truth about our work...'}</p>
+    <AnimatePresence mode="wait">
+      {phase === 'intro' && (
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6 flex items-center">
+          <div className="container mx-auto max-w-4xl">
+            <div className="mb-4">
+              <Button variant="ghost" onClick={() => navigate('/chapter/3')}>Back to Chapter 3</Button>
             </div>
-          </div>
-          <p className="text-sm nm-text-secondary">Challenge: {sofia?.challenge || 'Choosing which story initiative to lead next without a clear framework.'}</p>
-          <div className="flex justify-end">
-            <Button onClick={() => setPhase('build')} className="flex items-center gap-2">
-              <Play className="w-4 h-4" /> Start
-            </Button>
-          </div>
-        </Card>
-      )}
-
-      {phase === 'build' && (
-        <Card className="p-6 nm-card space-y-6">
-          <Section title="1) Criteria" subtitle="Add or edit what matters. Weight each 0-10.">
-            <div className="grid sm:grid-cols-2 gap-4">
-              {criteria.map((c, i) => (
-                <div key={i} className="space-y-2">
-                  <Input value={c} onChange={(e) => setCriteria(criteria.map((v, idx) => (idx === i ? e.target.value : v)))} />
-                  <WeightSlider value={weights[i]} onChange={(v) => setWeights(weights.map((w, idx) => (idx === i ? v : w)))} />
+            <Card className="nm-card p-8 animate-enter">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl nm-card-subtle flex items-center justify-center"><Scale className="w-6 h-6 text-primary" /></div>
+                <div>
+                  <h1 className="text-3xl font-bold">Decision Matrix</h1>
+                  <p className="nm-text-secondary mt-2">{sofia?.quote || 'I needed a fair way to pick the right story to lead. The matrix made it obvious — and defensible.'}</p>
                 </div>
-              ))}
-            </div>
-            <div className="flex flex-wrap gap-2 mt-2">
-              <Button variant="outline" onClick={() => setCriteria([...criteria, 'New criterion'])}>Add criterion</Button>
-              <Button variant="outline" onClick={() => setWeights([...weights, 5])}>Add weight</Button>
-            </div>
-            <SuggestChips
-              ariaLabel="Quick add criteria"
-              options={criterionSuggestions.filter((s) => !criteria.includes(s))}
-              onPick={(opt) => {
-                setCriteria((prev) => [...prev, opt]);
-                setWeights((prev) => [...prev, 5]);
-              }}
-            />
-          </Section>
-
-          <Section title="2) Programs/Options" subtitle="Score each 0-10 for every criterion.">
-            <div className="flex gap-2 mb-2">
-              <Button variant="outline" onClick={() => {
-                setPrograms([...programs, `Program ${String.fromCharCode(65 + programs.length)}`]);
-                setScores([...scores, criteria.map(() => 5)]);
-              }}>Add program</Button>
-            </div>
-            <SuggestChips
-              ariaLabel="Quick add programs"
-              options={[...programsTemplates, 'Annual Gala Campaign', 'Community Story Series', 'Donor Impact Report'].filter((p) => !programs.includes(p))}
-              onPick={(opt) => {
-                setPrograms((prev) => [...prev, opt]);
-                setScores((prev) => [...prev, criteria.map(() => 5)]);
-              }}
-            />
-            <div className="space-y-4 mt-4">
-              {programs.map((p, pIdx) => (
-                <div key={pIdx} className="nm-card-subtle p-4 space-y-2">
-                  <Input value={p} onChange={(e) => setPrograms(programs.map((v, i) => (i === pIdx ? e.target.value : v)))} />
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    {criteria.map((c, cIdx) => (
-                      <div key={cIdx} className="flex items-center justify-between gap-3">
-                        <span className="text-sm nm-text-secondary truncate">{c}</span>
-                        <ScoreInput value={scores[pIdx][cIdx] || 0} onChange={(v) => setScores(scores.map((row, ri) => (ri === pIdx ? row.map((sv, ci) => (ci === cIdx ? v : sv)) : row)))} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          <Section title="3) Memo Options" subtitle="Who is this for and how should it read?">
-            <div className="grid sm:grid-cols-3 gap-3">
-              <Input value={audience} onChange={(e) => setAudience(e.target.value)} placeholder="Audience" />
-              <Input value={tone} onChange={(e) => setTone(e.target.value)} placeholder="Tone" />
-              <Input value={format} onChange={(e) => setFormat(e.target.value)} placeholder="Format" />
-            </div>
-          </Section>
-
-          <div className="flex justify-end">
-            <Button onClick={() => setPhase('preview')}>Run Matrix</Button>
+              </div>
+              <div className="mt-6 flex justify-end">
+                <Button size="lg" onClick={() => setPhase('narrative')} className="flex items-center gap-2"><Play className="w-5 h-5"/> Begin</Button>
+              </div>
+            </Card>
           </div>
-        </Card>
+        </motion.div>
       )}
 
-      {phase === 'preview' && (
-        <Card className="p-6 nm-card space-y-6">
-          <Section title="Results" subtitle="Weighted totals per option.">
-            <div className="grid sm:grid-cols-2 gap-3">
-              {programs.map((p, i) => (
-                <div key={i} className={`nm-card p-3 ${i === bestIndex ? 'ring-1 ring-primary' : ''}`}>
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium">{p}</span>
-                    <Badge>{totalScores[i]}</Badge>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </Section>
-
-          <Section title="Justification Memo" subtitle={`${format} to ${audience} in a ${tone} tone.`}>
-            <Textarea className="min-h-[160px]" defaultValue={`Decision: Proceed with ${programs[bestIndex]} (highest weighted score).\n\nRationale:\n- Criteria considered: ${criteria.join(', ')}\n- Weighting method: user-defined (0-10)\n- Notable strengths: [Fill in]\n- Risks/mitigations: [Fill in]\n\nNext Steps:\n- Confirm assumptions with stakeholders\n- Pilot and gather feedback\n- Prepare board update`} />
-          </Section>
-
-          <div className="flex justify-between">
-            <Button variant="outline" onClick={() => setPhase('build')}>Adjust</Button>
-            <Button onClick={() => setPhase('celebrate')} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/>Complete</Button>
+      {phase === 'narrative' && (
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6">
+          <MicroLessonNavigator chapterNumber={3} chapterTitle="Sofia's Storytelling Mastery" lessonTitle="Decision Matrix" characterName="Sofia" progress={33} />
+          <div className="container mx-auto max-w-4xl pt-20">
+            <NarrativeManager messages={narrativeMessages} onComplete={() => setPhase('workshop')} phaseId="sofia-decision-matrix" characterName="Sofia" />
           </div>
-        </Card>
+        </motion.div>
       )}
 
-      {phase === 'celebrate' && (
-        <Card className="p-6 nm-card text-center space-y-3">
-          <CheckCircle2 className="w-10 h-10 text-primary mx-auto" />
-          <h3 className="text-lg font-semibold">Decision Matrix Completed</h3>
-          <p className="nm-text-secondary">You created a weighted evaluation and a draft memo.</p>
-        </Card>
+      {phase === 'workshop' && (
+        <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6">
+          <MicroLessonNavigator chapterNumber={3} chapterTitle="Sofia's Storytelling Mastery" lessonTitle="Decision Matrix" characterName="Sofia" progress={progress} />
+          <div className="container mx-auto max-w-6xl pt-20 space-y-6">
+            <div className="mb-2"><Progress value={progress} className="h-2" /></div>
+
+            <div className="grid lg:grid-cols-2 gap-6">
+              {/* Builder */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Build Your Matrix</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Criteria */}
+                  <section>
+                    <h3 className="font-semibold mb-2">1) Criteria and Weights</h3>
+                    <div className="grid sm:grid-cols-2 gap-4">
+                      {criteria.map((c, i) => (
+                        <div key={i} className="space-y-2">
+                          <Input value={c} onChange={(e)=>{ setCriteria(criteria.map((v, idx)=> idx===i? e.target.value : v)); setCurrentStep((s)=>Math.min(4, s+1)); }} />
+                          <div className="flex items-center gap-3">
+                            <Slider value={[weights[i]]} onValueChange={(v)=>{ setWeights(weights.map((w, idx)=> idx===i? (v[0]||0) : w)); }} max={10} step={1} className="flex-1" />
+                            <Badge variant="secondary">{weights[i]}</Badge>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex gap-2 mt-3">
+                      <Button variant="outline" onClick={()=>{ setCriteria([...criteria, 'New criterion']); setWeights([...weights, 5]); }}>Add criterion</Button>
+                    </div>
+                  </section>
+
+                  {/* Programs */}
+                  <section>
+                    <h3 className="font-semibold mb-2">2) Programs/Options</h3>
+                    <div className="space-y-4">
+                      {programs.map((p, pIdx) => (
+                        <div key={pIdx} className="nm-card-subtle p-4 space-y-2">
+                          <Input value={p} onChange={(e)=> setPrograms(programs.map((v,i)=> i===pIdx? e.target.value : v))} />
+                          <div className="grid sm:grid-cols-2 gap-3">
+                            {criteria.map((c, cIdx) => (
+                              <div key={cIdx} className="flex items-center justify-between gap-3">
+                                <span className="text-sm nm-text-secondary truncate">{c}</span>
+                                <Input type="number" min={0} max={10} value={scores[pIdx][cIdx] || 0} onChange={(e)=> setScores(scores.map((row, ri)=> ri===pIdx? row.map((sv, ci)=> ci===cIdx? parseInt(e.target.value||'0') : sv) : row))} />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      ))}
+                      <Button variant="outline" onClick={()=>{ setPrograms([...programs, `Program ${String.fromCharCode(65 + programs.length)}`]); setScores([...scores, criteria.map(()=>5)]); }}>Add program</Button>
+                    </div>
+                  </section>
+
+                  {/* Memo options */}
+                  <section>
+                    <h3 className="font-semibold mb-2">3) Memo Options</h3>
+                    <div className="grid sm:grid-cols-3 gap-3">
+                      <Input value={audience} onChange={(e)=>setAudience(e.target.value)} placeholder="Audience" />
+                      <Input value={tone} onChange={(e)=>setTone(e.target.value)} placeholder="Tone" />
+                      <Input value={format} onChange={(e)=>setFormat(e.target.value)} placeholder="Format" />
+                    </div>
+                  </section>
+                </CardContent>
+              </Card>
+
+              {/* Guidance + Prompt */}
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Sofia’s Guidance</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ul className="list-disc pl-5 text-sm nm-text-secondary space-y-1">
+                      <li>Weights reflect importance — not scores.</li>
+                      <li>Keep criteria independent to avoid double counting.</li>
+                      <li>Use the memo to explain trade-offs succinctly.</li>
+                    </ul>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4"/> LLM Prompt Preview</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <pre className="text-xs whitespace-pre-wrap nm-card-subtle p-3 rounded-md">{promptPreview}</pre>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Results</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      {programs.map((p, i) => (
+                        <div key={i} className={`nm-card p-3 ${i===bestIndex? 'ring-1 ring-primary' : ''}`}>
+                          <div className="flex items-center justify-between"><span className="font-medium">{p}</span><Badge>{totals[i]}</Badge></div>
+                        </div>
+                      ))}
+                    </div>
+                    <Textarea className="min-h-[140px]" defaultValue={`Decision: Proceed with ${programs[bestIndex]} (highest weighted score).\nRationale: [Add a sentence per top criteria]\nNext steps: Confirm with stakeholders, pilot, prepare update.`} />
+                    <div className="flex justify-end"><Button className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </motion.div>
       )}
-    </main>
+    </AnimatePresence>
   );
 };
 
