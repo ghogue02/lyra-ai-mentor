@@ -12,7 +12,8 @@ import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigat
 import { useToast } from '@/hooks/use-toast';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { supabase } from '@/integrations/supabase/client';
-import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
+import { PromptPreviewBox } from '@/components/ui/PromptPreviewBox';
+import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
 
 // Aligned with Voice Discovery: intro -> narrative -> workshop
 
@@ -90,7 +91,7 @@ const TeamCapacityCalculator: React.FC = () => {
                 <div className="w-12 h-12 rounded-xl nm-card-subtle flex items-center justify-center"><Users className="w-6 h-6 text-primary" /></div>
                 <div>
                   <h1 className="text-3xl font-bold">Team Capacity Calculator</h1>
-                  <p className="nm-text-secondary mt-2">Validate feasibility before committing your storytelling sprint.</p>
+                  <p className="nm-text-secondary mt-2">Transform capacity chaos into clear go/no-go decisions. Calculate realistic team bandwidth and identify risks before they derail your storytelling sprint.</p>
                 </div>
               </div>
               <div className="mt-6 flex justify-end"><Button size="lg" onClick={() => setPhase('narrative')} className="flex items-center gap-2"><Play className="w-5 h-5"/> Begin</Button></div>
@@ -184,33 +185,31 @@ const TeamCapacityCalculator: React.FC = () => {
                   </CardContent>
                 </Card>
 
-                <Card>
-                  <CardHeader><CardTitle className="flex items-center gap-2"><Sparkles className="w-4 h-4"/> LLM Prompt Preview</CardTitle></CardHeader>
-                  <CardContent className="space-y-3">
-                    <pre className="text-xs whitespace-pre-wrap nm-card-subtle p-3 rounded-md">{promptPreview}</pre>
-                    <div className="flex justify-end">
-                      <Button onClick={runAI} disabled={isGenerating} className="flex items-center gap-2">
-                        <Sparkles className={`w-4 h-4 ${isGenerating ? 'animate-spin' : ''}`} /> {isGenerating ? 'Generating...' : 'Generate AI Analysis'}
-                      </Button>
-                    </div>
-                    {aiContent && (
-                      <div className="nm-card-subtle p-4 rounded-md">
-                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
+                <PromptPreviewBox
+                  prompt={promptPreview}
+                  isGenerating={isGenerating}
+                  onGenerate={runAI}
+                  generateButtonText="Generate AI Analysis"
+                />
+
+                {aiContent && (
+                  <Card>
+                    <CardHeader>
+                      <CardTitle>Capacity Analysis</CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="p-6 border rounded-lg bg-background">
+                        <AIContentDisplay content={aiContent} />
                       </div>
-                    )}
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                )}
 
                 <Card>
                   <CardHeader><CardTitle>Capacity Summary</CardTitle></CardHeader>
                   <CardContent className="space-y-2">
                     <div className="flex items-center justify-between"><span className="text-sm nm-text-secondary">Available / week</span><Badge variant="secondary">{available} hrs</Badge></div>
                     <div className="flex items-center justify-between"><span className="text-sm nm-text-secondary">Required</span><Badge>{reqHours} hrs</Badge></div>
-                    {aiContent && (
-                      <div className="nm-card-subtle p-4 rounded-md">
-                        <TemplateContentFormatter content={aiContent} contentType="lesson" variant="default" showMergeFieldTypes={true} />
-                      </div>
-                    )}
                     <Textarea className="min-h-[120px] mt-2" defaultValue={`Recommendation: ${recommendation}\nRisks: [List risks] \nAdjustments: [Proposed changes]`} />
                     <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
                   </CardContent>
