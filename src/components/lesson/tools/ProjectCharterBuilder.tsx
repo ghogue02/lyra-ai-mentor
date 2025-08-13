@@ -1,23 +1,78 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { useNavigate } from 'react-router-dom';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
 import { Progress } from '@/components/ui/progress';
-import { FileText, Play, Sparkles, CheckCircle2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
-import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import { FileText, Play, Target, Users, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { supabase } from '@/integrations/supabase/client';
+import MicroLessonNavigator from '@/components/lesson/MicroLessonNavigator';
+import NarrativeManager from '@/components/lesson/NarrativeManager';
 import { PromptPreviewBox } from '@/components/ui/PromptPreviewBox';
 import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
-
-// Aligned with Voice Discovery: intro -> narrative -> workshop
+import { InteractiveSelector, RatingGrid, ScenarioSelector } from '@/components/ui/InteractiveSelector';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
+
+// Charter scenarios
+const charterScenarios = [
+  {
+    id: 'donor-campaign',
+    name: 'Major Donor Campaign',
+    description: 'Launch a targeted campaign to engage high-value donors and foundations for a specific cause or program.',
+    data: {
+      goals: ['increase-donations', 'expand-reach', 'build-relationships'],
+      kpis: ['fundraising-total', 'donor-retention', 'engagement-rate'],
+      roles: ['campaign-manager', 'donor-relations', 'communications'],
+      risks: ['economic-downturn', 'donor-fatigue', 'competition']
+    }
+  },
+  {
+    id: 'community-event',
+    name: 'Community Impact Event',
+    description: 'Organize a large-scale community event to raise awareness, funds, and strengthen local partnerships.',
+    data: {
+      goals: ['raise-awareness', 'build-community', 'generate-funds'],
+      kpis: ['attendance', 'media-coverage', 'fundraising-total'],
+      roles: ['event-manager', 'volunteer-coordinator', 'marketing'],
+      risks: ['weather', 'low-attendance', 'budget-overrun']
+    }
+  }
+];
+
+// Goal options
+const goalOptions = [
+  { id: 'increase-donations', label: 'Increase Donations', description: 'Grow fundraising revenue and donor base' },
+  { id: 'raise-awareness', label: 'Raise Awareness', description: 'Increase public understanding of our cause' },
+  { id: 'expand-reach', label: 'Expand Reach', description: 'Grow audience and community engagement' },
+  { id: 'build-relationships', label: 'Build Relationships', description: 'Strengthen partnerships and networks' }
+];
+
+// KPI options
+const kpiOptions = [
+  { id: 'fundraising-total', label: 'Fundraising Total', description: 'Total dollars raised through the initiative' },
+  { id: 'donor-retention', label: 'Donor Retention Rate', description: 'Percentage of donors who give again' },
+  { id: 'engagement-rate', label: 'Engagement Rate', description: 'Social media and event participation metrics' },
+  { id: 'attendance', label: 'Event Attendance', description: 'Number of participants at events and activities' }
+];
+
+// Role options  
+const roleOptions = [
+  { id: 'campaign-manager', label: 'Campaign Manager', description: 'Overall project leadership and coordination' },
+  { id: 'donor-relations', label: 'Donor Relations Specialist', description: 'Donor outreach and relationship management' },
+  { id: 'communications', label: 'Communications Lead', description: 'Marketing, PR, and content strategy' },
+  { id: 'event-manager', label: 'Event Manager', description: 'Event planning and execution' }
+];
+
+// Risk options
+const riskOptions = [
+  { id: 'economic-downturn', label: 'Economic Downturn', description: 'Economic conditions affecting donations' },
+  { id: 'donor-fatigue', label: 'Donor Fatigue', description: 'Reduced donor responsiveness to appeals' },
+  { id: 'competition', label: 'Competition', description: 'Other organizations competing for same donors' },
+  { id: 'weather', label: 'Weather Issues', description: 'Poor weather affecting outdoor events' }
+];
 
 const ProjectCharterBuilder: React.FC = () => {
   const navigate = useNavigate();
@@ -25,31 +80,41 @@ const ProjectCharterBuilder: React.FC = () => {
 
   const [phase, setPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
-
-  // Builder state
-  const [projectName, setProjectName] = useState('Storytelling Campaign 2025');
-  const [goals, setGoals] = useState('Increase donor engagement and community awareness.');
-  const [kpis, setKpis] = useState('Email open rate, event attendance, donation conversions');
-  const [smart, setSmart] = useState('Increase newsletter CTR to 6% by Q3.');
-  const [roles, setRoles] = useState('Sofia [Owner], Jamie [Design], Alex [Stakeholders]');
-  const [risks, setRisks] = useState('Timeline shifts [AI Generated], vendor delay [AI Generated]');
-
-  const reviewNotice = 'Key details labeled [AI Generated] are placeholders. Validate and replace with your reality.';
-
-  const promptPreview = useMemo(() => (
-    `Draft a concise nonprofit project charter. Project: ${projectName}. Goals: ${goals}. KPIs: ${kpis}. SMART: ${smart}. Roles: ${roles}. Risks: ${risks}. Mark uncertain details with [AI Generated] for review.`
-  ), [projectName, goals, kpis, smart, roles, risks]);
-
+  const [projectName, setProjectName] = useState('');
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
+  const [selectedKpis, setSelectedKpis] = useState<string[]>([]);
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedRisks, setSelectedRisks] = useState<string[]>([]);
+  const [goalPriorities, setGoalPriorities] = useState<{ [key: string]: number }>({});
+  const [riskSeverity, setRiskSeverity] = useState<{ [key: string]: number }>({});
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiContent, setAiContent] = useState<string>('');
 
-  const narrativeMessages = [
-    { id: '1', content: 'When everyone sees the same one-page charter, alignment happens fast.', emotion: 'confident' as const, showAvatar: true },
-    { id: '2', content: 'I add AI placeholders where we need decisions — it invites collaboration.', emotion: 'thoughtful' as const },
-    { id: '3', content: 'The charter becomes our single source of truth for launch.', emotion: 'empowered' as const },
-  ];
+  const promptPreview = useMemo(() => {
+    const goalsSummary = selectedGoals.length > 0 
+      ? selectedGoals.map(id => {
+          const goal = goalOptions.find(g => g.id === id);
+          const priority = goalPriorities[id] || 5;
+          return `${goal?.label} (priority: ${priority}/10)`;
+        }).join(', ')
+      : 'Goals pending';
+    
+    const kpisSummary = selectedKpis.length > 0 
+      ? selectedKpis.map(id => kpiOptions.find(k => k.id === id)?.label).join(', ')
+      : 'KPIs pending';
+    
+    const rolesSummary = selectedRoles.length > 0 
+      ? selectedRoles.map(id => roleOptions.find(r => r.id === id)?.label).join(', ')
+      : 'Roles pending';
 
-  const progress = 66 + Math.min(34, currentStep * 8);
+    return `Create a comprehensive project charter for: ${projectName || '[Project Name]'}
+
+PROJECT GOALS: ${goalsSummary}
+KEY PERFORMANCE INDICATORS: ${kpisSummary}  
+TEAM ROLES & RESPONSIBILITIES: ${rolesSummary}
+
+Generate a professional project charter that ensures team alignment and sets clear expectations for project success.`;
+  }, [projectName, selectedGoals, selectedKpis, selectedRoles, goalPriorities]);
 
   const runAI = async () => {
     setIsGenerating(true);
@@ -59,12 +124,12 @@ const ProjectCharterBuilder: React.FC = () => {
           characterType: 'sofia',
           contentType: 'document',
           topic: 'Project charter draft',
-          context: `Use this context to produce a charter draft.\n${promptPreview}`
+          context: promptPreview
         }
       });
       if (error) throw error;
       setAiContent(data.content || '');
-      toast({ title: 'AI charter ready', description: 'Review the draft below.' });
+      toast({ title: 'Charter ready', description: 'Review the draft below.' });
     } catch (e) {
       toast({ title: 'Generation failed', description: 'Please try again.', variant: 'destructive' });
     } finally {
@@ -73,9 +138,17 @@ const ProjectCharterBuilder: React.FC = () => {
   };
 
   const handleComplete = () => {
-    toast({ title: 'Charter Draft Complete!', description: 'Placeholders marked — ready for review.' });
+    toast({ title: 'Charter Complete!', description: 'Project charter ready for stakeholder review.' });
     navigate('/chapter/3');
   };
+
+  const narrativeMessages = [
+    { id: '1', content: 'When everyone sees the same one-page charter, alignment happens fast.', emotion: 'confident' as const, showAvatar: true },
+    { id: '2', content: 'I add AI placeholders where we need decisions — it invites collaboration.', emotion: 'thoughtful' as const },
+    { id: '3', content: 'The charter becomes our single source of truth for launch.', emotion: 'empowered' as const },
+  ];
+
+  const progress = 66 + Math.min(34, currentStep * 8);
 
   return (
     <AnimatePresence mode="wait">
@@ -109,94 +182,123 @@ const ProjectCharterBuilder: React.FC = () => {
       {phase === 'workshop' && (
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6">
           <MicroLessonNavigator chapterNumber={3} chapterTitle="Sofia's Storytelling Mastery" lessonTitle="Project Charter" characterName="Sofia" progress={progress} />
-          <div className="container mx-auto max-w-6xl pt-20 space-y-6">
-            <div className="mb-2"><Progress value={progress} className="h-2" /></div>
+          <div className="container mx-auto max-w-2xl pt-20 space-y-8">
+            <div className="mb-4"><Progress value={progress} className="h-2" /></div>
 
-            <div className="grid lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader><CardTitle>Draft Your Charter</CardTitle></CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <Input value={projectName} onChange={(e)=>{ setProjectName(e.target.value); setCurrentStep((s)=>Math.min(4, s+1)); }} placeholder="Project name" />
-                    <div>
-                      <Input value={roles} onChange={(e)=> setRoles(e.target.value)} placeholder="Roles & responsibilities" />
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {['Owner', 'Designer', 'Stakeholder', 'QA Reviewer'].map((r, i)=> (
-                          <Button key={i} variant="outline" size="sm" onClick={()=> setRoles(prev => prev ? prev + `, ${r}` : r)}>+ {r}</Button>
-                        ))}
+            <Card>
+              <CardContent className="p-8 space-y-8">
+                
+                {/* Step 0: Scenario Selection */}
+                {currentStep === 0 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <ScenarioSelector
+                      title="Choose Your Charter Type"
+                      scenarios={charterScenarios}
+                      onSelect={(scenario) => {
+                        setProjectName(scenario.name);
+                        setSelectedGoals(scenario.data.goals);
+                        setSelectedKpis(scenario.data.kpis);
+                        setSelectedRoles(scenario.data.roles);
+                        setSelectedRisks(scenario.data.risks);
+                        setCurrentStep(1);
+                      }}
+                    />
+                    <PromptPreviewBox
+                      prompt={promptPreview}
+                      isGenerating={isGenerating}
+                      onGenerate={runAI}
+                      generateButtonText="Generate Charter"
+                      title="AI Prompt Preview"
+                    />
+                  </motion.div>
+                )}
+
+                {/* Step 1: Charter Summary */}
+                {currentStep === 1 && (
+                  <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+                    <div className="space-y-6">
+                      <div className="text-center space-y-4">
+                        <h2 className="text-2xl font-bold">Charter Summary</h2>
+                        <p className="text-muted-foreground">Review your project charter configuration</p>
                       </div>
-                    </div>
-                  </div>
-                  <Textarea value={goals} onChange={(e)=> setGoals(e.target.value)} placeholder="High-level goals" className="min-h-[80px]" />
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {['Increase donor engagement', 'Grow volunteer signups', 'Elevate community awareness'].map((g, i)=> (
-                      <Button key={i} variant="outline" size="sm" onClick={()=> setGoals(prev => prev ? prev + `; ${g}` : g)}>+ {g}</Button>
-                    ))}
-                  </div>
-                  <div className="grid sm:grid-cols-2 gap-3">
-                    <div>
-                      <Textarea value={kpis} onChange={(e)=> setKpis(e.target.value)} placeholder="KPIs" className="min-h-[80px]" />
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {['Open rate', 'CTR', 'Event attendance', 'Donations'].map((k, i)=> (
-                          <Button key={i} variant="outline" size="sm" onClick={()=> setKpis(prev => prev ? prev + `, ${k}` : k)}>+ {k}</Button>
-                        ))}
+
+                      <div className="space-y-2">
+                        <label className="text-sm font-medium">Project Name</label>
+                        <input
+                          type="text"
+                          placeholder="Enter your project name"
+                          value={projectName}
+                          onChange={(e) => setProjectName(e.target.value)}
+                          className="w-full px-3 py-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                        />
                       </div>
-                    </div>
-                    <div>
-                      <Textarea value={smart} onChange={(e)=> setSmart(e.target.value)} placeholder="SMART objectives" className="min-h-[80px]" />
-                      <div className="flex flex-wrap gap-2 mt-2">
-                        {['Raise CTR to 6% by Q3', 'Add 200 volunteers by Q4', 'Increase retention to 65%'].map((s, i)=> (
-                          <Button key={i} variant="outline" size="sm" onClick={()=> setSmart(prev => prev ? prev + `; ${s}` : s)}>+ {s}</Button>
-                        ))}
+
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <Card className="p-6">
+                          <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
+                            <Target className="w-5 h-5 text-primary" />
+                            Goals & KPIs
+                          </h3>
+                          <div className="space-y-3">
+                            <div>
+                              <div className="text-sm font-medium mb-2">Goals ({selectedGoals.length})</div>
+                              <div className="text-xs text-muted-foreground">
+                                {selectedGoals.map(id => goalOptions.find(g => g.id === id)?.label).join(', ')}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium mb-2">KPIs ({selectedKpis.length})</div>
+                              <div className="text-xs text-muted-foreground">
+                                {selectedKpis.map(id => kpiOptions.find(k => k.id === id)?.label).join(', ')}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
+
+                        <Card className="p-6">
+                          <h3 className="font-semibold text-lg flex items-center gap-2 mb-4">
+                            <Users className="w-5 h-5 text-secondary" />
+                            Team & Risks
+                          </h3>
+                          <div className="space-y-3">
+                            <div>
+                              <div className="text-sm font-medium mb-2">Roles ({selectedRoles.length})</div>
+                              <div className="text-xs text-muted-foreground">
+                                {selectedRoles.map(id => roleOptions.find(r => r.id === id)?.label).join(', ')}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-sm font-medium mb-2">Risks ({selectedRisks.length})</div>
+                              <div className="text-xs text-muted-foreground">
+                                {selectedRisks.map(id => riskOptions.find(r => r.id === id)?.label).join(', ')}
+                              </div>
+                            </div>
+                          </div>
+                        </Card>
                       </div>
-                    </div>
-                  </div>
-                  <Textarea value={risks} onChange={(e)=> setRisks(e.target.value)} placeholder="Risks & mitigations" className="min-h-[80px]" />
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {['Timeline shifts [AI Generated]', 'Approval delays [AI Generated]', 'Vendor risk [AI Generated]'].map((r, i)=> (
-                      <Button key={i} variant="outline" size="sm" onClick={()=> setRisks(prev => prev ? prev + `; ${r}` : r)}>+ {r}</Button>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
 
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader><CardTitle>Sofia’s Guidance</CardTitle></CardHeader>
-                  <CardContent>
-                    <ul className="list-disc pl-5 text-sm nm-text-secondary space-y-1">
-                      <li>Make the charter scannable — headers first, prose second.</li>
-                      <li>Bracket unknowns with [AI Generated] to signal validation.</li>
-                      <li>Share early to invite fast feedback loops.</li>
-                    </ul>
-                  </CardContent>
-                </Card>
+                      <PromptPreviewBox
+                        prompt={promptPreview}
+                        isGenerating={isGenerating}
+                        onGenerate={runAI}
+                        generateButtonText="Generate Charter"
+                        title="AI Prompt Preview"
+                      />
 
-                <PromptPreviewBox
-                  prompt={promptPreview}
-                  isGenerating={isGenerating}
-                  onGenerate={runAI}
-                  generateButtonText="Generate AI Charter"
-                />
-
-                <Card>
-                  <CardHeader><CardTitle>Draft Charter</CardTitle></CardHeader>
-                  <CardContent className="space-y-3">
-                    <div className="flex items-center justify-between"><h3 className="font-semibold">{projectName}</h3><Badge variant="secondary">Review Required</Badge></div>
-                    {aiContent ? (
-                      <div className="p-6 border rounded-lg bg-background">
+                      {aiContent && (
                         <AIContentDisplay content={aiContent} />
-                      </div>
-                    ) : (
-                      <div className="p-6 border rounded-lg bg-background">
-                        <AIContentDisplay content={`${reviewNotice}\n\nProject: ${projectName}\n\nGoals:\n* ${goals}\n* [AI Generated] Audience segmentation plan\n\nKPIs:\n* ${kpis}\n* [AI Generated] Story resonance index\n\nSMART Objectives:\n* ${smart}\n\nRoles & Responsibilities:\n* ${roles}\n* [AI Generated] QA reviewer assigned\n\nRisks & Mitigations:\n* ${risks}`} />
-                      </div>
-                    )}
-                    <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
-                  </CardContent>
-                </Card>
-              </div>
-            </div>
+                      )}
+
+                      {aiContent && (
+                        <Button onClick={handleComplete} className="w-full" size="lg">
+                          Mark Complete
+                        </Button>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </motion.div>
       )}
