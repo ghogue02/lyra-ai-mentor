@@ -39,6 +39,11 @@ import AlexTeamAlignment from "@/components/lesson/AlexTeamAlignment";
 import AlexFutureLeadership from "@/components/lesson/AlexFutureLeadership";
 import AlexLeadershipFramework from "@/components/lesson/AlexLeadershipFramework";
 
+// Tools for Chapter 3
+import DecisionMatrixRenderer from '@/components/lesson/tools/DecisionMatrixRenderer';
+import TeamCapacityCalculator from '@/components/lesson/tools/TeamCapacityCalculator';
+import ProjectCharterBuilder from '@/components/lesson/tools/ProjectCharterBuilder';
+
 // Journey configuration registry
 const journeyRegistry = {
   'lyra-foundations': {
@@ -253,17 +258,31 @@ const journeyRegistry = {
     title: 'Team Alignment Mastery',
     description: 'Unite your organization around AI adoption with communication tools'
   },
-  'future-leadership': {
-    component: AlexFutureLeadership,
-    characterId: 'alex',
-    title: 'Future Leadership Strategy',
-    description: 'Build a sustainable AI-powered organizational roadmap for lasting impact'
-  },
   'leadership-framework': {
     component: AlexLeadershipFramework,
     characterId: 'alex',
     title: 'Leadership Framework Mastery',
     description: 'Develop comprehensive AI leadership skills for lasting organizational transformation'
+  },
+  
+  // Tools (Chapter 3 integrations)
+  'decision-matrix': {
+    component: DecisionMatrixRenderer,
+    characterId: 'sofia',
+    title: 'Decision Matrix',
+    description: 'Evaluate and prioritize storytelling initiatives with weighted criteria'
+  },
+  'team-capacity': {
+    component: TeamCapacityCalculator,
+    characterId: 'sofia',
+    title: 'Team Capacity Calculator',
+    description: 'Validate feasibility and optimize workload for upcoming campaigns'
+  },
+  'project-charter': {
+    component: ProjectCharterBuilder,
+    characterId: 'sofia',
+    title: 'Project Charter',
+    description: 'Draft a clear charter with AI-marked placeholders to review'
   }
 };
 

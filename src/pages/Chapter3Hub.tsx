@@ -54,6 +54,45 @@ const Chapter3Hub: React.FC = () => {
       progress: 0,
       category: 'mastery',
       tags: ['audience', 'scaling', 'impact']
+    },
+    {
+      id: 'decision-matrix',
+      title: 'Decision Matrix',
+      description: 'Evaluate and prioritize storytelling initiatives with weighted criteria',
+      iconType: 'achievement' as const,
+      route: '/chapter/3/interactive/decision-matrix',
+      difficulty: 'Beginner' as const,
+      completed: false,
+      unlocked: true,
+      progress: 0,
+      category: 'workshop',
+      tags: ['decision', 'prioritization', 'matrix']
+    },
+    {
+      id: 'team-capacity',
+      title: 'Team Capacity Calculator',
+      description: 'Validate feasibility and optimize workload for upcoming campaigns',
+      iconType: 'growth' as const,
+      route: '/chapter/3/interactive/team-capacity',
+      difficulty: 'Intermediate' as const,
+      completed: false,
+      unlocked: true,
+      progress: 0,
+      category: 'tool',
+      tags: ['capacity', 'workload', 'planning']
+    },
+    {
+      id: 'project-charter',
+      title: 'Project Charter',
+      description: 'Draft a clear charter with AI-marked placeholders to review',
+      iconType: 'mission' as const,
+      route: '/chapter/3/interactive/project-charter',
+      difficulty: 'Intermediate' as const,
+      completed: false,
+      unlocked: true,
+      progress: 0,
+      category: 'builder',
+      tags: ['charter', 'planning', 'AI Generated']
     }
   ];
 
