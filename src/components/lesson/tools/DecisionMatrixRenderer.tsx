@@ -97,7 +97,7 @@ const DecisionMatrixRenderer: React.FC = () => {
 
   const [isGenerating, setIsGenerating] = useState(false);
   const [aiContent, setAiContent] = useState<string>('');
-  const [showPrompt, setShowPrompt] = useState(false);
+  const [showPrompt, setShowPrompt] = useState(true);
   const [promptCopied, setPromptCopied] = useState(false);
 
   const totals = useMemo(() => programs.map((_, pIdx) => (
@@ -180,7 +180,6 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
           <div className="flex items-center gap-2">
             <Code className="w-5 h-5 text-primary" />
             <span className="font-semibold text-primary">AI Prompt Preview</span>
-            <Badge variant="secondary" className="text-xs">Live Update</Badge>
           </div>
           <div className="flex items-center gap-2">
             <Button
@@ -214,7 +213,7 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
               className="overflow-hidden"
             >
               <div className="bg-background/50 rounded-lg p-4 border border-border/50">
-                <pre className="text-sm whitespace-pre-wrap font-mono leading-relaxed text-muted-foreground">
+                <pre className="text-xs whitespace-pre-wrap font-mono leading-relaxed text-muted-foreground font-semibold">
                   {promptPreview}
                 </pre>
               </div>
