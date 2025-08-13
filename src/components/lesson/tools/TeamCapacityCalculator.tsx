@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { Users, Play, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import { useToast } from '@/hooks/use-toast';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 
 // Aligned with Voice Discovery: intro -> narrative -> workshop
@@ -19,7 +20,7 @@ interface TeamMember { name: string; role: string; hoursPerWeek: number; current
 
 const TeamCapacityCalculator: React.FC = () => {
   const navigate = useNavigate();
-
+  const { toast } = useToast();
   const [phase, setPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -46,6 +47,11 @@ const TeamCapacityCalculator: React.FC = () => {
   ];
 
   const progress = 66 + Math.min(34, currentStep * 8);
+
+  const handleComplete = () => {
+    toast({ title: 'Capacity Analysis Complete!', description: 'Summary saved. Great job validating feasibility.' });
+    navigate('/chapter/3');
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -99,7 +105,13 @@ const TeamCapacityCalculator: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="flex gap-2 mt-3"><Button variant="outline" onClick={()=> setRequirements([...requirements, { label: 'New requirement', hours: 0 }])}>Add requirement</Button></div>
+                    <div className="flex flex-wrap gap-2 mt-3">
+                      <Button variant="outline" onClick={()=> setRequirements([...requirements, { label: 'New requirement', hours: 0 }])}>Add requirement</Button>
+                      {/* Quick-pick requirement templates */}
+                      {['Content production hours', 'Design hours', 'Approvals time', 'Research time'].map((t, i)=>(
+                        <Button key={i} variant="outline" size="sm" onClick={()=> setRequirements([...requirements, { label: t, hours: 0 }])}>+ {t}</Button>
+                      ))}
+                    </div>
                   </section>
 
                   <section>
@@ -118,7 +130,17 @@ const TeamCapacityCalculator: React.FC = () => {
                           </div>
                         </div>
                       ))}
-                      <Button variant="outline" onClick={()=> setTeam([...team, { name: 'New Member', role: '', hoursPerWeek: 0, currentTasks: '' }])}>Add member</Button>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Button variant="outline" onClick={()=> setTeam([...team, { name: 'New Member', role: '', hoursPerWeek: 0, currentTasks: '' }])}>Add member</Button>
+                        {/* Quick add roles */}
+                        {[
+                          { name: 'Comms Lead', hours: 20 },
+                          { name: 'Designer', hours: 15 },
+                          { name: 'Data Analyst', hours: 10 },
+                        ].map((r, i) => (
+                          <Button key={i} variant="outline" size="sm" onClick={()=> setTeam([...team, { name: 'New Member', role: r.name, hoursPerWeek: r.hours, currentTasks: '' }])}>+ {r.name}</Button>
+                        ))}
+                      </div>
                     </div>
                   </section>
                 </CardContent>
@@ -149,7 +171,7 @@ const TeamCapacityCalculator: React.FC = () => {
                     <div className="flex items-center justify-between"><span className="text-sm nm-text-secondary">Available / week</span><Badge variant="secondary">{available} hrs</Badge></div>
                     <div className="flex items-center justify-between"><span className="text-sm nm-text-secondary">Required</span><Badge>{reqHours} hrs</Badge></div>
                     <Textarea className="min-h-[120px] mt-2" defaultValue={`Recommendation: ${recommendation}\nRisks: [List risks] \nAdjustments: [Proposed changes]`} />
-                    <div className="flex justify-end"><Button className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
+                    <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
                   </CardContent>
                 </Card>
               </div>

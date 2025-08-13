@@ -10,6 +10,7 @@ import { Slider } from '@/components/ui/slider';
 import { Scale, Play, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import { useToast } from '@/hooks/use-toast';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { useCharacterStory } from '@/contexts/CharacterStoryContext';
 
@@ -22,6 +23,7 @@ const defaultPrograms = ['Program A', 'Program B', 'Program C'];
 
 const DecisionMatrixRenderer: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const { getStory } = useCharacterStory();
   const sofia = getStory('sofia');
 
@@ -37,6 +39,13 @@ const DecisionMatrixRenderer: React.FC = () => {
   const [tone, setTone] = useState('Professional and concise');
   const [format, setFormat] = useState('Email memo');
 
+  // Quick-pick options
+  const criteriaSuggestions = ['Audience reach', 'Grant alignment', 'Risk level', 'Equity impact', 'Data availability'];
+  const programSuggestions = ['Annual Gala Campaign', 'Community Story Series', 'Donor Impact Report', 'Volunteer Spotlight Series'];
+  const audienceOptions = ['Executive Director', 'Board', 'Program Directors'];
+  const toneOptions = ['Professional and concise', 'Inspiring and mission-centered', 'Data-driven and neutral'];
+  const formatOptions = ['Email memo', 'Board slide', 'Slack update'];
+
   const totals = useMemo(() => programs.map((_, pIdx) => (
     criteria.reduce((sum, _c, cIdx) => sum + (scores[pIdx][cIdx] || 0) * (weights[cIdx] || 0), 0)
   )), [programs, scores, criteria, weights]);
@@ -49,6 +58,11 @@ const DecisionMatrixRenderer: React.FC = () => {
     `Options and scores: ${programs.map((p, i) => `${p} [total:${totals[i]}]`).join('; ')}.\n` +
     `Recommend: ${programs[bestIndex]} based on the matrix, include rationale and next steps.`
   ), [format, audience, tone, criteria, weights, programs, totals, bestIndex]);
+
+  const handleComplete = () => {
+    toast({ title: 'Decision Matrix Complete!', description: 'Saved a memo-ready recommendation.' });
+    navigate('/chapter/3');
+  };
 
   const narrativeMessages = [
     { id: '1', content: "We had five great storytelling ideas — but no shared way to choose.", emotion: 'thoughtful' as const, showAvatar: true },
@@ -118,8 +132,11 @@ const DecisionMatrixRenderer: React.FC = () => {
                         </div>
                       ))}
                     </div>
-                    <div className="flex gap-2 mt-3">
+                    <div className="flex flex-wrap items-center gap-2 mt-3">
                       <Button variant="outline" onClick={()=>{ setCriteria([...criteria, 'New criterion']); setWeights([...weights, 5]); }}>Add criterion</Button>
+                      {criteriaSuggestions.filter(s => !criteria.includes(s)).map((s, i) => (
+                        <Button key={i} variant="outline" size="sm" onClick={()=> { setCriteria([...criteria, s]); setWeights([...weights, 5]); }}>+ {s}</Button>
+                      ))}
                     </div>
                   </section>
 
@@ -141,6 +158,11 @@ const DecisionMatrixRenderer: React.FC = () => {
                         </div>
                       ))}
                       <Button variant="outline" onClick={()=>{ setPrograms([...programs, `Program ${String.fromCharCode(65 + programs.length)}`]); setScores([...scores, criteria.map(()=>5)]); }}>Add program</Button>
+                      <div className="flex flex-wrap gap-2">
+                        {programSuggestions.filter(p => !programs.includes(p)).map((p, i) => (
+                          <Button key={i} variant="outline" size="sm" onClick={()=> { setPrograms([...programs, p]); setScores([...scores, criteria.map(()=>5)]); }}>+ {p}</Button>
+                        ))}
+                      </div>
                     </div>
                   </section>
 
@@ -148,9 +170,30 @@ const DecisionMatrixRenderer: React.FC = () => {
                   <section>
                     <h3 className="font-semibold mb-2">3) Memo Options</h3>
                     <div className="grid sm:grid-cols-3 gap-3">
-                      <Input value={audience} onChange={(e)=>setAudience(e.target.value)} placeholder="Audience" />
-                      <Input value={tone} onChange={(e)=>setTone(e.target.value)} placeholder="Tone" />
-                      <Input value={format} onChange={(e)=>setFormat(e.target.value)} placeholder="Format" />
+                      <div>
+                        <Input value={audience} onChange={(e)=>setAudience(e.target.value)} placeholder="Audience" />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {audienceOptions.map((o, i) => (
+                            <Button key={i} variant="outline" size="sm" onClick={()=> setAudience(o)}>+ {o}</Button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <Input value={tone} onChange={(e)=>setTone(e.target.value)} placeholder="Tone" />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {toneOptions.map((o, i) => (
+                            <Button key={i} variant="outline" size="sm" onClick={()=> setTone(o)}>+ {o}</Button>
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <Input value={format} onChange={(e)=>setFormat(e.target.value)} placeholder="Format" />
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          {formatOptions.map((o, i) => (
+                            <Button key={i} variant="outline" size="sm" onClick={()=> setFormat(o)}>+ {o}</Button>
+                          ))}
+                        </div>
+                      </div>
                     </div>
                   </section>
                 </CardContent>
@@ -193,7 +236,7 @@ const DecisionMatrixRenderer: React.FC = () => {
                       ))}
                     </div>
                     <Textarea className="min-h-[140px]" defaultValue={`Decision: Proceed with ${programs[bestIndex]} (highest weighted score).\nRationale: [Add a sentence per top criteria]\nNext steps: Confirm with stakeholders, pilot, prepare update.`} />
-                    <div className="flex justify-end"><Button className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
+                    <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
                   </CardContent>
                 </Card>
               </div>

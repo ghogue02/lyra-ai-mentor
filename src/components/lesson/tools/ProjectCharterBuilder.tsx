@@ -9,6 +9,7 @@ import { Progress } from '@/components/ui/progress';
 import { FileText, Play, Sparkles, CheckCircle2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import { useToast } from '@/hooks/use-toast';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 
 // Aligned with Voice Discovery: intro -> narrative -> workshop
@@ -17,6 +18,7 @@ type Phase = 'intro' | 'narrative' | 'workshop';
 
 const ProjectCharterBuilder: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   const [phase, setPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
@@ -42,6 +44,11 @@ const ProjectCharterBuilder: React.FC = () => {
   ];
 
   const progress = 66 + Math.min(34, currentStep * 8);
+
+  const handleComplete = () => {
+    toast({ title: 'Charter Draft Complete!', description: 'Placeholders marked — ready for review.' });
+    navigate('/chapter/3');
+  };
 
   return (
     <AnimatePresence mode="wait">
@@ -84,14 +91,45 @@ const ProjectCharterBuilder: React.FC = () => {
                 <CardContent className="space-y-6">
                   <div className="grid sm:grid-cols-2 gap-3">
                     <Input value={projectName} onChange={(e)=>{ setProjectName(e.target.value); setCurrentStep((s)=>Math.min(4, s+1)); }} placeholder="Project name" />
-                    <Input value={roles} onChange={(e)=> setRoles(e.target.value)} placeholder="Roles & responsibilities" />
+                    <div>
+                      <Input value={roles} onChange={(e)=> setRoles(e.target.value)} placeholder="Roles & responsibilities" />
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {['Owner', 'Designer', 'Stakeholder', 'QA Reviewer'].map((r, i)=> (
+                          <Button key={i} variant="outline" size="sm" onClick={()=> setRoles(prev => prev ? prev + `, ${r}` : r)}>+ {r}</Button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                   <Textarea value={goals} onChange={(e)=> setGoals(e.target.value)} placeholder="High-level goals" className="min-h-[80px]" />
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {['Increase donor engagement', 'Grow volunteer signups', 'Elevate community awareness'].map((g, i)=> (
+                      <Button key={i} variant="outline" size="sm" onClick={()=> setGoals(prev => prev ? prev + `; ${g}` : g)}>+ {g}</Button>
+                    ))}
+                  </div>
                   <div className="grid sm:grid-cols-2 gap-3">
-                    <Textarea value={kpis} onChange={(e)=> setKpis(e.target.value)} placeholder="KPIs" className="min-h-[80px]" />
-                    <Textarea value={smart} onChange={(e)=> setSmart(e.target.value)} placeholder="SMART objectives" className="min-h-[80px]" />
+                    <div>
+                      <Textarea value={kpis} onChange={(e)=> setKpis(e.target.value)} placeholder="KPIs" className="min-h-[80px]" />
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {['Open rate', 'CTR', 'Event attendance', 'Donations'].map((k, i)=> (
+                          <Button key={i} variant="outline" size="sm" onClick={()=> setKpis(prev => prev ? prev + `, ${k}` : k)}>+ {k}</Button>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <Textarea value={smart} onChange={(e)=> setSmart(e.target.value)} placeholder="SMART objectives" className="min-h-[80px]" />
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        {['Raise CTR to 6% by Q3', 'Add 200 volunteers by Q4', 'Increase retention to 65%'].map((s, i)=> (
+                          <Button key={i} variant="outline" size="sm" onClick={()=> setSmart(prev => prev ? prev + `; ${s}` : s)}>+ {s}</Button>
+                        ))}
+                      </div>
+                    </div>
                   </div>
                   <Textarea value={risks} onChange={(e)=> setRisks(e.target.value)} placeholder="Risks & mitigations" className="min-h-[80px]" />
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {['Timeline shifts [AI Generated]', 'Approval delays [AI Generated]', 'Vendor risk [AI Generated]'].map((r, i)=> (
+                      <Button key={i} variant="outline" size="sm" onClick={()=> setRisks(prev => prev ? prev + `; ${r}` : r)}>+ {r}</Button>
+                    ))}
+                  </div>
                 </CardContent>
               </Card>
 
@@ -119,7 +157,7 @@ const ProjectCharterBuilder: React.FC = () => {
                   <CardContent className="space-y-3">
                     <div className="flex items-center justify-between"><h3 className="font-semibold">{projectName}</h3><Badge variant="secondary">Review Required</Badge></div>
                     <div className="prose max-w-none text-sm whitespace-pre-wrap nm-card-subtle p-4 rounded-md">{`${reviewNotice}\n\nProject: ${projectName}\n\nGoals:\n- ${goals}\n- [AI Generated] Audience segmentation plan\n\nKPIs:\n- ${kpis}\n- [AI Generated] Story resonance index\n\nSMART Objectives:\n- ${smart}\n\nRoles & Responsibilities:\n- ${roles}\n- [AI Generated] QA reviewer assigned\n\nRisks & Mitigations:\n- ${risks}`}</div>
-                    <div className="flex justify-end"><Button className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
+                    <div className="flex justify-end"><Button onClick={handleComplete} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4"/> Mark Complete</Button></div>
                   </CardContent>
                 </Card>
               </div>
