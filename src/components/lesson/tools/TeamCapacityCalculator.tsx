@@ -601,36 +601,6 @@ Provide a concise feasibility assessment with specific recommendations for timel
                       </CardContent>
                     </Card>
                   )}
-                  {/* AI Analysis Section */}
-                  {currentStep >= 3 && (
-                    <Card>
-                      <CardHeader>
-                        <div className="flex items-center gap-2">
-                          <CheckCircle2 className="w-5 h-5 text-primary" />
-                          <CardTitle>Capacity Analysis</CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-6">
-                          {aiContent ? (
-                            <AIContentDisplay content={aiContent} />
-                          ) : (
-                            <div className="text-center py-8 text-muted-foreground">
-                              Generate your capacity analysis above using the prompt preview.
-                            </div>
-                          )}
-                          
-                          {aiContent && (
-                            <div className="pt-4 border-t">
-                              <Button onClick={handleComplete} className="w-full">
-                                Complete Analysis
-                              </Button>
-                            </div>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
                 </div>
 
                 {/* Sidebar with Dynamic Prompt Preview */}
@@ -682,6 +652,28 @@ Provide a concise feasibility assessment with specific recommendations for timel
                       generateButtonText="Generate Capacity Analysis"
                       title="AI Analysis Prompt"
                     />
+                  )}
+
+                  {/* AI Analysis Results */}
+                  {aiContent && (
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-primary" />
+                          <CardTitle>Analysis Results</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-6">
+                          <AIContentDisplay content={aiContent} />
+                          <div className="pt-4 border-t">
+                            <Button onClick={handleComplete} className="w-full">
+                              Complete Analysis
+                            </Button>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
                   )}
                 </div>
               </div>
