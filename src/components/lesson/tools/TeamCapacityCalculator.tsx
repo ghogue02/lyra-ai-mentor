@@ -318,43 +318,56 @@ Provide a concise feasibility assessment with specific recommendations for timel
             {currentStep >= 1 && (
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
-                  {/* Requirements Section */}
+                   {/* Requirements Section */}
                   <Card>
                     <CardHeader>
                       <div className="flex items-center gap-2">
                         <Target className="w-5 h-5 text-primary" />
                         <CardTitle>Project Requirements</CardTitle>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Total hours needed for the entire project
+                        </p>
                       </div>
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-6">
                         {requirements.map((req) => (
-                          <div key={req.id} className="space-y-3 p-4 rounded-lg nm-card-subtle">
+                          <div key={req.id} className="space-y-3 p-4 rounded-lg nm-card-subtle border border-dashed border-primary/20">
                             <div className="flex items-center justify-between">
                               <span className="font-medium">{req.category}</span>
-                              <Badge variant="outline">{req.hours}h</Badge>
+                              <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
+                                {req.hours}h total
+                              </Badge>
                             </div>
                             
                             {/* Hour Preset Buttons */}
-                            <div className="flex gap-2">
-                              {hourPresets.map((preset) => (
-                                <Button
-                                  key={preset.id}
-                                  variant={req.hours === preset.value ? "default" : "outline"}
-                                  size="sm"
-                                  onClick={() => updateRequirement(req.id, preset.value)}
-                                  className="flex-1"
-                                >
-                                  {preset.label}
-                                </Button>
-                              ))}
+                            <div className="space-y-2">
+                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                Project scope presets
+                              </label>
+                              <div className="flex gap-2">
+                                {hourPresets.map((preset) => (
+                                  <Button
+                                    key={preset.id}
+                                    variant={req.hours === preset.value ? "default" : "outline"}
+                                    size="sm"
+                                    onClick={() => updateRequirement(req.id, preset.value)}
+                                    className="flex-1"
+                                  >
+                                    {preset.label}
+                                  </Button>
+                                ))}
+                              </div>
                             </div>
                             
                             {/* Fine-tune Slider */}
                             <div className="space-y-2">
+                              <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                Custom hours required
+                              </label>
                               <div className="flex justify-between text-xs text-muted-foreground">
                                 <span>0h</span>
-                                <span>Custom: {req.hours}h</span>
+                                <span className="font-medium text-foreground">Current: {req.hours}h</span>
                                 <span>80h</span>
                               </div>
                               <Slider
@@ -380,13 +393,16 @@ Provide a concise feasibility assessment with specific recommendations for timel
                     </CardContent>
                   </Card>
 
-                  {/* Team Section */}
+                   {/* Team Section */}
                   {currentStep >= 2 && (
                     <Card>
                       <CardHeader>
                         <div className="flex items-center gap-2">
                           <Users className="w-5 h-5 text-primary" />
                           <CardTitle>Build Your Team</CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Set weekly availability for each team member
+                          </p>
                         </div>
                       </CardHeader>
                       <CardContent>
@@ -403,23 +419,31 @@ Provide a concise feasibility assessment with specific recommendations for timel
                           {/* Team Members */}
                           <div className="space-y-4">
                             {team.map((member) => (
-                              <div key={member.id} className="p-4 rounded-lg nm-card-subtle space-y-4">
-                                <div className="flex items-center justify-between">
-                                  <div className="flex-1">
-                                    <input
-                                      value={member.name}
-                                      onChange={(e) => updateTeamMember(member.id, 'name', e.target.value)}
-                                      className="font-medium bg-transparent border-none outline-none text-lg"
-                                      placeholder="Member name"
-                                    />
-                                    <div className="text-sm text-muted-foreground">{member.role}</div>
+                              <div key={member.id} className="p-4 rounded-lg nm-card-subtle border border-dashed border-secondary/30 space-y-4">
+                                <div className="flex items-start justify-between">
+                                  <div className="flex-1 space-y-2">
+                                    <div className="space-y-1">
+                                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                        Team member name (editable)
+                                      </label>
+                                      <input
+                                        value={member.name}
+                                        onChange={(e) => updateTeamMember(member.id, 'name', e.target.value)}
+                                        className="w-full px-3 py-2 text-lg font-medium bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
+                                        placeholder="Enter team member name"
+                                      />
+                                    </div>
+                                    <div className="text-sm text-muted-foreground font-medium">{member.role}</div>
                                   </div>
-                                  <div className="flex items-center gap-2">
-                                    <Badge variant="secondary">{member.hoursPerWeek}h/week</Badge>
+                                  <div className="flex items-center gap-2 ml-4">
+                                    <Badge variant="secondary" className="bg-secondary/20 text-secondary-foreground">
+                                      {member.hoursPerWeek}h available/week
+                                    </Badge>
                                     <Button
                                       variant="ghost"
                                       size="sm"
                                       onClick={() => setTeam(prev => prev.filter(m => m.id !== member.id))}
+                                      className="text-muted-foreground hover:text-destructive"
                                     >
                                       <X className="w-4 h-4" />
                                     </Button>
@@ -428,7 +452,12 @@ Provide a concise feasibility assessment with specific recommendations for timel
                                 
                                 {/* Capacity Presets */}
                                 <div className="space-y-3">
-                                  <span className="text-sm font-medium">Weekly Capacity</span>
+                                  <div className="space-y-1">
+                                    <label className="text-sm font-medium text-foreground">Weekly Availability (editable)</label>
+                                    <p className="text-xs text-muted-foreground">
+                                      How many hours per week can this person work on your project?
+                                    </p>
+                                  </div>
                                   <div className="flex gap-2">
                                     {capacityPresets.map((preset) => (
                                       <Button
@@ -445,9 +474,12 @@ Provide a concise feasibility assessment with specific recommendations for timel
                                   
                                   {/* Fine-tune Slider */}
                                   <div className="space-y-2">
+                                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
+                                      Custom weekly hours
+                                    </label>
                                     <div className="flex justify-between text-xs text-muted-foreground">
                                       <span>5h</span>
-                                      <span>Custom: {member.hoursPerWeek}h</span>
+                                      <span className="font-medium text-foreground">Available: {member.hoursPerWeek}h/week</span>
                                       <span>40h</span>
                                     </div>
                                     <Slider
@@ -552,17 +584,17 @@ Provide a concise feasibility assessment with specific recommendations for timel
                       </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
-                      <div className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Available Hours</span>
-                          <span className="font-medium">{available}h/week</span>
+                      <div className="space-y-3">
+                        <div className="flex justify-between text-sm p-2 rounded-md bg-secondary/10">
+                          <span className="text-muted-foreground">Team Weekly Capacity</span>
+                          <span className="font-medium text-secondary-foreground">{available}h/week available</span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Required Hours</span>
-                          <span className="font-medium">{reqHours}h total</span>
+                        <div className="flex justify-between text-sm p-2 rounded-md bg-primary/10">
+                          <span className="text-muted-foreground">Project Requirements</span>
+                          <span className="font-medium text-primary">{reqHours}h total needed</span>
                         </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Utilization</span>
+                        <div className="flex justify-between text-sm p-2 rounded-md bg-muted/50">
+                          <span className="text-muted-foreground">Capacity Utilization</span>
                           <span className={`font-medium ${riskLevel === 'high' ? 'text-destructive' : riskLevel === 'medium' ? 'text-yellow-600' : 'text-green-600'}`}>
                             {utilizationRate.toFixed(1)}%
                           </span>
