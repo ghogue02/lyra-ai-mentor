@@ -151,6 +151,15 @@ const App = () => {
                   </ProtectedRoute>
                 } 
               />
+              {/* Team Capacity Results route */}
+              <Route 
+                path="/chapter/:chapterId/interactive/:journeyId/results" 
+                element={
+                  <ProtectedRoute>
+                    <InteractiveJourney />
+                  </ProtectedRoute>
+                } 
+              />
               {/* Redirect legacy Maya demo route to new structure */}
               <Route 
                 path="/lyra-maya-demo" 

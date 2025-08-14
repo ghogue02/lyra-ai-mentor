@@ -205,7 +205,24 @@ Provide a concise feasibility assessment with specific recommendations for timel
       // Check for success response format
       if (data && data.success && data.content) {
         setAiContent(data.content);
-        toast({ title: 'AI analysis ready', description: 'Review the capacity assessment below.' });
+        toast({ title: 'AI analysis ready', description: 'Navigating to results page...' });
+        
+        // Navigate to results page with data
+        navigate('/chapter/3/interactive/team-capacity-results', {
+          state: {
+            capacityData: {
+              available,
+              reqHours,
+              utilizationRate,
+              riskLevel,
+              recommendation,
+              team,
+              requirements,
+              aiContent: data.content,
+              selectedScenario
+            }
+          }
+        });
       } else {
         throw new Error(data?.error || 'Failed to generate analysis');
       }

@@ -42,6 +42,7 @@ import AlexLeadershipFramework from "@/components/lesson/AlexLeadershipFramework
 // Tools for Chapter 3
 import DecisionMatrixRenderer from '@/components/lesson/tools/DecisionMatrixRenderer';
 import TeamCapacityCalculator from '@/components/lesson/tools/TeamCapacityCalculator';
+import TeamCapacityResults from '@/components/lesson/tools/TeamCapacityResults';
 import ProjectCharterBuilder from '@/components/lesson/tools/ProjectCharterBuilder';
 
 // Journey configuration registry
@@ -277,6 +278,12 @@ const journeyRegistry = {
     characterId: 'sofia',
     title: 'Team Capacity Calculator',
     description: 'Validate feasibility and optimize workload for upcoming campaigns'
+  },
+  'team-capacity-results': {
+    component: TeamCapacityResults,
+    characterId: 'sofia',
+    title: 'Team Capacity Analysis Results',
+    description: 'Visual analysis and insights from your capacity assessment'
   },
   'project-charter': {
     component: ProjectCharterBuilder,
