@@ -424,7 +424,7 @@ Provide a concise feasibility assessment with specific recommendations for timel
                                   <div className="flex-1 space-y-2">
                                     <div className="space-y-1">
                                       <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                        Team member name (editable)
+                                        Team member name
                                       </label>
                                       <input
                                         value={member.name}
@@ -453,7 +453,7 @@ Provide a concise feasibility assessment with specific recommendations for timel
                                 {/* Capacity Presets */}
                                 <div className="space-y-3">
                                   <div className="space-y-1">
-                                    <label className="text-sm font-medium text-foreground">Weekly Availability (editable)</label>
+                                    <label className="text-sm font-medium text-foreground">Weekly Availability</label>
                                     <p className="text-xs text-muted-foreground">
                                       How many hours per week can this person work on your project?
                                     </p>
