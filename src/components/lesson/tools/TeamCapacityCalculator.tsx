@@ -363,11 +363,10 @@ Provide a concise feasibility assessment with specific recommendations for timel
                             {/* Fine-tune Slider */}
                             <div className="space-y-2">
                               <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                Custom hours required
+                                Fine-tune hours
                               </label>
                               <div className="flex justify-between text-xs text-muted-foreground">
                                 <span>0h</span>
-                                <span className="font-medium text-foreground">Current: {req.hours}h</span>
                                 <span>80h</span>
                               </div>
                               <Slider
@@ -436,9 +435,6 @@ Provide a concise feasibility assessment with specific recommendations for timel
                                     <div className="text-sm text-muted-foreground font-medium">{member.role}</div>
                                   </div>
                                   <div className="flex items-center gap-2 ml-4">
-                                    <Badge variant="secondary" className="bg-secondary/20 text-secondary-foreground">
-                                      {member.hoursPerWeek}h available/week
-                                    </Badge>
                                     <Button
                                       variant="ghost"
                                       size="sm"
@@ -475,11 +471,10 @@ Provide a concise feasibility assessment with specific recommendations for timel
                                   {/* Fine-tune Slider */}
                                   <div className="space-y-2">
                                     <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                      Custom weekly hours
+                                      Fine-tune hours
                                     </label>
                                     <div className="flex justify-between text-xs text-muted-foreground">
                                       <span>5h</span>
-                                      <span className="font-medium text-foreground">Available: {member.hoursPerWeek}h/week</span>
                                       <span>40h</span>
                                     </div>
                                     <Slider
