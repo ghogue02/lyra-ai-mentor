@@ -52,7 +52,7 @@ const TeamCapacityCalculator: React.FC = () => {
     {
       id: 'campaign-launch',
       name: 'Major Campaign Launch',
-      description: 'Multi-channel advocacy campaign with content creation, design, and coordination needs',
+      description: 'Multi-channel advocacy campaign promoting new policy initiative across digital and traditional media channels',
       data: {
         requirements: [
           { id: '1', category: 'Content Creation', hours: 40 },
@@ -68,8 +68,8 @@ const TeamCapacityCalculator: React.FC = () => {
     },
     {
       id: 'event-planning',
-      name: 'Annual Event Planning', 
-      description: 'Large-scale event with logistics, marketing, and stakeholder coordination',
+      name: 'Annual Fundraising Gala', 
+      description: 'Large-scale 300-person fundraising event with venue coordination, catering, entertainment, donor relations, and volunteer management',
       data: {
         requirements: [
           { id: '1', category: 'Event Logistics', hours: 30 },
@@ -85,8 +85,8 @@ const TeamCapacityCalculator: React.FC = () => {
     },
     {
       id: 'content-sprint',
-      name: 'Content Production Sprint',
-      description: 'Intensive content creation period for multiple channels and formats',
+      name: 'Annual Report Production',
+      description: 'Comprehensive annual report including data analysis, impact stories, financial reporting, design, and multi-format distribution',
       data: {
         requirements: [
           { id: '1', category: 'Writing & Research', hours: 50 },
@@ -384,7 +384,22 @@ Provide a concise feasibility assessment with specific recommendations for timel
                         {requirements.map((req) => (
                           <div key={req.id} className="space-y-3 p-4 rounded-lg nm-card-subtle border border-dashed border-primary/20">
                             <div className="flex items-center justify-between">
-                              <span className="font-medium">{req.category}</span>
+                              <div className="space-y-1">
+                                <span className="font-medium">{req.category}</span>
+                                <div className="text-xs text-muted-foreground">
+                                  {req.category === 'Content Creation' && 'Blog posts, social media content, press releases, web copy, email campaigns'}
+                                  {req.category === 'Design Work' && 'Graphics, layouts, infographics, social media visuals, print materials'}
+                                  {req.category === 'Review & Approval' && 'Stakeholder review cycles, legal compliance, brand consistency checks'}
+                                  {req.category === 'Coordination' && 'Team meetings, vendor communication, timeline management, status updates'}
+                                  {req.category === 'Event Logistics' && 'Venue booking, catering, A/V setup, transportation, vendor coordination'}
+                                  {req.category === 'Marketing Materials' && 'Invitations, promotional flyers, social media graphics, website updates'}
+                                  {req.category === 'Stakeholder Coordination' && 'Donor outreach, board communications, sponsor relations, VIP management'}
+                                  {req.category === 'Writing & Research' && 'Impact stories, financial analysis, program summaries, data collection'}
+                                  {req.category === 'Design & Graphics' && 'Layout design, charts, infographics, photo editing, print preparation'}
+                                  {req.category === 'Video Production' && 'Filming interviews, editing footage, motion graphics, audio production'}
+                                  {req.category === 'Editing & Review' && 'Copy editing, fact-checking, stakeholder approval, final proofreading'}
+                                </div>
+                              </div>
                               <Badge variant="outline" className="bg-primary/5 text-primary border-primary/20">
                                 {req.hours}h total
                               </Badge>
