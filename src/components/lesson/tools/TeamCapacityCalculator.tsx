@@ -4,7 +4,8 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { Users, Play, CheckCircle2, Target, Clock, AlertTriangle } from 'lucide-react';
+import { Slider } from '@/components/ui/slider';
+import { Users, Play, CheckCircle2, Target, Clock, AlertTriangle, Plus, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import { useToast } from '@/hooks/use-toast';
@@ -12,7 +13,7 @@ import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManage
 import { supabase } from '@/integrations/supabase/client';
 import { PromptPreviewBox } from '@/components/ui/PromptPreviewBox';
 import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
-import { InteractiveSelector, RatingGrid, ScenarioSelector } from '@/components/ui/InteractiveSelector';
+import { InteractiveSelector, ScenarioSelector } from '@/components/ui/InteractiveSelector';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -110,6 +111,19 @@ const TeamCapacityCalculator: React.FC = () => {
     { id: '1', name: 'Sofia', role: 'Communications Lead', hoursPerWeek: 20, currentTasks: ['Newsletter', 'Social media'] },
     { id: '2', name: 'Jamie', role: 'Designer', hoursPerWeek: 15, currentTasks: ['Event materials'] }
   ]);
+
+  const hourPresets = [
+    { id: 'light', label: 'Light', description: '10 hours', value: 10 },
+    { id: 'medium', label: 'Medium', description: '25 hours', value: 25 },
+    { id: 'heavy', label: 'Heavy', description: '40 hours', value: 40 },
+    { id: 'intensive', label: 'Intensive', description: '60 hours', value: 60 }
+  ];
+
+  const capacityPresets = [
+    { id: 'part-time', label: 'Part-time', description: '10h/week', value: 10 },
+    { id: 'standard', label: 'Standard', description: '20h/week', value: 20 },
+    { id: 'full-time', label: 'Full-time', description: '35h/week', value: 35 }
+  ];
 
   const rolePresets = [
     { id: 'comms-lead', label: 'Communications Lead', description: 'Strategy, messaging, stakeholder relations', value: 25 },
@@ -313,20 +327,45 @@ Provide a concise feasibility assessment with specific recommendations for timel
                       </div>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
+                      <div className="space-y-6">
                         {requirements.map((req) => (
-                          <div key={req.id} className="space-y-3">
+                          <div key={req.id} className="space-y-3 p-4 rounded-lg nm-card-subtle">
                             <div className="flex items-center justify-between">
                               <span className="font-medium">{req.category}</span>
                               <Badge variant="outline">{req.hours}h</Badge>
                             </div>
-                            <RatingGrid
-                              title={`Hours needed for ${req.category}`}
-                              value={req.hours}
-                              onChange={(hours) => updateRequirement(req.id, hours)}
-                              max={80}
-                              min={0}
-                            />
+                            
+                            {/* Hour Preset Buttons */}
+                            <div className="flex gap-2">
+                              {hourPresets.map((preset) => (
+                                <Button
+                                  key={preset.id}
+                                  variant={req.hours === preset.value ? "default" : "outline"}
+                                  size="sm"
+                                  onClick={() => updateRequirement(req.id, preset.value)}
+                                  className="flex-1"
+                                >
+                                  {preset.label}
+                                </Button>
+                              ))}
+                            </div>
+                            
+                            {/* Fine-tune Slider */}
+                            <div className="space-y-2">
+                              <div className="flex justify-between text-xs text-muted-foreground">
+                                <span>0h</span>
+                                <span>Custom: {req.hours}h</span>
+                                <span>80h</span>
+                              </div>
+                              <Slider
+                                value={[req.hours]}
+                                onValueChange={([value]) => updateRequirement(req.id, value)}
+                                max={80}
+                                min={0}
+                                step={5}
+                                className="w-full"
+                              />
+                            </div>
                           </div>
                         ))}
                         
@@ -352,38 +391,77 @@ Provide a concise feasibility assessment with specific recommendations for timel
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-6">
+                          {/* Add Team Member Button */}
                           <InteractiveSelector
-                            title="Add Team Members"
+                            title="Quick Add Team Members"
                             options={rolePresets}
                             selectedIds={[]}
                             onSelect={addTeamMember}
-                            variant="grid"
+                            variant="list"
                           />
 
+                          {/* Team Members */}
                           <div className="space-y-4">
                             {team.map((member) => (
-                              <div key={member.id} className="p-4 border rounded-lg space-y-3">
+                              <div key={member.id} className="p-4 rounded-lg nm-card-subtle space-y-4">
                                 <div className="flex items-center justify-between">
-                                  <div>
+                                  <div className="flex-1">
                                     <input
                                       value={member.name}
                                       onChange={(e) => updateTeamMember(member.id, 'name', e.target.value)}
-                                      className="font-medium bg-transparent border-none outline-none"
+                                      className="font-medium bg-transparent border-none outline-none text-lg"
                                       placeholder="Member name"
                                     />
                                     <div className="text-sm text-muted-foreground">{member.role}</div>
                                   </div>
-                                  <Badge variant="secondary">{member.hoursPerWeek}h/week</Badge>
+                                  <div className="flex items-center gap-2">
+                                    <Badge variant="secondary">{member.hoursPerWeek}h/week</Badge>
+                                    <Button
+                                      variant="ghost"
+                                      size="sm"
+                                      onClick={() => setTeam(prev => prev.filter(m => m.id !== member.id))}
+                                    >
+                                      <X className="w-4 h-4" />
+                                    </Button>
+                                  </div>
                                 </div>
                                 
-                                <RatingGrid
-                                  title="Weekly Hours Available"
-                                  value={member.hoursPerWeek}
-                                  onChange={(hours) => updateTeamMember(member.id, 'hoursPerWeek', hours)}
-                                  max={40}
-                                  min={5}
-                                />
+                                {/* Capacity Presets */}
+                                <div className="space-y-3">
+                                  <span className="text-sm font-medium">Weekly Capacity</span>
+                                  <div className="flex gap-2">
+                                    {capacityPresets.map((preset) => (
+                                      <Button
+                                        key={preset.id}
+                                        variant={member.hoursPerWeek === preset.value ? "default" : "outline"}
+                                        size="sm"
+                                        onClick={() => updateTeamMember(member.id, 'hoursPerWeek', preset.value)}
+                                        className="flex-1"
+                                      >
+                                        {preset.label}
+                                      </Button>
+                                    ))}
+                                  </div>
+                                  
+                                  {/* Fine-tune Slider */}
+                                  <div className="space-y-2">
+                                    <div className="flex justify-between text-xs text-muted-foreground">
+                                      <span>5h</span>
+                                      <span>Custom: {member.hoursPerWeek}h</span>
+                                      <span>40h</span>
+                                    </div>
+                                    <Slider
+                                      value={[member.hoursPerWeek]}
+                                      onValueChange={([value]) => updateTeamMember(member.id, 'hoursPerWeek', value)}
+                                      max={40}
+                                      min={5}
+                                      step={1}
+                                      className="w-full"
+                                    />
+                                  </div>
+                                </div>
 
+                                {/* Current Tasks */}
                                 <div className="space-y-2">
                                   <span className="text-sm font-medium">Current Tasks</span>
                                   <div className="flex flex-wrap gap-2">
@@ -391,23 +469,27 @@ Provide a concise feasibility assessment with specific recommendations for timel
                                       <Badge 
                                         key={index} 
                                         variant="outline" 
-                                        className="cursor-pointer"
+                                        className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
                                         onClick={() => removeTaskFromMember(member.id, index)}
                                       >
-                                        {task} ×
+                                        {task} <X className="w-3 h-3 ml-1" />
                                       </Badge>
                                     ))}
                                   </div>
-                                  <div className="flex flex-wrap gap-2">
-                                    {taskPresets.map((task) => (
+                                  
+                                  {/* Task Presets */}
+                                  <div className="flex flex-wrap gap-1">
+                                    {taskPresets.slice(0, 6).map((task) => (
                                       <Button
                                         key={task}
                                         variant="ghost"
                                         size="sm"
-                                        onClick={() => addTaskToMember(member.id, task)}
-                                        className="h-8 text-xs"
+                                        onClick={() => !member.currentTasks.includes(task) && addTaskToMember(member.id, task)}
+                                        className="text-xs h-6 px-2"
+                                        disabled={member.currentTasks.includes(task)}
                                       >
-                                        + {task}
+                                        <Plus className="w-3 h-3 mr-1" />
+                                        {task}
                                       </Button>
                                     ))}
                                   </div>
@@ -415,7 +497,7 @@ Provide a concise feasibility assessment with specific recommendations for timel
                               </div>
                             ))}
                           </div>
-
+                          
                           {currentStep === 2 && (
                             <div className="pt-4 border-t">
                               <Button onClick={() => setCurrentStep(3)} className="w-full">
@@ -427,11 +509,41 @@ Provide a concise feasibility assessment with specific recommendations for timel
                       </CardContent>
                     </Card>
                   )}
+                  {/* AI Analysis Section */}
+                  {currentStep >= 3 && (
+                    <Card>
+                      <CardHeader>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-primary" />
+                          <CardTitle>Capacity Analysis</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-6">
+                          {aiContent ? (
+                            <AIContentDisplay content={aiContent} />
+                          ) : (
+                            <div className="text-center py-8 text-muted-foreground">
+                              Generate your capacity analysis above using the prompt preview.
+                            </div>
+                          )}
+                          
+                          {aiContent && (
+                            <div className="pt-4 border-t">
+                              <Button onClick={handleComplete} className="w-full">
+                                Complete Analysis
+                              </Button>
+                            </div>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
                 </div>
 
-                {/* Right Sidebar */}
+                {/* Sidebar with Dynamic Prompt Preview */}
                 <div className="space-y-6">
-                  {/* Capacity Overview */}
+                  {/* Capacity Overview Card */}
                   <Card>
                     <CardHeader>
                       <CardTitle className="flex items-center gap-2">
@@ -441,63 +553,43 @@ Provide a concise feasibility assessment with specific recommendations for timel
                     </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-2">
-                        <div className="flex justify-between">
-                          <span className="text-sm">Available per week</span>
-                          <Badge variant="secondary">{available}h</Badge>
+                        <div className="flex justify-between text-sm">
+                          <span>Available Hours</span>
+                          <span className="font-medium">{available}h/week</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">Total required</span>
-                          <Badge>{reqHours}h</Badge>
+                        <div className="flex justify-between text-sm">
+                          <span>Required Hours</span>
+                          <span className="font-medium">{reqHours}h total</span>
                         </div>
-                        <div className="flex justify-between">
-                          <span className="text-sm">Utilization rate</span>
-                          <Badge variant={riskLevel === 'high' ? 'destructive' : riskLevel === 'medium' ? 'default' : 'secondary'}>
+                        <div className="flex justify-between text-sm">
+                          <span>Utilization</span>
+                          <span className={`font-medium ${riskLevel === 'high' ? 'text-destructive' : riskLevel === 'medium' ? 'text-yellow-600' : 'text-green-600'}`}>
                             {utilizationRate.toFixed(1)}%
-                          </Badge>
+                          </span>
                         </div>
                       </div>
                       
-                      <Progress value={Math.min(100, utilizationRate)} className="h-2" />
+                      <Progress value={Math.min(utilizationRate, 100)} className="h-3" />
                       
-                      <div className={`p-3 rounded-lg flex items-center gap-2 ${
-                        riskLevel === 'high' ? 'bg-destructive/10 text-destructive' :
-                        riskLevel === 'medium' ? 'bg-orange-100 text-orange-800' :
-                        'bg-green-100 text-green-800'
-                      }`}>
-                        <AlertTriangle className="w-4 h-4" />
-                        <span className="text-sm font-medium">{recommendation}</span>
+                      <div className={`p-3 rounded-lg text-sm ${riskLevel === 'high' ? 'bg-destructive/10 text-destructive' : riskLevel === 'medium' ? 'bg-yellow-50 text-yellow-700' : 'bg-green-50 text-green-700'}`}>
+                        <div className="flex items-center gap-2">
+                          <AlertTriangle className="w-4 h-4" />
+                          <span className="font-medium capitalize">{riskLevel} Risk</span>
+                        </div>
+                        <p className="mt-1">{recommendation}</p>
                       </div>
                     </CardContent>
                   </Card>
 
-                  {/* AI Analysis */}
-                  {currentStep >= 3 && (
-                    <>
-                      <PromptPreviewBox
-                        prompt={promptPreview}
-                        isGenerating={isGenerating}
-                        onGenerate={runAI}
-                        generateButtonText="Generate Analysis"
-                        title="AI Feasibility Check"
-                      />
-
-                      {aiContent && (
-                        <Card>
-                          <CardHeader>
-                            <CardTitle>AI Analysis</CardTitle>
-                          </CardHeader>
-                          <CardContent>
-                            <AIContentDisplay content={aiContent} />
-                            <div className="pt-4 border-t mt-4">
-                              <Button onClick={handleComplete} className="w-full">
-                                <CheckCircle2 className="w-4 h-4 mr-2" />
-                                Complete Analysis
-                              </Button>
-                            </div>
-                          </CardContent>
-                        </Card>
-                      )}
-                    </>
+                  {/* Dynamic Prompt Preview */}
+                  {currentStep >= 1 && (
+                    <PromptPreviewBox
+                      prompt={promptPreview}
+                      isGenerating={isGenerating}
+                      onGenerate={runAI}
+                      generateButtonText="Generate Capacity Analysis"
+                      title="AI Analysis Prompt"
+                    />
                   )}
                 </div>
               </div>
