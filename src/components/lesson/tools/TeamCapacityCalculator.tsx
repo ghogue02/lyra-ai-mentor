@@ -318,7 +318,57 @@ Provide a concise feasibility assessment with specific recommendations for timel
             {currentStep >= 1 && (
               <div className="grid lg:grid-cols-3 gap-6">
                 <div className="lg:col-span-2 space-y-6">
-                   {/* Requirements Section */}
+                  {/* Project Summary */}
+                  <Card className="border-primary/20 bg-primary/5">
+                    <CardHeader>
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                          <Target className="w-4 h-4 text-primary" />
+                        </div>
+                        <div>
+                          <CardTitle className="text-primary">{selectedScenario?.name}</CardTitle>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            {selectedScenario?.description}
+                          </p>
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="grid md:grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                            Total Project Scope
+                          </h4>
+                          <div className="text-2xl font-bold text-primary">
+                            {reqHours} hours
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            Estimated time to complete all requirements
+                          </p>
+                        </div>
+                        <div className="space-y-2">
+                          <h4 className="font-medium text-sm text-muted-foreground uppercase tracking-wide">
+                            Key Requirements
+                          </h4>
+                          <div className="space-y-1">
+                            {requirements.slice(0, 3).map((req) => (
+                              <div key={req.id} className="flex justify-between text-sm">
+                                <span className="text-muted-foreground">{req.category}</span>
+                                <span className="font-medium">{req.hours}h</span>
+                              </div>
+                            ))}
+                            {requirements.length > 3 && (
+                              <div className="text-xs text-muted-foreground">
+                                +{requirements.length - 3} more categories
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Requirements Section */}
                   <Card>
                     <CardHeader>
                       <div className="flex items-center gap-2">
