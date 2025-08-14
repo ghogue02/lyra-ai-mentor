@@ -78,7 +78,10 @@ export default {
 					secondary: 'hsl(var(--surface-secondary))',
 					accent: 'hsl(var(--surface-accent))',
 					muted: 'hsl(var(--surface-muted))'
-				}
+				},
+				success: 'hsl(var(--success))',
+				warning: 'hsl(var(--warning))',
+				info: 'hsl(var(--info))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',
