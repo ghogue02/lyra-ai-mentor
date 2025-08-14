@@ -194,7 +194,7 @@ Provide a concise feasibility assessment with specific recommendations for timel
       const { data, error } = await supabase.functions.invoke('generate-character-content', {
         body: {
           characterType: 'sofia',
-          contentType: 'analysis',
+          contentType: 'article',
           topic: 'Team capacity and feasibility summary',
           context: `Use this context to produce a concise feasibility note.\n${promptPreview}`
         }
