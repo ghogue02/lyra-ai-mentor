@@ -311,17 +311,46 @@ I will ask: **"Should we update the development guidelines based on what we just
 
 ## 📝 Continuous Improvement Notes
 
-**Last Updated**: {current_date}
-**Next Review**: {trigger_on_next_build}
+**Last Updated**: 2025-08-15
+**Next Review**: After next interactive tool build
 
 **Recent Pattern Changes**:
 - Dedicated results pages for complex visualizations
 - State-based navigation instead of URL parameters
 - Recharts integration with theme variables
 - Three-phase structure with NarrativeManager integration
+- Document generation workflows (Project Charter pattern)
+- Single-page charter builders with AI placeholders
+- Scenario-based preset loading with realistic nonprofit contexts
+
+**New Patterns from Project Charter Builder**:
+- **Document Generation Flow**: Generate professional documents (charters, proposals) with AI
+- **Content Type Flexibility**: Use 'document' content type for structured outputs vs 'article' for analysis
+- **Collaborative Placeholders**: AI generates placeholders for stakeholder input and decision points
+- **Single-Page Completion**: Simple tools that don't need separate results pages
+- **Configuration Summary**: Review step showing all selections before generation
+- **Inline AI Display**: Show generated content directly in the same view rather than navigating away
+
+**Updated AI Integration Pattern**:
+```typescript
+// Document generation (new pattern)
+const { data, error } = await supabase.functions.invoke('generate-character-content', {
+  body: {
+    characterType: 'sofia',
+    contentType: 'document', // For structured outputs like charters
+    topic: 'Project charter draft',
+    context: promptPreview
+  }
+});
+
+// Analysis generation (existing pattern)  
+contentType: 'article', // For analysis and insights
+```
 
 **Pending Explorations**:
 - Advanced chart animations and transitions
 - Real-time collaboration features
 - Enhanced AI context management
 - Mobile-first chart interactions
+- Multi-document generation workflows
+- Template-based document builders
