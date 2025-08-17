@@ -39,6 +39,12 @@ import AlexTeamAlignment from "@/components/lesson/AlexTeamAlignment";
 import AlexFutureLeadership from "@/components/lesson/AlexFutureLeadership";
 import AlexLeadershipFramework from "@/components/lesson/AlexLeadershipFramework";
 
+// Carmen's Chapter 7 Components
+import CarmenTalentAcquisition from '@/components/lesson/carmen/CarmenTalentAcquisition';
+import CarmenPerformanceInsights from '@/components/lesson/carmen/CarmenPerformanceInsights';
+import CarmenEngagementBuilder from '@/components/lesson/carmen/CarmenEngagementBuilder';
+import CarmenRetentionMastery from '@/components/lesson/carmen/CarmenRetentionMastery';
+
 // Tools for Chapter 3
 import DecisionMatrixRenderer from '@/components/lesson/tools/DecisionMatrixRenderer';
 import TeamCapacityCalculator from '@/components/lesson/tools/TeamCapacityCalculator';
