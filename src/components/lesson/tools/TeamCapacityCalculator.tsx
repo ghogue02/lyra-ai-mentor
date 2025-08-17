@@ -650,8 +650,9 @@ Provide a concise feasibility assessment with specific recommendations for timel
                         </div>
                         <p className="mt-1">{recommendation}</p>
                       </div>
-                    </CardContent>
-                  </Card>
+                     </CardContent>
+                   </Card>
+                 )}
 
                   {/* Generate Analysis Button - Only visible after team setup */}
                   {currentStep >= 3 && (
