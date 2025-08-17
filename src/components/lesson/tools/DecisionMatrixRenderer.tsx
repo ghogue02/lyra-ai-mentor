@@ -16,6 +16,9 @@ import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManage
 import { useCharacterStory } from '@/contexts/CharacterStoryContext';
 import { supabase } from '@/integrations/supabase/client';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
+import { ToolIntroduction } from '@/components/ui/ToolIntroduction';
+import { StepGuidance } from '@/components/ui/StepGuidance';
+import { StepNavigation } from '@/components/ui/StepNavigation';
 
 // New structure aligned with SofiaVoiceDiscovery: intro -> narrative -> workshop
 
@@ -240,22 +243,31 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
     <AnimatePresence mode="wait">
       {phase === 'intro' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6 flex items-center">
-          <div className="container mx-auto max-w-4xl">
+          <div className="container mx-auto max-w-5xl">
             <div className="mb-4">
               <Button variant="ghost" onClick={() => navigate('/chapter/3')}>Back to Chapter 3</Button>
             </div>
-            <Card className="nm-card p-8 animate-enter">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl nm-card-subtle flex items-center justify-center"><Scale className="w-6 h-6 text-primary" /></div>
-                <div>
-                  <h1 className="text-3xl font-bold">Storytelling Initiative Decision Matrix</h1>
-                  <p className="nm-text-secondary mt-2">Make data-driven decisions like Sofia. Weight your criteria, score your options, and generate an executive-ready recommendation memo. Walk through the same framework that helped Sofia secure $2.5M in funding by turning competing proposals into clear, justified choices.</p>
-                </div>
-              </div>
-              <div className="mt-6 flex justify-end">
-                <Button size="lg" onClick={() => setPhase('narrative')} className="flex items-center gap-2"><Play className="w-5 h-5"/> Begin</Button>
-              </div>
-            </Card>
+            
+            <ToolIntroduction
+              toolName="Decision Matrix"
+              description="Make data-driven decisions like Sofia. Weight your criteria, score your options, and generate an executive-ready recommendation memo."
+              whatIsIt="A decision matrix is a structured way to evaluate multiple options against weighted criteria. It turns subjective 'gut feelings' into objective, defensible choices that stakeholders can understand and trust."
+              whyUseful={[
+                "Transform competing proposals into clear, justified choices",
+                "Build stakeholder confidence with transparent decision-making", 
+                "Save hours of endless debate with data-driven recommendations",
+                "Create audit trails for funding decisions and board presentations"
+              ]}
+              howItWorks={[
+                "Choose your decision scenario",
+                "Rate what matters most (weighting criteria)",
+                "Score each option's performance", 
+                "Generate Sofia's AI-powered recommendation memo"
+              ]}
+              iconType="decision-matrix"
+              characterName="Sofia"
+              onBegin={() => setPhase('narrative')}
+            />
           </div>
         </motion.div>
       )}
@@ -281,7 +293,16 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6">
           <MicroLessonNavigator chapterNumber={3} chapterTitle="Sofia's Storytelling Mastery" lessonTitle="Decision Matrix" characterName="Sofia" progress={progress} />
           <div className="container mx-auto max-w-2xl pt-20 space-y-8">
-            <div className="mb-4"><Progress value={progress} className="h-2" /></div>
+            <StepNavigation
+              currentStep={currentStep}
+              totalSteps={4}
+              onPrevious={currentStep > 0 ? () => setCurrentStep(currentStep - 1) : undefined}
+              onNext={currentStep < 3 ? () => setCurrentStep(currentStep + 1) : undefined}
+              onStepClick={(step) => step <= currentStep && setCurrentStep(step)}
+              progress={progress}
+              stepTitles={['Choose Scenario', 'Weight Criteria', 'Score Options', 'View Results']}
+              nextButtonDisabled={currentStep === 0 ? false : currentStep === 3}
+            />
 
             <Card>
               <CardContent className="p-8 space-y-8">
@@ -289,7 +310,18 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                 {/* Step 1: Quick Setup */}
                 {currentStep === 0 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <h3 className="text-xl font-semibold mb-6">Choose Your Decision Scenario</h3>
+                    <StepGuidance
+                      title="Choose Your Decision Scenario"
+                      description="Start with a realistic scenario to understand how this tool applies to your nonprofit's storytelling challenges."
+                      stepType="setup"
+                      currentStep={1}
+                      totalSteps={4}
+                      tips={[
+                        "Each scenario mirrors real nonprofit decisions I've faced",
+                        "The criteria and options are preset to save you time",
+                        "You can modify everything after selecting your starting point"
+                      ]}
+                    />
                     <div className="space-y-4">
                       {quickSetups.slice(0, 3).map((setup, i) => (
                         <Button 
@@ -320,7 +352,18 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                 {/* Step 2: Adjust Weights */}
                 {currentStep === 1 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <h3 className="text-xl font-semibold mb-6">Rate What Matters Most</h3>
+                    <StepGuidance
+                      title="Rate What Matters Most"
+                      description="Set the importance level for each criterion. This is weighting - how much each factor should influence your final decision."
+                      stepType="weighting"
+                      currentStep={2}
+                      totalSteps={4}
+                      tips={[
+                        "Think about what your stakeholders care most about",
+                        "Consider both immediate impact and long-term sustainability", 
+                        "Higher weights mean that criterion has more influence on the final recommendation"
+                      ]}
+                    />
                     <div className="space-y-6">
                       {criteria.map((c, i) => (
                         <div key={i} className="space-y-3">
@@ -346,9 +389,9 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                         </div>
                       ))}
                     </div>
-                     <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(2)}>
-                       Continue to Scoring
-                     </Button>
+                      <Button className="w-full mt-8" size="lg" onClick={() => setCurrentStep(2)}>
+                        Continue to Option Scoring
+                      </Button>
                      <PromptPreviewBox />
                    </motion.div>
                  )}
@@ -356,7 +399,18 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                 {/* Step 3: Score Programs */}
                 {currentStep === 2 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <h3 className="text-xl font-semibold mb-6">Score Each Option</h3>
+                    <StepGuidance
+                      title="Score Each Option"
+                      description="Now rate how well each option performs on each criterion. This is different from weighting - you're evaluating specific performance, not importance."
+                      stepType="scoring"
+                      currentStep={3}
+                      totalSteps={4}
+                      tips={[
+                        "Rate each option independently on each criterion",
+                        "Consider actual feasibility and past performance data when available",
+                        "Don't worry about being perfect - the matrix will highlight clear patterns"
+                      ]}
+                    />
                     <div className="space-y-6">
                       {programs.map((program, pIdx) => (
                         <div key={pIdx} className="border rounded-lg p-6 space-y-4">
@@ -403,7 +457,18 @@ Write in Sofia's voice: warm but professional, data-driven, focused on authentic
                 {/* Step 4: Results */}
                 {currentStep === 3 && (
                   <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-                    <h3 className="text-xl font-semibold mb-6">Sofia's Recommendation</h3>
+                    <StepGuidance
+                      title="Sofia's Recommendation"
+                      description="Review your weighted decision matrix results and generate an AI-powered memo for stakeholders."
+                      stepType="analysis"
+                      currentStep={4}
+                      totalSteps={4}
+                      tips={[
+                        "The highest scoring option aligns best with your weighted priorities",
+                        "The AI memo provides the rationale your stakeholders need",
+                        "You can edit any scores and weights above to see how it changes the recommendation"
+                      ]}
+                    />
                     
                     <div className="space-y-4 mb-8">
                       {programs.map((program, idx) => (

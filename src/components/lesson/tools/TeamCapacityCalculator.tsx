@@ -14,6 +14,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { PromptPreviewBox } from '@/components/ui/PromptPreviewBox';
 import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
 import { InteractiveSelector, ScenarioSelector } from '@/components/ui/InteractiveSelector';
+import { ToolIntroduction } from '@/components/ui/ToolIntroduction';
+import { StepGuidance } from '@/components/ui/StepGuidance';
+import { StepNavigation } from '@/components/ui/StepNavigation';
+import { TeamMemberCard } from '@/components/ui/TeamMemberCard';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -299,18 +303,29 @@ Provide a concise feasibility assessment with specific recommendations for timel
     <AnimatePresence mode="wait">
       {phase === 'intro' && (
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6 flex items-center">
-          <div className="container mx-auto max-w-4xl">
+          <div className="container mx-auto max-w-5xl">
             <div className="mb-4"><Button variant="ghost" onClick={() => navigate('/chapter/3')}>Back to Chapter 3</Button></div>
-            <Card className="nm-card p-8 animate-enter">
-              <div className="flex items-start gap-4">
-                <div className="w-12 h-12 rounded-xl nm-card-subtle flex items-center justify-center"><Users className="w-6 h-6 text-primary" /></div>
-                <div>
-                  <h1 className="text-3xl font-bold">Team Capacity Calculator</h1>
-                  <p className="nm-text-secondary mt-2">Transform capacity chaos into clear go/no-go decisions. Calculate realistic team bandwidth and identify risks before they derail your storytelling sprint.</p>
-                </div>
-              </div>
-              <div className="mt-6 flex justify-end"><Button size="lg" onClick={() => setPhase('narrative')} className="flex items-center gap-2"><Play className="w-5 h-5"/> Begin</Button></div>
-            </Card>
+            
+            <ToolIntroduction
+              toolName="Team Capacity Calculator"
+              description="Transform capacity chaos into clear go/no-go decisions. Calculate realistic team bandwidth and identify risks before they derail your storytelling sprint."
+              whatIsIt="A capacity calculator helps you understand if your team has the bandwidth to successfully complete a project. It prevents overcommitment and identifies resource gaps before they become problems."
+              whyUseful={[
+                "Prevent painful mid-project surprises with realistic planning",
+                "Turn gut feelings about workload into concrete data",
+                "Create clear go/no-go recommendations for stakeholders",
+                "Identify exactly where you need additional resources"
+              ]}
+              howItWorks={[
+                "Choose your project type and requirements",
+                "Set project requirements and time estimates",
+                "Build your team with availability and current workload",
+                "Generate capacity analysis and recommendations"
+              ]}
+              iconType="team-capacity"
+              characterName="Sofia"
+              onBegin={() => setPhase('narrative')}
+            />
           </div>
         </motion.div>
       )}
@@ -328,21 +343,38 @@ Provide a concise feasibility assessment with specific recommendations for timel
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="min-h-screen bg-gradient-to-br from-rose-50 via-background to-purple-50 p-6">
           <MicroLessonNavigator chapterNumber={3} chapterTitle="Sofia's Storytelling Mastery" lessonTitle="Team Capacity" characterName="Sofia" progress={progress} />
           <div className="container mx-auto max-w-6xl pt-20 space-y-6">
-            <div className="mb-6">
-              <Progress value={progress} className="h-2" />
-              <div className="flex items-center justify-between mt-2 text-sm text-muted-foreground">
-                <span>Step {currentStep + 1} of 4</span>
-                <span>{progress}% Complete</span>
-              </div>
-            </div>
+            <StepNavigation
+              currentStep={currentStep}
+              totalSteps={4}
+              onPrevious={currentStep > 0 ? () => setCurrentStep(currentStep - 1) : undefined}
+              onNext={undefined}
+              onStepClick={(step) => step <= currentStep && setCurrentStep(step)}
+              progress={progress}
+              stepTitles={['Choose Project', 'Set Requirements', 'Build Team', 'Analyze Capacity']}
+              showStepIndicators={true}
+            />
 
             {currentStep === 0 && (
-              <ScenarioSelector
-                title="Choose Your Project Type"
-                scenarios={projectScenarios}
-                onSelect={handleScenarioSelect}
-                className="max-w-4xl mx-auto"
-              />
+              <div className="space-y-6">
+                <StepGuidance
+                  title="Choose Your Project Type"
+                  description="Start with a realistic scenario to understand capacity needs. Each scenario includes preset requirements and suggested team configurations."
+                  stepType="setup"
+                  currentStep={1}
+                  totalSteps={4}
+                  tips={[
+                    "Choose the scenario that most closely matches your upcoming project",
+                    "You can adjust all requirements and team members after selecting",
+                    "Each scenario is based on real nonprofit project experiences"
+                  ]}
+                />
+                <ScenarioSelector
+                  title="Select Your Project Scenario"
+                  scenarios={projectScenarios}
+                  onSelect={handleScenarioSelect}
+                  className="max-w-4xl mx-auto"
+                />
+              </div>
             )}
 
             {currentStep >= 1 && (
@@ -401,12 +433,25 @@ Provide a concise feasibility assessment with specific recommendations for timel
                   {/* Requirements Section */}
                   <Card>
                     <CardHeader>
-                      <div className="flex items-center gap-2">
-                        <Target className="w-5 h-5 text-primary" />
-                        <CardTitle>Project Requirements</CardTitle>
-                        <p className="text-sm text-muted-foreground mt-1">
-                          Total hours needed for the entire project
-                        </p>
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2">
+                          <Target className="w-5 h-5 text-primary" />
+                          <CardTitle>Project Requirements</CardTitle>
+                        </div>
+                        {currentStep === 1 && (
+                          <StepGuidance
+                            title="Set Project Requirements"
+                            description="Define what work needs to be done and realistic time estimates. These requirements determine the total scope of your project."
+                            stepType="setup"
+                            currentStep={2}
+                            totalSteps={4}
+                            tips={[
+                              "Use the preset buttons for quick estimates, then fine-tune with sliders",
+                              "Consider both the work itself and review/coordination time",
+                              "Be realistic - it's better to overestimate than face surprises later"
+                            ]}
+                          />
+                        )}
                       </div>
                     </CardHeader>
                     <CardContent>
@@ -491,134 +536,65 @@ Provide a concise feasibility assessment with specific recommendations for timel
                   {currentStep >= 2 && (
                     <Card>
                       <CardHeader>
-                        <div className="flex items-center gap-2">
-                          <Users className="w-5 h-5 text-primary" />
-                          <CardTitle>Build Your Team</CardTitle>
-                          <p className="text-sm text-muted-foreground mt-1">
-                            Set weekly availability for each team member
-                          </p>
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <Users className="w-5 h-5 text-primary" />
+                            <CardTitle>Your Team Configuration</CardTitle>
+                          </div>
+                          {currentStep === 2 && (
+                            <StepGuidance
+                              title="Build Your Team"
+                              description="Configure who's available and their current workload. Start with existing team members, then add additional people as needed."
+                              stepType="setup"
+                              currentStep={3}
+                              totalSteps={4}
+                              tips={[
+                                "Include everyone who will contribute to this project",
+                                "Be honest about current workload and availability",
+                                "Remember to account for vacation time and other commitments"
+                              ]}
+                            />
+                          )}
                         </div>
                       </CardHeader>
                       <CardContent>
                         <div className="space-y-6">
-                          {/* Add Team Member Button */}
-                          <InteractiveSelector
-                            title="Quick Add Team Members"
-                            options={rolePresets}
-                            selectedIds={[]}
-                            onSelect={addTeamMember}
-                            variant="list"
-                          />
+                          {/* Current Team Header */}
+                          <div className="border-b border-dashed border-primary/20 pb-3">
+                            <h4 className="font-semibold text-primary">Your Current Team</h4>
+                            <p className="text-sm text-muted-foreground">
+                              Team members configured for this project ({team.length} people)
+                            </p>
+                          </div>
 
-                          {/* Team Members */}
+                          {/* Team Members List */}
                           <div className="space-y-4">
                             {team.map((member) => (
-                              <div key={member.id} className="p-4 rounded-lg nm-card-subtle border border-dashed border-secondary/30 space-y-4">
-                                <div className="flex items-start justify-between">
-                                  <div className="flex-1 space-y-2">
-                                    <div className="space-y-1">
-                                      <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                        Team member name
-                                      </label>
-                                      <input
-                                        value={member.name}
-                                        onChange={(e) => updateTeamMember(member.id, 'name', e.target.value)}
-                                        className="w-full px-3 py-2 text-lg font-medium bg-background border border-input rounded-md focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent"
-                                        placeholder="Enter team member name"
-                                      />
-                                    </div>
-                                    <div className="text-sm text-muted-foreground font-medium">{member.role}</div>
-                                  </div>
-                                  <div className="flex items-center gap-2 ml-4">
-                                    <Button
-                                      variant="ghost"
-                                      size="sm"
-                                      onClick={() => setTeam(prev => prev.filter(m => m.id !== member.id))}
-                                      className="text-muted-foreground hover:text-destructive"
-                                    >
-                                      <X className="w-4 h-4" />
-                                    </Button>
-                                  </div>
-                                </div>
-                                
-                                {/* Capacity Presets */}
-                                <div className="space-y-3">
-                                  <div className="space-y-1">
-                                    <label className="text-sm font-medium text-foreground">Weekly Availability</label>
-                                    <p className="text-xs text-muted-foreground">
-                                      How many hours per week can this person work on your project?
-                                    </p>
-                                  </div>
-                                  <div className="flex gap-2">
-                                    {capacityPresets.map((preset) => (
-                                      <Button
-                                        key={preset.id}
-                                        variant={member.hoursPerWeek === preset.value ? "default" : "outline"}
-                                        size="sm"
-                                        onClick={() => updateTeamMember(member.id, 'hoursPerWeek', preset.value)}
-                                        className="flex-1"
-                                      >
-                                        {preset.label}
-                                      </Button>
-                                    ))}
-                                  </div>
-                                  
-                                  {/* Fine-tune Slider */}
-                                  <div className="space-y-2">
-                                    <label className="text-xs font-medium text-muted-foreground uppercase tracking-wide">
-                                      Fine-tune hours
-                                    </label>
-                                    <div className="flex justify-between text-xs text-muted-foreground">
-                                      <span>5h</span>
-                                      <span>40h</span>
-                                    </div>
-                                    <Slider
-                                      value={[member.hoursPerWeek]}
-                                      onValueChange={([value]) => updateTeamMember(member.id, 'hoursPerWeek', value)}
-                                      max={40}
-                                      min={5}
-                                      step={1}
-                                      className="w-full"
-                                    />
-                                  </div>
-                                </div>
-
-                                {/* Current Tasks */}
-                                <div className="space-y-2">
-                                  <span className="text-sm font-medium">Current Tasks</span>
-                                  <div className="flex flex-wrap gap-2">
-                                    {member.currentTasks.map((task, index) => (
-                                      <Badge 
-                                        key={index} 
-                                        variant="outline" 
-                                        className="cursor-pointer hover:bg-destructive hover:text-destructive-foreground"
-                                        onClick={() => removeTaskFromMember(member.id, index)}
-                                      >
-                                        {task} <X className="w-3 h-3 ml-1" />
-                                      </Badge>
-                                    ))}
-                                  </div>
-                                  
-                                  {/* Task Presets */}
-                                  <div className="flex flex-wrap gap-1">
-                                    {taskPresets.slice(0, 6).map((task) => (
-                                      <Button
-                                        key={task}
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => !member.currentTasks.includes(task) && addTaskToMember(member.id, task)}
-                                        className="text-xs h-6 px-2"
-                                        disabled={member.currentTasks.includes(task)}
-                                      >
-                                        <Plus className="w-3 h-3 mr-1" />
-                                        {task}
-                                      </Button>
-                                    ))}
-                                  </div>
-                                </div>
-                              </div>
+                              <TeamMemberCard
+                                key={member.id}
+                                member={member}
+                                onUpdate={updateTeamMember}
+                                onRemove={() => setTeam(prev => prev.filter(m => m.id !== member.id))}
+                                onAddTask={addTaskToMember}
+                                onRemoveTask={removeTaskFromMember}
+                                taskPresets={taskPresets.slice(0, 6)}
+                                capacityPresets={capacityPresets}
+                              />
                             ))}
                           </div>
+
+                          {/* Add New Team Members */}
+                          <div className="border-t border-dashed border-secondary/30 pt-6">
+                            <h4 className="font-semibold text-secondary mb-3">Add New Team Members</h4>
+                            <InteractiveSelector
+                              title="Quick add by role"
+                              options={rolePresets}
+                              selectedIds={[]}
+                              onSelect={addTeamMember}
+                              variant="list"
+                            />
+                          </div>
+
                           
                           {currentStep === 2 && (
                             <div className="pt-4 border-t">
@@ -633,16 +609,20 @@ Provide a concise feasibility assessment with specific recommendations for timel
                   )}
                 </div>
 
-                {/* Sidebar with Dynamic Prompt Preview */}
+                  {/* Sticky Sidebar with Capacity Overview */}
                 <div className="space-y-6">
-                  {/* Capacity Overview Card */}
-                  <Card>
-                    <CardHeader>
-                      <CardTitle className="flex items-center gap-2">
-                        <Clock className="w-5 h-5" />
-                        Capacity Overview
-                      </CardTitle>
-                    </CardHeader>
+                  {/* Only show capacity overview after team is configured */}
+                  {currentStep >= 2 && (
+                    <Card className="sticky top-24">
+                      <CardHeader>
+                        <CardTitle className="flex items-center gap-2">
+                          <Clock className="w-5 h-5" />
+                          Live Capacity Analysis
+                        </CardTitle>
+                        <p className="text-sm text-muted-foreground">
+                          Updates automatically as you modify your team
+                        </p>
+                      </CardHeader>
                     <CardContent className="space-y-4">
                       <div className="space-y-3">
                         <div className="flex justify-between text-sm p-2 rounded-md bg-secondary/10">
@@ -673,7 +653,31 @@ Provide a concise feasibility assessment with specific recommendations for timel
                     </CardContent>
                   </Card>
 
-                  {/* Dynamic Prompt Preview */}
+                  {/* Generate Analysis Button - Only visible after team setup */}
+                  {currentStep >= 3 && (
+                    <Card>
+                      <CardContent className="p-6">
+                        <div className="space-y-4">
+                          <div className="text-center">
+                            <h4 className="font-semibold mb-2">Ready to Analyze?</h4>
+                            <p className="text-sm text-muted-foreground mb-4">
+                              Generate a comprehensive capacity analysis and feasibility report
+                            </p>
+                          </div>
+                          <Button
+                            onClick={runAI}
+                            disabled={isGenerating}
+                            className="w-full"
+                            size="lg"
+                          >
+                            {isGenerating ? 'Analyzing...' : 'Generate Capacity Analysis'}
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
+                  {/* Dynamic Prompt Preview - Collapsed by default */}
                   {currentStep >= 1 && (
                     <PromptPreviewBox
                       prompt={promptPreview}
