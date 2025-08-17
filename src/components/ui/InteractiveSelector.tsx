@@ -48,21 +48,23 @@ export const InteractiveSelector: React.FC<InteractiveSelectorProps> = ({
                 }`}
                 onClick={() => onSelect(option.id)}
               >
-                <div className="w-full space-y-2">
-                  <div className="flex items-center justify-between">
-                    <div className="font-medium text-base text-left">{option.label}</div>
-                    {option.value && (
-                      <Badge variant={isSelected ? "secondary" : "outline"} className="ml-2">
-                        {option.value}h
-                      </Badge>
+                  <div className="w-full space-y-2">
+                    <div className="flex items-center justify-between">
+                      <div className={`font-medium text-base text-left ${isSelected ? 'text-white' : ''}`}>{option.label}</div>
+                      {option.value && (
+                        <Badge variant={isSelected ? "secondary" : "outline"} className="ml-2">
+                          {option.value}h
+                        </Badge>
+                      )}
+                    </div>
+                    {option.description && (
+                      <div className={`text-sm leading-relaxed text-left whitespace-normal ${
+                        isSelected ? 'text-white/80' : 'text-muted-foreground'
+                      }`}>
+                        {option.description}
+                      </div>
                     )}
                   </div>
-                  {option.description && (
-                    <div className="text-sm text-muted-foreground leading-relaxed text-left whitespace-normal">
-                      {option.description}
-                    </div>
-                  )}
-                </div>
               </Button>
             </motion.div>
           );
