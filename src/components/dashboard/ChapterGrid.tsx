@@ -36,6 +36,11 @@ const placeholderChapters: Chapter[] = [
     id: 6,
     title: "Alex's AI Leadership Mastery",
     description: "Lead sustainable AI transformation with Alex's proven framework for organizational change, team adoption, and strategic vision implementation.",
+  },
+  {
+    id: 7,
+    title: "Carmen's AI-Powered People Management",
+    description: "Transform your HR practices with Carmen's compassionate approach to AI-powered people management, from recruitment to retention with human-centered solutions.",
   }
 ];
 

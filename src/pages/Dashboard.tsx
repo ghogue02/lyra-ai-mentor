@@ -87,7 +87,8 @@ export const Dashboard = () => {
       3: '/chapter/3',
       4: '/chapter/4',
       5: '/chapter/5',
-      6: '/chapter/6'
+      6: '/chapter/6',
+      7: '/chapter/7'
     };
 
     const route = chapterRoutes[chapterId as keyof typeof chapterRoutes];
