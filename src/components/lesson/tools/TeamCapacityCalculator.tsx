@@ -655,7 +655,7 @@ Provide a concise feasibility assessment with specific recommendations for timel
                  )}
 
                   {/* Generate Analysis Button - Only visible after team setup */}
-                  {currentStep >= 3 && (
+                  {currentStep >= 3 && !aiContent && (
                     <Card>
                       <CardContent className="p-6">
                         <div className="space-y-4">
@@ -667,26 +667,27 @@ Provide a concise feasibility assessment with specific recommendations for timel
                           </div>
                           <Button
                             onClick={runAI}
-                            disabled={isGenerating}
+                            disabled={isGenerating || team.length === 0}
                             className="w-full"
                             size="lg"
                           >
-                            {isGenerating ? 'Analyzing...' : 'Generate Capacity Analysis'}
+                            {isGenerating ? (
+                              <>
+                                <div className="w-4 h-4 animate-spin rounded-full border-2 border-background border-r-transparent mr-2" />
+                                Analyzing Team Capacity...
+                              </>
+                            ) : (
+                              'Generate Capacity Analysis'
+                            )}
                           </Button>
+                          {team.length === 0 && (
+                            <p className="text-sm text-muted-foreground text-center">
+                              Add at least one team member to generate analysis
+                            </p>
+                          )}
                         </div>
                       </CardContent>
                     </Card>
-                  )}
-
-                  {/* Dynamic Prompt Preview - Collapsed by default */}
-                  {currentStep >= 1 && (
-                    <PromptPreviewBox
-                      prompt={promptPreview}
-                      isGenerating={isGenerating}
-                      onGenerate={runAI}
-                      generateButtonText="Generate Capacity Analysis"
-                      title="AI Analysis Prompt"
-                    />
                   )}
 
                   {/* AI Analysis Results */}

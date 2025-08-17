@@ -315,21 +315,86 @@ I will ask: **"Should we update the development guidelines based on what we just
 **Next Review**: After next interactive tool build
 
 **Recent Pattern Changes**:
+- **2025-01-17**: Added comprehensive tool introduction patterns from Chapter 3 enhancements
+- **2025-01-17**: Implemented universal step guidance system with contextual explanations
+- **2025-01-17**: Enhanced navigation patterns with back buttons and state preservation
+- **2025-01-17**: Added team member card patterns for better user visualization
 - Dedicated results pages for complex visualizations
 - State-based navigation instead of URL parameters
 - Recharts integration with theme variables
 - Three-phase structure with NarrativeManager integration
-- Document generation workflows (Project Charter pattern)
-- Single-page charter builders with AI placeholders
-- Scenario-based preset loading with realistic nonprofit contexts
 
-**New Patterns from Project Charter Builder**:
+**New Core Patterns Implemented**:
+
+### Tool Introduction Pattern
+```tsx
+// Standard tool introduction with educational sections
+<ToolIntroduction
+  toolName="Decision Matrix"
+  description="Smart tool for comparing options"
+  whatIsIt={[/* educational content */]}
+  whyItMatters={[/* benefits list */]}
+  howItWorks={[/* step process */]}
+  iconType="chart"
+  characterName="Sofia"
+  onBegin={() => setCurrentStep(1)}
+/>
+```
+
+### Step Guidance System
+```tsx
+// Contextual guidance for each step
+<StepGuidance
+  title="Rate What Matters Most"
+  description="Set the importance of each criterion"
+  tips={["Think priority, not performance", "Higher weight = more important"]}
+  currentStep={2}
+  totalSteps={4}
+  stepType="weighting"
+  characterName="Sofia"
+/>
+```
+
+### Universal Navigation Pattern
+```tsx
+// Consistent navigation with state preservation
+<StepNavigation
+  currentStep={currentStep}
+  totalSteps={4}
+  onPrevious={() => setCurrentStep(prev => prev - 1)}
+  onNext={() => setCurrentStep(prev => prev + 1)}
+  canGoBack={currentStep > 1}
+  canGoNext={canProceed}
+  progress={true}
+/>
+```
+
+### Team Member Card Pattern
+```tsx
+// Reusable team member management
+<TeamMemberCard
+  member={member}
+  onUpdate={updateMember}
+  onRemove={removeMember}
+  onAddTask={addTask}
+  onRemoveTask={removeTask}
+  taskPresets={availableTasks}
+/>
+```
+
+**Document Generation Patterns from Project Charter Builder**:
 - **Document Generation Flow**: Generate professional documents (charters, proposals) with AI
 - **Content Type Flexibility**: Use 'document' content type for structured outputs vs 'article' for analysis
 - **Collaborative Placeholders**: AI generates placeholders for stakeholder input and decision points
 - **Single-Page Completion**: Simple tools that don't need separate results pages
 - **Configuration Summary**: Review step showing all selections before generation
 - **Inline AI Display**: Show generated content directly in the same view rather than navigating away
+
+**UX Enhancement Patterns**:
+- **Step Differentiation**: Clear explanations of weighting vs scoring concepts
+- **Progressive Disclosure**: Complex interfaces revealed step-by-step with contextual guidance
+- **Character Voice Integration**: Sofia's experience woven throughout ("At Casa de Esperanza, I learned...")
+- **Mobile-First Considerations**: Touch-friendly controls and sticky navigation elements
 
 **Updated AI Integration Pattern**:
 ```typescript
