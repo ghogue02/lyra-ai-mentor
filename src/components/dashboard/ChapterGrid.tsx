@@ -19,8 +19,8 @@ interface ChapterGridProps {
 const placeholderChapters: Chapter[] = [
   {
     id: 3,
-    title: "Sofia's Storytelling Mastery",
-    description: "Master AI-enhanced storytelling with Sofia to create compelling narratives that engage donors, inspire volunteers, and amplify your mission's impact.",
+    title: "Sofia's Strategic Project Management",
+    description: "Master strategic project management with Sofia to build compelling project charters, coordinate stakeholders, and deliver impactful initiatives that advance your mission.",
   },
   {
     id: 4,
