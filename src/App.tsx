@@ -26,6 +26,7 @@ import Chapter3Hub from "./pages/Chapter3Hub";
 import Chapter4Hub from "./pages/Chapter4Hub";
 import Chapter5Hub from "./pages/Chapter5Hub";
 import Chapter6Hub from "./pages/Chapter6Hub";
+import Chapter7Hub from "./pages/Chapter7Hub";
 import TestLyra from "./pages/TestLyra";
 import TestMaya from "./pages/TestMaya";
 import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
@@ -131,6 +132,14 @@ const App = () => {
                 element={
                   <ProtectedRoute>
                     <Chapter6Hub />
+                  </ProtectedRoute>
+                } 
+              />
+              <Route 
+                path="/chapter/7" 
+                element={
+                  <ProtectedRoute>
+                    <Chapter7Hub />
                   </ProtectedRoute>
                 } 
               />

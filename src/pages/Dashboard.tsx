@@ -81,6 +81,7 @@ export const Dashboard = () => {
     // No locking logic required
 
     // Navigate to chapter hubs for all chapters
+    // Navigate to chapter hubs for all chapters
     const chapterRoutes = {
       1: '/chapter/1',
       2: '/chapter/2',
