@@ -97,6 +97,22 @@ const characterStories: Record<string, CharacterStory> = {
     },
     skills: ['Change Leadership', 'Strategic Planning', 'Team Alignment', 'Innovation Management'],
     color: '#8B5CF6'
+  },
+  carmen: {
+    id: 'carmen',
+    name: 'Carmen Rodriguez',
+    role: 'HR Director',
+    organization: 'Community Development Foundation',
+    challenge: 'Overwhelming manual HR processes and struggling to retain top talent',
+    transformation: 'Revolutionized people management with AI-powered HR tools',
+    impact: 'Reduced hiring time by 70%, increased retention by 45%, improved team satisfaction 200%',
+    quote: 'AI didn\'t replace the human touch in HR - it amplified it. Now I can focus on what matters: our people.',
+    timeMetrics: {
+      before: '6 weeks average hiring',
+      after: '1.8 weeks average hiring'
+    },
+    skills: ['Talent Acquisition', 'Performance Management', 'Employee Engagement', 'Retention Strategy'],
+    color: '#F59E0B'
   }
 };
 
@@ -119,7 +135,8 @@ export const CharacterStoryProvider: React.FC<{ children: React.ReactNode }> = (
       sofia: 'sofia',
       david: 'david',
       rachel: 'rachel',
-      alex: 'alex'
+      alex: 'alex',
+      carmen: 'carmen'
     };
     
     const componentLower = componentName.toLowerCase();
