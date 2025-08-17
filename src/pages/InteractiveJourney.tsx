@@ -290,6 +290,31 @@ const journeyRegistry = {
     characterId: 'sofia',
     title: 'Project Charter',
     description: 'Draft a clear charter with AI-marked placeholders to review'
+  },
+  // Chapter 7 - Carmen's AI-Powered People Management
+  'talent-acquisition': {
+    component: CarmenTalentAcquisition,
+    characterId: 'carmen',
+    title: 'AI-Powered Talent Acquisition',
+    description: 'Transform your hiring process with Carmen\'s compassionate approach'
+  },
+  'performance-insights': {
+    component: CarmenPerformanceInsights,
+    characterId: 'carmen', 
+    title: 'Performance Insights Workshop',
+    description: 'Master data-driven performance management while maintaining human connection'
+  },
+  'engagement-builder': {
+    component: CarmenEngagementBuilder,
+    characterId: 'carmen',
+    title: 'Employee Engagement Builder', 
+    description: 'Create personalized engagement strategies using AI-powered people analytics'
+  },
+  'retention-mastery': {
+    component: CarmenRetentionMastery,
+    characterId: 'carmen',
+    title: 'Retention Strategy Mastery',
+    description: 'Develop AI-enhanced retention strategies that honor both data and humanity'
   }
 };
 
