@@ -35,50 +35,50 @@ const CarmenRetentionMastery: React.FC = () => {
 
   // Retention risk factors
   const riskOptions: OptionItem[] = [
-    { id: 'low-engagement', label: 'Decreased Engagement', description: 'Lower participation in meetings/activities', icon: '📉', recommended: true },
-    { id: 'career-stagnation', label: 'Career Stagnation', description: 'No recent promotions or growth', icon: '⏸️', recommended: true },
-    { id: 'skill-mismatch', label: 'Skills Underutilization', description: 'Talents not being fully used', icon: '🎯' },
-    { id: 'poor-management', label: 'Management Issues', description: 'Conflicts with supervisor', icon: '⚠️' },
-    { id: 'work-life-balance', label: 'Work-Life Imbalance', description: 'Burnout or overwork concerns', icon: '⚖️' },
-    { id: 'compensation-gap', label: 'Compensation Concerns', description: 'Below-market pay or benefits', icon: '💰' },
-    { id: 'limited-autonomy', label: 'Limited Autonomy', description: 'Micromanagement or control issues', icon: '🔒' },
-    { id: 'cultural-misfit', label: 'Cultural Misalignment', description: 'Values don\'t match organization', icon: '🎭' }
+    { id: 'low-engagement', label: 'Decreased Engagement', description: 'Lower participation in meetings/activities', icon: 'retentionDecline', recommended: true },
+    { id: 'career-stagnation', label: 'Career Stagnation', description: 'No recent promotions or growth', icon: 'retentionStagnation', recommended: true },
+    { id: 'skill-mismatch', label: 'Skills Underutilization', description: 'Talents not being fully used', icon: 'retentionTarget' },
+    { id: 'poor-management', label: 'Management Issues', description: 'Conflicts with supervisor', icon: 'retentionWarning' },
+    { id: 'work-life-balance', label: 'Work-Life Imbalance', description: 'Burnout or overwork concerns', icon: 'retentionBalance' },
+    { id: 'compensation-gap', label: 'Compensation Concerns', description: 'Below-market pay or benefits', icon: 'retentionMoney' },
+    { id: 'limited-autonomy', label: 'Limited Autonomy', description: 'Micromanagement or control issues', icon: 'retentionLocked' },
+    { id: 'cultural-misfit', label: 'Cultural Misalignment', description: 'Values don\'t match organization', icon: 'retentionCulture' }
   ];
 
   // Intervention strategies
   const interventionOptions: OptionItem[] = [
-    { id: 'career-conversations', label: 'Career Development Talks', description: 'One-on-one growth discussions', icon: '💬', recommended: true },
-    { id: 'skill-development', label: 'Skill Development Programs', description: 'Training and learning opportunities', icon: '📚', recommended: true },
-    { id: 'project-leadership', label: 'Leadership Opportunities', description: 'Lead projects or initiatives', icon: '👑' },
-    { id: 'mentorship', label: 'Mentorship Programs', description: 'Pair with senior leaders', icon: '🤝' },
-    { id: 'flexible-work', label: 'Work Flexibility', description: 'Remote work or flexible hours', icon: '🏠' },
-    { id: 'recognition-programs', label: 'Recognition & Rewards', description: 'Celebrate achievements publicly', icon: '🏆' },
-    { id: 'cross-training', label: 'Cross-Department Exposure', description: 'Experience different roles', icon: '🔄' },
-    { id: 'wellness-support', label: 'Wellness Initiatives', description: 'Mental health and wellbeing', icon: '🌱' }
+    { id: 'career-conversations', label: 'Career Development Talks', description: 'One-on-one growth discussions', icon: 'retentionConversation', recommended: true },
+    { id: 'skill-development', label: 'Skill Development Programs', description: 'Training and learning opportunities', icon: 'retentionTraining', recommended: true },
+    { id: 'project-leadership', label: 'Leadership Opportunities', description: 'Lead projects or initiatives', icon: 'retentionLeadership' },
+    { id: 'mentorship', label: 'Mentorship Programs', description: 'Pair with senior leaders', icon: 'retentionMentorship' },
+    { id: 'flexible-work', label: 'Work Flexibility', description: 'Remote work or flexible hours', icon: 'retentionHome' },
+    { id: 'recognition-programs', label: 'Recognition & Rewards', description: 'Celebrate achievements publicly', icon: 'retentionRewards' },
+    { id: 'cross-training', label: 'Cross-Department Exposure', description: 'Experience different roles', icon: 'retentionRotation' },
+    { id: 'wellness-support', label: 'Wellness Initiatives', description: 'Mental health and wellbeing', icon: 'retentionWellness' }
   ];
 
   // Success metrics
   const metricsOptions: OptionItem[] = [
-    { id: 'retention-rate', label: 'Overall Retention Rate', description: 'Percentage of employees staying', icon: '📊', recommended: true },
-    { id: 'engagement-scores', label: 'Employee Engagement', description: 'Regular satisfaction surveys', icon: '❤️', recommended: true },
-    { id: 'internal-promotions', label: 'Internal Promotion Rate', description: 'Growth opportunities realized', icon: '⬆️' },
-    { id: 'flight-risk-reduction', label: 'Flight Risk Scores', description: 'AI-predicted retention likelihood', icon: '🎯' },
-    { id: 'career-satisfaction', label: 'Career Development Satisfaction', description: 'Growth pathway happiness', icon: '🌟' },
-    { id: 'manager-effectiveness', label: 'Manager Effectiveness', description: 'Leadership impact scores', icon: '👨‍💼' },
-    { id: 'time-to-productivity', label: 'New Role Adaptation', description: 'Speed of adjustment to changes', icon: '⚡' },
-    { id: 'referral-quality', label: 'Employee Referral Quality', description: 'Team members recommend company', icon: '🗣️' }
+    { id: 'retention-rate', label: 'Overall Retention Rate', description: 'Percentage of employees staying', icon: 'retentionStats', recommended: true },
+    { id: 'engagement-scores', label: 'Employee Engagement', description: 'Regular satisfaction surveys', icon: 'retentionHeart', recommended: true },
+    { id: 'internal-promotions', label: 'Internal Promotion Rate', description: 'Growth opportunities realized', icon: 'retentionUp' },
+    { id: 'flight-risk-reduction', label: 'Flight Risk Scores', description: 'AI-predicted retention likelihood', icon: 'retentionTarget' },
+    { id: 'career-satisfaction', label: 'Career Development Satisfaction', description: 'Growth pathway happiness', icon: 'retentionStar' },
+    { id: 'manager-effectiveness', label: 'Manager Effectiveness', description: 'Leadership impact scores', icon: 'retentionManager' },
+    { id: 'time-to-productivity', label: 'New Role Adaptation', description: 'Speed of adjustment to changes', icon: 'retentionSpeed' },
+    { id: 'referral-quality', label: 'Employee Referral Quality', description: 'Team members recommend company', icon: 'retentionSpeak' }
   ];
 
   // Retention goals
   const goalOptions: OptionItem[] = [
-    { id: 'retain-top-talent', label: 'Retain High Performers', description: 'Keep your best people engaged', icon: '⭐', recommended: true },
-    { id: 'reduce-turnover-costs', label: 'Reduce Turnover Costs', description: 'Lower hiring and training expenses', icon: '💰', recommended: true },
-    { id: 'improve-culture', label: 'Strengthen Team Culture', description: 'Build belonging and connection', icon: '🤝' },
-    { id: 'career-pathing', label: 'Create Clear Career Paths', description: 'Show growth opportunities', icon: '🛤️' },
-    { id: 'predictive-retention', label: 'Proactive Intervention', description: 'Address issues before they become problems', icon: '🔮' },
-    { id: 'succession-planning', label: 'Build Succession Pipeline', description: 'Develop internal leadership', icon: '👥' },
-    { id: 'knowledge-retention', label: 'Preserve Institutional Knowledge', description: 'Keep expertise within organization', icon: '🧠' },
-    { id: 'competitive-advantage', label: 'Maintain Competitive Edge', description: 'Outperform industry retention rates', icon: '🚀' }
+    { id: 'retain-top-talent', label: 'Retain High Performers', description: 'Keep your best people engaged', icon: 'retentionTopStar', recommended: true },
+    { id: 'reduce-turnover-costs', label: 'Reduce Turnover Costs', description: 'Lower hiring and training expenses', icon: 'retentionCostMoney', recommended: true },
+    { id: 'improve-culture', label: 'Strengthen Team Culture', description: 'Build belonging and connection', icon: 'retentionHandshake' },
+    { id: 'career-pathing', label: 'Create Clear Career Paths', description: 'Show growth opportunities', icon: 'retentionPath' },
+    { id: 'predictive-retention', label: 'Proactive Intervention', description: 'Address issues before they become problems', icon: 'retentionCrystalBall' },
+    { id: 'succession-planning', label: 'Build Succession Pipeline', description: 'Develop internal leadership', icon: 'retentionTeam' },
+    { id: 'knowledge-retention', label: 'Preserve Institutional Knowledge', description: 'Keep expertise within organization', icon: 'retentionBrain' },
+    { id: 'competitive-advantage', label: 'Maintain Competitive Edge', description: 'Outperform industry retention rates', icon: 'retentionRocket' }
   ];
 
   const narrativeMessages = [
@@ -118,7 +118,7 @@ const CarmenRetentionMastery: React.FC = () => {
         label: 'Carmen\'s Approach',
         value: 'Carmen Rodriguez needs to create advanced retention strategies that combine predictive AI insights with deeply human approaches to keeping best people engaged and growing.',
         type: 'context',
-        color: 'border-l-orange-400',
+        color: 'border-l-purple-400',
         required: true
       },
       {
@@ -219,15 +219,15 @@ const CarmenRetentionMastery: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 flex items-center justify-center p-6"
     >
       <div className="max-w-4xl mx-auto text-center">
         {/* Carmen Avatar */}
         <div className="w-24 h-24 mx-auto mb-8">
           <VideoAnimation
             src={getAnimationUrl('carmen-retention-prep.mp4')}
-            fallbackIcon={<div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center">
-              <Shield className="w-12 h-12 text-orange-600" />
+            fallbackIcon={<div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center">
+              <Shield className="w-12 h-12 text-purple-600" />
             </div>}
             className="w-full h-full rounded-full"
             context="character"
@@ -236,7 +236,7 @@ const CarmenRetentionMastery: React.FC = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4" id="main-heading">
           Carmen's Retention Strategy Mastery
         </h1>
         <p className="text-xl text-gray-600 mb-12">
@@ -246,9 +246,9 @@ const CarmenRetentionMastery: React.FC = () => {
         {/* 3-Step Journey Preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
           {[
-            { title: 'Retention Crisis', desc: 'Losing star talent unexpectedly', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-retention-crisis.mp4', fallback: '😔' },
-            { title: 'Predictive Mastery', desc: 'AI + empathy = retention success', color: 'from-orange-500/10 to-orange-500/5', animation: 'carmen-predictive-retention.mp4', fallback: '🔮' },
-            { title: 'Flourishing Teams', desc: 'People choose to stay and grow', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-retention-success.mp4', fallback: '🌟' }
+            { title: 'Retention Crisis', desc: 'Losing star talent unexpectedly', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-retention-crisis.mp4', fallback: <Heart className="w-8 h-8 text-red-500" /> },
+            { title: 'Predictive Mastery', desc: 'AI + empathy = retention success', color: 'from-purple-500/10 to-purple-500/5', animation: 'carmen-predictive-retention.mp4', fallback: <TrendingUp className="w-8 h-8 text-purple-500" /> },
+            { title: 'Flourishing Teams', desc: 'People choose to stay and grow', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-retention-success.mp4', fallback: <Award className="w-8 h-8 text-green-500" /> }
           ].map((item, index) => (
             <div key={index} className="relative group">
               <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
@@ -257,7 +257,7 @@ const CarmenRetentionMastery: React.FC = () => {
                   <div className="w-12 h-12 mx-auto mb-3">
                     <VideoAnimation
                       src={getAnimationUrl(item.animation)}
-                      fallbackIcon={<span className="text-3xl">{item.fallback}</span>}
+                      fallbackIcon={item.fallback}
                       className="w-full h-full"
                       context="character"
                     />
@@ -273,14 +273,16 @@ const CarmenRetentionMastery: React.FC = () => {
 
         {/* Begin Button */}
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-amber-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
           <Button 
             onClick={() => setCurrentPhase('narrative')}
             size="lg"
-            className="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
+            aria-label="Start Carmen's retention mastery journey - Learn predictive retention strategies with AI and empathy"
           >
-            <Play className="w-5 h-5 mr-2" />
+            <Play className="w-5 h-5 mr-2" aria-hidden="true" />
             Begin Retention Mastery Journey
+            <span className="sr-only">This workshop teaches advanced retention strategies using AI prediction combined with human connection</span>
           </Button>
         </div>
       </div>
@@ -291,7 +293,7 @@ const CarmenRetentionMastery: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 p-6"
     >
       <MicroLessonNavigator
         chapterNumber={7}
@@ -316,7 +318,7 @@ const CarmenRetentionMastery: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 p-6"
     >
       <MicroLessonNavigator
         chapterNumber={7}
@@ -332,7 +334,7 @@ const CarmenRetentionMastery: React.FC = () => {
           <Progress value={66 + (currentStep / 4) * 34} className="h-2 mb-4" />
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-600">Carmen's Retention Strategy Workshop</p>
-            <Button variant="outline" onClick={() => navigate('/chapter/7')}>
+            <Button className="nm-button nm-button-secondary" onClick={() => navigate('/chapter/7')} aria-label="Return to Chapter 7 main page">
               Back to Chapter 7
             </Button>
           </div>
@@ -399,19 +401,24 @@ const CarmenRetentionMastery: React.FC = () => {
                 <Button 
                   onClick={generateRetentionStrategy}
                   disabled={selectedRisks.length === 0 || selectedInterventions.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-lg py-3"
+                  className="w-full nm-button nm-button-primary text-lg py-3"
+                  aria-label={isGenerating ? "Creating your advanced retention strategy" : "Generate advanced retention strategy using Carmen's PREDICT-CONNECT-ELEVATE model"}
+                  aria-describedby="retention-generation-status"
                 >
                   {isGenerating ? (
                     <>
-                      <Shield className="w-5 h-5 mr-2 animate-pulse" />
-                      Carmen is crafting your retention strategy...
+                      <Shield className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                      <span aria-live="polite">Carmen is crafting your retention strategy...</span>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2" />
+                      <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
                       Create Advanced Retention Strategy
                     </>
                   )}
+                  <div id="retention-generation-status" className="sr-only">
+                    {isGenerating ? "AI is currently generating your personalized retention strategy. Please wait." : "Click to generate your retention strategy"}
+                  </div>
                 </Button>
               </CardContent>
             </Card>
@@ -438,7 +445,7 @@ const CarmenRetentionMastery: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-gradient-to-br from-orange-50 to-amber-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg max-h-96 overflow-y-auto">
                     <TemplateContentFormatter 
                       content={generatedStrategy}
                       contentType="lesson"
@@ -458,7 +465,8 @@ const CarmenRetentionMastery: React.FC = () => {
           <div className="text-center mt-8">
             <Button 
               onClick={handleComplete}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
+              className="nm-button nm-button-success text-white px-8 py-3"
+              aria-label="Complete the retention strategy mastery workshop and return to Chapter 7"
             >
               Complete Retention Strategy Mastery
             </Button>
@@ -477,14 +485,14 @@ const CarmenRetentionMastery: React.FC = () => {
   );
       {/* Carmen's Character Guidance */}
       <div className="max-w-6xl mx-auto mb-8">
-        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-6">
+        <div className="bg-cyan-50 p-4 rounded-lg border border-cyan-200 mb-6">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-              <Shield className="w-5 h-5 text-orange-600" />
+            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+              <Shield className="w-5 h-5 text-purple-600" />
             </div>
             <div>
-              <h3 className="font-semibold text-amber-800">Carmen's Retention Mastery</h3>
-              <p className="text-amber-700 text-sm">
+              <h3 className="font-semibold text-cyan-800">Carmen's Retention Mastery</h3>
+              <p className="text-cyan-700 text-sm">
                 "True retention isn't about keeping people—it's about creating an environment where they choose to stay and flourish. Let's master this together."
               </p>
             </div>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,10 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
+import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
@@ -35,13 +33,61 @@ const CarmenTalentAcquisition: React.FC = () => {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
-  const [roleType, setRoleType] = useState('');
-  const [companySize, setCompanySize] = useState('');
-  const [hiringChallenges, setHiringChallenges] = useState('');
-  const [diversityGoals, setDiversityGoals] = useState('');
-  const [timeToHire, setTimeToHire] = useState('');
+  const [selectedRoles, setSelectedRoles] = useState<string[]>([]);
+  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
+  const [selectedStrategies, setSelectedStrategies] = useState<string[]>([]);
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [generatedStrategy, setGeneratedStrategy] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
+
+  // Role type options
+  const roleOptions: OptionItem[] = [
+    { id: 'program-manager', label: 'Program Manager', description: 'Cross-functional project leadership', icon: 'talentManager', recommended: true },
+    { id: 'software-engineer', label: 'Software Engineer', description: 'Technical development roles', icon: 'talentDeveloper' },
+    { id: 'marketing-coordinator', label: 'Marketing Coordinator', description: 'Brand and campaign management', icon: 'talentMarketing' },
+    { id: 'data-analyst', label: 'Data Analyst', description: 'Analytics and insights roles', icon: 'talentAnalyst' },
+    { id: 'communications-manager', label: 'Communications Manager', description: 'Internal and external communications', icon: 'talentCommunications' },
+    { id: 'operations-specialist', label: 'Operations Specialist', description: 'Process and efficiency optimization', icon: 'talentOperations' },
+    { id: 'customer-success', label: 'Customer Success', description: 'Client relationship and retention', icon: 'talentCustomer' },
+    { id: 'product-manager', label: 'Product Manager', description: 'Product strategy and development', icon: 'talentProduct' }
+  ];
+
+  // Hiring challenge options
+  const challengeOptions: OptionItem[] = [
+    { id: 'long-time-to-hire', label: 'Long Time to Hire', description: 'Recruitment process takes too long', icon: 'talentClock', recommended: true },
+    { id: 'poor-candidate-quality', label: 'Poor Candidate Quality', description: 'Applicants don\'t meet requirements', icon: 'talentFilter', recommended: true },
+    { id: 'lack-diversity', label: 'Lack of Diversity', description: 'Not reaching diverse talent pools', icon: 'talentDiversity' },
+    { id: 'high-rejection-rate', label: 'High Offer Rejection Rate', description: 'Candidates decline job offers', icon: 'talentDecline' },
+    { id: 'bias-in-process', label: 'Unconscious Bias', description: 'Unfair evaluation practices', icon: 'talentBalance' },
+    { id: 'poor-candidate-experience', label: 'Poor Candidate Experience', description: 'Negative feedback about process', icon: 'talentExperience' },
+    { id: 'limited-talent-pool', label: 'Limited Talent Pool', description: 'Not enough qualified candidates', icon: 'talentPool' },
+    { id: 'inconsistent-interviews', label: 'Inconsistent Interviews', description: 'No standardized evaluation process', icon: 'talentInterview' }
+  ];
+
+  // Hiring strategy options
+  const strategyOptions: OptionItem[] = [
+    { id: 'inclusive-job-descriptions', label: 'Inclusive Job Descriptions', description: 'Bias-free, welcoming language', icon: 'talentInclusive', recommended: true },
+    { id: 'structured-interviews', label: 'Structured Interviews', description: 'Consistent evaluation framework', icon: 'talentStructured', recommended: true },
+    { id: 'diverse-sourcing', label: 'Diverse Sourcing Channels', description: 'Reach underrepresented groups', icon: 'talentNetwork' },
+    { id: 'skills-assessments', label: 'Skills-Based Assessments', description: 'Objective capability evaluation', icon: 'talentSkills' },
+    { id: 'cultural-fit-interviews', label: 'Culture Fit Evaluation', description: 'Values alignment assessment', icon: 'talentCulture' },
+    { id: 'employer-branding', label: 'Strong Employer Branding', description: 'Attractive company reputation', icon: 'talentBrand' },
+    { id: 'referral-programs', label: 'Employee Referral Programs', description: 'Leverage internal networks', icon: 'talentReferral' },
+    { id: 'feedback-systems', label: 'Candidate Feedback Systems', description: 'Continuous process improvement', icon: 'talentFeedback' }
+  ];
+
+  // Hiring goal options
+  const goalOptions: OptionItem[] = [
+    { id: 'faster-hiring', label: 'Faster Hiring Process', description: 'Reduce time-to-hire significantly', icon: 'talentSpeed', recommended: true },
+    { id: 'better-quality', label: 'Higher Quality Candidates', description: 'Find better-qualified applicants', icon: 'talentQuality', recommended: true },
+    { id: 'improve-diversity', label: 'Increase Diversity', description: 'Build more inclusive teams', icon: 'talentDiversity' },
+    { id: 'reduce-bias', label: 'Eliminate Bias', description: 'Fair and objective evaluations', icon: 'talentBalance' },
+    { id: 'better-experience', label: 'Improve Candidate Experience', description: 'Positive recruitment journey', icon: 'talentExperience' },
+    { id: 'higher-retention', label: 'Better New Hire Retention', description: 'Find people who stay longer', icon: 'talentRetention' },
+    { id: 'cost-efficiency', label: 'Reduce Hiring Costs', description: 'More efficient recruitment spend', icon: 'talentCost' },
+    { id: 'build-pipeline', label: 'Build Talent Pipeline', description: 'Continuous candidate relationships', icon: 'talentPipeline' }
+  ];
 
   const hiringFrameworkElements: HiringFrameworkElement[] = [
     {
@@ -125,8 +171,64 @@ const CarmenTalentAcquisition: React.FC = () => {
     }
   ];
 
+  // Update prompt segments when selections change
+  useEffect(() => {
+    const segments: PromptSegment[] = [
+      {
+        id: 'context',
+        label: 'Carmen\'s Approach',
+        value: 'Carmen Rodriguez needs to create compassionate hiring strategies that combine AI efficiency with human empathy to find the right people while ensuring fair, inclusive processes.',
+        type: 'context',
+        color: 'border-l-purple-400',
+        required: true
+      },
+      {
+        id: 'roles',
+        label: 'Role Types',
+        value: selectedRoles.length > 0 ? `Hiring for: ${selectedRoles.map(id => roleOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'data',
+        color: 'border-l-blue-400',
+        required: false
+      },
+      {
+        id: 'challenges',
+        label: 'Hiring Challenges',
+        value: selectedChallenges.length > 0 ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'data',
+        color: 'border-l-red-400',
+        required: false
+      },
+      {
+        id: 'strategies',
+        label: 'Preferred Strategies',
+        value: selectedStrategies.length > 0 ? `Hiring strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'instruction',
+        color: 'border-l-green-400',
+        required: false
+      },
+      {
+        id: 'goals',
+        label: 'Hiring Goals',
+        value: selectedGoals.length > 0 ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'instruction',
+        color: 'border-l-purple-400',
+        required: false
+      },
+      {
+        id: 'format',
+        label: 'Output Framework',
+        value: 'Create a comprehensive hiring strategy using Carmen\'s framework: 1) Inclusive Job Descriptions, 2) Bias-Free Screening, 3) Empathetic Interviews, 4) Holistic Evaluation, 5) Exceptional Candidate Experience. Include specific implementation steps and success metrics.',
+        type: 'format',
+        color: 'border-l-gray-400',
+        required: true
+      }
+    ];
+    
+    setPromptSegments(segments);
+  }, [selectedRoles, selectedChallenges, selectedStrategies, selectedGoals]);
+
   const generateHiringStrategy = async () => {
-    if (!roleType || !companySize.trim() || !hiringChallenges.trim()) return;
+    if (selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0) return;
     
     setIsGenerating(true);
     try {
@@ -137,11 +239,10 @@ const CarmenTalentAcquisition: React.FC = () => {
           topic: 'AI-powered talent acquisition with human empathy',
           context: `Carmen Rodriguez needs to create a comprehensive hiring strategy using her compassionate AI approach.
           
-          Role Type: ${roleType}
-          Company Size: ${companySize}
-          Current Challenges: ${hiringChallenges}
-          Diversity Goals: ${diversityGoals || 'Not specified'}
-          Target Time to Hire: ${timeToHire || 'Not specified'}
+          Role Types: ${selectedRoles.map(id => roleOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Current Challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Preferred Strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Hiring Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
           
           Create a structured hiring strategy that follows Carmen's framework: 1) Inclusive Job Descriptions (bias removal, skills focus), 2) Bias-Free Screening (objective assessment), 3) Empathetic Interviews (human connection with growth mindset), 4) Holistic Evaluation (complete candidate picture), 5) Exceptional Candidate Experience (respect and value for all). The strategy should combine AI efficiency with human empathy for compassionate, effective hiring.`
         }
@@ -179,15 +280,15 @@ const CarmenTalentAcquisition: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 flex items-center justify-center p-6"
     >
       <div className="max-w-4xl mx-auto text-center">
         {/* Carmen Avatar */}
         <div className="w-24 h-24 mx-auto mb-8">
           <VideoAnimation
             src={getAnimationUrl('carmen-hiring-prep.mp4')}
-            fallbackIcon={<div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center">
-              <Users className="w-12 h-12 text-orange-600" />
+            fallbackIcon={<div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center">
+              <Users className="w-12 h-12 text-purple-600" />
             </div>}
             className="w-full h-full rounded-full"
             context="character"
@@ -196,7 +297,7 @@ const CarmenTalentAcquisition: React.FC = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4" id="main-heading">
           Carmen's Compassionate Hiring
         </h1>
         <p className="text-xl text-gray-600 mb-12">
@@ -206,9 +307,9 @@ const CarmenTalentAcquisition: React.FC = () => {
         {/* 3-Step Journey Preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
           {[
-            { title: 'Hiring Frustration', desc: 'Carmen\'s bias and inefficiency struggles', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-hiring-struggle.mp4', fallback: '😤' },
-            { title: 'AI-Empathy Framework', desc: 'Learn compassionate hiring system', color: 'from-orange-500/10 to-orange-500/5', animation: 'carmen-framework-discovery.mp4', fallback: '❤️' },
-            { title: 'Hiring Transformation', desc: 'Witness diverse team success', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-hiring-success.mp4', fallback: '🎉' }
+            { title: 'Hiring Frustration', desc: 'Carmen\'s bias and inefficiency struggles', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-hiring-struggle.mp4', fallback: <Heart className="w-8 h-8 text-red-500" /> },
+            { title: 'AI-Empathy Framework', desc: 'Learn compassionate hiring system', color: 'from-purple-500/10 to-purple-500/5', animation: 'carmen-framework-discovery.mp4', fallback: <Users className="w-8 h-8 text-purple-500" /> },
+            { title: 'Hiring Transformation', desc: 'Witness diverse team success', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-hiring-success.mp4', fallback: <TrendingUp className="w-8 h-8 text-green-500" /> }
           ].map((item, index) => (
             <div key={index} className="relative group">
               <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
@@ -217,7 +318,7 @@ const CarmenTalentAcquisition: React.FC = () => {
                   <div className="w-12 h-12 mx-auto mb-3">
                     <VideoAnimation
                       src={getAnimationUrl(item.animation)}
-                      fallbackIcon={<span className="text-3xl">{item.fallback}</span>}
+                      fallbackIcon={item.fallback}
                       className="w-full h-full"
                       context="character"
                     />
@@ -233,14 +334,16 @@ const CarmenTalentAcquisition: React.FC = () => {
 
         {/* Begin Button */}
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-amber-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
           <Button 
             onClick={() => setCurrentPhase('narrative')}
             size="lg"
-            className="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
+            aria-label="Start Carmen's compassionate hiring journey - Learn AI-powered talent acquisition with human empathy and bias-free processes"
           >
-            <Play className="w-5 h-5 mr-2" />
+            <Play className="w-5 h-5 mr-2" aria-hidden="true" />
             Begin Hiring Journey
+            <span className="sr-only">This workshop teaches compassionate hiring strategies that combine AI efficiency with human empathy</span>
           </Button>
         </div>
       </div>
@@ -251,7 +354,7 @@ const CarmenTalentAcquisition: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 p-6"
     >
       <MicroLessonNavigator
         chapterNumber={7}
@@ -276,7 +379,7 @@ const CarmenTalentAcquisition: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 p-6"
     >
       <MicroLessonNavigator
         chapterNumber={7}
@@ -292,142 +395,108 @@ const CarmenTalentAcquisition: React.FC = () => {
           <Progress value={66 + (currentStep / 5) * 34} className="h-2 mb-4" />
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-600">Carmen's Compassionate Hiring Workshop</p>
-            <Button variant="outline" onClick={() => navigate('/chapter/7')}>
+            <Button className="nm-button nm-button-secondary" onClick={() => navigate('/chapter/7')} aria-label="Return to Chapter 7 main page">
               Back to Chapter 7
             </Button>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Side - Hiring Strategy Builder */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Building className="w-5 h-5 text-orange-600" />
-                Compassionate Hiring Strategy Builder
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Role Type */}
-              <div>
-                <Label htmlFor="role">Role Type</Label>
-                <Select value={roleType} onValueChange={setRoleType}>
-                  <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="What type of role are you hiring for?" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="program-manager">Program Manager</SelectItem>
-                    <SelectItem value="software-engineer">Software Engineer</SelectItem>
-                    <SelectItem value="marketing-coordinator">Marketing Coordinator</SelectItem>
-                    <SelectItem value="data-analyst">Data Analyst</SelectItem>
-                    <SelectItem value="communications-manager">Communications Manager</SelectItem>
-                    <SelectItem value="operations-specialist">Operations Specialist</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Company Size */}
-              <div>
-                <Label htmlFor="size">Organization Size</Label>
-                <Input
-                  id="size"
-                  placeholder="e.g., 50-person nonprofit, 200-person startup, Fortune 500 company"
-                  value={companySize}
-                  onChange={(e) => setCompanySize(e.target.value)}
-                  className="mt-2"
-                />
-              </div>
-
-              {/* Hiring Challenges */}
-              <div>
-                <Label htmlFor="challenges">Current Hiring Challenges</Label>
-                <Textarea
-                  id="challenges"
-                  placeholder="What problems are you facing? (e.g., lack of diversity, long time to hire, candidate experience issues)"
-                  value={hiringChallenges}
-                  onChange={(e) => setHiringChallenges(e.target.value)}
-                  className="min-h-[80px] mt-2"
-                />
-              </div>
-
-              {/* Diversity Goals */}
-              <div>
-                <Label htmlFor="diversity">Diversity & Inclusion Goals</Label>
-                <Textarea
-                  id="diversity"
-                  placeholder="What are your diversity objectives? (optional)"
-                  value={diversityGoals}
-                  onChange={(e) => setDiversityGoals(e.target.value)}
-                  className="min-h-[60px] mt-2"
-                />
-              </div>
-
-              {/* Time to Hire */}
-              <div>
-                <Label htmlFor="time">Target Time to Hire</Label>
-                <Select value={timeToHire} onValueChange={setTimeToHire}>
-                  <SelectTrigger className="mt-2">
-                    <SelectValue placeholder="How quickly do you need to hire?" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="2-weeks">2 weeks</SelectItem>
-                    <SelectItem value="1-month">1 month</SelectItem>
-                    <SelectItem value="6-weeks">6 weeks</SelectItem>
-                    <SelectItem value="2-months">2 months</SelectItem>
-                    <SelectItem value="3-months">3+ months</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {/* Generate Button */}
-              <Button 
-                onClick={generateHiringStrategy}
-                disabled={!roleType || !companySize.trim() || !hiringChallenges.trim() || isGenerating}
-                className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
-              >
-                {isGenerating ? (
-                  <>
-                    <Heart className="w-4 h-4 mr-2 animate-pulse" />
-                    Carmen is crafting your strategy...
-                  </>
-                ) : (
-                  <>
-                    <Users className="w-4 h-4 mr-2" />
-                    Create Compassionate Hiring Strategy
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Right Side - Framework & Result */}
+          {/* Left Side - Configuration */}
           <div className="space-y-6">
-            {/* Hiring Framework */}
+            {/* Role Types Selection */}
+            <VisualOptionGrid
+              title="Role Types"
+              description="What types of roles are you hiring for?"
+              options={roleOptions}
+              selectedIds={selectedRoles}
+              onSelectionChange={setSelectedRoles}
+              multiSelect={true}
+              maxSelections={3}
+              gridCols={2}
+              characterTheme="carmen"
+            />
+
+            {/* Hiring Challenges */}
+            <VisualOptionGrid
+              title="Hiring Challenges"
+              description="What hiring issues are you facing?"
+              options={challengeOptions}
+              selectedIds={selectedChallenges}
+              onSelectionChange={setSelectedChallenges}
+              multiSelect={true}
+              maxSelections={4}
+              gridCols={2}
+              characterTheme="carmen"
+              enableCustom={true}
+              customPlaceholder="Add your own challenge..."
+            />
+
+            {/* Hiring Strategies */}
+            <VisualOptionGrid
+              title="Preferred Hiring Strategies"
+              description="How do you want to improve your hiring process?"
+              options={strategyOptions}
+              selectedIds={selectedStrategies}
+              onSelectionChange={setSelectedStrategies}
+              multiSelect={true}
+              maxSelections={4}
+              gridCols={2}
+              characterTheme="carmen"
+            />
+
+            {/* Hiring Goals */}
+            <VisualOptionGrid
+              title="Hiring Goals"
+              description="What outcomes do you want to achieve?"
+              options={goalOptions}
+              selectedIds={selectedGoals}
+              onSelectionChange={setSelectedGoals}
+              multiSelect={true}
+              maxSelections={3}
+              gridCols={2}
+              characterTheme="carmen"
+            />
+
+            {/* Generate Button */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Target className="w-5 h-5 text-amber-600" />
-                  Carmen's Compassionate Hiring Framework
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {hiringFrameworkElements.map((element, index) => (
-                    <div key={element.id} className="border-l-4 border-orange-200 pl-4">
-                      <div className="flex items-center justify-between mb-1">
-                        <h4 className="font-semibold text-gray-900">
-                          {index + 1}. {element.title}
-                        </h4>
-                      </div>
-                      <p className="text-sm text-gray-600 mb-2">{element.description}</p>
-                      <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded italic">
-                        "{element.example}"
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <CardContent className="p-6 text-center">
+                <Button 
+                  onClick={generateHiringStrategy}
+                  disabled={selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
+                  className="w-full nm-button nm-button-primary text-lg py-3"
+                  aria-label={isGenerating ? "Creating your compassionate hiring strategy" : "Generate compassionate hiring strategy using AI-powered empathy and bias-free processes"}
+                  aria-describedby="hiring-generation-status"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                      <span aria-live="polite">Carmen is crafting your strategy...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Users className="w-5 h-5 mr-2" aria-hidden="true" />
+                      Create Compassionate Hiring Strategy
+                    </>
+                  )}
+                  <div id="hiring-generation-status" className="sr-only">
+                    {isGenerating ? "AI is currently generating your compassionate hiring strategy. Please wait." : "Click to generate your hiring strategy"}
+                  </div>
+                </Button>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Right Side - Framework & Results */}
+          <div className="space-y-6">
+            {/* Dynamic Prompt Builder */}
+            <DynamicPromptBuilder
+              segments={promptSegments}
+              characterName="Carmen"
+              characterTheme="carmen"
+              showCopyButton={true}
+              autoUpdate={true}
+            />
 
             {/* Generated Strategy */}
             {generatedStrategy && (
@@ -439,7 +508,7 @@ const CarmenTalentAcquisition: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-gradient-to-br from-orange-50 to-amber-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg max-h-96 overflow-y-auto">
                     <TemplateContentFormatter 
                       content={generatedStrategy}
                       contentType="lesson"
@@ -459,7 +528,8 @@ const CarmenTalentAcquisition: React.FC = () => {
           <div className="text-center mt-8">
             <Button 
               onClick={handleComplete}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
+              className="nm-button nm-button-success text-white px-8 py-3"
+              aria-label="Complete the talent acquisition workshop and return to Chapter 7"
             >
               Complete Talent Acquisition Workshop
             </Button>

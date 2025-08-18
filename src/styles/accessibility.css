@@ -1,0 +1,203 @@
+/* Accessibility Utilities for Carmen Components */
+
+/* Screen Reader Only Text */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Skip Links for Keyboard Navigation */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  background: #000;
+  color: #fff;
+  padding: 8px;
+  text-decoration: none;
+  border-radius: 4px;
+  z-index: 1000;
+}
+
+.skip-link:focus {
+  top: 6px;
+}
+
+/* Focus Management */
+.focus-visible:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .nm-button {
+    border: 2px solid;
+  }
+  
+  .text-muted-foreground {
+    opacity: 1 !important;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-pulse,
+  .transition-all,
+  .transition-opacity,
+  .transition-shadow {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  
+  .blur-lg,
+  .blur-xl {
+    filter: none !important;
+  }
+}
+
+/* Better Focus Indicators for Interactive Elements */
+button:focus-visible,
+[role="button"]:focus-visible,
+a:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Announce Loading States */
+[aria-live="polite"] {
+  speak: literal-punctuation;
+}
+
+[aria-live="assertive"] {
+  speak: literal-punctuation;
+}
+
+/* Better Color Contrast for Text */
+.text-muted-foreground {
+  color: #6b7280; /* Ensures WCAG AA contrast ratio */
+}
+
+/* Ensure Interactive Elements Have Minimum Target Size */
+button,
+[role="button"],
+input,
+select,
+textarea {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+/* Loading Spinner Accessibility */
+.loading-spinner {
+  speak: never;
+}
+
+/* Form Field Requirements */
+.required::after {
+  content: " *";
+  color: #ef4444;
+}
+
+/* Status Messages */
+.status-message {
+  padding: 12px;
+  border-radius: 6px;
+  margin: 8px 0;
+}
+
+.status-message.success {
+  background-color: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-message.error {
+  background-color: #fef2f2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.status-message.warning {
+  background-color: #fffbeb;
+  color: #92400e;
+  border: 1px solid #fed7aa;
+}
+
+/* Progress Indicators */
+.progress-bar {
+  background: linear-gradient(90deg, #3b82f6 var(--progress), #e5e7eb var(--progress));
+}
+
+.progress-text {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+/* Tooltip Accessibility */
+[role="tooltip"] {
+  background: #1f2937;
+  color: #f9fafb;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  z-index: 1000;
+}
+
+/* Modal and Dialog Accessibility */
+[role="dialog"] {
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+}
+
+/* Card Component Accessibility */
+.accessible-card {
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.accessible-card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.accessible-card:focus-within {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Navigation Landmarks */
+nav[aria-label] {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+main[role="main"] {
+  min-height: 60vh;
+}
+
+/* Image Accessibility */
+img[alt=""],
+img:not([alt]) {
+  opacity: 0.7;
+}
+
+/* Video/Animation Accessibility */
+.reduced-motion video,
+.reduced-motion [data-animation] {
+  animation-play-state: paused !important;
+}

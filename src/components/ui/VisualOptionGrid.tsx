@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import { Check, Plus, X, ChevronDown, ChevronUp } from 'lucide-react';
+import { getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
 
 export interface OptionItem {
   id: string;
   label: string;
   description?: string;
-  icon?: React.ReactNode;
+  icon?: React.ReactNode | string; // Allow string for Supabase icon names
   category?: string;
   tags?: string[];
   recommended?: boolean;
@@ -35,11 +36,11 @@ export interface VisualOptionGridProps {
 
 const themeColors = {
   carmen: {
-    primary: 'border-orange-500 bg-orange-50 text-orange-700',
-    secondary: 'border-orange-200 hover:border-orange-300',
-    selected: 'border-orange-600 bg-orange-100',
-    badge: 'bg-orange-600',
-    button: 'bg-orange-600 hover:bg-orange-700'
+    primary: 'border-purple-500 bg-purple-50 text-purple-700',
+    secondary: 'border-purple-200 hover:border-purple-300',
+    selected: 'border-purple-600 bg-purple-100',
+    badge: 'bg-purple-600',
+    button: 'bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600'
   },
   sofia: {
     primary: 'border-rose-500 bg-rose-50 text-rose-700',
@@ -147,13 +148,13 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
   };
 
   return (
-    <Card className={cn('w-full', className)}>
+    <Card className={cn('w-full nm-card', className)}>
       <CardContent className="p-6">
         {/* Header */}
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{title}</h3>
+          <h3 className="text-lg font-semibold mb-2 nm-text-primary">{title}</h3>
           {description && (
-            <p className="text-sm text-gray-600 mb-4">{description}</p>
+            <p className="text-sm mb-4 nm-text-secondary">{description}</p>
           )}
           
           {/* Selection Summary */}
@@ -237,7 +238,7 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
                           disabled={isDisabled || isMaxedOut}
                           className={cn(
                             'relative p-4 rounded-lg border-2 text-left transition-all duration-200',
-                            'hover:shadow-md focus:outline-none focus:ring-2 focus:ring-offset-2',
+                            'nm-button focus:outline-none focus:ring-2 focus:ring-offset-2',
                             isSelected ? theme.selected : theme.secondary,
                             (isDisabled || isMaxedOut) && 'opacity-50 cursor-not-allowed',
                             'group'
@@ -261,13 +262,21 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
                           {/* Option Content */}
                           <div className="pr-8">
                             {option.icon && (
-                              <div className="mb-2 text-xl">
-                                {option.icon}
+                              <div className="mb-2">
+                                {typeof option.icon === 'string' ? (
+                                  <img 
+                                    src={getCarmenManagementIconUrl(option.icon as any)} 
+                                    alt={option.label}
+                                    className="w-6 h-6 object-contain"
+                                  />
+                                ) : (
+                                  <div className="text-xl">{option.icon}</div>
+                                )}
                               </div>
                             )}
                             
                             <div className="flex items-start gap-2 mb-2">
-                              <h4 className="font-semibold text-sm text-gray-900 group-hover:text-gray-700">
+                              <h4 className="font-semibold text-sm nm-text-primary group-hover:opacity-80">
                                 {option.label}
                               </h4>
                               {option.recommended && (
@@ -278,7 +287,7 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
                             </div>
                             
                             {option.description && (
-                              <p className="text-xs text-gray-600 mb-2">
+                              <p className="text-xs mb-2 nm-text-secondary">
                                 {option.description}
                               </p>
                             )}
@@ -323,7 +332,7 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
                     value={customText}
                     onChange={(e) => setCustomText(e.target.value)}
                     placeholder="Enter your custom option..."
-                    className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2"
+                    className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-md nm-input focus:outline-none focus:ring-2 focus:ring-offset-2"
                     onKeyPress={(e) => e.key === 'Enter' && handleCustomAdd()}
                     autoFocus
                   />

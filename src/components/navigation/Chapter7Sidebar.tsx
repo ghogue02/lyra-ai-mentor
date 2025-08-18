@@ -23,49 +23,49 @@ const lessons = [
     title: "AI-Powered Talent Acquisition",
     subtitle: "Transform your hiring process",
     icon: "🎯",
-    color: "orange"
+    color: "purple"
   },
   { 
     id: 32, 
     title: "Performance Insights Workshop",
     subtitle: "Data-driven performance management",
     icon: "📊",
-    color: "amber"
+    color: "cyan"
   },
   { 
     id: 33, 
     title: "Employee Engagement Builder",
     subtitle: "Personalized engagement strategies",
     icon: "💫",
-    color: "orange"
+    color: "purple"
   },
   { 
     id: 34, 
     title: "Retention Strategy Mastery",
     subtitle: "Human-centered retention",
     icon: "🤝",
-    color: "amber"
+    color: "cyan"
   },
   { 
     id: 35, 
     title: "Team Dynamics Optimizer",
     subtitle: "Building stronger teams",
     icon: "🚀",
-    color: "orange"
+    color: "purple"
   },
   { 
     id: 36, 
     title: "Cultural Intelligence Hub",
     subtitle: "Fostering inclusive culture",
     icon: "🌍",
-    color: "amber"
+    color: "cyan"
   },
   { 
     id: 37, 
     title: "Leadership Development Lab",
     subtitle: "Developing future leaders",
     icon: "👑",
-    color: "orange"
+    color: "purple"
   }
 ];
 
@@ -129,14 +129,14 @@ export const Chapter7Sidebar: React.FC<Chapter7SidebarProps> = ({
   };
 
   return (
-    <div className="w-80 h-screen bg-gradient-to-b from-orange-50 to-amber-50 border-r border-orange-200 flex flex-col">
+    <div className="w-80 h-screen bg-gradient-to-b from-purple-50 to-cyan-50 border-r border-purple-200 flex flex-col nm-surface">
       {/* Neumorphic Chapter Header */}
-      <div className="p-6 border-b border-orange-200 bg-white rounded-b-2xl shadow-[0_4px_8px_rgba(0,0,0,0.05)] backdrop-blur-sm">
+      <div className="p-6 border-b border-purple-200 bg-white rounded-b-2xl nm-card shadow-[0_4px_8px_rgba(0,0,0,0.05)] backdrop-blur-sm">
         <div className="flex items-center gap-3 mb-2">
-          <Users className="w-6 h-6 text-orange-500" />
+          <Users className="w-6 h-6 text-purple-600" />
           <h2 className="text-lg font-bold text-gray-900">Chapter 7</h2>
         </div>
-        <h3 className="text-xl font-bold bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">
+        <h3 className="text-xl font-bold bg-gradient-to-r from-purple-600 to-cyan-500 bg-clip-text text-transparent nm-text-primary">
           AI-Powered People Management
         </h3>
         <p className="text-sm text-gray-600 mt-2">
@@ -161,8 +161,8 @@ export const Chapter7Sidebar: React.FC<Chapter7SidebarProps> = ({
                 "border-2 backdrop-blur-sm",
                 isActive ? [
                   "bg-white shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff] scale-[1.02]",
-                  lesson.color === 'orange' && "border-orange-400",
-                  lesson.color === 'amber' && "border-amber-400"
+                  lesson.color === 'purple' && "border-purple-400",
+                  lesson.color === 'cyan' && "border-cyan-400"
                 ] : [
                   "hover:bg-white shadow-[4px_4px_8px_#e5e7eb,-4px_-4px_8px_#ffffff] hover:shadow-[8px_8px_16px_#e5e7eb,-8px_-8px_16px_#ffffff]",
                   status === 'completed' ? "border-green-300" : "border-gray-200",
@@ -200,7 +200,7 @@ export const Chapter7Sidebar: React.FC<Chapter7SidebarProps> = ({
                         <div 
                           className={cn(
                             "h-full transition-all duration-500",
-                            status === 'completed' ? "bg-green-500" : "bg-orange-500"
+                            status === 'completed' ? "bg-green-500" : "bg-gradient-to-r from-purple-500 to-cyan-500"
                           )}
                           style={{ width: `${lessonProgress.progress}%` }}
                         />
@@ -218,7 +218,7 @@ export const Chapter7Sidebar: React.FC<Chapter7SidebarProps> = ({
       </div>
 
       {/* Neumorphic Chapter Progress Summary */}
-      <div className="p-4 border-t border-orange-200 bg-white rounded-t-2xl shadow-[inset_4px_4px_8px_#e5e7eb,inset_-4px_-4px_8px_#ffffff] backdrop-blur-sm">
+      <div className="p-4 border-t border-purple-200 bg-white rounded-t-2xl nm-surface-elevated shadow-[inset_4px_4px_8px_#e5e7eb,inset_-4px_-4px_8px_#ffffff] backdrop-blur-sm">
         <div className="flex items-center justify-between mb-2">
           <span className="text-sm font-medium text-gray-700">Chapter Progress</span>
           <span className="text-sm text-gray-600">
@@ -227,7 +227,7 @@ export const Chapter7Sidebar: React.FC<Chapter7SidebarProps> = ({
         </div>
         <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-gradient-to-r from-orange-500 to-amber-500 transition-all duration-500"
+            className="h-full bg-gradient-to-r from-purple-500 to-cyan-500 transition-all duration-500"
             style={{ 
               width: `${(progress.filter(p => p.completed).length / lessons.length) * 100}%` 
             }}
@@ -236,11 +236,11 @@ export const Chapter7Sidebar: React.FC<Chapter7SidebarProps> = ({
       </div>
 
       {/* Return to Dashboard */}
-      <div className="p-4 border-t border-orange-200">
+      <div className="p-4 border-t border-purple-200">
         <BrandedButton 
           onClick={() => navigate('/dashboard')} 
           variant="outline" 
-          className="w-full flex items-center gap-2 hover:bg-orange-50 border-orange-200"
+          className="w-full flex items-center gap-2 hover:bg-purple-50 border-purple-200 nm-button"
           icon="mission"
           animated={true}
         >
@@ -249,9 +249,9 @@ export const Chapter7Sidebar: React.FC<Chapter7SidebarProps> = ({
       </div>
 
       {/* Character Quote */}
-      <div className="p-4 bg-gradient-to-r from-orange-100 to-amber-100 border-t border-orange-200">
+      <div className="p-4 bg-gradient-to-r from-purple-100 to-cyan-100 border-t border-purple-200 nm-surface">
         <div className="flex items-start gap-2">
-          <Sparkles className="w-4 h-4 text-orange-600 flex-shrink-0 mt-0.5" />
+          <Sparkles className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
           <p className="text-sm italic text-gray-700">
             "Technology amplifies human potential when we remember that behind every data point is a person with dreams and aspirations."
           </p>

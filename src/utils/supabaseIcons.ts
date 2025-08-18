@@ -83,6 +83,68 @@ export const SUPABASE_ICONS = {
     communication: 'communication.png',
     growthPlant: 'growth-plant.png',
     successCelebration: 'achievement-trophy.png'
+  },
+  
+  // Carmen-specific management icons (mapped to existing Supabase storage)
+  carmenManagement: {
+    // Team size icons
+    teamSmall: 'user-role-programs.png',
+    teamMedium: 'network-connection.png', 
+    teamLarge: 'workflowProcess.png',
+    teamDepartment: 'data-analytics.png',
+    
+    // Performance management icons
+    performanceGoals: 'learning-target.png',
+    performanceBalance: 'mission-heart.png',
+    performanceFeedback: 'communication.png',
+    performanceGrowth: 'growth-plant.png',
+    performanceMetrics: 'data-analytics.png',
+    performanceRecognition: 'achievement-trophy.png',
+    performanceProcess: 'workflow-process.png',
+    performanceUniform: 'user-role-it.png',
+    
+    // Retention strategy icons
+    retentionDecline: 'data-analytics.png',
+    retentionStagnation: 'workflow-process.png',
+    retentionWarning: 'learning-target.png',
+    retentionBalance: 'mission-heart.png',
+    retentionMoney: 'achievement-trophy.png',
+    retentionLocked: 'user-role-it.png',
+    retentionCulture: 'communication.png',
+    retentionConversation: 'communication.png',
+    retentionTraining: 'learning-target.png',
+    retentionLeadership: 'achievement-trophy.png',
+    retentionMentorship: 'network-connection.png',
+    retentionHome: 'workflow-process.png',
+    retentionRewards: 'achievement-trophy.png',
+    retentionRotation: 'growth-plant.png',
+    retentionWellness: 'mission-heart.png',
+    retentionStats: 'data-analytics.png',
+    retentionHeart: 'mission-heart.png',
+    retentionUp: 'growth-plant.png',
+    retentionTarget: 'learning-target.png',
+    retentionStar: 'achievement-trophy.png',
+    retentionManager: 'user-role-it.png',
+    retentionSpeed: 'workflow-process.png',
+    retentionSpeak: 'communication.png',
+    retentionTopStar: 'achievement-trophy.png',
+    retentionCostMoney: 'data-analytics.png',
+    retentionHandshake: 'network-connection.png',
+    retentionPath: 'growth-plant.png',
+    retentionCrystalBall: 'learning-target.png',
+    retentionTeam: 'network-connection.png',
+    retentionBrain: 'user-role-it.png',
+    retentionRocket: 'workflow-process.png',
+    
+    // Engagement icons
+    engagementSatisfied: 'mission-heart.png',
+    engagementRocket: 'workflow-process.png',
+    engagementStar: 'achievement-trophy.png',
+    engagementSpeed: 'growth-plant.png',
+    engagementShining: 'learning-target.png',
+    engagementMask: 'communication.png',
+    engagementCycle: 'growth-plant.png',
+    engagementMedal: 'achievement-trophy.png'
   }
 } as const;
 
@@ -239,6 +301,14 @@ export const getNavbarIconUrl = (type: keyof typeof SUPABASE_ICONS.navbar): stri
  */
 export const getAnimationUrl = (animationName: string): string => {
   return getSupabaseIconUrl(`animations/${animationName}`);
+};
+
+/**
+ * Get Carmen management icon URL by logical name
+ */
+export const getCarmenManagementIconUrl = (iconName: keyof typeof SUPABASE_ICONS.carmenManagement): string => {
+  const iconPath = SUPABASE_ICONS.carmenManagement[iconName] || SUPABASE_ICONS.features.achievementTrophy;
+  return getSupabaseIconUrl(iconPath);
 };
 
 /**

@@ -36,11 +36,11 @@ const CarmenPeopleManagementJourney: React.FC = () => {
         <div className="w-32 h-32 mx-auto mb-6">
           <img 
             src={getSupabaseIconUrl('lyra-avatar.png')} 
-            alt="Carmen Rodriguez"
-            className="w-full h-full rounded-full object-cover border-4 border-orange-400/20"
+            alt="Carmen Rodriguez, HR Leader and AI Mentor - Your guide through the People Management Journey"
+            className="w-full h-full rounded-full object-cover border-4 border-purple-400/20"
           />
         </div>
-        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+        <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-cyan-500 to-blue-500 bg-clip-text text-transparent" id="main-heading">
           Carmen's People Management Journey
         </h1>
         <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -56,7 +56,7 @@ const CarmenPeopleManagementJourney: React.FC = () => {
                 type="mission" 
                 variant="static" 
                 size="lg"
-                className="text-orange-600"
+                className="text-purple-600"
               />
               Meet Carmen Rodriguez
             </CardTitle>
@@ -64,27 +64,27 @@ const CarmenPeopleManagementJourney: React.FC = () => {
           <CardContent className="space-y-6">
             <div className="grid md:grid-cols-2 gap-6">
               <div>
-                <h3 className="font-semibold text-orange-600 mb-2">The Challenge</h3>
+                <h3 className="font-semibold text-purple-600 mb-2">The Challenge</h3>
                 <p className="text-muted-foreground">{carmenStory.challenge}</p>
               </div>
               <div>
-                <h3 className="font-semibold text-orange-600 mb-2">The Transformation</h3>
+                <h3 className="font-semibold text-purple-600 mb-2">The Transformation</h3>
                 <p className="text-muted-foreground">{carmenStory.transformation}</p>
               </div>
             </div>
             
-            <div className="p-4 bg-gradient-to-r from-orange-600/10 to-amber-500/10 rounded-lg border border-orange-400/20">
-              <p className="text-orange-700 italic">"{carmenStory.quote}"</p>
+            <div className="p-4 bg-gradient-to-r from-purple-600/10 to-cyan-500/10 rounded-lg border border-purple-400/20">
+              <p className="text-purple-700 italic">"{carmenStory.quote}"</p>
             </div>
 
             <div className="grid md:grid-cols-3 gap-4">
-              <div className="text-center p-4 bg-orange-50 rounded-lg border border-orange-200">
-                <div className="text-2xl font-bold text-orange-600">70%</div>
-                <div className="text-sm text-orange-700">Faster Hiring</div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg border border-purple-200">
+                <div className="text-2xl font-bold text-purple-600">70%</div>
+                <div className="text-sm text-purple-700">Faster Hiring</div>
               </div>
-              <div className="text-center p-4 bg-amber-50 rounded-lg border border-amber-200">
-                <div className="text-2xl font-bold text-amber-600">45%</div>
-                <div className="text-sm text-amber-700">Better Retention</div>
+              <div className="text-center p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+                <div className="text-2xl font-bold text-cyan-600">45%</div>
+                <div className="text-sm text-cyan-700">Better Retention</div>
               </div>
               <div className="text-center p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                 <div className="text-2xl font-bold text-yellow-600">200%</div>
@@ -100,9 +100,11 @@ const CarmenPeopleManagementJourney: React.FC = () => {
           onClick={() => handlePhaseChange('talent-acquisition')}
           icon="mission"
           size="lg"
-          className="text-lg px-8 py-3 bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600"
+          className="text-lg px-8 py-3 bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+          aria-label="Start Carmen's interactive people management journey - Learn AI-powered hiring, performance insights, engagement building, and retention strategies"
         >
-          Begin People Management Journey <ChevronRight className="w-5 h-5 ml-2" />
+          Begin People Management Journey <ChevronRight className="w-5 h-5 ml-2" aria-hidden="true" />
+          <span className="sr-only">This will start an interactive journey through four phases: talent acquisition, performance insights, engagement building, and retention mastery</span>
         </BrandedButton>
       </div>
     </motion.div>
@@ -116,7 +118,7 @@ const CarmenPeopleManagementJourney: React.FC = () => {
       className="space-y-8"
     >
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4 text-orange-600">Smart Talent Acquisition</h2>
+        <h2 className="text-3xl font-bold mb-4 text-purple-600" id="talent-acquisition-heading">Smart Talent Acquisition</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Carmen's first breakthrough: AI-powered hiring that finds the right people faster while preserving the human connection.
         </p>
@@ -124,28 +126,28 @@ const CarmenPeopleManagementJourney: React.FC = () => {
 
       <Card className="max-w-4xl mx-auto">
         <CardContent className="p-8 space-y-6">
-          <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-            <h3 className="font-semibold text-orange-700 mb-3">The Problem</h3>
-            <p className="text-orange-600 mb-4">
+          <div className="bg-purple-50 p-6 rounded-lg border border-purple-200">
+            <h3 className="font-semibold text-purple-700 mb-3">The Problem</h3>
+            <p className="text-purple-600 mb-4">
               "We were posting jobs and hoping for the best. Screening 200+ applications manually was burning me out, 
               and great candidates were slipping through the cracks during our 6-week hiring process."
             </p>
             <div className="grid md:grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm text-orange-700">6 weeks average time-to-hire</span>
+                <span className="text-sm text-purple-700">6 weeks average time-to-hire</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm text-orange-700">200+ applications per position</span>
+                <span className="text-sm text-purple-700">200+ applications per position</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm text-orange-700">Manual screening burnout</span>
+                <span className="text-sm text-purple-700">Manual screening burnout</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 bg-red-500 rounded-full"></div>
-                <span className="text-sm text-orange-700">Lost quality candidates</span>
+                <span className="text-sm text-purple-700">Lost quality candidates</span>
               </div>
             </div>
           </div>
@@ -182,15 +184,17 @@ const CarmenPeopleManagementJourney: React.FC = () => {
         <BrandedButton 
           variant="outline"
           onClick={() => handlePhaseChange('intro')}
-          className="border-orange-300 text-orange-600 hover:bg-orange-50"
+          className="border-purple-300 text-purple-600 hover:bg-purple-50"
+          aria-label="Go back to journey introduction"
         >
-          <ArrowLeft className="w-4 h-4 mr-2" /> Back
+          <ArrowLeft className="w-4 h-4 mr-2" aria-hidden="true" /> Back
         </BrandedButton>
         <BrandedButton 
           onClick={() => navigate('/chapter/7/interactive/talent-acquisition')}
-          className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600"
+          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+          aria-label="Launch interactive talent acquisition workshop - Build your AI-powered hiring strategy"
         >
-          Try AI Talent Acquisition <ChevronRight className="w-5 h-5 ml-2" />
+          Try AI Talent Acquisition <ChevronRight className="w-5 h-5 ml-2" aria-hidden="true" />
         </BrandedButton>
       </div>
     </motion.div>
@@ -204,7 +208,7 @@ const CarmenPeopleManagementJourney: React.FC = () => {
       className="space-y-8"
     >
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4 text-orange-600">Performance Insights</h2>
+        <h2 className="text-3xl font-bold mb-4 text-purple-600" id="performance-insights-heading">Performance Insights</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Move beyond annual reviews to continuous, data-driven performance management that helps your team thrive.
         </p>
@@ -214,15 +218,16 @@ const CarmenPeopleManagementJourney: React.FC = () => {
         <BrandedButton 
           variant="outline"
           onClick={() => handlePhaseChange('talent-acquisition')}
-          className="border-orange-300 text-orange-600 hover:bg-orange-50"
+          className="border-purple-300 text-purple-600 hover:bg-purple-50"
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
         </BrandedButton>
         <BrandedButton 
           onClick={() => navigate('/chapter/7/interactive/performance-insights')}
-          className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600"
+          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+          aria-label="Launch interactive performance insights workshop - Create data-driven performance management systems"
         >
-          Build Performance Dashboard <ChevronRight className="w-5 h-5 ml-2" />
+          Build Performance Dashboard <ChevronRight className="w-5 h-5 ml-2" aria-hidden="true" />
         </BrandedButton>
       </div>
     </motion.div>
@@ -236,7 +241,7 @@ const CarmenPeopleManagementJourney: React.FC = () => {
       className="space-y-8"
     >
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4 text-orange-600">Engagement Building</h2>
+        <h2 className="text-3xl font-bold mb-4 text-purple-600" id="engagement-building-heading">Engagement Building</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Create engagement strategies that actually work using AI-powered insights and personalized approaches.
         </p>
@@ -246,15 +251,16 @@ const CarmenPeopleManagementJourney: React.FC = () => {
         <BrandedButton 
           variant="outline"
           onClick={() => handlePhaseChange('performance-insights')}
-          className="border-orange-300 text-orange-600 hover:bg-orange-50"
+          className="border-purple-300 text-purple-600 hover:bg-purple-50"
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
         </BrandedButton>
         <BrandedButton 
           onClick={() => navigate('/chapter/7/interactive/engagement-builder')}
-          className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600"
+          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+          aria-label="Launch interactive engagement builder workshop - Develop personalized team engagement strategies"
         >
-          Build Engagement Strategy <ChevronRight className="w-5 h-5 ml-2" />
+          Build Engagement Strategy <ChevronRight className="w-5 h-5 ml-2" aria-hidden="true" />
         </BrandedButton>
       </div>
     </motion.div>
@@ -268,7 +274,7 @@ const CarmenPeopleManagementJourney: React.FC = () => {
       className="space-y-8"
     >
       <div className="text-center">
-        <h2 className="text-3xl font-bold mb-4 text-orange-600">Retention Mastery</h2>
+        <h2 className="text-3xl font-bold mb-4 text-purple-600" id="retention-mastery-heading">Retention Mastery</h2>
         <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
           Master the art of keeping your best people with AI-powered retention strategies and early warning systems.
         </p>
@@ -278,15 +284,16 @@ const CarmenPeopleManagementJourney: React.FC = () => {
         <BrandedButton 
           variant="outline"
           onClick={() => handlePhaseChange('engagement-building')}
-          className="border-orange-300 text-orange-600 hover:bg-orange-50"
+          className="border-purple-300 text-purple-600 hover:bg-purple-50"
         >
           <ArrowLeft className="w-4 h-4 mr-2" /> Back
         </BrandedButton>
         <BrandedButton 
           onClick={() => navigate('/chapter/7/interactive/retention-mastery')}
-          className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600"
+          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+          aria-label="Launch interactive retention mastery workshop - Build predictive retention strategies with AI insights"
         >
-          Master Retention Strategy <ChevronRight className="w-5 h-5 ml-2" />
+          Master Retention Strategy <ChevronRight className="w-5 h-5 ml-2" aria-hidden="true" />
         </BrandedButton>
       </div>
     </motion.div>
@@ -302,11 +309,11 @@ const CarmenPeopleManagementJourney: React.FC = () => {
       <div className="w-32 h-32 mx-auto mb-6">
         <img 
           src={getSupabaseIconUrl('lyra-avatar.png')} 
-          alt="Carmen Rodriguez"
-          className="w-full h-full rounded-full object-cover border-4 border-orange-400/20"
+          alt="Carmen Rodriguez celebrating successful completion of the People Management Journey"
+          className="w-full h-full rounded-full object-cover border-4 border-purple-400/20"
         />
       </div>
-      <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-orange-600 via-amber-500 to-yellow-500 bg-clip-text text-transparent">
+      <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-purple-600 via-cyan-500 to-blue-500 bg-clip-text text-transparent" id="completion-heading">
         Congratulations!
       </h1>
       <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-8">
@@ -318,14 +325,16 @@ const CarmenPeopleManagementJourney: React.FC = () => {
           onClick={() => navigate('/dashboard')}
           icon="achievement"
           size="lg"
-          className="bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-700 hover:to-amber-600"
+          className="bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-700 hover:to-cyan-600"
+          aria-label="Continue to main dashboard to explore more learning opportunities"
         >
           Continue Learning Journey
         </BrandedButton>
         <BrandedButton 
           variant="outline"
           onClick={() => navigate('/chapter/7')}
-          className="border-orange-300 text-orange-600 hover:bg-orange-50"
+          className="border-purple-300 text-purple-600 hover:bg-purple-50"
+          aria-label="Return to Chapter 7 main page"
         >
           Back to Chapter 7
         </BrandedButton>
@@ -353,7 +362,7 @@ const CarmenPeopleManagementJourney: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-background to-amber-50">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-background to-cyan-50">
       <MicroLessonNavigator
         chapterNumber={7}
         chapterTitle="Carmen's People Management Journey"

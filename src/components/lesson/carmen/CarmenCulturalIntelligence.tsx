@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,9 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
-import { Textarea } from '@/components/ui/textarea';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
+import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
@@ -34,11 +33,61 @@ const CarmenCulturalIntelligence: React.FC = () => {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
-  const [companyDescription, setCompanyDescription] = useState('');
-  const [culturalChallenges, setCulturalChallenges] = useState('');
-  const [inclusionGoals, setInclusionGoals] = useState('');
+  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
+  const [selectedStrategies, setSelectedStrategies] = useState<string[]>([]);
+  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
+  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [generatedStrategy, setGeneratedStrategy] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
+  const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
+
+  // Cultural challenge options
+  const challengeOptions: OptionItem[] = [
+    { id: 'lack-representation', label: 'Lack of Representation', description: 'Limited diversity in leadership/teams', icon: 'culturalDiversity', recommended: true },
+    { id: 'communication-barriers', label: 'Communication Barriers', description: 'Language or cultural misunderstandings', icon: 'culturalCommunication', recommended: true },
+    { id: 'unconscious-bias', label: 'Unconscious Bias', description: 'Unfair treatment or assumptions', icon: 'culturalBias' },
+    { id: 'exclusive-practices', label: 'Exclusive Practices', description: 'Processes that exclude certain groups', icon: 'culturalExclusion' },
+    { id: 'microaggressions', label: 'Microaggressions', description: 'Subtle discriminatory comments/actions', icon: 'culturalMicro' },
+    { id: 'cultural-misunderstanding', label: 'Cultural Misunderstandings', description: 'Different work styles/values clash', icon: 'culturalMisunderstanding' },
+    { id: 'limited-cultural-awareness', label: 'Limited Cultural Awareness', description: 'Lack of global/cultural knowledge', icon: 'culturalAwareness' },
+    { id: 'inequitable-opportunities', label: 'Inequitable Opportunities', description: 'Unequal access to growth/advancement', icon: 'culturalInequity' }
+  ];
+
+  // Cultural strategy options
+  const strategyOptions: OptionItem[] = [
+    { id: 'cultural-training', label: 'Cultural Intelligence Training', description: 'Education on cultural awareness', icon: 'culturalTraining', recommended: true },
+    { id: 'inclusive-leadership', label: 'Inclusive Leadership Development', description: 'Train leaders on inclusive practices', icon: 'culturalLeadership', recommended: true },
+    { id: 'diverse-hiring', label: 'Diverse Hiring Practices', description: 'Expand recruitment to diverse pools', icon: 'culturalHiring' },
+    { id: 'employee-resource-groups', label: 'Employee Resource Groups', description: 'Communities based on shared identity', icon: 'culturalGroups' },
+    { id: 'mentorship-programs', label: 'Cross-Cultural Mentorship', description: 'Pair people from different backgrounds', icon: 'culturalMentorship' },
+    { id: 'celebration-programs', label: 'Cultural Celebration Programs', description: 'Honor different cultures and traditions', icon: 'culturalCelebration' },
+    { id: 'policy-review', label: 'Inclusive Policy Review', description: 'Update policies for fairness', icon: 'culturalPolicy' },
+    { id: 'feedback-systems', label: 'Anonymous Feedback Systems', description: 'Safe reporting of cultural issues', icon: 'culturalFeedback' }
+  ];
+
+  // Cultural goal options
+  const goalOptions: OptionItem[] = [
+    { id: 'increase-belonging', label: 'Increase Sense of Belonging', description: 'Everyone feels valued and included', icon: 'culturalBelonging', recommended: true },
+    { id: 'improve-collaboration', label: 'Improve Cross-Cultural Collaboration', description: 'Better teamwork across differences', icon: 'culturalCollaboration', recommended: true },
+    { id: 'reduce-bias', label: 'Reduce Unconscious Bias', description: 'Fair treatment for all employees', icon: 'culturalBalance' },
+    { id: 'enhance-innovation', label: 'Enhance Innovation', description: 'Leverage diverse perspectives', icon: 'culturalInnovation' },
+    { id: 'improve-retention', label: 'Improve Retention', description: 'Keep diverse talent longer', icon: 'culturalRetention' },
+    { id: 'build-reputation', label: 'Build Inclusive Reputation', description: 'Become known for great culture', icon: 'culturalReputation' },
+    { id: 'global-competency', label: 'Develop Global Competency', description: 'Work effectively across cultures', icon: 'culturalGlobal' },
+    { id: 'leadership-diversity', label: 'Increase Leadership Diversity', description: 'Diverse representation in leadership', icon: 'culturalLeadership' }
+  ];
+
+  // Cultural metrics options
+  const metricsOptions: OptionItem[] = [
+    { id: 'inclusion-surveys', label: 'Inclusion Survey Scores', description: 'Regular employee sentiment tracking', icon: 'culturalSurvey', recommended: true },
+    { id: 'diversity-metrics', label: 'Diversity Representation', description: 'Demographics across all levels', icon: 'culturalDemographics', recommended: true },
+    { id: 'promotion-equity', label: 'Promotion Equity', description: 'Fair advancement across groups', icon: 'culturalPromotion' },
+    { id: 'retention-rates', label: 'Retention by Demographics', description: 'Track who stays vs. leaves', icon: 'culturalRetention' },
+    { id: 'cultural-competency', label: 'Cultural Competency Assessments', description: 'Skill development tracking', icon: 'culturalSkills' },
+    { id: 'bias-incidents', label: 'Bias Incident Reporting', description: 'Track and address issues', icon: 'culturalIncidents' },
+    { id: 'cross-cultural-collaboration', label: 'Cross-Cultural Collaboration', description: 'Quality of diverse team performance', icon: 'culturalTeamwork' },
+    { id: 'leadership-effectiveness', label: 'Inclusive Leadership Effectiveness', description: 'Leader cultural intelligence scores', icon: 'culturalLeadership' }
+  ];
 
   const culturalElements: CulturalElement[] = [
     {
@@ -110,8 +159,64 @@ const CarmenCulturalIntelligence: React.FC = () => {
     }
   ];
 
+  // Update prompt segments when selections change
+  useEffect(() => {
+    const segments: PromptSegment[] = [
+      {
+        id: 'context',
+        label: 'Carmen\'s Approach',
+        value: 'Carmen Rodriguez needs to build cultural intelligence strategies that create truly inclusive workplaces where everyone can contribute authentically and thrive together.',
+        type: 'context',
+        color: 'border-l-purple-400',
+        required: true
+      },
+      {
+        id: 'challenges',
+        label: 'Cultural Challenges',
+        value: selectedChallenges.length > 0 ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'data',
+        color: 'border-l-red-400',
+        required: false
+      },
+      {
+        id: 'strategies',
+        label: 'Cultural Strategies',
+        value: selectedStrategies.length > 0 ? `Preferred strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'instruction',
+        color: 'border-l-green-400',
+        required: false
+      },
+      {
+        id: 'goals',
+        label: 'Cultural Goals',
+        value: selectedGoals.length > 0 ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'instruction',
+        color: 'border-l-blue-400',
+        required: false
+      },
+      {
+        id: 'metrics',
+        label: 'Success Metrics',
+        value: selectedMetrics.length > 0 ? `Key metrics: ${selectedMetrics.map(id => metricsOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        type: 'instruction',
+        color: 'border-l-purple-400',
+        required: false
+      },
+      {
+        id: 'format',
+        label: 'Output Framework',
+        value: 'Create a comprehensive cultural intelligence strategy with: 1) Cultural Assessment (current state analysis), 2) Inclusion Strategy (targeted approaches), 3) Cultural Transformation (implementation roadmap), 4) Progress Tracking (measurement systems). Focus on building authentic inclusion and leveraging diverse perspectives for innovation.',
+        type: 'format',
+        color: 'border-l-gray-400',
+        required: true
+      }
+    ];
+    
+    setPromptSegments(segments);
+  }, [selectedChallenges, selectedStrategies, selectedGoals, selectedMetrics]);
+
   const generateCulturalStrategy = async () => {
-    if (!companyDescription.trim() || !culturalChallenges.trim()) return;
+    if (selectedChallenges.length === 0 || selectedStrategies.length === 0 || selectedGoals.length === 0) return;
     
     setIsGenerating(true);
     try {
@@ -122,9 +227,10 @@ const CarmenCulturalIntelligence: React.FC = () => {
           topic: 'Cultural Intelligence and Inclusive Workplace Development',
           context: `Carmen Rodriguez needs to develop a comprehensive cultural intelligence strategy for creating an inclusive workplace.
           
-          Company Description: ${companyDescription}
-          Current Cultural Challenges: ${culturalChallenges}
-          Inclusion Goals: ${inclusionGoals || 'Build a truly inclusive, culturally intelligent workplace where everyone thrives'}
+          Current Challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Cultural Strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Cultural Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Success Metrics: ${selectedMetrics.map(id => metricsOptions.find(opt => opt.id === id)?.label).join(', ')}
           
           Create a comprehensive cultural intelligence strategy that includes: 1) Current culture assessment with AI analytics, 2) Inclusive culture development strategy, 3) Implementation roadmap with cultural transformation steps, 4) Progress measurement and continuous improvement system. Focus on building genuine inclusion, cultural bridge-building, and leveraging diverse perspectives for innovation.`
         }
@@ -162,15 +268,15 @@ const CarmenCulturalIntelligence: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 flex items-center justify-center p-6"
     >
       <div className="max-w-4xl mx-auto text-center">
         {/* Carmen Avatar */}
         <div className="w-24 h-24 mx-auto mb-8">
           <VideoAnimation
             src={getAnimationUrl('carmen-cultural-discovery.mp4')}
-            fallbackIcon={<div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center">
-              🌍
+            fallbackIcon={<div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center">
+              <Globe className="w-12 h-12 text-purple-600" />
             </div>}
             className="w-full h-full rounded-full"
             context="character"
@@ -179,7 +285,7 @@ const CarmenCulturalIntelligence: React.FC = () => {
         </div>
 
         {/* Title */}
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4" id="main-heading">
           Carmen's Cultural Intelligence Hub
         </h1>
         <p className="text-xl text-gray-600 mb-12">
@@ -189,9 +295,9 @@ const CarmenCulturalIntelligence: React.FC = () => {
         {/* 3-Step Journey Preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
           {[
-            { title: 'The Invisible Barriers', desc: 'Experience Carmen\'s culture awakening moment', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-cultural-discovery.mp4', fallback: '🚧' },
-            { title: 'AI Culture Analytics', desc: 'Learn systematic cultural intelligence approach', color: 'from-orange-500/10 to-orange-500/5', animation: 'carmen-ai-analytics.mp4', fallback: '🎯' },
-            { title: 'Inclusive Culture Success', desc: 'Witness thriving diverse workplace transformation', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-culture-triumph.mp4', fallback: '🌟' }
+            { title: 'The Invisible Barriers', desc: 'Experience Carmen\'s culture awakening moment', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-cultural-discovery.mp4', fallback: <MessageSquare className="w-8 h-8 text-red-500" /> },
+            { title: 'AI Culture Analytics', desc: 'Learn systematic cultural intelligence approach', color: 'from-purple-500/10 to-purple-500/5', animation: 'carmen-ai-analytics.mp4', fallback: <Target className="w-8 h-8 text-purple-500" /> },
+            { title: 'Inclusive Culture Success', desc: 'Witness thriving diverse workplace transformation', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-culture-triumph.mp4', fallback: <Sparkles className="w-8 h-8 text-green-500" /> }
           ].map((item, index) => (
             <div key={index} className="relative group">
               <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
@@ -200,7 +306,7 @@ const CarmenCulturalIntelligence: React.FC = () => {
                   <div className="w-12 h-12 mx-auto mb-3">
                     <VideoAnimation
                       src={getAnimationUrl(item.animation)}
-                      fallbackIcon={<span className="text-3xl">{item.fallback}</span>}
+                      fallbackIcon={item.fallback}
                       className="w-full h-full"
                       context="character"
                     />
@@ -216,14 +322,16 @@ const CarmenCulturalIntelligence: React.FC = () => {
 
         {/* Begin Button */}
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-amber-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
           <Button 
             onClick={() => setCurrentPhase('narrative')}
             size="lg"
-            className="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
+            aria-label="Start Carmen's cultural intelligence journey - Learn to build inclusive workplace culture with AI-powered insights and cultural intelligence analytics"
           >
-            <Play className="w-5 h-5 mr-2" />
+            <Play className="w-5 h-5 mr-2" aria-hidden="true" />
             Begin Carmen's Cultural Journey
+            <span className="sr-only">This workshop teaches systematic cultural intelligence for creating truly inclusive workplaces</span>
           </Button>
         </div>
       </div>
@@ -234,7 +342,7 @@ const CarmenCulturalIntelligence: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 p-6"
     >
       <MicroLessonNavigator
         chapterNumber={7}
@@ -259,7 +367,7 @@ const CarmenCulturalIntelligence: React.FC = () => {
     <motion.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
-      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+      className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 p-6"
     >
       <MicroLessonNavigator
         chapterNumber={7}
@@ -275,105 +383,108 @@ const CarmenCulturalIntelligence: React.FC = () => {
           <Progress value={66 + (currentStep / 4) * 34} className="h-2 mb-4" />
           <div className="flex items-center justify-between">
             <p className="text-sm text-gray-600">Carmen's Cultural Intelligence Workshop</p>
-            <Button variant="outline" onClick={() => navigate('/chapter/7')}>
+            <Button className="nm-button nm-button-secondary" onClick={() => navigate('/chapter/7')} aria-label="Return to Chapter 7 main page">
               Back to Chapter 7
             </Button>
           </div>
         </div>
 
         <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Side - Culture Builder */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Globe className="w-5 h-5 text-orange-600" />
-                Cultural Intelligence Builder
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              {/* Company Description */}
-              <div>
-                <Label htmlFor="company">Your Company Description</Label>
-                <Textarea
-                  id="company"
-                  placeholder="Describe your company: industry, size, current diversity, team composition..."
-                  value={companyDescription}
-                  onChange={(e) => setCompanyDescription(e.target.value)}
-                  className="min-h-[100px] mt-2"
-                />
-              </div>
-
-              {/* Cultural Challenges */}
-              <div>
-                <Label htmlFor="challenges">Current Cultural Challenges</Label>
-                <Textarea
-                  id="challenges"
-                  placeholder="What specific inclusion or cultural issues is your workplace facing?"
-                  value={culturalChallenges}
-                  onChange={(e) => setCulturalChallenges(e.target.value)}
-                  className="min-h-[100px] mt-2"
-                />
-              </div>
-
-              {/* Inclusion Goals */}
-              <div>
-                <Label htmlFor="goals">Inclusion Goals</Label>
-                <Input
-                  id="goals"
-                  placeholder="What cultural transformation do you want to achieve?"
-                  value={inclusionGoals}
-                  onChange={(e) => setInclusionGoals(e.target.value)}
-                  className="mt-2"
-                />
-              </div>
-
-              {/* Generate Button */}
-              <Button 
-                onClick={generateCulturalStrategy}
-                disabled={!companyDescription.trim() || !culturalChallenges.trim() || isGenerating}
-                className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
-              >
-                {isGenerating ? (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2 animate-spin" />
-                    Carmen is building your culture strategy...
-                  </>
-                ) : (
-                  <>
-                    <Sparkles className="w-4 h-4 mr-2" />
-                    Create Cultural Intelligence Strategy with Carmen's AI
-                  </>
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* Right Side - Framework & Result */}
+          {/* Left Side - Configuration */}
           <div className="space-y-6">
-            {/* Cultural Framework */}
+            {/* Cultural Challenges */}
+            <VisualOptionGrid
+              title="Cultural Challenges"
+              description="What inclusion or cultural issues is your workplace facing?"
+              options={challengeOptions}
+              selectedIds={selectedChallenges}
+              onSelectionChange={setSelectedChallenges}
+              multiSelect={true}
+              maxSelections={4}
+              gridCols={2}
+              characterTheme="carmen"
+              enableCustom={true}
+              customPlaceholder="Add your own challenge..."
+            />
+
+            {/* Cultural Strategies */}
+            <VisualOptionGrid
+              title="Cultural Intelligence Strategies"
+              description="How do you want to build inclusive culture?"
+              options={strategyOptions}
+              selectedIds={selectedStrategies}
+              onSelectionChange={setSelectedStrategies}
+              multiSelect={true}
+              maxSelections={4}
+              gridCols={2}
+              characterTheme="carmen"
+            />
+
+            {/* Cultural Goals */}
+            <VisualOptionGrid
+              title="Cultural Goals"
+              description="What cultural transformation do you want to achieve?"
+              options={goalOptions}
+              selectedIds={selectedGoals}
+              onSelectionChange={setSelectedGoals}
+              multiSelect={true}
+              maxSelections={3}
+              gridCols={2}
+              characterTheme="carmen"
+            />
+
+            {/* Success Metrics */}
+            <VisualOptionGrid
+              title="Success Metrics"
+              description="How will you measure cultural progress?"
+              options={metricsOptions}
+              selectedIds={selectedMetrics}
+              onSelectionChange={setSelectedMetrics}
+              multiSelect={true}
+              maxSelections={4}
+              gridCols={2}
+              characterTheme="carmen"
+            />
+
+            {/* Generate Button */}
             <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Compass className="w-5 h-5 text-amber-600" />
-                  Carmen's Cultural Intelligence Framework
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {culturalElements.map((element, index) => (
-                    <div key={element.id} className="border-l-4 border-orange-200 pl-4">
-                      <h4 className="font-semibold text-gray-900 mb-1">
-                        {index + 1}. {element.title}
-                      </h4>
-                      <p className="text-sm text-gray-600 mb-2">{element.description}</p>
-                      <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded italic">
-                        "{element.example}"
-                      </div>
-                    </div>
-                  ))}
-                </div>
+              <CardContent className="p-6 text-center">
+                <Button 
+                  onClick={generateCulturalStrategy}
+                  disabled={selectedChallenges.length === 0 || selectedStrategies.length === 0 || selectedGoals.length === 0 || isGenerating}
+                  className="w-full nm-button nm-button-primary text-lg py-3"
+                  aria-label={isGenerating ? "Creating your cultural intelligence strategy" : "Generate cultural intelligence strategy for building inclusive workplace culture"}
+                  aria-describedby="cultural-generation-status"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                      <span aria-live="polite">Carmen is building your culture strategy...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
+                      Create Cultural Intelligence Strategy
+                    </>
+                  )}
+                  <div id="cultural-generation-status" className="sr-only">
+                    {isGenerating ? "AI is currently generating your cultural intelligence strategy. Please wait." : "Click to generate your cultural strategy"}
+                  </div>
+                </Button>
               </CardContent>
             </Card>
+          </div>
+
+          {/* Right Side - Framework & Results */}
+          <div className="space-y-6">
+            {/* Dynamic Prompt Builder */}
+            <DynamicPromptBuilder
+              segments={promptSegments}
+              characterName="Carmen"
+              characterTheme="carmen"
+              showCopyButton={true}
+              autoUpdate={true}
+            />
 
             {/* Generated Strategy */}
             {generatedStrategy && (
@@ -385,10 +496,10 @@ const CarmenCulturalIntelligence: React.FC = () => {
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="bg-gradient-to-br from-orange-50 to-amber-50 p-4 rounded-lg">
+                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg max-h-96 overflow-y-auto">
                     <TemplateContentFormatter 
                       content={generatedStrategy}
-                      contentType="general"
+                      contentType="lesson"
                       variant="default"
                       showMergeFieldTypes={true}
                       className="formatted-ai-content"
@@ -405,7 +516,8 @@ const CarmenCulturalIntelligence: React.FC = () => {
           <div className="text-center mt-8">
             <Button 
               onClick={handleComplete}
-              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
+              className="nm-button nm-button-success text-white px-8 py-3"
+              aria-label="Complete the cultural intelligence workshop and return to Chapter 7"
             >
               Complete Cultural Intelligence Workshop
             </Button>
