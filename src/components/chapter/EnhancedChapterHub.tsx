@@ -20,6 +20,9 @@ interface MicroLesson {
   difficulty: 'Beginner' | 'Intermediate' | 'Advanced';
   completed: boolean;
   unlocked: boolean;
+  progress?: number;
+  category?: string;
+  tags?: string[];
 }
 
 interface EnhancedChapterHubProps {
@@ -27,7 +30,7 @@ interface EnhancedChapterHubProps {
   title: string;
   description: string;
   characterName: string;
-  characterType: 'lyra' | 'maya' | 'sofia' | 'david' | 'rachel' | 'alex';
+  characterType: 'lyra' | 'maya' | 'sofia' | 'david' | 'rachel' | 'alex' | 'carmen';
   microLessons: MicroLesson[];
   bgGradient: string;
   completionRoute?: string;

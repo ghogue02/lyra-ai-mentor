@@ -3,7 +3,7 @@
 
 -- 1. Insert Chapter 2
 INSERT INTO chapters (id, title, description, order_index, icon, duration, is_published)
-VALUES (2, 'AI in Fundraising', 'Discover how AI can revolutionize your fundraising efforts, from donor prospecting to campaign optimization.', 2, 'gem', '25 min', TRUE)
+VALUES (2, 'AI in Fundraising', 'Discover how AI can revolutionize your fundraising efforts, from donor prospecting to campaign optimization.', 2, 'gem', 25, TRUE)
 ON CONFLICT (id) DO NOTHING;
 
 -- 2. Insert Lessons for Chapter 2

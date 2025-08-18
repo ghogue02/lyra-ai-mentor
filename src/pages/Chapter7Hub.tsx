@@ -54,6 +54,45 @@ const Chapter7Hub: React.FC = () => {
       progress: 0,
       category: 'mastery',
       tags: ['retention', 'strategy', 'human-centered']
+    },
+    {
+      id: 'team-dynamics',
+      title: 'Team Dynamics Optimizer',
+      description: 'Build stronger, more cohesive teams using AI-powered insights and human understanding',
+      iconType: 'achievement' as const,
+      route: '/chapter/7/interactive/team-dynamics',
+      difficulty: 'Intermediate' as const,
+      completed: false,
+      unlocked: true,
+      progress: 0,
+      category: 'optimization',
+      tags: ['teamwork', 'collaboration', 'dynamics']
+    },
+    {
+      id: 'cultural-intelligence',
+      title: 'Cultural Intelligence Hub',
+      description: 'Foster inclusive workplace cultures by combining AI analytics with cultural sensitivity',
+      iconType: 'growth' as const,
+      route: '/chapter/7/interactive/cultural-intelligence',
+      difficulty: 'Advanced' as const,
+      completed: false,
+      unlocked: true,
+      progress: 0,
+      category: 'culture',
+      tags: ['diversity', 'inclusion', 'cultural-awareness']
+    },
+    {
+      id: 'leadership-development',
+      title: 'Leadership Development Lab',
+      description: 'Develop next-generation leaders using personalized AI coaching and human mentorship',
+      iconType: 'mission' as const,
+      route: '/chapter/7/interactive/leadership-development',
+      difficulty: 'Advanced' as const,
+      completed: false,
+      unlocked: true,
+      progress: 0,
+      category: 'development',
+      tags: ['leadership', 'coaching', 'development']
     }
   ];
 
@@ -63,7 +102,7 @@ const Chapter7Hub: React.FC = () => {
       title="Carmen's AI-Powered People Management"
       description="Join Carmen Rodriguez as she revolutionizes HR practices by blending AI efficiency with human empathy. Learn to transform recruitment, performance management, and employee engagement while ensuring every person feels valued and heard."
       characterName="Carmen"
-      characterType="alex"
+      characterType="carmen"
       bgGradient="from-orange-50 via-white to-amber-50"
       microLessons={microLessons}
       completionRoute="/chapter/7/interactive/people-management-completion"

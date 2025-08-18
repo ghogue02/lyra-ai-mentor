@@ -1,0 +1,55 @@
+{
+  "name": "chapter7-testing-suite",
+  "version": "1.0.0",
+  "description": "Comprehensive testing suite for Chapter 7 Carmen AI-Powered People Management implementation",
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "test:chapter7": "vitest tests/Chapter7*.test.tsx",
+    "test:integration": "vitest tests/Chapter7IntegrationTest.test.tsx",
+    "test:responsive": "vitest tests/Chapter7ResponsiveTest.test.tsx", 
+    "test:database": "vitest tests/Chapter7DatabaseTest.test.tsx",
+    "test:userflow": "vitest tests/Chapter7UserFlowTest.test.tsx",
+    "test:report": "vitest --reporter=verbose --reporter=json --outputFile=test-results.json"
+  },
+  "dependencies": {
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/jest-dom": "^6.1.4",
+    "@testing-library/user-event": "^14.5.1",
+    "vitest": "^0.34.6",
+    "jsdom": "^22.1.0"
+  },
+  "testEnvironment": "jsdom",
+  "testFiles": [
+    "Chapter7IntegrationTest.test.tsx",
+    "Chapter7ResponsiveTest.test.tsx", 
+    "Chapter7DatabaseTest.test.tsx",
+    "Chapter7UserFlowTest.test.tsx"
+  ],
+  "coverage": {
+    "provider": "v8",
+    "reporter": ["text", "json", "html"],
+    "include": [
+      "src/pages/Chapter7Hub.tsx",
+      "src/components/navigation/Chapter7Sidebar.tsx",
+      "src/components/lesson/ai-interaction/EnhancedCarmenAvatar.tsx",
+      "src/components/lesson/ai-interaction/CarmenAIProcessor.tsx",
+      "src/components/lesson/carmen/**/*.tsx",
+      "src/components/chapter/EnhancedChapterHub.tsx"
+    ],
+    "exclude": [
+      "**/*.test.{ts,tsx}",
+      "**/*.spec.{ts,tsx}",
+      "**/node_modules/**"
+    ],
+    "thresholds": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  }
+}

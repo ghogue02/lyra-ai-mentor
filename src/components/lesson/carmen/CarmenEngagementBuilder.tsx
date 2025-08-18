@@ -6,7 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Sparkles, Heart, Users, Zap, Copy, Download, Wand2 } from 'lucide-react';
 import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
 import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
-import { FloatingCarmenAvatar } from '@/components/lesson/FloatingCarmenAvatar';
+import { EnhancedCarmenAvatar } from '@/components/lesson/ai-interaction/EnhancedCarmenAvatar';
+import { InteractiveAIContent } from '@/components/lesson/ai-interaction/InteractiveAIContent';
+import { ProgressiveAIReveal } from '@/components/lesson/ai-interaction/ProgressiveAIReveal';
 
 const CarmenEngagementBuilder: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');
@@ -19,6 +21,8 @@ const CarmenEngagementBuilder: React.FC = () => {
     recognitionPlan?: string;
   }>({});
   const [generatingContent, setGeneratingContent] = useState<string | null>(null);
+  const [useEnhancedComponents, setUseEnhancedComponents] = useState(true);
+  const [selectedContentForEditing, setSelectedContentForEditing] = useState<string | null>(null);
   
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -142,11 +146,25 @@ const CarmenEngagementBuilder: React.FC = () => {
         </div>
       </div>
 
-      {/* Carmen's Floating Avatar */}
-      <FloatingCarmenAvatar
+      {/* Carmen's Enhanced Avatar */}
+      <EnhancedCarmenAvatar
         position="bottom-right"
         className="z-40"
         disabled={showChat}
+        lessonContext={{
+          chapterTitle: "People Management with AI",
+          lessonTitle: "Employee Engagement Builder",
+          content: "Interactive engagement strategy session with Carmen focusing on personalized team motivation",
+          phase: currentPhase,
+          hrTopic: "engagement-builder"
+        }}
+        showPersonalityModes={true}
+        contextualQuestions={[
+          "What are the key drivers of employee engagement?",
+          "How can I measure engagement effectively?",
+          "What strategies work best for remote team engagement?",
+          "How do I create personalized engagement plans?"
+        ]}
       />
 
       <div className="max-w-6xl mx-auto">

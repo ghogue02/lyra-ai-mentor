@@ -1,5 +1,5 @@
 import React from 'react';
-import ChatLyra from '@/components/chat-system/ChatLyra';
+import { EnhancedCarmenAvatar } from '@/components/lesson/ai-interaction/EnhancedCarmenAvatar';
 import { cn } from '@/lib/utils';
 
 export interface FloatingCarmenAvatarProps {
@@ -16,16 +16,24 @@ export const FloatingCarmenAvatar: React.FC<FloatingCarmenAvatarProps> = ({
   if (disabled) return null;
 
   return (
-    <ChatLyra
+    <EnhancedCarmenAvatar
+      position={position}
+      mode="floating"
+      className={cn("nm-interactive", className)}
       lessonContext={{
         chapterTitle: "People Management with AI",
         lessonTitle: "Carmen's HR Workshop",
         content: "Interactive HR learning session with Carmen focusing on compassionate, AI-powered people management",
-        phase: "learning"
+        phase: "learning",
+        hrTopic: "default"
       }}
-      mode="floating"
-      position={position}
-      className={cn("nm-interactive", className)}
+      showPersonalityModes={true}
+      contextualQuestions={[
+        "How can I balance AI efficiency with human empathy in HR?",
+        "What are the best practices for AI-powered people management?",
+        "How do I ensure fairness in AI-assisted HR decisions?",
+        "What should I know about AI ethics in HR?"
+      ]}
     />
   );
 };
