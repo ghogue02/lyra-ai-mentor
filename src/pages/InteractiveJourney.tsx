@@ -51,6 +51,9 @@ import CarmenTalentAcquisition from '@/components/lesson/carmen/CarmenTalentAcqu
 import CarmenPerformanceInsights from '@/components/lesson/carmen/CarmenPerformanceInsights';
 import CarmenEngagementBuilder from '@/components/lesson/carmen/CarmenEngagementBuilder';
 import CarmenRetentionMastery from '@/components/lesson/carmen/CarmenRetentionMastery';
+import CarmenTeamDynamics from '@/components/lesson/carmen/CarmenTeamDynamics';
+import CarmenCulturalIntelligence from '@/components/lesson/carmen/CarmenCulturalIntelligence';
+import CarmenLeadershipDevelopment from '@/components/lesson/carmen/CarmenLeadershipDevelopment';
 
 // Journey configuration registry
 const journeyRegistry = {
@@ -328,6 +331,24 @@ const journeyRegistry = {
     characterId: 'carmen',
     title: 'Retention Strategy Mastery',
     description: 'Develop AI-enhanced retention strategies that honor both data and humanity'
+  },
+  'team-dynamics': {
+    component: CarmenTeamDynamics,
+    characterId: 'carmen',
+    title: 'Team Dynamics Optimizer',
+    description: 'Build stronger, more cohesive teams using AI-powered insights'
+  },
+  'cultural-intelligence': {
+    component: CarmenCulturalIntelligence,
+    characterId: 'carmen', 
+    title: 'Cultural Intelligence Hub',
+    description: 'Foster inclusive workplace cultures by combining AI analytics with cultural sensitivity'
+  },
+  'leadership-development': {
+    component: CarmenLeadershipDevelopment,
+    characterId: 'carmen',
+    title: 'Leadership Development Lab',
+    description: 'Develop next-generation leaders using personalized AI coaching'
   }
 };
 

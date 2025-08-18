@@ -1,560 +1,483 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { useToast } from '@/components/ui/use-toast';
+import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { ChevronRight, Users, Play, Target, Heart, TrendingUp, Clock, Building } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Users, Target, Brain, Heart, Copy, Download, Wand2 } from 'lucide-react';
-import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
-import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
-import { EnhancedCarmenAvatar } from '@/components/lesson/ai-interaction/EnhancedCarmenAvatar';
-import { CarmenAIProcessor, AIProcessingTask } from '@/components/lesson/ai-interaction/CarmenAIProcessor';
-import { InteractiveAIContent } from '@/components/lesson/ai-interaction/InteractiveAIContent';
+import { useAuth } from '@/contexts/AuthContext';
+import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
+import VideoAnimation from '@/components/ui/VideoAnimation';
+import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
+import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
+import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
+
+type Phase = 'intro' | 'narrative' | 'workshop';
+
+interface HiringFrameworkElement {
+  id: string;
+  title: string;
+  description: string;
+  implementation: string;
+  example: string;
+}
 
 const CarmenTalentAcquisition: React.FC = () => {
-  const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');
-  const [isCompleted, setIsCompleted] = useState(false);
-  const [narrativePaused, setNarrativePaused] = useState(false);
-  const [showChat, setShowChat] = useState(false);
-  const [aiContent, setAiContent] = useState<{
-    jobDescription?: string;
-    interviewQuestions?: string;
-    candidateAnalysis?: string;
-  }>({});
-  const [generatingContent, setGeneratingContent] = useState<string | null>(null);
-  const [useEnhancedComponents, setUseEnhancedComponents] = useState(true);
-  
-  const { toast } = useToast();
   const navigate = useNavigate();
-  const { callAI, loading } = useAITestingAssistant();
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const [currentPhase, setCurrentPhase] = useState<Phase>('intro');
+  const [currentStep, setCurrentStep] = useState(0);
+  const [roleType, setRoleType] = useState('');
+  const [companySize, setCompanySize] = useState('');
+  const [hiringChallenges, setHiringChallenges] = useState('');
+  const [diversityGoals, setDiversityGoals] = useState('');
+  const [timeToHire, setTimeToHire] = useState('');
+  const [generatedStrategy, setGeneratedStrategy] = useState('');
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const generateAIContent = async (type: 'job-description' | 'interview-questions' | 'candidate-analysis') => {
-    setGeneratingContent(type);
+  const hiringFrameworkElements: HiringFrameworkElement[] = [
+    {
+      id: 'inclusive-descriptions',
+      title: 'Inclusive Job Descriptions',
+      description: 'Remove bias and attract diverse talent through language',
+      implementation: 'Use AI to analyze job postings for bias, emphasize skills over requirements',
+      example: 'Transform "rockstar developer needed" to "collaborative developer with growth mindset seeking impact"'
+    },
+    {
+      id: 'bias-free-screening',
+      title: 'Bias-Free Screening',
+      description: 'Objective initial assessment focused on capabilities',
+      implementation: 'Structured rubrics, blind resume reviews, skill-based assessments',
+      example: 'Skills matrix scoring replaces "culture fit" subjective judgments'
+    },
+    {
+      id: 'empathetic-interviews',
+      title: 'Empathetic Interviews',
+      description: 'Human-centered conversations that reveal potential',
+      implementation: 'Behavioral questions, growth mindset focus, psychological safety',
+      example: '"Tell me about a time you learned from failure" vs "What are your weaknesses?"'
+    },
+    {
+      id: 'holistic-evaluation',
+      title: 'Holistic Evaluation',
+      description: 'Complete candidate picture beyond test scores',
+      implementation: 'Multiple perspectives, diverse interview panels, potential assessment',
+      example: 'Values alignment + skills + growth potential = hiring decision'
+    },
+    {
+      id: 'candidate-experience',
+      title: 'Exceptional Experience',
+      description: 'Every candidate feels valued throughout the process',
+      implementation: 'Clear communication, timely feedback, respectful interactions',
+      example: 'Personalized feedback to every candidate, regardless of outcome'
+    }
+  ];
+
+  const narrativeMessages = [
+    {
+      id: '1',
+      content: "I remember staring at a stack of 200 resumes for a single position, feeling overwhelmed and worried about unconscious bias.",
+      emotion: 'frustrated' as const,
+      showAvatar: true
+    },
+    {
+      id: '2', 
+      content: "Our hiring process was broken. We kept hiring people who looked and thought like us, missing incredible talent.",
+      emotion: 'concerned' as const
+    },
+    {
+      id: '3',
+      content: "I knew we needed to change, but how do you remove bias while still finding the right cultural fit?",
+      emotion: 'thoughtful' as const
+    },
+    {
+      id: '4',
+      content: "That's when I discovered AI could help us see talent more clearly, while preserving the human connection that makes great teams.",
+      emotion: 'hopeful' as const
+    },
+    {
+      id: '5',
+      content: "We redesigned our entire process: inclusive job descriptions, bias-free screening, empathetic interviews, and holistic evaluation.",
+      emotion: 'determined' as const
+    },
+    {
+      id: '6',
+      content: "The first hire using our new process was Maria - someone our old system would have missed, but who became our star program manager.",
+      emotion: 'excited' as const
+    },
+    {
+      id: '7',
+      content: "Within six months, our team diversity increased 60%, our retention improved 40%, and our candidate experience scores hit 4.8/5.",
+      emotion: 'triumphant' as const
+    },
+    {
+      id: '8',
+      content: "Now let me show you how to build your own compassionate, AI-powered hiring process that finds amazing people.",
+      emotion: 'empowered' as const
+    }
+  ];
+
+  const generateHiringStrategy = async () => {
+    if (!roleType || !companySize.trim() || !hiringChallenges.trim()) return;
+    
+    setIsGenerating(true);
     try {
-      let prompt = '';
-      let context = 'Carmen is helping create compassionate, bias-free hiring processes that combine AI efficiency with human empathy.';
-      
-      switch (type) {
-        case 'job-description':
-          prompt = 'Create an inclusive job description for a Program Manager role that removes bias, emphasizes skills over requirements, and attracts diverse candidates';
-          break;
-        case 'interview-questions':
-          prompt = 'Generate behavioral interview questions that assess capability while reducing unconscious bias, focusing on growth mindset and values alignment';
-          break;
-        case 'candidate-analysis':
-          prompt = 'Create a sample candidate evaluation that demonstrates objective skill assessment while highlighting potential and cultural fit';
-          break;
-      }
-      
-      const result = await callAI('article', prompt, context, 'carmen');
-      
-      // Convert kebab-case to camelCase for proper key mapping
-      const camelCaseKey = type.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
-      
-      setAiContent(prev => ({
-        ...prev,
-        [camelCaseKey]: result
-      }));
+      const { data, error } = await supabase.functions.invoke('generate-character-content', {
+        body: {
+          characterType: 'carmen',
+          contentType: 'compassionate-hiring-strategy',
+          topic: 'AI-powered talent acquisition with human empathy',
+          context: `Carmen Rodriguez needs to create a comprehensive hiring strategy using her compassionate AI approach.
+          
+          Role Type: ${roleType}
+          Company Size: ${companySize}
+          Current Challenges: ${hiringChallenges}
+          Diversity Goals: ${diversityGoals || 'Not specified'}
+          Target Time to Hire: ${timeToHire || 'Not specified'}
+          
+          Create a structured hiring strategy that follows Carmen's framework: 1) Inclusive Job Descriptions (bias removal, skills focus), 2) Bias-Free Screening (objective assessment), 3) Empathetic Interviews (human connection with growth mindset), 4) Holistic Evaluation (complete candidate picture), 5) Exceptional Candidate Experience (respect and value for all). The strategy should combine AI efficiency with human empathy for compassionate, effective hiring.`
+        }
+      });
+
+      if (error) throw error;
+
+      setGeneratedStrategy(data.content);
       
       toast({
-        title: "AI Content Generated!",
-        description: `Carmen's ${type.replace('-', ' ')} has been created with empathy and precision.`,
+        title: "Hiring Strategy Created!",
+        description: "Carmen crafted your compassionate talent acquisition plan.",
       });
     } catch (error) {
-      console.error('AI Generation Error:', error);
+      console.error('Error generating strategy:', error);
       toast({
         title: "Generation Failed",
-        description: "Could not generate content. Please try again.",
-        variant: "destructive",
+        description: "Unable to generate strategy. Please try again.",
+        variant: "destructive"
       });
     } finally {
-      setGeneratingContent(null);
+      setIsGenerating(false);
     }
   };
 
-  const copyContent = (content: string, type: string) => {
-    navigator.clipboard.writeText(content);
+  const handleComplete = () => {
     toast({
-      title: "Copied!",
-      description: `${type} copied to clipboard.`,
+      title: "Talent Acquisition Mastery Complete!",
+      description: "You've mastered Carmen's compassionate hiring framework!",
     });
+    navigate('/chapter/7');
   };
 
-  const downloadContent = (content: string, filename: string) => {
-    const blob = new Blob([content], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    
-    toast({
-      title: "Downloaded!",
-      description: `${filename} has been downloaded.`,
-    });
-  };
+  const renderIntroPhase = () => (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 flex items-center justify-center p-6"
+    >
+      <div className="max-w-4xl mx-auto text-center">
+        {/* Carmen Avatar */}
+        <div className="w-24 h-24 mx-auto mb-8">
+          <VideoAnimation
+            src={getAnimationUrl('carmen-hiring-prep.mp4')}
+            fallbackIcon={<div className="w-24 h-24 bg-orange-100 rounded-full flex items-center justify-center">
+              <Users className="w-12 h-12 text-orange-600" />
+            </div>}
+            className="w-full h-full rounded-full"
+            context="character"
+            loop={true}
+          />
+        </div>
 
-  const handlePhaseComplete = (phase: string) => {
-    if (phase === 'intro') {
-      setCurrentPhase('workshop');
-    } else if (phase === 'workshop') {
-      setCurrentPhase('results');
-    } else if (phase === 'results') {
-      setIsCompleted(true);
-      toast({
-        title: "🎉 Talent Acquisition Mastery Complete!",
-        description: "You've learned to blend AI efficiency with human-centered hiring.",
-      });
-      setTimeout(() => navigate('/chapter/7'), 2000);
-    }
-  };
+        {/* Title */}
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          Carmen's Compassionate Hiring
+        </h1>
+        <p className="text-xl text-gray-600 mb-12">
+          Transform talent acquisition through AI-powered empathy and bias-free processes
+        </p>
 
-  if (isCompleted) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6">
-        <div className="max-w-4xl mx-auto text-center">
-          <CheckCircle className="w-16 h-16 text-orange-600 mx-auto mb-6" />
-          <h1 className="text-3xl font-bold text-orange-800 mb-4">
-            Talent Acquisition Journey Complete!
-          </h1>
-          <p className="text-lg text-orange-700 mb-8">
-            You've mastered Carmen's approach to compassionate, AI-powered hiring.
-          </p>
-          <Button onClick={() => navigate('/chapter/7')} className="bg-orange-600 hover:bg-orange-700">
-            Return to Chapter 7
+        {/* 3-Step Journey Preview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
+          {[
+            { title: 'Hiring Frustration', desc: 'Carmen\'s bias and inefficiency struggles', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-hiring-struggle.mp4', fallback: '😤' },
+            { title: 'AI-Empathy Framework', desc: 'Learn compassionate hiring system', color: 'from-orange-500/10 to-orange-500/5', animation: 'carmen-framework-discovery.mp4', fallback: '❤️' },
+            { title: 'Hiring Transformation', desc: 'Witness diverse team success', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-hiring-success.mp4', fallback: '🎉' }
+          ].map((item, index) => (
+            <div key={index} className="relative group">
+              <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
+              <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100">
+                <div className="p-6 text-center">
+                  <div className="w-12 h-12 mx-auto mb-3">
+                    <VideoAnimation
+                      src={getAnimationUrl(item.animation)}
+                      fallbackIcon={<span className="text-3xl">{item.fallback}</span>}
+                      className="w-full h-full"
+                      context="character"
+                    />
+                  </div>
+                  <Badge variant="secondary" className="mb-3">{index + 1}</Badge>
+                  <h3 className="font-bold text-lg mb-2 text-gray-900">{item.title}</h3>
+                  <p className="text-sm text-gray-600">{item.desc}</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Begin Button */}
+        <div className="relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-orange-600/20 to-amber-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+          <Button 
+            onClick={() => setCurrentPhase('narrative')}
+            size="lg"
+            className="relative bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700 text-white text-lg px-8 py-4 font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+          >
+            <Play className="w-5 h-5 mr-2" />
+            Begin Hiring Journey
           </Button>
         </div>
       </div>
-    );
-  }
+    </motion.div>
+  );
+
+  const renderNarrativePhase = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+    >
+      <MicroLessonNavigator
+        chapterNumber={7}
+        chapterTitle="Carmen's People Management Mastery"
+        lessonTitle="Compassionate Talent Acquisition"
+        characterName="Carmen"
+        progress={33}
+      />
+      
+      <div className="max-w-4xl mx-auto pt-20">
+        <NarrativeManager
+          messages={narrativeMessages}
+          onComplete={() => setCurrentPhase('workshop')}
+          phaseId="carmen-hiring-narrative"
+          characterName="Carmen"
+        />
+      </div>
+    </motion.div>
+  );
+
+  const renderWorkshopPhase = () => (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6"
+    >
+      <MicroLessonNavigator
+        chapterNumber={7}
+        chapterTitle="Carmen's People Management Mastery"
+        lessonTitle="Compassionate Talent Acquisition"
+        characterName="Carmen"
+        progress={66 + (currentStep / 5) * 34}
+      />
+      
+      <div className="max-w-6xl mx-auto pt-20">
+        {/* Header */}
+        <div className="mb-8">
+          <Progress value={66 + (currentStep / 5) * 34} className="h-2 mb-4" />
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-600">Carmen's Compassionate Hiring Workshop</p>
+            <Button variant="outline" onClick={() => navigate('/chapter/7')}>
+              Back to Chapter 7
+            </Button>
+          </div>
+        </div>
+
+        <div className="grid lg:grid-cols-2 gap-8">
+          {/* Left Side - Hiring Strategy Builder */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Building className="w-5 h-5 text-orange-600" />
+                Compassionate Hiring Strategy Builder
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Role Type */}
+              <div>
+                <Label htmlFor="role">Role Type</Label>
+                <Select value={roleType} onValueChange={setRoleType}>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="What type of role are you hiring for?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="program-manager">Program Manager</SelectItem>
+                    <SelectItem value="software-engineer">Software Engineer</SelectItem>
+                    <SelectItem value="marketing-coordinator">Marketing Coordinator</SelectItem>
+                    <SelectItem value="data-analyst">Data Analyst</SelectItem>
+                    <SelectItem value="communications-manager">Communications Manager</SelectItem>
+                    <SelectItem value="operations-specialist">Operations Specialist</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Company Size */}
+              <div>
+                <Label htmlFor="size">Organization Size</Label>
+                <Input
+                  id="size"
+                  placeholder="e.g., 50-person nonprofit, 200-person startup, Fortune 500 company"
+                  value={companySize}
+                  onChange={(e) => setCompanySize(e.target.value)}
+                  className="mt-2"
+                />
+              </div>
+
+              {/* Hiring Challenges */}
+              <div>
+                <Label htmlFor="challenges">Current Hiring Challenges</Label>
+                <Textarea
+                  id="challenges"
+                  placeholder="What problems are you facing? (e.g., lack of diversity, long time to hire, candidate experience issues)"
+                  value={hiringChallenges}
+                  onChange={(e) => setHiringChallenges(e.target.value)}
+                  className="min-h-[80px] mt-2"
+                />
+              </div>
+
+              {/* Diversity Goals */}
+              <div>
+                <Label htmlFor="diversity">Diversity & Inclusion Goals</Label>
+                <Textarea
+                  id="diversity"
+                  placeholder="What are your diversity objectives? (optional)"
+                  value={diversityGoals}
+                  onChange={(e) => setDiversityGoals(e.target.value)}
+                  className="min-h-[60px] mt-2"
+                />
+              </div>
+
+              {/* Time to Hire */}
+              <div>
+                <Label htmlFor="time">Target Time to Hire</Label>
+                <Select value={timeToHire} onValueChange={setTimeToHire}>
+                  <SelectTrigger className="mt-2">
+                    <SelectValue placeholder="How quickly do you need to hire?" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="2-weeks">2 weeks</SelectItem>
+                    <SelectItem value="1-month">1 month</SelectItem>
+                    <SelectItem value="6-weeks">6 weeks</SelectItem>
+                    <SelectItem value="2-months">2 months</SelectItem>
+                    <SelectItem value="3-months">3+ months</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Generate Button */}
+              <Button 
+                onClick={generateHiringStrategy}
+                disabled={!roleType || !companySize.trim() || !hiringChallenges.trim() || isGenerating}
+                className="w-full bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-700 hover:to-amber-700"
+              >
+                {isGenerating ? (
+                  <>
+                    <Heart className="w-4 h-4 mr-2 animate-pulse" />
+                    Carmen is crafting your strategy...
+                  </>
+                ) : (
+                  <>
+                    <Users className="w-4 h-4 mr-2" />
+                    Create Compassionate Hiring Strategy
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Right Side - Framework & Result */}
+          <div className="space-y-6">
+            {/* Hiring Framework */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="w-5 h-5 text-amber-600" />
+                  Carmen's Compassionate Hiring Framework
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {hiringFrameworkElements.map((element, index) => (
+                    <div key={element.id} className="border-l-4 border-orange-200 pl-4">
+                      <div className="flex items-center justify-between mb-1">
+                        <h4 className="font-semibold text-gray-900">
+                          {index + 1}. {element.title}
+                        </h4>
+                      </div>
+                      <p className="text-sm text-gray-600 mb-2">{element.description}</p>
+                      <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded italic">
+                        "{element.example}"
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Generated Strategy */}
+            {generatedStrategy && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="w-5 h-5 text-green-600" />
+                    Your Compassionate Hiring Strategy
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="bg-gradient-to-br from-orange-50 to-amber-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                    <TemplateContentFormatter 
+                      content={generatedStrategy}
+                      contentType="lesson"
+                      variant="default"
+                      showMergeFieldTypes={true}
+                      className="formatted-ai-content"
+                    />
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+        </div>
+
+        {/* Completion Button */}
+        {generatedStrategy && (
+          <div className="text-center mt-8">
+            <Button 
+              onClick={handleComplete}
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-3"
+            >
+              Complete Talent Acquisition Workshop
+            </Button>
+          </div>
+        )}
+      </div>
+    </motion.div>
+  );
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6">
-      {/* Carmen's Character Guidance */}
-      <div className="max-w-6xl mx-auto mb-8">
-        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
-              <Heart className="w-5 h-5 text-orange-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-amber-800">Carmen's Guidance</h3>
-              <p className="text-amber-700 text-sm">
-                "Let's work together to create hiring processes that honor both efficiency and humanity. I'll guide you through each step."
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Carmen's Enhanced Avatar */}
-      <EnhancedCarmenAvatar
-        position="bottom-right"
-        className="z-40"
-        disabled={showChat}
-        lessonContext={{
-          chapterTitle: "People Management with AI",
-          lessonTitle: "AI-Powered Talent Acquisition",
-          content: "Interactive HR learning session with Carmen focusing on compassionate, AI-powered hiring",
-          phase: currentPhase,
-          hrTopic: "talent-acquisition"
-        }}
-        showPersonalityModes={true}
-        contextualQuestions={[
-          "How can I make my job descriptions more inclusive?",
-          "What are the best practices for bias-free interviewing?",
-          "How do I improve candidate experience during recruitment?",
-          "What metrics should I track in hiring?"
-        ]}
-      />
-
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <div className="flex items-center justify-center mb-4">
-            <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mr-4">
-              <Users className="w-6 h-6 text-orange-600" />
-            </div>
-            <h1 className="text-3xl font-bold text-orange-800">
-              AI-Powered Talent Acquisition
-            </h1>
-          </div>
-          <p className="text-lg text-orange-700 max-w-3xl mx-auto">
-            Join Carmen as she transforms hiring through compassionate AI that removes bias while preserving the human connection that makes great teams.
-          </p>
-        </div>
-
-        {/* Progress Indicator */}
-        <div className="flex justify-center mb-8">
-          <div className="flex space-x-4">
-            {[
-              { phase: 'intro', label: 'Introduction', icon: Heart },
-              { phase: 'workshop', label: 'Workshop', icon: Brain },
-              { phase: 'results', label: 'Results', icon: Target }
-            ].map(({ phase, label, icon: Icon }) => (
-              <div
-                key={phase}
-                className={`flex items-center space-x-2 px-4 py-2 rounded-full transition-colors ${
-                  currentPhase === phase
-                    ? 'bg-orange-600 text-white'
-                    : phase === 'intro' || (phase === 'workshop' && currentPhase === 'results')
-                    ? 'bg-orange-200 text-orange-800'
-                    : 'bg-gray-200 text-gray-600'
-                }`}
-              >
-                <Icon className="w-4 h-4" />
-                <span className="font-medium">{label}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Phase Content */}
-        {currentPhase === 'intro' && (
-          <Card className="border-orange-200">
-            <CardHeader className="bg-orange-50">
-              <CardTitle className="text-orange-800 flex items-center">
-                <Heart className="w-5 h-5 mr-2" />
-                Carmen's Approach to Hiring
-              </CardTitle>
-              <CardDescription>
-                Discover how to balance AI efficiency with human empathy in recruitment
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-6">
-                <div className="bg-amber-50 p-4 rounded-lg border border-amber-200">
-                  <h3 className="font-semibold text-amber-800 mb-2">💡 Carmen's Philosophy</h3>
-                  <p className="text-amber-700">
-                    "Technology should amplify our humanity, not replace it. AI helps us see talent clearly, 
-                    while our hearts help us understand the person behind the resume."
-                  </p>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h3 className="font-semibold text-orange-800">🎯 What You'll Learn</h3>
-                    <ul className="space-y-2 text-orange-700">
-                      <li>• Remove unconscious bias from screening</li>
-                      <li>• Design inclusive job descriptions</li>
-                      <li>• Use AI for candidate matching</li>
-                      <li>• Maintain human connection in interviews</li>
-                    </ul>
-                  </div>
-                  <div className="space-y-4">
-                    <h3 className="font-semibold text-orange-800">🚀 Real Impact</h3>
-                    <ul className="space-y-2 text-orange-700">
-                      <li>• 60% more diverse candidate pools</li>
-                      <li>• 40% faster screening process</li>
-                      <li>• 80% improved candidate experience</li>
-                      <li>• 90% better cultural fit predictions</li>
-                    </ul>
-                  </div>
-                </div>
-
-                <div className="text-center pt-4">
-                  <Button 
-                    onClick={() => handlePhaseComplete('intro')}
-                    className="bg-orange-600 hover:bg-orange-700"
-                  >
-                    Start the Workshop
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {currentPhase === 'workshop' && (
-          <Card className="border-orange-200">
-            <CardHeader className="bg-orange-50">
-              <CardTitle className="text-orange-800 flex items-center">
-                <Brain className="w-5 h-5 mr-2" />
-                AI-Enhanced Hiring Workshop
-              </CardTitle>
-              <CardDescription>
-                Practice using AI tools while maintaining human-centered values
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-6">
-                <div className="bg-blue-50 p-4 rounded-lg border border-blue-200">
-                  <h3 className="font-semibold text-blue-800 mb-2">🔧 Interactive Exercise</h3>
-                  <p className="text-blue-700 mb-4">
-                    You're hiring for a Program Manager role. Use Carmen's AI-powered approach to create an inclusive hiring process.
-                  </p>
-                  
-                  {useEnhancedComponents ? (
-                    <CarmenAIProcessor
-                      tasks={[
-                        {
-                          id: 'job-description',
-                          title: 'AI Job Description',
-                          description: 'Generate bias-free, inclusive job descriptions',
-                          type: 'job-description',
-                          prompt: 'Create an inclusive job description for a Program Manager role that removes bias, emphasizes skills over requirements, and attracts diverse candidates',
-                          context: 'Carmen is helping create compassionate, bias-free hiring processes that combine AI efficiency with human empathy.',
-                          expectedOutputType: 'structured',
-                          estimatedTime: 3,
-                          carmenPersonality: {
-                            mode: 'empathetic',
-                            message: 'I\'ve crafted a job description that welcomes all qualified candidates',
-                            emotion: 'thoughtful',
-                            processingStyle: 'compassionate'
-                          }
-                        },
-                        {
-                          id: 'interview-questions',
-                          title: 'Interview Questions',
-                          description: 'AI-powered bias-free interview questions',
-                          type: 'interview-questions',
-                          prompt: 'Generate behavioral interview questions that assess capability while reducing unconscious bias, focusing on growth mindset and values alignment',
-                          context: 'Carmen is helping create compassionate, bias-free hiring processes that combine AI efficiency with human empathy.',
-                          expectedOutputType: 'list',
-                          estimatedTime: 2,
-                          carmenPersonality: {
-                            mode: 'analytical',
-                            message: 'These questions will help you see candidates\' true potential',
-                            emotion: 'focused',
-                            processingStyle: 'thorough'
-                          }
-                        },
-                        {
-                          id: 'candidate-analysis',
-                          title: 'Candidate Analysis',
-                          description: 'Objective evaluation with human empathy',
-                          type: 'candidate-analysis',
-                          prompt: 'Create a sample candidate evaluation that demonstrates objective skill assessment while highlighting potential and cultural fit',
-                          context: 'Carmen is helping create compassionate, bias-free hiring processes that combine AI efficiency with human empathy.',
-                          expectedOutputType: 'analysis',
-                          estimatedTime: 4,
-                          carmenPersonality: {
-                            mode: 'strategic',
-                            message: 'This framework balances objectivity with empathy',
-                            emotion: 'insightful',
-                            processingStyle: 'insightful'
-                          }
-                        }
-                      ]}
-                      onTaskComplete={(taskId, content) => {
-                        setAiContent(prev => ({ ...prev, [taskId.replace('-', '')]: content }));
-                      }}
-                      showCarmenGuidance={true}
-                      allowRetry={true}
-                      allowExport={true}
-                      className="mb-6"
-                    />
-                  ) : (
-                    <div className="grid md:grid-cols-3 gap-4">
-                      <div className="bg-white p-4 rounded border">
-                        <h4 className="font-medium text-orange-800 mb-2">Step 1: AI Job Description</h4>
-                        <p className="text-sm text-gray-600 mb-2">Generate bias-free, inclusive job descriptions</p>
-                        <Button
-                          onClick={() => generateAIContent('job-description')}
-                          disabled={generatingContent === 'job-description'}
-                          className="w-full mb-3 text-xs"
-                          variant="outline"
-                        >
-                          <Wand2 className="w-3 h-3 mr-1" />
-                          {generatingContent === 'job-description' ? 'Generating...' : 'Generate Job Description'}
-                        </Button>
-                        {aiContent.jobDescription && (
-                          <div className="space-y-2">
-                            <div className="bg-green-50 p-2 rounded text-xs max-h-32 overflow-y-auto">
-                              <AIContentDisplay content={aiContent.jobDescription} />
-                            </div>
-                            <div className="flex gap-1">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => copyContent(aiContent.jobDescription!, 'Job Description')}
-                              >
-                                <Copy className="w-3 h-3" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => downloadContent(aiContent.jobDescription!, 'job-description.txt')}
-                              >
-                                <Download className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="bg-white p-4 rounded border">
-                        <h4 className="font-medium text-orange-800 mb-2">Step 2: Interview Questions</h4>
-                        <p className="text-sm text-gray-600 mb-2">AI-powered bias-free interview questions</p>
-                        <Button
-                          onClick={() => generateAIContent('interview-questions')}
-                          disabled={generatingContent === 'interview-questions'}
-                          className="w-full mb-3 text-xs"
-                          variant="outline"
-                        >
-                          <Wand2 className="w-3 h-3 mr-1" />
-                          {generatingContent === 'interview-questions' ? 'Generating...' : 'Generate Questions'}
-                        </Button>
-                        {aiContent.interviewQuestions && (
-                          <div className="space-y-2">
-                            <div className="bg-blue-50 p-2 rounded text-xs max-h-32 overflow-y-auto">
-                              <AIContentDisplay content={aiContent.interviewQuestions} />
-                            </div>
-                            <div className="flex gap-1">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => copyContent(aiContent.interviewQuestions!, 'Interview Questions')}
-                              >
-                                <Copy className="w-3 h-3" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => downloadContent(aiContent.interviewQuestions!, 'interview-questions.txt')}
-                              >
-                                <Download className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                      
-                      <div className="bg-white p-4 rounded border">
-                        <h4 className="font-medium text-orange-800 mb-2">Step 3: Candidate Analysis</h4>
-                        <p className="text-sm text-gray-600 mb-2">Objective evaluation with human empathy</p>
-                        <Button
-                          onClick={() => generateAIContent('candidate-analysis')}
-                          disabled={generatingContent === 'candidate-analysis'}
-                          className="w-full mb-3 text-xs"
-                          variant="outline"
-                        >
-                          <Wand2 className="w-3 h-3 mr-1" />
-                          {generatingContent === 'candidate-analysis' ? 'Generating...' : 'Generate Analysis'}
-                        </Button>
-                        {aiContent.candidateAnalysis && (
-                          <div className="space-y-2">
-                            <div className="bg-purple-50 p-2 rounded text-xs max-h-32 overflow-y-auto">
-                              <AIContentDisplay content={aiContent.candidateAnalysis} />
-                            </div>
-                            <div className="flex gap-1">
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => copyContent(aiContent.candidateAnalysis!, 'Candidate Analysis')}
-                              >
-                                <Copy className="w-3 h-3" />
-                              </Button>
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => downloadContent(aiContent.candidateAnalysis!, 'candidate-analysis.txt')}
-                              >
-                                <Download className="w-3 h-3" />
-                              </Button>
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-between pt-4">
-                  <Button 
-                    variant="outline"
-                    onClick={() => setUseEnhancedComponents(!useEnhancedComponents)}
-                    className="text-xs"
-                  >
-                    {useEnhancedComponents ? 'Use Classic View' : 'Use Enhanced View'}
-                  </Button>
-                  
-                  <Button 
-                    onClick={() => handlePhaseComplete('workshop')}
-                    className="bg-orange-600 hover:bg-orange-700"
-                  >
-                    See Results & Impact
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {currentPhase === 'results' && (
-          <Card className="border-orange-200">
-            <CardHeader className="bg-orange-50">
-              <CardTitle className="text-orange-800 flex items-center">
-                <Target className="w-5 h-5 mr-2" />
-                Your Hiring Transformation Results
-              </CardTitle>
-              <CardDescription>
-                See the impact of Carmen's compassionate AI approach
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="p-6">
-              <div className="space-y-6">
-                <div className="grid md:grid-cols-2 gap-6">
-                  <div className="bg-green-50 p-6 rounded-lg border border-green-200">
-                    <h3 className="font-semibold text-green-800 mb-4">🎉 Success Metrics</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between">
-                        <span className="text-green-700">Diverse Candidates:</span>
-                        <span className="font-bold text-green-800">+65%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-green-700">Time to Hire:</span>
-                        <span className="font-bold text-green-800">-40%</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-green-700">Candidate Satisfaction:</span>
-                        <span className="font-bold text-green-800">4.8/5</span>
-                      </div>
-                      <div className="flex justify-between">
-                        <span className="text-green-700">First-Year Retention:</span>
-                        <span className="font-bold text-green-800">92%</span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-blue-50 p-6 rounded-lg border border-blue-200">
-                    <h3 className="font-semibold text-blue-800 mb-4">💝 Human Impact</h3>
-                    <div className="space-y-3 text-blue-700">
-                      <p>• Eliminated unconscious bias in screening</p>
-                      <p>• Created more inclusive job descriptions</p>
-                      <p>• Improved candidate experience dramatically</p>
-                      <p>• Built stronger, more diverse teams</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-orange-50 p-6 rounded-lg border border-orange-200">
-                  <h3 className="font-semibold text-orange-800 mb-3">🌟 Key Takeaways</h3>
-                  <ul className="text-orange-700 space-y-2">
-                    <li>• AI removes bias while preserving human judgment</li>
-                    <li>• Inclusive language leads to diverse talent pools</li>
-                    <li>• Technology enhances empathy, doesn't replace it</li>
-                    <li>• Great hiring combines data insights with human intuition</li>
-                  </ul>
-                </div>
-
-                <div className="text-center pt-4">
-                  <Button 
-                    onClick={() => handlePhaseComplete('results')}
-                    className="bg-orange-600 hover:bg-orange-700"
-                  >
-                    Complete Talent Acquisition Journey
-                  </Button>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
-      </div>
-    </div>
+    <AnimatePresence mode="wait">
+      {currentPhase === 'intro' && renderIntroPhase()}
+      {currentPhase === 'narrative' && renderNarrativePhase()}
+      {currentPhase === 'workshop' && renderWorkshopPhase()}
+    </AnimatePresence>
   );
+
+
 };
 
 export default CarmenTalentAcquisition;
