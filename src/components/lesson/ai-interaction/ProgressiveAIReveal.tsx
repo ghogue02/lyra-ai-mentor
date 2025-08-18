@@ -37,7 +37,7 @@ export interface ProgressiveAIRevealProps {
   autoAdvance?: boolean;
   pauseBetweenSteps?: number;
   showProgress?: boolean;
-  aria-live?: 'polite' | 'assertive';
+  'aria-live'?: 'polite' | 'assertive';
   'aria-label'?: string;
 }
 
