@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Shield, Heart, TrendingUp, Award } from 'lucide-react';
+import { CheckCircle, Shield, Heart, TrendingUp, Award, Copy, Download } from 'lucide-react';
 
 const CarmenRetentionMastery: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');

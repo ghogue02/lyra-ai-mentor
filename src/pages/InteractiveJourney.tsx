@@ -39,17 +39,18 @@ import AlexTeamAlignment from "@/components/lesson/AlexTeamAlignment";
 import AlexFutureLeadership from "@/components/lesson/AlexFutureLeadership";
 import AlexLeadershipFramework from "@/components/lesson/AlexLeadershipFramework";
 
-// Carmen's Chapter 7 Components
-import CarmenTalentAcquisition from '@/components/lesson/carmen/CarmenTalentAcquisition';
-import CarmenPerformanceInsights from '@/components/lesson/carmen/CarmenPerformanceInsights';
-import CarmenEngagementBuilder from '@/components/lesson/carmen/CarmenEngagementBuilder';
-import CarmenRetentionMastery from '@/components/lesson/carmen/CarmenRetentionMastery';
-
 // Tools for Chapter 3
 import DecisionMatrixRenderer from '@/components/lesson/tools/DecisionMatrixRenderer';
 import TeamCapacityCalculator from '@/components/lesson/tools/TeamCapacityCalculator';
 import TeamCapacityResults from '@/components/lesson/tools/TeamCapacityResults';
 import ProjectCharterBuilder from '@/components/lesson/tools/ProjectCharterBuilder';
+
+// Carmen Chapter 7 lessons  
+import CarmenPeopleManagementJourney from '@/components/lesson/carmen/CarmenPeopleManagementJourney';
+import CarmenTalentAcquisition from '@/components/lesson/carmen/CarmenTalentAcquisition';
+import CarmenPerformanceInsights from '@/components/lesson/carmen/CarmenPerformanceInsights';
+import CarmenEngagementBuilder from '@/components/lesson/carmen/CarmenEngagementBuilder';
+import CarmenRetentionMastery from '@/components/lesson/carmen/CarmenRetentionMastery';
 
 // Journey configuration registry
 const journeyRegistry = {
@@ -297,7 +298,13 @@ const journeyRegistry = {
     title: 'Project Charter',
     description: 'Draft a clear charter with AI-marked placeholders to review'
   },
-  // Chapter 7 - Carmen's AI-Powered People Management
+  // Chapter 7 - Carmen's AI-Powered People Management  
+  'carmen-people-management-journey': {
+    component: CarmenPeopleManagementJourney,
+    characterId: 'carmen',
+    title: 'Carmen\'s People Management Journey', 
+    description: 'Experience Carmen\'s transformation and learn her AI-powered people management approach'
+  },
   'talent-acquisition': {
     component: CarmenTalentAcquisition,
     characterId: 'carmen',

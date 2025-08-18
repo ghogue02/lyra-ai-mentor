@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Sparkles, Heart, Users, Zap } from 'lucide-react';
+import { CheckCircle, Sparkles, Heart, Users, Zap, Copy, Download } from 'lucide-react';
 
 const CarmenEngagementBuilder: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');
