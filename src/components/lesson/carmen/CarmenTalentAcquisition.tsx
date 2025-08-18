@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { ChevronRight, Users, Play, Target, Heart, TrendingUp, Clock, Building } from 'lucide-react';
+import { ChevronRight, Users, Play, Target, Heart, TrendingUp, Clock, Building, Sliders } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
+import { PreferenceSliderGrid, PreferenceSlider, SliderPreset } from '@/components/ui/interaction-patterns/PreferenceSliderGrid';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
@@ -38,6 +39,10 @@ const CarmenTalentAcquisition: React.FC = () => {
   const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
   const [selectedStrategies, setSelectedStrategies] = useState<string[]>([]);
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
+  
+  // Preference slider values for nuanced hiring calibration
+  const [sliderValues, setSliderValues] = useState<{ [sliderId: string]: number }>({});
+  const [useSliderMode, setUseSliderMode] = useState(false);
   const [generatedStrategy, setGeneratedStrategy] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
@@ -88,6 +93,232 @@ const CarmenTalentAcquisition: React.FC = () => {
     { id: 'higher-retention', label: 'Better New Hire Retention', description: 'Find people who stay longer', icon: 'talentRetention' },
     { id: 'cost-efficiency', label: 'Reduce Hiring Costs', description: 'More efficient recruitment spend', icon: 'talentCost' },
     { id: 'build-pipeline', label: 'Build Talent Pipeline', description: 'Continuous candidate relationships', icon: 'talentPipeline' }
+  ];
+
+  // Define hiring preference sliders for nuanced calibration
+  const hiringPreferenceSliders: PreferenceSlider[] = [
+    {
+      id: 'experience-vs-potential',
+      label: 'Experience vs Potential',
+      description: 'Balance between proven experience and growth potential',
+      min: 0,
+      max: 10,
+      step: 0.5,
+      value: sliderValues['experience-vs-potential'] || 5,
+      defaultValue: 5,
+      minLabel: 'Proven Experience',
+      maxLabel: 'High Potential',
+      icon: <TrendingUp className="w-4 h-4" />,
+      category: 'Evaluation Criteria',
+      metadata: {
+        priority: 'high',
+        impact: 'high',
+        helpText: 'Consider whether you prioritize candidates with extensive experience or those with strong potential for growth.'
+      }
+    },
+    {
+      id: 'skills-vs-culture',
+      label: 'Skills vs Culture Fit',
+      description: 'Weight technical skills against cultural alignment',
+      min: 0,
+      max: 10,
+      step: 0.5,
+      value: sliderValues['skills-vs-culture'] || 5,
+      defaultValue: 5,
+      minLabel: 'Technical Skills',
+      maxLabel: 'Culture Fit',
+      icon: <Heart className="w-4 h-4" />,
+      category: 'Evaluation Criteria',
+      metadata: {
+        priority: 'high',
+        impact: 'high',
+        helpText: 'Balance the importance of technical competence against how well candidates align with your company culture.'
+      }
+    },
+    {
+      id: 'diversity-priority',
+      label: 'Diversity Importance',
+      description: 'Priority level for diverse candidate sourcing',
+      min: 1,
+      max: 10,
+      step: 1,
+      value: sliderValues['diversity-priority'] || 8,
+      defaultValue: 8,
+      minLabel: 'Standard',
+      maxLabel: 'Critical Priority',
+      icon: <Users className="w-4 h-4" />,
+      category: 'Sourcing Strategy',
+      color: 'accent-purple-600',
+      metadata: {
+        priority: 'high',
+        impact: 'medium',
+        helpText: 'Set how important diverse representation is in your hiring pipeline and sourcing efforts.'
+      }
+    },
+    {
+      id: 'time-vs-quality',
+      label: 'Speed vs Quality',
+      description: 'Balance hiring speed against thorough evaluation',
+      min: 0,
+      max: 10,
+      step: 0.5,
+      value: sliderValues['time-vs-quality'] || 6,
+      defaultValue: 6,
+      minLabel: 'Fast Hiring',
+      maxLabel: 'Thorough Process',
+      icon: <Clock className="w-4 h-4" />,
+      category: 'Process Design',
+      metadata: {
+        priority: 'medium',
+        impact: 'high',
+        helpText: 'Decide whether to prioritize quick hiring decisions or comprehensive candidate evaluation.'
+      }
+    },
+    {
+      id: 'internal-vs-external',
+      label: 'Internal vs External',
+      description: 'Preference for promoting internally vs external hiring',
+      min: 0,
+      max: 10,
+      step: 1,
+      value: sliderValues['internal-vs-external'] || 3,
+      defaultValue: 3,
+      minLabel: 'External Focus',
+      maxLabel: 'Internal First',
+      icon: <Building className="w-4 h-4" />,
+      category: 'Sourcing Strategy',
+      metadata: {
+        priority: 'medium',
+        impact: 'medium',
+        helpText: 'Set preference for internal promotions and transfers versus external candidate recruitment.'
+      }
+    },
+    {
+      id: 'cost-sensitivity',
+      label: 'Cost Sensitivity',
+      description: 'How much budget constraints affect hiring decisions',
+      min: 1,
+      max: 10,
+      step: 1,
+      value: sliderValues['cost-sensitivity'] || 4,
+      defaultValue: 4,
+      minLabel: 'Budget Flexible',
+      maxLabel: 'Cost Critical',
+      icon: <Target className="w-4 h-4" />,
+      category: 'Budget Constraints',
+      inversed: true,
+      metadata: {
+        priority: 'medium',
+        impact: 'medium',
+        helpText: 'Indicate how strictly budget constraints should influence hiring decisions and salary negotiations.'
+      }
+    },
+    {
+      id: 'innovation-vs-stability',
+      label: 'Innovation vs Stability',
+      description: 'Preference for innovative risk-takers vs reliable performers',
+      min: 0,
+      max: 10,
+      step: 0.5,
+      value: sliderValues['innovation-vs-stability'] || 5.5,
+      defaultValue: 5.5,
+      minLabel: 'Reliable Performers',
+      maxLabel: 'Innovation Focus',
+      icon: <TrendingUp className="w-4 h-4" />,
+      category: 'Candidate Profile',
+      metadata: {
+        priority: 'medium',
+        impact: 'high',
+        helpText: 'Balance between candidates who bring stability versus those who drive innovation and change.'
+      }
+    },
+    {
+      id: 'remote-flexibility',
+      label: 'Remote Work Flexibility',
+      description: 'Openness to remote and hybrid work arrangements',
+      min: 0,
+      max: 10,
+      step: 1,
+      value: sliderValues['remote-flexibility'] || 7,
+      defaultValue: 7,
+      minLabel: 'Office Required',
+      maxLabel: 'Fully Remote OK',
+      icon: <Users className="w-4 h-4" />,
+      category: 'Work Arrangement',
+      metadata: {
+        priority: 'medium',
+        impact: 'medium',
+        helpText: 'Set how flexible you are with remote work options, which affects your candidate pool size.'
+      }
+    }
+  ];
+
+  // Predefined slider presets for common hiring scenarios
+  const sliderPresets: SliderPreset[] = [
+    {
+      id: 'startup-growth',
+      name: 'Startup Growth Mode',
+      description: 'Fast hiring with emphasis on potential and cultural fit',
+      values: {
+        'experience-vs-potential': 7,
+        'skills-vs-culture': 6,
+        'diversity-priority': 8,
+        'time-vs-quality': 3,
+        'internal-vs-external': 2,
+        'cost-sensitivity': 7,
+        'innovation-vs-stability': 8,
+        'remote-flexibility': 8
+      },
+      tags: ['startup', 'growth', 'agile']
+    },
+    {
+      id: 'enterprise-quality',
+      name: 'Enterprise Quality Focus',
+      description: 'Thorough process prioritizing experience and proven skills',
+      values: {
+        'experience-vs-potential': 3,
+        'skills-vs-culture': 4,
+        'diversity-priority': 7,
+        'time-vs-quality': 8,
+        'internal-vs-external': 6,
+        'cost-sensitivity': 4,
+        'innovation-vs-stability': 4,
+        'remote-flexibility': 5
+      },
+      tags: ['enterprise', 'quality', 'thorough']
+    },
+    {
+      id: 'balanced-approach',
+      name: 'Balanced Approach',
+      description: 'Well-rounded hiring strategy with moderate preferences',
+      values: {
+        'experience-vs-potential': 5,
+        'skills-vs-culture': 5,
+        'diversity-priority': 7,
+        'time-vs-quality': 6,
+        'internal-vs-external': 4,
+        'cost-sensitivity': 5,
+        'innovation-vs-stability': 5.5,
+        'remote-flexibility': 6
+      },
+      tags: ['balanced', 'moderate', 'flexible']
+    },
+    {
+      id: 'diversity-first',
+      name: 'Diversity & Inclusion First',
+      description: 'Maximum focus on building diverse, inclusive teams',
+      values: {
+        'experience-vs-potential': 6,
+        'skills-vs-culture': 7,
+        'diversity-priority': 10,
+        'time-vs-quality': 7,
+        'internal-vs-external': 3,
+        'cost-sensitivity': 3,
+        'innovation-vs-stability': 6,
+        'remote-flexibility': 9
+      },
+      tags: ['diversity', 'inclusion', 'equity']
+    }
   ];
 
   const hiringFrameworkElements: HiringFrameworkElement[] = [
@@ -172,7 +403,16 @@ const CarmenTalentAcquisition: React.FC = () => {
     }
   ];
 
-  // Update prompt segments when selections change
+  // Initialize slider values with defaults
+  useEffect(() => {
+    const defaultValues: { [id: string]: number } = {};
+    hiringPreferenceSliders.forEach(slider => {
+      defaultValues[slider.id] = slider.defaultValue;
+    });
+    setSliderValues(defaultValues);
+  }, []);
+
+  // Update prompt segments when selections or slider values change
   useEffect(() => {
     const segments: PromptSegment[] = [
       {
@@ -216,6 +456,14 @@ const CarmenTalentAcquisition: React.FC = () => {
         required: false
       },
       {
+        id: 'preferences',
+        label: 'Hiring Preferences',
+        value: useSliderMode && Object.keys(sliderValues).length > 0 ? `Preference calibration: ${hiringPreferenceSliders.map(slider => `${slider.label} (${(sliderValues[slider.id] || slider.defaultValue).toFixed(1)}/${slider.max})`).join(', ')}` : '',
+        type: 'data',
+        color: 'border-l-cyan-400',
+        required: false
+      },
+      {
         id: 'format',
         label: 'Output Framework',
         value: 'Create a comprehensive hiring strategy using Carmen\'s framework: 1) Inclusive Job Descriptions, 2) Bias-Free Screening, 3) Empathetic Interviews, 4) Holistic Evaluation, 5) Exceptional Candidate Experience. Include specific implementation steps and success metrics.',
@@ -226,10 +474,11 @@ const CarmenTalentAcquisition: React.FC = () => {
     ];
     
     setPromptSegments(segments);
-  }, [selectedRoles, selectedChallenges, selectedStrategies, selectedGoals]);
+  }, [selectedRoles, selectedChallenges, selectedStrategies, selectedGoals, sliderValues, useSliderMode]);
 
   const generateHiringStrategy = async () => {
-    if (selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0) return;
+    if (!useSliderMode && (selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0)) return;
+    if (useSliderMode && Object.keys(sliderValues).length === 0) return;
     
     setIsGenerating(true);
     try {
@@ -240,12 +489,21 @@ const CarmenTalentAcquisition: React.FC = () => {
           topic: 'AI-powered talent acquisition with human empathy',
           context: `Carmen Rodriguez needs to create a comprehensive hiring strategy using her compassionate AI approach.
           
+          ${useSliderMode ? `
+          Preference-Based Hiring Configuration:
+          ${hiringPreferenceSliders.map(slider => {
+            const value = sliderValues[slider.id] || slider.defaultValue;
+            const percentage = ((value - slider.min) / (slider.max - slider.min)) * 100;
+            return `• ${slider.label}: ${value.toFixed(1)}/${slider.max} (${percentage.toFixed(0)}% - ${slider.description})`;
+          }).join('\n          ')}
+          ` : `
           Role Types: ${selectedRoles.map(id => roleOptions.find(opt => opt.id === id)?.label).join(', ')}
           Current Challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}
           Preferred Strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}
           Hiring Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
+          `}
           
-          Create a structured hiring strategy that follows Carmen's framework: 1) Inclusive Job Descriptions (bias removal, skills focus), 2) Bias-Free Screening (objective assessment), 3) Empathetic Interviews (human connection with growth mindset), 4) Holistic Evaluation (complete candidate picture), 5) Exceptional Candidate Experience (respect and value for all). The strategy should combine AI efficiency with human empathy for compassionate, effective hiring.`
+          Create a structured hiring strategy that follows Carmen's framework: 1) Inclusive Job Descriptions (bias removal, skills focus), 2) Bias-Free Screening (objective assessment), 3) Empathetic Interviews (human connection with growth mindset), 4) Holistic Evaluation (complete candidate picture), 5) Exceptional Candidate Experience (respect and value for all). ${useSliderMode ? 'The strategy should reflect the nuanced preferences indicated by the slider values, providing specific recommendations based on the calibrated balance between different hiring priorities.' : 'The strategy should combine AI efficiency with human empathy for compassionate, effective hiring.'}`
         }
       });
 
@@ -415,7 +673,7 @@ const CarmenTalentAcquisition: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Tabbed Layout (visible only on mobile) */}
+        {/* Mobile Tabbed Layout + Mode Toggle */}
         <div className="lg:hidden mb-6">
           <div className="flex space-x-2 mb-4">
             {['Options', 'Prompt', 'Results'].map((tab, index) => (
@@ -429,6 +687,28 @@ const CarmenTalentAcquisition: React.FC = () => {
               </Button>
             ))}
           </div>
+          
+          {/* Mode Toggle */}
+          <div className="flex items-center gap-2 mb-4">
+            <Button
+              variant={!useSliderMode ? "default" : "outline"}
+              onClick={() => setUseSliderMode(false)}
+              size="sm"
+              className="flex-1"
+            >
+              <Target className="w-4 h-4 mr-2" />
+              Discrete Options
+            </Button>
+            <Button
+              variant={useSliderMode ? "default" : "outline"}
+              onClick={() => setUseSliderMode(true)}
+              size="sm"
+              className="flex-1"
+            >
+              <Sliders className="w-4 h-4 mr-2" />
+              Preference Sliders
+            </Button>
+          </div>
         </div>
 
         {/* Three-Panel Viewport Optimized Layout */}
@@ -439,8 +719,52 @@ const CarmenTalentAcquisition: React.FC = () => {
             "lg:block", 
             currentStep === 0 ? "block" : "hidden"
           )}>
-            {/* Role Types Selection - Compact */}
-            <VisualOptionGrid
+            
+            {/* Desktop Mode Toggle */}
+            <div className="hidden lg:flex items-center gap-2 mb-6">
+              <Button
+                variant={!useSliderMode ? "default" : "outline"}
+                onClick={() => setUseSliderMode(false)}
+                size="sm"
+                className="flex-1"
+              >
+                <Target className="w-4 h-4 mr-2" />
+                Discrete Options
+              </Button>
+              <Button
+                variant={useSliderMode ? "default" : "outline"}
+                onClick={() => setUseSliderMode(true)}
+                size="sm"
+                className="flex-1"
+              >
+                <Sliders className="w-4 h-4 mr-2" />
+                Preference Sliders
+              </Button>
+            </div>
+            {useSliderMode ? (
+              /* Preference Slider Mode */
+              <PreferenceSliderGrid
+                title="Hiring Preferences"
+                description="Fine-tune your hiring priorities with nuanced preference sliders"
+                sliders={hiringPreferenceSliders}
+                values={sliderValues}
+                onValuesChange={setSliderValues}
+                characterTheme="carmen"
+                presets={sliderPresets}
+                showRadarChart={true}
+                showRealTimeUpdates={true}
+                gridColumns={1}
+                enableDependencies={true}
+                enablePresets={true}
+                enableExportImport={false}
+                showValidation={true}
+                compactMode={true}
+                className="mb-4"
+              />
+            ) : (
+              <>
+                {/* Role Types Selection - Compact */}
+                <VisualOptionGrid
               title="Role Types"
               description="What roles are you hiring?"
               options={roleOptions}
@@ -491,33 +815,65 @@ const CarmenTalentAcquisition: React.FC = () => {
               characterTheme="carmen"
             />
 
-            {/* Generate Button - Compact */}
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Button 
-                  onClick={generateHiringStrategy}
-                  disabled={selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-base py-2"
-                  aria-label={isGenerating ? "Creating your compassionate hiring strategy" : "Generate compassionate hiring strategy using AI-powered empathy and bias-free processes"}
-                  aria-describedby="hiring-generation-status"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
-                      <span aria-live="polite">Carmen is crafting your strategy...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Users className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Create Compassionate Hiring Strategy
-                    </>
-                  )}
-                  <div id="hiring-generation-status" className="sr-only">
-                    {isGenerating ? "AI is currently generating your compassionate hiring strategy. Please wait." : "Click to generate your hiring strategy"}
-                  </div>
-                </Button>
-              </CardContent>
-            </Card>
+                {/* Generate Button - Compact */}
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <Button 
+                      onClick={generateHiringStrategy}
+                      disabled={selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
+                      className="w-full nm-button nm-button-primary text-base py-2"
+                      aria-label={isGenerating ? "Creating your compassionate hiring strategy" : "Generate compassionate hiring strategy using AI-powered empathy and bias-free processes"}
+                      aria-describedby="hiring-generation-status"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                          <span aria-live="polite">Carmen is crafting your strategy...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Users className="w-5 h-5 mr-2" aria-hidden="true" />
+                          Create Compassionate Hiring Strategy
+                        </>
+                      )}
+                      <div id="hiring-generation-status" className="sr-only">
+                        {isGenerating ? "AI is currently generating your compassionate hiring strategy. Please wait." : "Click to generate your hiring strategy"}
+                      </div>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+            
+            {/* Slider Mode Generate Button */}
+            {useSliderMode && (
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <Button 
+                    onClick={generateHiringStrategy}
+                    disabled={Object.keys(sliderValues).length === 0 || isGenerating}
+                    className="w-full nm-button nm-button-primary text-base py-2"
+                    aria-label={isGenerating ? "Creating your nuanced hiring strategy" : "Generate hiring strategy based on preference calibration"}
+                    aria-describedby="slider-generation-status"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                        <span aria-live="polite">Carmen is calibrating your strategy...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sliders className="w-5 h-5 mr-2" aria-hidden="true" />
+                        Generate Calibrated Hiring Strategy
+                      </>
+                    )}
+                    <div id="slider-generation-status" className="sr-only">
+                      {isGenerating ? "AI is generating your preference-calibrated hiring strategy. Please wait." : "Click to generate strategy based on your slider preferences"}
+                    </div>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
@@ -573,7 +929,10 @@ const CarmenTalentAcquisition: React.FC = () => {
                     </div>
                     <h3 className="font-semibold text-gray-700">Strategy Awaiting Creation</h3>
                     <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-                      Make your selections on the left and click "Create Compassionate Hiring Strategy" to see Carmen's framework.
+                      {useSliderMode 
+                        ? "Adjust the preference sliders and click 'Generate Calibrated Hiring Strategy' to see Carmen's nuanced framework."
+                        : "Make your selections on the left and click 'Create Compassionate Hiring Strategy' to see Carmen's framework."
+                      }
                     </p>
                   </div>
                 </CardContent>

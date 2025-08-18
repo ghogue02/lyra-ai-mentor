@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
+import { EngagementDecisionTree } from '@/components/ui/interaction-patterns/EngagementDecisionTree';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
@@ -34,6 +35,7 @@ const CarmenEngagementBuilder: React.FC = () => {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
+  const [useDecisionTree, setUseDecisionTree] = useState(true); // Toggle between tree and grid modes
   const [selectedTeamSize, setSelectedTeamSize] = useState<string[]>([]);
   const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
   const [selectedStrategies, setSelectedStrategies] = useState<string[]>([]);
@@ -411,171 +413,285 @@ const CarmenEngagementBuilder: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Tabbed Layout (visible only on mobile) */}
-        <div className="lg:hidden mb-6">
-          <div className="flex space-x-2 mb-4">
-            {['Options', 'Prompt', 'Results'].map((tab, index) => (
+        {/* View Mode Toggle & Mobile Tabs */}
+        <div className="mb-6">
+          {/* View Mode Toggle (visible on all screens) */}
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-4">
               <Button
-                key={tab}
-                variant={currentStep === index ? "default" : "outline"}
-                onClick={() => setCurrentStep(index)}
-                className="flex-1 text-sm"
+                variant={useDecisionTree ? "default" : "outline"}
+                onClick={() => setUseDecisionTree(true)}
+                className="text-sm"
               >
-                {tab}
+                🌳 Decision Tree Mode
               </Button>
-            ))}
+              <Button
+                variant={!useDecisionTree ? "default" : "outline"}
+                onClick={() => setUseDecisionTree(false)}
+                className="text-sm"
+              >
+                📋 Grid Mode
+              </Button>
+            </div>
+            <Badge variant="secondary" className="text-xs">
+              {useDecisionTree ? "Visual Exploration" : "Quick Selection"}
+            </Badge>
           </div>
+          
+          {/* Mobile Tabbed Layout (visible only on mobile and only in grid mode) */}
+          {!useDecisionTree && (
+            <div className="lg:hidden">
+              <div className="flex space-x-2 mb-4">
+                {['Options', 'Prompt', 'Results'].map((tab, index) => (
+                  <Button
+                    key={tab}
+                    variant={currentStep === index ? "default" : "outline"}
+                    onClick={() => setCurrentStep(index)}
+                    className="flex-1 text-sm"
+                  >
+                    {tab}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
 
-        {/* Three-Panel Viewport Optimized Layout */}
-        <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
-          {/* Left Panel - Option Selection (4 columns on desktop) */}
-          <div className={cn(
-            "lg:col-span-4 space-y-4 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pr-4",
-            "lg:block", 
-            currentStep === 0 ? "block" : "hidden"
-          )}>
-            {/* Team Size Selection - Compact */}
-            <VisualOptionGrid
-              title="Team Size"
-              description="How large is the team?"
-              options={teamSizeOptions}
-              selectedIds={selectedTeamSize}
-              onSelectionChange={setSelectedTeamSize}
-              multiSelect={false}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Engagement Challenges - Compact */}
-            <VisualOptionGrid
-              title="Challenges"
-              description="Engagement issues"
-              options={challengeOptions}
-              selectedIds={selectedChallenges}
-              onSelectionChange={setSelectedChallenges}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Engagement Strategies - Compact */}
-            <VisualOptionGrid
-              title="Strategies"
-              description="How to improve engagement"
-              options={strategyOptions}
-              selectedIds={selectedStrategies}
-              onSelectionChange={setSelectedStrategies}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Engagement Goals - Compact */}
-            <VisualOptionGrid
-              title="Goals"
-              description="Target outcomes"
-              options={goalOptions}
-              selectedIds={selectedGoals}
-              onSelectionChange={setSelectedGoals}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Generate Button - Compact */}
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Button 
-                  onClick={generateEngagementStrategy}
-                  disabled={selectedTeamSize.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-base py-2"
-                  aria-label={isGenerating ? "Creating your personalized engagement strategy" : "Generate personalized engagement strategy using AI insights and human empathy"}
-                  aria-describedby="engagement-generation-status"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
-                      <span aria-live="polite">Carmen is crafting your strategy...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Create Personalized Engagement Strategy
-                    </>
-                  )}
-                  <div id="engagement-generation-status" className="sr-only">
-                    {isGenerating ? "AI is currently generating your personalized engagement strategy. Please wait." : "Click to generate your engagement strategy"}
-                  </div>
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
-          <div className={cn(
-            "lg:col-span-4 lg:sticky lg:top-4 lg:self-start max-h-[calc(100vh-18rem)] overflow-y-auto lg:px-4",
-            "lg:block",
-            currentStep === 1 ? "block" : "hidden"
-          )}>
-            {/* Dynamic Prompt Builder */}
-            <DynamicPromptBuilder
-              segments={promptSegments}
-              characterName="Carmen"
-              characterTheme="carmen"
-              showCopyButton={true}
-              autoUpdate={true}
-            />
-          </div>
-
-          {/* Right Panel - Results (4 columns on desktop) */}
-          <div className={cn(
-            "lg:col-span-4 space-y-6 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pl-4",
-            "lg:block",
-            currentStep === 2 ? "block" : "hidden"
-          )}>
-
-            {/* Generated Strategy - Full Height */}
-            {generatedStrategy ? (
-              <Card className="h-full">
+        {/* Conditional Layout Based on Mode */}
+        {useDecisionTree ? (
+          /* Decision Tree Mode - Full Width */
+          <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
+            {/* Decision Tree - Takes 8 columns */}
+            <div className="lg:col-span-8 space-y-6">
+              <EngagementDecisionTree
+                teamSizeOptions={teamSizeOptions}
+                challengeOptions={challengeOptions}
+                strategyOptions={strategyOptions}
+                goalOptions={goalOptions}
+                onSelectionComplete={(selections) => {
+                  // Update the original state variables to maintain compatibility
+                  setSelectedTeamSize(selections.teamSize);
+                  setSelectedChallenges(selections.challenges);
+                  setSelectedStrategies(selections.strategies);
+                  setSelectedGoals(selections.goals);
+                }}
+                onGenerateStrategy={generateEngagementStrategy}
+                characterTheme="carmen"
+                isGenerating={isGenerating}
+                className="w-full"
+              />
+            </div>
+            
+            {/* Right Panel - Results (4 columns) */}
+            <div className="lg:col-span-4 space-y-6 max-h-[calc(100vh-18rem)] overflow-y-auto">
+              {/* Dynamic Prompt Builder - Compact */}
+              <Card className="border-purple-200">
                 <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                    Your Engagement Strategy
+                  <CardTitle className="text-lg flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-purple-600" />
+                    AI Prompt Preview
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="h-full">
-                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
-                    <TemplateContentFormatter 
-                      content={generatedStrategy}
-                      contentType="lesson"
-                      variant="default"
-                      showMergeFieldTypes={true}
-                      className="formatted-ai-content"
-                    />
-                  </div>
+                <CardContent className="max-h-64 overflow-y-auto">
+                  <DynamicPromptBuilder
+                    segments={promptSegments}
+                    characterName="Carmen"
+                    characterTheme="carmen"
+                    showCopyButton={true}
+                    autoUpdate={true}
+                  />
                 </CardContent>
               </Card>
-            ) : (
-              <Card className="h-full border-dashed border-2 border-gray-300">
-                <CardContent className="h-full flex items-center justify-center">
-                  <div className="text-center space-y-4 p-8">
-                    <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
-                      <Heart className="w-8 h-8 text-purple-600" />
+
+              {/* Generated Strategy */}
+              {generatedStrategy ? (
+                <Card className="h-full">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <TrendingUp className="w-5 h-5 text-green-600" />
+                      Your Engagement Strategy
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-full">
+                    <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
+                      <TemplateContentFormatter 
+                        content={generatedStrategy}
+                        contentType="lesson"
+                        variant="default"
+                        showMergeFieldTypes={true}
+                        className="formatted-ai-content"
+                      />
                     </div>
-                    <h3 className="font-semibold text-gray-700">Strategy Awaiting Creation</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-                      Make your selections on the left and click "Create Personalized Engagement Strategy" to see Carmen's framework.
-                    </p>
-                  </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="h-full border-dashed border-2 border-gray-300">
+                  <CardContent className="h-full flex items-center justify-center">
+                    <div className="text-center space-y-4 p-8">
+                      <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
+                        <Heart className="w-8 h-8 text-purple-600" />
+                      </div>
+                      <h3 className="font-semibold text-gray-700">Strategy Awaiting Creation</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
+                        Navigate through the decision tree to build your personalized engagement strategy.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          </div>
+        ) : (
+          /* Grid Mode - Original Three-Panel Layout */
+          <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
+            {/* Left Panel - Option Selection (4 columns on desktop) */}
+            <div className={cn(
+              "lg:col-span-4 space-y-4 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pr-4",
+              "lg:block", 
+              currentStep === 0 ? "block" : "hidden"
+            )}>
+              {/* Team Size Selection - Compact */}
+              <VisualOptionGrid
+                title="Team Size"
+                description="How large is the team?"
+                options={teamSizeOptions}
+                selectedIds={selectedTeamSize}
+                onSelectionChange={setSelectedTeamSize}
+                multiSelect={false}
+                gridCols={1}
+                characterTheme="carmen"
+              />
+
+              {/* Engagement Challenges - Compact */}
+              <VisualOptionGrid
+                title="Challenges"
+                description="Engagement issues"
+                options={challengeOptions}
+                selectedIds={selectedChallenges}
+                onSelectionChange={setSelectedChallenges}
+                multiSelect={true}
+                maxSelections={4}
+                gridCols={1}
+                characterTheme="carmen"
+              />
+
+              {/* Engagement Strategies - Compact */}
+              <VisualOptionGrid
+                title="Strategies"
+                description="How to improve engagement"
+                options={strategyOptions}
+                selectedIds={selectedStrategies}
+                onSelectionChange={setSelectedStrategies}
+                multiSelect={true}
+                maxSelections={4}
+                gridCols={1}
+                characterTheme="carmen"
+              />
+
+              {/* Engagement Goals - Compact */}
+              <VisualOptionGrid
+                title="Goals"
+                description="Target outcomes"
+                options={goalOptions}
+                selectedIds={selectedGoals}
+                onSelectionChange={setSelectedGoals}
+                multiSelect={true}
+                maxSelections={3}
+                gridCols={1}
+                characterTheme="carmen"
+              />
+
+              {/* Generate Button - Compact */}
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <Button 
+                    onClick={generateEngagementStrategy}
+                    disabled={selectedTeamSize.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
+                    className="w-full nm-button nm-button-primary text-base py-2"
+                    aria-label={isGenerating ? "Creating your personalized engagement strategy" : "Generate personalized engagement strategy using AI insights and human empathy"}
+                    aria-describedby="engagement-generation-status"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                        <span aria-live="polite">Carmen is crafting your strategy...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
+                        Create Personalized Engagement Strategy
+                      </>
+                    )}
+                    <div id="engagement-generation-status" className="sr-only">
+                      {isGenerating ? "AI is currently generating your personalized engagement strategy. Please wait." : "Click to generate your engagement strategy"}
+                    </div>
+                  </Button>
                 </CardContent>
               </Card>
-            )}
+            </div>
+
+            {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
+            <div className={cn(
+              "lg:col-span-4 lg:sticky lg:top-4 lg:self-start max-h-[calc(100vh-18rem)] overflow-y-auto lg:px-4",
+              "lg:block",
+              currentStep === 1 ? "block" : "hidden"
+            )}>
+              {/* Dynamic Prompt Builder */}
+              <DynamicPromptBuilder
+                segments={promptSegments}
+                characterName="Carmen"
+                characterTheme="carmen"
+                showCopyButton={true}
+                autoUpdate={true}
+              />
+            </div>
+
+            {/* Right Panel - Results (4 columns on desktop) */}
+            <div className={cn(
+              "lg:col-span-4 space-y-6 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pl-4",
+              "lg:block",
+              currentStep === 2 ? "block" : "hidden"
+            )}>
+
+              {/* Generated Strategy - Full Height */}
+              {generatedStrategy ? (
+                <Card className="h-full">
+                  <CardHeader className="pb-3">
+                    <CardTitle className="flex items-center gap-2 text-lg">
+                      <TrendingUp className="w-5 h-5 text-green-600" />
+                      Your Engagement Strategy
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="h-full">
+                    <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
+                      <TemplateContentFormatter 
+                        content={generatedStrategy}
+                        contentType="lesson"
+                        variant="default"
+                        showMergeFieldTypes={true}
+                        className="formatted-ai-content"
+                      />
+                    </div>
+                  </CardContent>
+                </Card>
+              ) : (
+                <Card className="h-full border-dashed border-2 border-gray-300">
+                  <CardContent className="h-full flex items-center justify-center">
+                    <div className="text-center space-y-4 p-8">
+                      <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
+                        <Heart className="w-8 h-8 text-purple-600" />
+                      </div>
+                      <h3 className="font-semibold text-gray-700">Strategy Awaiting Creation</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
+                        Make your selections on the left and click "Create Personalized Engagement Strategy" to see Carmen's framework.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Completion Button */}
         {generatedStrategy && (

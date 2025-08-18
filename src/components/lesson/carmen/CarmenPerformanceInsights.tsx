@@ -14,6 +14,7 @@ import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIco
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
+import { ConversationalFlow, ConversationQuestion, ConversationResponses } from '@/components/ui/interaction-patterns/ConversationalFlow';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 import { cn } from '@/lib/utils';
@@ -30,6 +31,8 @@ const CarmenPerformanceInsights: React.FC = () => {
   const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
   const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
+  const [conversationResponses, setConversationResponses] = useState<ConversationResponses>({});
+  const [useConversationalFlow, setUseConversationalFlow] = useState(true);
   const [generatedInsights, setGeneratedInsights] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
@@ -78,6 +81,80 @@ const CarmenPerformanceInsights: React.FC = () => {
     { id: 'performance-ratings', label: 'Performance Rating Distribution', description: 'Balanced evaluation spread', icon: 'performanceMetrics' }
   ];
 
+  // Conversational Flow Questions
+  const conversationQuestions: ConversationQuestion[] = [
+    {
+      id: 'team-size',
+      type: 'single-choice',
+      question: "Let's start with the basics - what size team are we talking about here?",
+      description: "Understanding your team size helps me tailor the performance approach to your specific context.",
+      required: true,
+      carmenResponse: "Perfect! The size of your team really shapes how we approach performance conversations. Smaller teams allow for more intimate, personalized approaches, while larger teams need more systematic frameworks.",
+      options: [
+        { id: 'small-team', label: 'Small Team (2-10 people)', description: 'Tight-knit group with close collaboration', value: 'small-team', icon: 'teamSmall', recommended: true },
+        { id: 'medium-team', label: 'Medium Team (11-25 people)', description: 'Growing team with developing processes', value: 'medium-team', icon: 'teamMedium' },
+        { id: 'large-team', label: 'Large Team (26-50 people)', description: 'Established team needing structured approaches', value: 'large-team', icon: 'teamLarge' },
+        { id: 'department', label: 'Department (51+ people)', description: 'Large organization requiring systematic frameworks', value: 'department', icon: 'teamDepartment' }
+      ]
+    },
+    {
+      id: 'primary-challenge',
+      type: 'single-choice',
+      question: "What's your biggest performance management headache right now?",
+      description: "I want to focus on what's causing you the most stress in your current performance process.",
+      required: true,
+      carmenResponse: "I completely understand that frustration. This is exactly the kind of challenge that keeps managers up at night. The good news is, we can absolutely turn this around with the right approach.",
+      options: [
+        { id: 'unclear-expectations', label: 'Unclear Performance Expectations', description: 'Team members don\'t know what success looks like', value: 'unclear-expectations', icon: 'performanceGoals', recommended: true },
+        { id: 'biased-evaluations', label: 'Biased or Unfair Evaluations', description: 'Concerns about objectivity in assessments', value: 'biased-evaluations', icon: 'performanceBalance', recommended: true },
+        { id: 'difficult-conversations', label: 'Difficult Performance Conversations', description: 'Struggling to deliver feedback effectively', value: 'difficult-conversations', icon: 'performanceFeedback' },
+        { id: 'lack-feedback', label: 'Infrequent Feedback Cycles', description: 'Too much time between meaningful check-ins', value: 'lack-feedback', icon: 'performanceFeedback' }
+      ]
+    },
+    {
+      id: 'additional-challenges',
+      type: 'multiple-choice',
+      question: "Are there any other challenges you're dealing with? Select all that apply.",
+      description: "Performance issues often come in clusters. Let's identify everything we need to address.",
+      required: false,
+      carmenResponse: "These are all interconnected challenges. When we fix one, it often helps with the others. That's the beauty of a holistic approach to performance management.",
+      options: [
+        { id: 'no-development', label: 'Limited Development Planning', description: 'No clear growth pathways for team members', value: 'no-development', icon: 'performanceGrowth' },
+        { id: 'no-recognition', label: 'Insufficient Recognition', description: 'Good performance goes unnoticed', value: 'no-recognition', icon: 'performanceRecognition' },
+        { id: 'data-blind', label: 'Data-Blind Decisions', description: 'Decisions made without objective metrics', value: 'data-blind', icon: 'performanceMetrics' },
+        { id: 'one-size-fits-all', label: 'One-Size-Fits-All Approach', description: 'No personalization for individual needs', value: 'one-size-fits-all', icon: 'performanceUniform' }
+      ]
+    },
+    {
+      id: 'desired-outcome',
+      type: 'single-choice',
+      question: "If you could wave a magic wand, what would be your dream outcome?",
+      description: "Let's get clear on what success looks like for your team's performance transformation.",
+      required: true,
+      carmenResponse: "That's a beautiful vision! When teams feel genuinely supported and see clear growth paths, everything changes. They become more engaged, more productive, and actually look forward to performance conversations.",
+      options: [
+        { id: 'increase-satisfaction', label: 'Team Members Love Their Work', description: 'High engagement and job satisfaction', value: 'increase-satisfaction', icon: 'engagementSatisfied', recommended: true },
+        { id: 'improve-retention', label: 'People Want to Stay and Grow', description: 'Strong retention and internal development', value: 'improve-retention', icon: 'retentionHandshake', recommended: true },
+        { id: 'enhance-development', label: 'Clear Career Pathways', description: 'Everyone has a growth plan they\'re excited about', value: 'enhance-development', icon: 'engagementRocket' },
+        { id: 'boost-productivity', label: 'Higher Performance Outcomes', description: 'Better results through better support', value: 'boost-productivity', icon: 'engagementSpeed' }
+      ]
+    },
+    {
+      id: 'success-metrics',
+      type: 'multiple-choice',
+      question: "How would you measure success? What metrics would tell you things are working?",
+      description: "Let's identify 2-3 key indicators that would show your performance transformation is succeeding.",
+      required: true,
+      carmenResponse: "Excellent choices! These metrics will help us track both the human and business impact of our performance improvements. Data and heart working together - that's my favorite combination.",
+      options: [
+        { id: 'goal-achievement', label: 'Goal Achievement Rate', description: 'Higher percentage of objectives being met', value: 'goal-achievement', icon: 'performanceGoals', recommended: true },
+        { id: 'employee-satisfaction', label: 'Employee Satisfaction Scores', description: 'Better pulse survey results', value: 'employee-satisfaction', icon: 'performanceGrowth', recommended: true },
+        { id: 'retention-rate', label: 'Team Retention Rate', description: 'People choosing to stay and grow here', value: 'retention-rate', icon: 'retentionHandshake' },
+        { id: 'feedback-frequency', label: 'Regular Feedback Cadence', description: 'Consistent, meaningful check-ins happening', value: 'feedback-frequency', icon: 'performanceFeedback' }
+      ]
+    }
+  ];
+
   const narrativeMessages = [
     {
       id: '1',
@@ -107,6 +184,58 @@ const CarmenPerformanceInsights: React.FC = () => {
     }
   ];
 
+  // Helper function to build challenges text from conversation
+  const buildChallengesFromConversation = () => {
+    const challenges = [];
+    if (conversationResponses['primary-challenge']) {
+      challenges.push(conversationResponses['primary-challenge'].value);
+    }
+    if (conversationResponses['additional-challenges'] && Array.isArray(conversationResponses['additional-challenges'].value)) {
+      challenges.push(...conversationResponses['additional-challenges'].value);
+    }
+    return challenges.length > 0 ? `Performance challenges: ${challenges.join(', ')}` : '';
+  };
+
+  // Handle conversation responses
+  const handleConversationResponse = (questionId: string, value: any) => {
+    setConversationResponses(prev => ({
+      ...prev,
+      [questionId]: {
+        questionId,
+        value,
+        timestamp: new Date()
+      }
+    }));
+
+    // Update legacy state based on conversation responses
+    switch (questionId) {
+      case 'team-size':
+        setSelectedTeamSize([value]);
+        break;
+      case 'primary-challenge':
+        setSelectedChallenges([value]);
+        break;
+      case 'additional-challenges':
+        setSelectedChallenges(prev => {
+          const primaryChallenge = conversationResponses['primary-challenge']?.value;
+          const additionalChallenges = Array.isArray(value) ? value : [];
+          return primaryChallenge ? [primaryChallenge, ...additionalChallenges] : additionalChallenges;
+        });
+        break;
+      case 'desired-outcome':
+        setSelectedGoals([value]);
+        break;
+      case 'success-metrics':
+        setSelectedMetrics(Array.isArray(value) ? value : [value]);
+        break;
+    }
+  };
+
+  const handleConversationComplete = (responses: ConversationResponses) => {
+    // Trigger AI generation when conversation is complete
+    generatePerformanceInsights();
+  };
+
   // Update prompt segments when selections change
   useEffect(() => {
     const segments: PromptSegment[] = [
@@ -121,7 +250,7 @@ const CarmenPerformanceInsights: React.FC = () => {
       {
         id: 'team-data',
         label: 'Team Information',
-        value: selectedTeamSize.length > 0 ? `Team size: ${teamSizeOptions.find(opt => selectedTeamSize.includes(opt.id))?.label || selectedTeamSize.join(', ')}` : '',
+        value: selectedTeamSize.length > 0 ? `Team size: ${teamSizeOptions.find(opt => selectedTeamSize.includes(opt.id))?.label || selectedTeamSize.join(', ')}` : conversationResponses['team-size'] ? `Team size: ${conversationResponses['team-size'].value}` : '',
         type: 'data',
         color: 'border-l-blue-400',
         required: false
@@ -129,7 +258,7 @@ const CarmenPerformanceInsights: React.FC = () => {
       {
         id: 'challenges',
         label: 'Performance Challenges',
-        value: selectedChallenges.length > 0 ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: selectedChallenges.length > 0 ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` : conversationResponses['primary-challenge'] || conversationResponses['additional-challenges'] ? buildChallengesFromConversation() : '',
         type: 'data',
         color: 'border-l-red-400',
         required: false
@@ -137,7 +266,7 @@ const CarmenPerformanceInsights: React.FC = () => {
       {
         id: 'goals',
         label: 'Improvement Goals',
-        value: selectedGoals.length > 0 ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: selectedGoals.length > 0 ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : conversationResponses['desired-outcome'] ? `Dream outcome: ${conversationResponses['desired-outcome'].value}` : '',
         type: 'instruction',
         color: 'border-l-green-400',
         required: false
@@ -145,7 +274,7 @@ const CarmenPerformanceInsights: React.FC = () => {
       {
         id: 'metrics',
         label: 'Key Metrics to Track',
-        value: selectedMetrics.length > 0 ? `Success metrics: ${selectedMetrics.map(id => metricsOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: selectedMetrics.length > 0 ? `Success metrics: ${selectedMetrics.map(id => metricsOptions.find(opt => opt.id === id)?.label).join(', ')}` : conversationResponses['success-metrics'] ? `Success metrics: ${Array.isArray(conversationResponses['success-metrics'].value) ? conversationResponses['success-metrics'].value.join(', ') : conversationResponses['success-metrics'].value}` : '',
         type: 'instruction',
         color: 'border-l-purple-400',
         required: false
@@ -161,7 +290,7 @@ const CarmenPerformanceInsights: React.FC = () => {
     ];
     
     setPromptSegments(segments);
-  }, [selectedTeamSize, selectedChallenges, selectedGoals, selectedMetrics]);
+  }, [selectedTeamSize, selectedChallenges, selectedGoals, selectedMetrics, conversationResponses]);
 
   const generatePerformanceInsights = async () => {
     if (selectedTeamSize.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0) return;
@@ -353,7 +482,7 @@ const CarmenPerformanceInsights: React.FC = () => {
         {/* Mobile Tabbed Layout (visible only on mobile) */}
         <div className="lg:hidden mb-6">
           <div className="flex space-x-2 mb-4">
-            {['Options', 'Prompt', 'Results'].map((tab, index) => (
+            {['Conversation', 'Prompt', 'Results'].map((tab, index) => (
               <Button
                 key={tab}
                 variant={currentStep === index ? "default" : "outline"}
@@ -368,90 +497,109 @@ const CarmenPerformanceInsights: React.FC = () => {
 
         {/* Three-Panel Viewport Optimized Layout */}
         <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
-          {/* Left Panel - Option Selection (4 columns on desktop) */}
+          {/* Left Panel - Conversational Flow (4 columns on desktop) */}
           <div className={cn(
-            "lg:col-span-4 space-y-4 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pr-4",
+            "lg:col-span-4 max-h-[calc(100vh-18rem)] lg:pr-4",
             "lg:block", 
             currentStep === 0 ? "block" : "hidden"
           )}>
-            {/* Team Size Selection - Compact */}
-            <VisualOptionGrid
-              title="Team Size"
-              description="How large is the team?"
-              options={teamSizeOptions}
-              selectedIds={selectedTeamSize}
-              onSelectionChange={setSelectedTeamSize}
-              multiSelect={false}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Performance Challenges - Compact */}
-            <VisualOptionGrid
-              title="Challenges"
-              description="Performance issues"
-              options={challengeOptions}
-              selectedIds={selectedChallenges}
-              onSelectionChange={setSelectedChallenges}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Performance Goals - Compact */}
-            <VisualOptionGrid
-              title="Goals"
-              description="Target outcomes"
-              options={goalOptions}
-              selectedIds={selectedGoals}
-              onSelectionChange={setSelectedGoals}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Key Metrics - Compact */}
-            <VisualOptionGrid
-              title="Metrics"
-              description="Success measures"
-              options={metricsOptions}
-              selectedIds={selectedMetrics}
-              onSelectionChange={setSelectedMetrics}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Generate Button - Compact */}
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Button 
-                  onClick={generatePerformanceInsights}
-                  disabled={selectedTeamSize.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-base py-2"
-                  aria-label={isGenerating ? "Generating your performance insights framework" : "Generate personalized performance insights framework based on your selections"}
-                  aria-describedby="performance-generation-status"
-                >
-                  {isGenerating ? (
-                    <>
-                      <BarChart3 className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
-                      <span aria-live="polite">Carmen is analyzing your performance needs...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Create Performance Insights Framework
-                    </>
-                  )}
-                  <div id="performance-generation-status" className="sr-only">
-                    {isGenerating ? "AI is currently generating your personalized performance framework. Please wait." : "Click to generate your performance insights framework"}
-                  </div>
-                </Button>
-              </CardContent>
-            </Card>
+            {useConversationalFlow ? (
+              <ConversationalFlow
+                title="Performance Insights Chat"
+                description="Let's have a conversation about your team's performance needs"
+                questions={conversationQuestions}
+                responses={conversationResponses}
+                onResponseChange={handleConversationResponse}
+                onComplete={handleConversationComplete}
+                characterTheme="carmen"
+                characterName="Carmen"
+                showProgress={true}
+                allowBacktrack={true}
+                conversationalTone="empathetic"
+                autoProgress={true}
+                className="h-full"
+              />
+            ) : (
+              <div className="space-y-4">
+                {/* Fallback to original grid layout */}
+                <VisualOptionGrid
+                  title="Team Size"
+                  description="How large is the team?"
+                  options={teamSizeOptions}
+                  selectedIds={selectedTeamSize}
+                  onSelectionChange={setSelectedTeamSize}
+                  multiSelect={false}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
+                <VisualOptionGrid
+                  title="Challenges"
+                  description="Performance issues"
+                  options={challengeOptions}
+                  selectedIds={selectedChallenges}
+                  onSelectionChange={setSelectedChallenges}
+                  multiSelect={true}
+                  maxSelections={4}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
+                <VisualOptionGrid
+                  title="Goals"
+                  description="Target outcomes"
+                  options={goalOptions}
+                  selectedIds={selectedGoals}
+                  onSelectionChange={setSelectedGoals}
+                  multiSelect={true}
+                  maxSelections={3}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
+                <VisualOptionGrid
+                  title="Metrics"
+                  description="Success measures"
+                  options={metricsOptions}
+                  selectedIds={selectedMetrics}
+                  onSelectionChange={setSelectedMetrics}
+                  multiSelect={true}
+                  maxSelections={4}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <Button 
+                      onClick={generatePerformanceInsights}
+                      disabled={selectedTeamSize.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
+                      className="w-full nm-button nm-button-primary text-base py-2"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <BarChart3 className="w-5 h-5 mr-2 animate-pulse" />
+                          Carmen is analyzing...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2" />
+                          Create Framework
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            )}
+            
+            {/* Toggle between conversation and grid layout */}
+            <div className="mt-4 text-center">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setUseConversationalFlow(!useConversationalFlow)}
+                className="text-xs text-gray-500 hover:text-gray-700"
+              >
+                {useConversationalFlow ? 'Switch to Grid View' : 'Switch to Conversation'}
+              </Button>
+            </div>
           </div>
 
           {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}

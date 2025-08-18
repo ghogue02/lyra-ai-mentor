@@ -6,7 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Shield, Heart, TrendingUp, Award, Copy, Download, Wand2, Play, Sparkles } from 'lucide-react';
+import { CheckCircle, Shield, Heart, TrendingUp, Award, Copy, Download, Wand2, Play, Sparkles, ArrowDown } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
@@ -15,6 +15,12 @@ import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigat
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
+import { PriorityCardSystem, PriorityCard } from '@/components/ui/interaction-patterns/PriorityCardSystem';
+import { 
+  createRetentionPriorityCards, 
+  extractPriorityInsights,
+  generateRetentionRecommendations 
+} from '@/utils/retentionPriorityHelpers';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 import { cn } from '@/lib/utils';
 
@@ -33,6 +39,11 @@ const CarmenRetentionMastery: React.FC = () => {
   const [generatedStrategy, setGeneratedStrategy] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
+  const [priorityMode, setPriorityMode] = useState<'selection' | 'prioritization'>('selection');
+  const [riskCards, setRiskCards] = useState<PriorityCard[]>([]);
+  const [interventionCards, setInterventionCards] = useState<PriorityCard[]>([]);
+  const [goalCards, setGoalCards] = useState<PriorityCard[]>([]);
+  const [priorityInsights, setPriorityInsights] = useState('');
 
   // Retention risk factors
   const riskOptions: OptionItem[] = [
@@ -125,7 +136,11 @@ const CarmenRetentionMastery: React.FC = () => {
       {
         id: 'risk-factors',
         label: 'Retention Risk Factors',
-        value: selectedRisks.length > 0 ? `Key risk factors: ${selectedRisks.map(id => riskOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: priorityMode === 'prioritization' && riskCards.length > 0 
+          ? `Priority risk factors: ${extractPriorityInsights(riskCards)}`
+          : selectedRisks.length > 0 
+            ? `Key risk factors: ${selectedRisks.map(id => riskOptions.find(opt => opt.id === id)?.label).join(', ')}`
+            : '',
         type: 'data',
         color: 'border-l-red-400',
         required: false
@@ -133,7 +148,11 @@ const CarmenRetentionMastery: React.FC = () => {
       {
         id: 'interventions',
         label: 'Intervention Strategies',
-        value: selectedInterventions.length > 0 ? `Preferred interventions: ${selectedInterventions.map(id => interventionOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: priorityMode === 'prioritization' && interventionCards.length > 0
+          ? `Priority interventions: ${extractPriorityInsights(interventionCards)}`
+          : selectedInterventions.length > 0 
+            ? `Preferred interventions: ${selectedInterventions.map(id => interventionOptions.find(opt => opt.id === id)?.label).join(', ')}`
+            : '',
         type: 'instruction',
         color: 'border-l-green-400',
         required: false
@@ -141,7 +160,11 @@ const CarmenRetentionMastery: React.FC = () => {
       {
         id: 'goals',
         label: 'Retention Goals',
-        value: selectedGoals.length > 0 ? `Strategic objectives: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: priorityMode === 'prioritization' && goalCards.length > 0
+          ? `Priority goals: ${extractPriorityInsights(goalCards)}`
+          : selectedGoals.length > 0 
+            ? `Strategic objectives: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}`
+            : '',
         type: 'instruction',
         color: 'border-l-blue-400',
         required: false
@@ -155,6 +178,14 @@ const CarmenRetentionMastery: React.FC = () => {
         required: false
       },
       {
+        id: 'priority-insights',
+        label: 'Priority Insights',
+        value: priorityInsights,
+        type: 'data',
+        color: 'border-l-cyan-400',
+        required: false
+      },
+      {
         id: 'format',
         label: 'Output Framework',
         value: 'Create a comprehensive retention mastery strategy using Carmen\'s PREDICT-CONNECT-ELEVATE model: 1) Predictive AI analytics for early warning systems, 2) Human connection through genuine conversations, 3) Elevation through personalized growth opportunities. Include implementation roadmap, intervention protocols, and measurement systems.',
@@ -165,10 +196,52 @@ const CarmenRetentionMastery: React.FC = () => {
     ];
     
     setPromptSegments(segments);
-  }, [selectedRisks, selectedInterventions, selectedGoals, selectedMetrics]);
+  }, [selectedRisks, selectedInterventions, selectedGoals, selectedMetrics, priorityMode, riskCards, interventionCards, goalCards, priorityInsights]);
+
+  // Handle priority mode transition
+  const handleProceedToPrioritization = () => {
+    if (selectedRisks.length === 0 || selectedInterventions.length === 0 || selectedGoals.length === 0) {
+      toast({
+        title: "Incomplete Selection",
+        description: "Please select at least one item from each category before prioritizing.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const priorityData = createRetentionPriorityCards(
+      {
+        riskFactors: selectedRisks,
+        interventions: selectedInterventions,
+        goals: selectedGoals,
+        metrics: selectedMetrics
+      },
+      riskOptions,
+      interventionOptions,
+      goalOptions
+    );
+
+    setRiskCards(priorityData.riskCards);
+    setInterventionCards(priorityData.interventionCards);
+    setGoalCards(priorityData.goalCards);
+    setPriorityMode('prioritization');
+
+    toast({
+      title: "Priority Mode Activated!",
+      description: "Now drag and drop to prioritize your retention strategy elements."
+    });
+  };
+
+  // Handle priority change
+  const handlePriorityChange = (cardId: string, newPriority: number, impact: string) => {
+    setPriorityInsights(impact);
+  };
 
   const generateRetentionStrategy = async () => {
-    if (selectedRisks.length === 0 || selectedInterventions.length === 0 || selectedGoals.length === 0) return;
+    const hasSelections = selectedRisks.length > 0 && selectedInterventions.length > 0 && selectedGoals.length > 0;
+    const hasPriorities = riskCards.length > 0 && interventionCards.length > 0 && goalCards.length > 0;
+    
+    if (!hasSelections && !hasPriorities) return;
     
     setIsGenerating(true);
     try {
@@ -179,10 +252,17 @@ const CarmenRetentionMastery: React.FC = () => {
           topic: 'Advanced AI-powered retention with human approach',
           context: `Carmen Rodriguez needs to create advanced retention strategies that combine predictive AI insights with deeply human approaches to keeping best people engaged and growing.
           
-          Retention Risk Factors: ${selectedRisks.map(id => riskOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Intervention Strategies: ${selectedInterventions.map(id => interventionOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Strategic Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
+          ${priorityMode === 'prioritization' && riskCards.length > 0
+            ? `Priority Risk Factors: ${riskCards.slice(0, 3).map(c => `${c.priority}. ${c.title}`).join(', ')}`
+            : `Retention Risk Factors: ${selectedRisks.map(id => riskOptions.find(opt => opt.id === id)?.label).join(', ')}`}
+          ${priorityMode === 'prioritization' && interventionCards.length > 0
+            ? `Priority Intervention Strategies: ${interventionCards.slice(0, 3).map(c => `${c.priority}. ${c.title}`).join(', ')}`
+            : `Intervention Strategies: ${selectedInterventions.map(id => interventionOptions.find(opt => opt.id === id)?.label).join(', ')}`}
+          ${priorityMode === 'prioritization' && goalCards.length > 0
+            ? `Priority Strategic Goals: ${goalCards.slice(0, 3).map(c => `${c.priority}. ${c.title}`).join(', ')}`
+            : `Strategic Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}`}
           Success Metrics: ${selectedMetrics.map(id => metricsOptions.find(opt => opt.id === id)?.label).join(', ')}
+          ${priorityInsights ? `Priority Analysis: ${priorityInsights}` : ''}
           
           Create a retention mastery strategy using Carmen's philosophy: "True retention isn't about keeping people—it's about creating an environment where they choose to stay and flourish." Use the PREDICT-CONNECT-ELEVATE model with actionable implementation steps.`
         }
@@ -357,16 +437,29 @@ const CarmenRetentionMastery: React.FC = () => {
         {/* Mobile Tabbed Layout (visible only on mobile) */}
         <div className="lg:hidden mb-6">
           <div className="flex space-x-2 mb-4">
-            {['Options', 'Prompt', 'Results'].map((tab, index) => (
-              <Button
-                key={tab}
-                variant={currentStep === index ? "default" : "outline"}
-                onClick={() => setCurrentStep(index)}
-                className="flex-1 text-sm"
-              >
-                {tab}
-              </Button>
-            ))}
+            {priorityMode === 'selection' ? (
+              ['Selection', 'Prompt', 'Results'].map((tab, index) => (
+                <Button
+                  key={tab}
+                  variant={currentStep === index ? "default" : "outline"}
+                  onClick={() => setCurrentStep(index)}
+                  className="flex-1 text-sm"
+                >
+                  {tab}
+                </Button>
+              ))
+            ) : (
+              ['Prioritize', 'Prompt', 'Results'].map((tab, index) => (
+                <Button
+                  key={tab}
+                  variant={currentStep === index ? "default" : "outline"}
+                  onClick={() => setCurrentStep(index)}
+                  className="flex-1 text-sm"
+                >
+                  {tab}
+                </Button>
+              ))
+            )}
           </div>
         </div>
 
@@ -378,85 +471,170 @@ const CarmenRetentionMastery: React.FC = () => {
             "lg:block", 
             currentStep === 0 ? "block" : "hidden"
           )}>
-            {/* Risk Factors - Compact */}
-            <VisualOptionGrid
-              title="Risk Factors"
-              description="Warning signs to predict"
-              options={riskOptions}
-              selectedIds={selectedRisks}
-              onSelectionChange={setSelectedRisks}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+            {priorityMode === 'selection' ? (
+              <>
+                {/* Risk Factors - Compact */}
+                <VisualOptionGrid
+                  title="Risk Factors"
+                  description="Warning signs to predict"
+                  options={riskOptions}
+                  selectedIds={selectedRisks}
+                  onSelectionChange={setSelectedRisks}
+                  multiSelect={true}
+                  maxSelections={4}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Intervention Strategies - Compact */}
-            <VisualOptionGrid
-              title="Interventions"
-              description="Proactive strategies"
-              options={interventionOptions}
-              selectedIds={selectedInterventions}
-              onSelectionChange={setSelectedInterventions}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+                {/* Intervention Strategies - Compact */}
+                <VisualOptionGrid
+                  title="Interventions"
+                  description="Proactive strategies"
+                  options={interventionOptions}
+                  selectedIds={selectedInterventions}
+                  onSelectionChange={setSelectedInterventions}
+                  multiSelect={true}
+                  maxSelections={4}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Retention Goals - Compact */}
-            <VisualOptionGrid
-              title="Goals"
-              description="Target outcomes"
-              options={goalOptions}
-              selectedIds={selectedGoals}
-              onSelectionChange={setSelectedGoals}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+                {/* Retention Goals - Compact */}
+                <VisualOptionGrid
+                  title="Goals"
+                  description="Target outcomes"
+                  options={goalOptions}
+                  selectedIds={selectedGoals}
+                  onSelectionChange={setSelectedGoals}
+                  multiSelect={true}
+                  maxSelections={3}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Success Metrics - Compact */}
-            <VisualOptionGrid
-              title="Metrics"
-              description="Success measures"
-              options={metricsOptions}
-              selectedIds={selectedMetrics}
-              onSelectionChange={setSelectedMetrics}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+                {/* Success Metrics - Compact */}
+                <VisualOptionGrid
+                  title="Metrics"
+                  description="Success measures"
+                  options={metricsOptions}
+                  selectedIds={selectedMetrics}
+                  onSelectionChange={setSelectedMetrics}
+                  multiSelect={true}
+                  maxSelections={4}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Generate Button - Compact */}
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Button 
-                  onClick={generateRetentionStrategy}
-                  disabled={selectedRisks.length === 0 || selectedInterventions.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-base py-2"
-                  aria-label={isGenerating ? "Creating your advanced retention strategy" : "Generate advanced retention strategy using Carmen's PREDICT-CONNECT-ELEVATE model"}
-                  aria-describedby="retention-generation-status"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Shield className="w-4 h-4 mr-2 animate-pulse" aria-hidden="true" />
-                      <span aria-live="polite">Creating Strategy...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
-                      Generate Strategy
-                    </>
-                  )}
-                  <div id="retention-generation-status" className="sr-only">
-                    {isGenerating ? "AI is currently generating your personalized retention strategy. Please wait." : "Click to generate your retention strategy"}
-                  </div>
-                </Button>
-              </CardContent>
-            </Card>
+                {/* Proceed to Prioritization Button */}
+                <Card>
+                  <CardContent className="p-4 text-center space-y-3">
+                    <Button 
+                      onClick={handleProceedToPrioritization}
+                      disabled={selectedRisks.length === 0 || selectedInterventions.length === 0 || selectedGoals.length === 0}
+                      className="w-full nm-button nm-button-secondary text-base py-2"
+                      aria-label="Proceed to priority ranking with drag-and-drop interface"
+                    >
+                      <TrendingUp className="w-4 h-4 mr-2" aria-hidden="true" />
+                      Prioritize Selections
+                    </Button>
+                    
+                    <Button 
+                      onClick={generateRetentionStrategy}
+                      disabled={selectedRisks.length === 0 || selectedInterventions.length === 0 || selectedGoals.length === 0 || isGenerating}
+                      className="w-full nm-button nm-button-primary text-base py-2"
+                      aria-label={isGenerating ? "Creating your advanced retention strategy" : "Generate advanced retention strategy using Carmen's PREDICT-CONNECT-ELEVATE model"}
+                      aria-describedby="retention-generation-status"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Shield className="w-4 h-4 mr-2 animate-pulse" aria-hidden="true" />
+                          <span aria-live="polite">Creating Strategy...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
+                          Generate Strategy
+                        </>
+                      )}
+                      <div id="retention-generation-status" className="sr-only">
+                        {isGenerating ? "AI is currently generating your personalized retention strategy. Please wait." : "Click to generate your retention strategy"}
+                      </div>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
+            ) : (
+              <>
+                {/* Priority Card Systems */}
+                <PriorityCardSystem
+                  title="Risk Factor Priorities"
+                  description="Drag to rank retention risks by urgency"
+                  cards={riskCards}
+                  onCardsChange={setRiskCards}
+                  characterTheme="carmen"
+                  showImpactScore={true}
+                  compactMode={true}
+                  showPriorityTips={false}
+                  onPriorityChange={handlePriorityChange}
+                />
+
+                <PriorityCardSystem
+                  title="Intervention Priorities"
+                  description="Rank intervention strategies by implementation priority"
+                  cards={interventionCards}
+                  onCardsChange={setInterventionCards}
+                  characterTheme="carmen"
+                  showImpactScore={true}
+                  compactMode={true}
+                  showPriorityTips={false}
+                  onPriorityChange={handlePriorityChange}
+                />
+
+                <PriorityCardSystem
+                  title="Goal Priorities"
+                  description="Prioritize strategic retention objectives"
+                  cards={goalCards}
+                  onCardsChange={setGoalCards}
+                  characterTheme="carmen"
+                  showImpactScore={true}
+                  compactMode={true}
+                  showPriorityTips={false}
+                  onPriorityChange={handlePriorityChange}
+                />
+
+                {/* Action Buttons */}
+                <Card>
+                  <CardContent className="p-4 text-center space-y-3">
+                    <Button 
+                      onClick={() => setPriorityMode('selection')}
+                      variant="outline"
+                      className="w-full text-base py-2"
+                    >
+                      <ArrowDown className="w-4 h-4 mr-2" />
+                      Back to Selection
+                    </Button>
+                    
+                    <Button 
+                      onClick={generateRetentionStrategy}
+                      disabled={isGenerating}
+                      className="w-full nm-button nm-button-primary text-base py-2"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Shield className="w-4 h-4 mr-2 animate-pulse" />
+                          Creating Strategy...
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-4 h-4 mr-2" />
+                          Generate Prioritized Strategy
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </div>
 
           {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
@@ -488,8 +666,13 @@ const CarmenRetentionMastery: React.FC = () => {
                 <CardHeader className="pb-3">
                   <CardTitle className="flex items-center gap-2 text-lg">
                     <Award className="w-5 h-5 text-green-600" />
-                    Your Retention Strategy
+                    {priorityMode === 'prioritization' ? 'Your Prioritized Retention Strategy' : 'Your Retention Strategy'}
                   </CardTitle>
+                  {priorityMode === 'prioritization' && (
+                    <div className="text-sm text-gray-600">
+                      Strategy generated with priority-ranked elements
+                    </div>
+                  )}
                 </CardHeader>
                 <CardContent className="h-full">
                   <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
@@ -512,7 +695,9 @@ const CarmenRetentionMastery: React.FC = () => {
                     </div>
                     <h3 className="font-semibold text-gray-700">Strategy Awaiting Creation</h3>
                     <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-                      Make your selections on the left and click "Generate Strategy" to see Carmen's advanced retention framework.
+                      {priorityMode === 'selection' 
+                        ? "Make your selections and optionally prioritize them, then click 'Generate Strategy'."
+                        : "Finish prioritizing your elements and click 'Generate Prioritized Strategy'."}
                     </p>
                   </div>
                 </CardContent>
@@ -529,6 +714,7 @@ const CarmenRetentionMastery: React.FC = () => {
               className="nm-button nm-button-success text-white px-8 py-3"
               aria-label="Complete the retention strategy mastery workshop and return to Chapter 7"
             >
+              <Heart className="w-5 h-5 mr-2" />
               Complete Retention Strategy Mastery
             </Button>
           </div>
@@ -544,23 +730,6 @@ const CarmenRetentionMastery: React.FC = () => {
       {currentPhase === 'workshop' && renderWorkshopPhase()}
     </AnimatePresence>
   );
-      {/* Carmen's Character Guidance */}
-      <div className="max-w-6xl mx-auto mb-8">
-        <div className="bg-cyan-50 p-4 rounded-lg border border-cyan-200 mb-6">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-              <Shield className="w-5 h-5 text-purple-600" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-cyan-800">Carmen's Retention Mastery</h3>
-              <p className="text-cyan-700 text-sm">
-                "True retention isn't about keeping people—it's about creating an environment where they choose to stay and flourish. Let's master this together."
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-
 };
 
 export default CarmenRetentionMastery;

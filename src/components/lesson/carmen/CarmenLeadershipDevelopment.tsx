@@ -13,6 +13,8 @@ import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
+import { TimelineScenarioBuilder, TimelineMilestone, TimelineScenario } from '@/components/ui/interaction-patterns/TimelineScenarioBuilder';
+import { leadershipMilestoneTemplates, timelineUtils } from '@/utils/timelineUtils';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
@@ -41,6 +43,9 @@ const CarmenLeadershipDevelopment: React.FC = () => {
   const [generatedProgram, setGeneratedProgram] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
+  const [currentScenario, setCurrentScenario] = useState<TimelineScenario | null>(null);
+  const [selectedMilestones, setSelectedMilestones] = useState<TimelineMilestone[]>([]);
+  const [useTimelineBuilder, setUseTimelineBuilder] = useState(false);
 
   // Leadership challenge options
   const challengeOptions: OptionItem[] = [
@@ -174,7 +179,11 @@ const CarmenLeadershipDevelopment: React.FC = () => {
       {
         id: 'challenges',
         label: 'Leadership Challenges',
-        value: selectedChallenges.length > 0 ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: useTimelineBuilder && selectedMilestones.length > 0 
+          ? `Timeline milestones: ${selectedMilestones.filter(m => m.type === 'challenge').map(m => m.title).join(', ')}`
+          : selectedChallenges.length > 0 
+            ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` 
+            : '',
         type: 'data',
         color: 'border-l-red-400',
         required: false
@@ -182,7 +191,11 @@ const CarmenLeadershipDevelopment: React.FC = () => {
       {
         id: 'skills',
         label: 'Target Skills',
-        value: selectedSkills.length > 0 ? `Skills to develop: ${selectedSkills.map(id => skillOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: useTimelineBuilder && selectedMilestones.length > 0
+          ? `Skill development milestones: ${selectedMilestones.filter(m => m.type === 'skill').map(m => m.title).join(', ')}`
+          : selectedSkills.length > 0 
+            ? `Skills to develop: ${selectedSkills.map(id => skillOptions.find(opt => opt.id === id)?.label).join(', ')}` 
+            : '',
         type: 'instruction',
         color: 'border-l-blue-400',
         required: false
@@ -190,7 +203,11 @@ const CarmenLeadershipDevelopment: React.FC = () => {
       {
         id: 'goals',
         label: 'Leadership Goals',
-        value: selectedGoals.length > 0 ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: useTimelineBuilder && selectedMilestones.length > 0
+          ? `Goal milestones: ${selectedMilestones.filter(m => m.type === 'goal').map(m => m.title).join(', ')}`
+          : selectedGoals.length > 0 
+            ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` 
+            : '',
         type: 'instruction',
         color: 'border-l-green-400',
         required: false
@@ -198,15 +215,31 @@ const CarmenLeadershipDevelopment: React.FC = () => {
       {
         id: 'methods',
         label: 'Development Methods',
-        value: selectedMethods.length > 0 ? `Preferred methods: ${selectedMethods.map(id => methodOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        value: useTimelineBuilder && selectedMilestones.length > 0
+          ? `Method milestones: ${selectedMilestones.filter(m => m.type === 'method').map(m => m.title).join(', ')}`
+          : selectedMethods.length > 0 
+            ? `Preferred methods: ${selectedMethods.map(id => methodOptions.find(opt => opt.id === id)?.label).join(', ')}` 
+            : '',
         type: 'instruction',
         color: 'border-l-purple-400',
         required: false
       },
       {
+        id: 'timeline',
+        label: 'Timeline Structure',
+        value: useTimelineBuilder && currentScenario 
+          ? `Development timeline: ${currentScenario.duration} weeks with ${currentScenario.milestones.length} milestones. Critical path includes: ${timelineUtils.generateTimelineInsights(currentScenario).criticalPath.slice(0, 3).join(', ')}`
+          : '',
+        type: 'data',
+        color: 'border-l-cyan-400',
+        required: false
+      },
+      {
         id: 'format',
         label: 'Output Framework',
-        value: 'Create a comprehensive leadership development program with: 1) Leadership Assessment (capability analysis), 2) Development Programs (customized learning paths), 3) AI-Enhanced Coaching (intelligent guidance), 4) Succession Planning (pipeline development). Include specific activities, timelines, and success metrics.',
+        value: useTimelineBuilder 
+          ? 'Create a comprehensive leadership development program based on the timeline scenario with: 1) Timeline-based implementation plan, 2) Milestone-specific activities and success criteria, 3) AI-Enhanced coaching integration points, 4) Risk mitigation strategies for identified bottlenecks. Include specific timelines, dependencies, and measurable outcomes.'
+          : 'Create a comprehensive leadership development program with: 1) Leadership Assessment (capability analysis), 2) Development Programs (customized learning paths), 3) AI-Enhanced Coaching (intelligent guidance), 4) Succession Planning (pipeline development). Include specific activities, timelines, and success metrics.',
         type: 'format',
         color: 'border-l-gray-400',
         required: true
@@ -214,10 +247,22 @@ const CarmenLeadershipDevelopment: React.FC = () => {
     ];
     
     setPromptSegments(segments);
-  }, [selectedChallenges, selectedSkills, selectedGoals, selectedMethods]);
+  }, [selectedChallenges, selectedSkills, selectedGoals, selectedMethods, useTimelineBuilder, selectedMilestones, currentScenario]);
+
+  // Handle timeline scenario updates
+  const handleScenarioUpdate = (scenario: TimelineScenario) => {
+    setCurrentScenario(scenario);
+  };
+
+  const handleMilestoneSelection = (milestones: TimelineMilestone[]) => {
+    setSelectedMilestones(milestones);
+  };
 
   const generateLeadershipProgram = async () => {
-    if (selectedChallenges.length === 0 || selectedSkills.length === 0 || selectedGoals.length === 0) return;
+    const hasTraditionalSelections = selectedChallenges.length > 0 || selectedSkills.length > 0 || selectedGoals.length > 0;
+    const hasTimelineSelections = useTimelineBuilder && selectedMilestones.length > 0;
+    
+    if (!hasTraditionalSelections && !hasTimelineSelections) return;
     
     setIsGenerating(true);
     try {
@@ -226,14 +271,23 @@ const CarmenLeadershipDevelopment: React.FC = () => {
           characterType: 'carmen',
           contentType: 'development_plan',
           topic: 'Next-Generation Leadership Development with AI Coaching',
-          context: `Carmen Rodriguez needs to create a comprehensive leadership development program that leverages AI for coaching and development.
-          
-          Leadership Challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Target Skills: ${selectedSkills.map(id => skillOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Leadership Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Development Methods: ${selectedMethods.map(id => methodOptions.find(opt => opt.id === id)?.label).join(', ')}
-          
-          Create a comprehensive leadership development program that includes: 1) AI-powered leadership assessment and capabilities analysis, 2) Personalized development pathways with AI coaching, 3) Systematic leadership skill building with real-world application, 4) Succession planning and pipeline development. Focus on building leaders who can combine human intelligence with AI capabilities for exceptional results.`
+          context: useTimelineBuilder && currentScenario 
+            ? `Carmen Rodriguez needs to create a comprehensive leadership development program based on a ${currentScenario.duration}-week timeline scenario.
+            
+            Timeline Scenario: ${currentScenario.name} - ${currentScenario.description}
+            Selected Milestones: ${selectedMilestones.map(m => `${m.title} (Week ${m.timeframe}, ${m.type})`).join(', ')}
+            Critical Path: ${timelineUtils.generateTimelineInsights(currentScenario).criticalPath.join(', ')}
+            Risk Factors: ${timelineUtils.generateTimelineInsights(currentScenario).riskFactors.map(r => r.description).join(', ')}
+            
+            Create a timeline-based leadership development program that includes: 1) Week-by-week implementation plan following the timeline, 2) Milestone-specific activities and success criteria, 3) AI-enhanced coaching integration at key points, 4) Risk mitigation strategies for identified bottlenecks, 5) Dependencies and prerequisites management. Focus on practical implementation with measurable outcomes.`
+            : `Carmen Rodriguez needs to create a comprehensive leadership development program that leverages AI for coaching and development.
+            
+            Leadership Challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}
+            Target Skills: ${selectedSkills.map(id => skillOptions.find(opt => opt.id === id)?.label).join(', ')}
+            Leadership Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
+            Development Methods: ${selectedMethods.map(id => methodOptions.find(opt => opt.id === id)?.label).join(', ')}
+            
+            Create a comprehensive leadership development program that includes: 1) AI-powered leadership assessment and capabilities analysis, 2) Personalized development pathways with AI coaching, 3) Systematic leadership skill building with real-world application, 4) Succession planning and pipeline development. Focus on building leaders who can combine human intelligence with AI capabilities for exceptional results.`
         }
       });
 
@@ -419,6 +473,31 @@ const CarmenLeadershipDevelopment: React.FC = () => {
           </div>
         </div>
 
+        {/* Builder Mode Toggle */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="bg-white rounded-lg p-2 shadow-sm border">
+            <div className="flex items-center space-x-2">
+              <Button
+                variant={!useTimelineBuilder ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseTimelineBuilder(false)}
+                className="text-sm"
+              >
+                Traditional Builder
+              </Button>
+              <Button
+                variant={useTimelineBuilder ? "default" : "outline"}
+                size="sm"
+                onClick={() => setUseTimelineBuilder(true)}
+                className="text-sm"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                Timeline Builder
+              </Button>
+            </div>
+          </div>
+        </div>
+
         {/* Three-Panel Viewport Optimized Layout */}
         <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
           {/* Left Panel - Option Selection (4 columns on desktop) */}
@@ -427,85 +506,130 @@ const CarmenLeadershipDevelopment: React.FC = () => {
             "lg:block", 
             currentStep === 0 ? "block" : "hidden"
           )}>
-            {/* Leadership Challenges - Compact */}
-            <VisualOptionGrid
-              title="Challenges"
-              description="Leadership situations"
-              options={challengeOptions}
-              selectedIds={selectedChallenges}
-              onSelectionChange={setSelectedChallenges}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+            {useTimelineBuilder ? (
+              /* Timeline Scenario Builder */
+              <div className="space-y-4">
+                <TimelineScenarioBuilder
+                  title="Leadership Development Timeline"
+                  description="Create your leadership journey with interactive milestones"
+                  availableMilestones={leadershipMilestoneTemplates}
+                  onScenarioUpdate={handleScenarioUpdate}
+                  onMilestoneSelection={handleMilestoneSelection}
+                  characterTheme="carmen"
+                  maxDuration={52}
+                  enableComparison={true}
+                  enableSimulation={true}
+                  className="max-h-none"
+                />
+                
+                {/* Generate Button for Timeline */}
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <Button 
+                      onClick={generateLeadershipProgram}
+                      disabled={selectedMilestones.length === 0 || isGenerating}
+                      className="w-full nm-button nm-button-primary text-base py-2"
+                      aria-label={isGenerating ? "Creating your timeline-based leadership development program" : "Generate timeline-based leadership development program"}
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                          <span aria-live="polite">Carmen is designing your timeline program...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
+                          Create Timeline Leadership Program
+                        </>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </div>
+            ) : (
+              /* Traditional Option Grids */
+              <>
+                {/* Leadership Challenges - Compact */}
+                <VisualOptionGrid
+                  title="Challenges"
+                  description="Leadership situations"
+                  options={challengeOptions}
+                  selectedIds={selectedChallenges}
+                  onSelectionChange={setSelectedChallenges}
+                  multiSelect={true}
+                  maxSelections={3}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Leadership Skills - Compact */}
-            <VisualOptionGrid
-              title="Skills"
-              description="Capabilities to build"
-              options={skillOptions}
-              selectedIds={selectedSkills}
-              onSelectionChange={setSelectedSkills}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+                {/* Leadership Skills - Compact */}
+                <VisualOptionGrid
+                  title="Skills"
+                  description="Capabilities to build"
+                  options={skillOptions}
+                  selectedIds={selectedSkills}
+                  onSelectionChange={setSelectedSkills}
+                  multiSelect={true}
+                  maxSelections={4}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Leadership Goals - Compact */}
-            <VisualOptionGrid
-              title="Goals"
-              description="Leadership outcomes"
-              options={goalOptions}
-              selectedIds={selectedGoals}
-              onSelectionChange={setSelectedGoals}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+                {/* Leadership Goals - Compact */}
+                <VisualOptionGrid
+                  title="Goals"
+                  description="Leadership outcomes"
+                  options={goalOptions}
+                  selectedIds={selectedGoals}
+                  onSelectionChange={setSelectedGoals}
+                  multiSelect={true}
+                  maxSelections={3}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Development Methods - Compact */}
-            <VisualOptionGrid
-              title="Methods"
-              description="How to learn and develop"
-              options={methodOptions}
-              selectedIds={selectedMethods}
-              onSelectionChange={setSelectedMethods}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
+                {/* Development Methods - Compact */}
+                <VisualOptionGrid
+                  title="Methods"
+                  description="How to learn and develop"
+                  options={methodOptions}
+                  selectedIds={selectedMethods}
+                  onSelectionChange={setSelectedMethods}
+                  multiSelect={true}
+                  maxSelections={4}
+                  gridCols={1}
+                  characterTheme="carmen"
+                />
 
-            {/* Generate Button - Compact */}
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Button 
-                  onClick={generateLeadershipProgram}
-                  disabled={selectedChallenges.length === 0 || selectedSkills.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-base py-2"
-                  aria-label={isGenerating ? "Creating your leadership development program" : "Generate comprehensive leadership development program with AI-enhanced coaching"}
-                  aria-describedby="leadership-generation-status"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
-                      <span aria-live="polite">Carmen is designing your leadership program...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Create Leadership Development Program
-                    </>
-                  )}
-                  <div id="leadership-generation-status" className="sr-only">
-                    {isGenerating ? "AI is currently generating your leadership development program. Please wait." : "Click to generate your leadership program"}
-                  </div>
-                </Button>
-              </CardContent>
-            </Card>
+                {/* Generate Button - Compact */}
+                <Card>
+                  <CardContent className="p-4 text-center">
+                    <Button 
+                      onClick={generateLeadershipProgram}
+                      disabled={selectedChallenges.length === 0 || selectedSkills.length === 0 || selectedGoals.length === 0 || isGenerating}
+                      className="w-full nm-button nm-button-primary text-base py-2"
+                      aria-label={isGenerating ? "Creating your leadership development program" : "Generate comprehensive leadership development program with AI-enhanced coaching"}
+                      aria-describedby="leadership-generation-status"
+                    >
+                      {isGenerating ? (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                          <span aria-live="polite">Carmen is designing your leadership program...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
+                          Create Leadership Development Program
+                        </>
+                      )}
+                      <div id="leadership-generation-status" className="sr-only">
+                        {isGenerating ? "AI is currently generating your leadership development program. Please wait." : "Click to generate your leadership program"}
+                      </div>
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </div>
 
           {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
