@@ -3,13 +3,91 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Shield, Heart, TrendingUp, Award, Copy, Download } from 'lucide-react';
+import { CheckCircle, Shield, Heart, TrendingUp, Award, Copy, Download, Wand2 } from 'lucide-react';
+import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
+import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
+import { FloatingLyraAvatar } from '@/components/lesson/FloatingLyraAvatar';
 
 const CarmenRetentionMastery: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');
   const [isCompleted, setIsCompleted] = useState(false);
+  const [narrativePaused, setNarrativePaused] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [aiContent, setAiContent] = useState<{
+    retentionAnalysis?: string;
+    interventionPlan?: string;
+    careerPathway?: string;
+  }>({});
+  const [generatingContent, setGeneratingContent] = useState<string | null>(null);
+  
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { callAI, loading } = useAITestingAssistant();
+
+  const generateAIContent = async (type: 'retention-analysis' | 'intervention-plan' | 'career-pathway') => {
+    setGeneratingContent(type);
+    try {
+      let prompt = '';
+      let context = 'Carmen creates advanced retention strategies that combine predictive AI insights with deeply human approaches to keeping best people engaged and growing, focusing on proactive interventions and personalized career development.';
+      
+      switch (type) {
+        case 'retention-analysis':
+          prompt = 'Create a comprehensive retention risk analysis that identifies early warning signs, engagement patterns, and predictive indicators for flight risk';
+          break;
+        case 'intervention-plan':
+          prompt = 'Generate a personalized intervention plan for high-value team members at risk, including immediate actions, strategic offers, and long-term retention strategies';
+          break;
+        case 'career-pathway':
+          prompt = 'Design customized career development pathways that align individual aspirations with organizational needs and create compelling reasons to stay and grow';
+          break;
+      }
+      
+      const result = await callAI('retention-tool', prompt, context, 'carmen');
+      
+      setAiContent(prev => ({
+        ...prev,
+        [type.replace('-', '')]: result
+      }));
+      
+      toast({
+        title: "AI Content Generated!",
+        description: `Carmen's ${type.replace('-', ' ')} has been created with predictive insight and human wisdom.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Generation Failed",
+        description: "Could not generate content. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingContent(null);
+    }
+  };
+
+  const copyContent = (content: string, type: string) => {
+    navigator.clipboard.writeText(content);
+    toast({
+      title: "Copied!",
+      description: `${type} copied to clipboard.`,
+    });
+  };
+
+  const downloadContent = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Downloaded!",
+      description: `${filename} has been downloaded.`,
+    });
+  };
 
   const handlePhaseComplete = (phase: string) => {
     if (phase === 'intro') {
@@ -47,6 +125,30 @@ const CarmenRetentionMastery: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6">
+      {/* Carmen's Character Guidance */}
+      <div className="max-w-6xl mx-auto mb-8">
+        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+              <Shield className="w-5 h-5 text-orange-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-amber-800">Carmen's Retention Mastery</h3>
+              <p className="text-amber-700 text-sm">
+                "True retention isn't about keeping people—it's about creating an environment where they choose to stay and flourish. Let's master this together."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Carmen's Floating Avatar */}
+      <FloatingLyraAvatar
+        position="bottom-right"
+        className="z-40"
+        disabled={showChat}
+      />
+
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

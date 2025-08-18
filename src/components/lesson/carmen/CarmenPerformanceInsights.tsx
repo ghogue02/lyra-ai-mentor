@@ -3,13 +3,91 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, TrendingUp, Heart, BarChart3, Users, Copy, Download } from 'lucide-react';
+import { CheckCircle, TrendingUp, Heart, BarChart3, Users, Copy, Download, Wand2 } from 'lucide-react';
+import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
+import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
+import { FloatingLyraAvatar } from '@/components/lesson/FloatingLyraAvatar';
 
 const CarmenPerformanceInsights: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');
   const [isCompleted, setIsCompleted] = useState(false);
+  const [narrativePaused, setNarrativePaused] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [aiContent, setAiContent] = useState<{
+    performanceReview?: string;
+    developmentPlan?: string;
+    feedbackScript?: string;
+  }>({});
+  const [generatingContent, setGeneratingContent] = useState<string | null>(null);
+  
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { callAI, loading } = useAITestingAssistant();
+
+  const generateAIContent = async (type: 'performance-review' | 'development-plan' | 'feedback-script') => {
+    setGeneratingContent(type);
+    try {
+      let prompt = '';
+      let context = 'Carmen creates performance conversations that combine objective data analysis with meaningful human development, focusing on growth and potential rather than criticism.';
+      
+      switch (type) {
+        case 'performance-review':
+          prompt = 'Create a comprehensive performance review template that balances objective metrics with growth-focused feedback, emphasizing strengths and development opportunities';
+          break;
+        case 'development-plan':
+          prompt = 'Generate a personalized development plan that identifies growth areas, learning opportunities, and career progression pathways based on individual strengths and aspirations';
+          break;
+        case 'feedback-script':
+          prompt = 'Create a conversation script for delivering performance feedback that maintains psychological safety while encouraging growth and improvement';
+          break;
+      }
+      
+      const result = await callAI('performance-tool', prompt, context, 'carmen');
+      
+      setAiContent(prev => ({
+        ...prev,
+        [type.replace('-', '')]: result
+      }));
+      
+      toast({
+        title: "AI Content Generated!",
+        description: `Carmen's ${type.replace('-', ' ')} has been created with empathy and insight.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Generation Failed",
+        description: "Could not generate content. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingContent(null);
+    }
+  };
+
+  const copyContent = (content: string, type: string) => {
+    navigator.clipboard.writeText(content);
+    toast({
+      title: "Copied!",
+      description: `${type} copied to clipboard.`,
+    });
+  };
+
+  const downloadContent = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Downloaded!",
+      description: `${filename} has been downloaded.`,
+    });
+  };
 
   const handlePhaseComplete = (phase: string) => {
     if (phase === 'intro') {
@@ -47,6 +125,30 @@ const CarmenPerformanceInsights: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6">
+      {/* Carmen's Character Guidance */}
+      <div className="max-w-6xl mx-auto mb-8">
+        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+              <BarChart3 className="w-5 h-5 text-orange-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-amber-800">Carmen's Performance Wisdom</h3>
+              <p className="text-amber-700 text-sm">
+                "Performance conversations should light up potential, not dim spirits. Let's create reviews that truly transform people."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Carmen's Floating Avatar */}
+      <FloatingLyraAvatar
+        position="bottom-right"
+        className="z-40"
+        disabled={showChat}
+      />
+
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">

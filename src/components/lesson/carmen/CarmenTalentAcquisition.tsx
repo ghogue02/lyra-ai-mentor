@@ -3,13 +3,91 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/components/ui/use-toast';
 import { useNavigate } from 'react-router-dom';
-import { CheckCircle, Users, Target, Brain, Heart } from 'lucide-react';
+import { CheckCircle, Users, Target, Brain, Heart, Copy, Download, Wand2 } from 'lucide-react';
+import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
+import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
+import { FloatingLyraAvatar } from '@/components/lesson/FloatingLyraAvatar';
 
 const CarmenTalentAcquisition: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');
   const [isCompleted, setIsCompleted] = useState(false);
+  const [narrativePaused, setNarrativePaused] = useState(false);
+  const [showChat, setShowChat] = useState(false);
+  const [aiContent, setAiContent] = useState<{
+    jobDescription?: string;
+    interviewQuestions?: string;
+    candidateAnalysis?: string;
+  }>({});
+  const [generatingContent, setGeneratingContent] = useState<string | null>(null);
+  
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { callAI, loading } = useAITestingAssistant();
+
+  const generateAIContent = async (type: 'job-description' | 'interview-questions' | 'candidate-analysis') => {
+    setGeneratingContent(type);
+    try {
+      let prompt = '';
+      let context = 'Carmen is helping create compassionate, bias-free hiring processes that combine AI efficiency with human empathy.';
+      
+      switch (type) {
+        case 'job-description':
+          prompt = 'Create an inclusive job description for a Program Manager role that removes bias, emphasizes skills over requirements, and attracts diverse candidates';
+          break;
+        case 'interview-questions':
+          prompt = 'Generate behavioral interview questions that assess capability while reducing unconscious bias, focusing on growth mindset and values alignment';
+          break;
+        case 'candidate-analysis':
+          prompt = 'Create a sample candidate evaluation that demonstrates objective skill assessment while highlighting potential and cultural fit';
+          break;
+      }
+      
+      const result = await callAI('hiring-tool', prompt, context, 'carmen');
+      
+      setAiContent(prev => ({
+        ...prev,
+        [type.replace('-', '')]: result
+      }));
+      
+      toast({
+        title: "AI Content Generated!",
+        description: `Carmen's ${type.replace('-', ' ')} has been created with empathy and precision.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Generation Failed",
+        description: "Could not generate content. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setGeneratingContent(null);
+    }
+  };
+
+  const copyContent = (content: string, type: string) => {
+    navigator.clipboard.writeText(content);
+    toast({
+      title: "Copied!",
+      description: `${type} copied to clipboard.`,
+    });
+  };
+
+  const downloadContent = (content: string, filename: string) => {
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    
+    toast({
+      title: "Downloaded!",
+      description: `${filename} has been downloaded.`,
+    });
+  };
 
   const handlePhaseComplete = (phase: string) => {
     if (phase === 'intro') {
@@ -47,6 +125,30 @@ const CarmenTalentAcquisition: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-amber-50 p-6">
+      {/* Carmen's Character Guidance */}
+      <div className="max-w-6xl mx-auto mb-8">
+        <div className="bg-amber-50 p-4 rounded-lg border border-amber-200 mb-6">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center">
+              <Heart className="w-5 h-5 text-orange-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-amber-800">Carmen's Guidance</h3>
+              <p className="text-amber-700 text-sm">
+                "Let's work together to create hiring processes that honor both efficiency and humanity. I'll guide you through each step."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Carmen's Floating Avatar */}
+      <FloatingLyraAvatar
+        position="bottom-right"
+        className="z-40"
+        disabled={showChat}
+      />
+
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -165,33 +267,114 @@ const CarmenTalentAcquisition: React.FC = () => {
                   
                   <div className="grid md:grid-cols-3 gap-4">
                     <div className="bg-white p-4 rounded border">
-                      <h4 className="font-medium text-orange-800 mb-2">Step 1: Job Description</h4>
-                      <p className="text-sm text-gray-600 mb-2">AI analyzes language for bias</p>
-                      <div className="bg-green-50 p-2 rounded text-sm">
-                        ✅ Inclusive language detected<br/>
-                        ✅ Skills-focused requirements<br/>
-                        ✅ Growth mindset emphasized
-                      </div>
+                      <h4 className="font-medium text-orange-800 mb-2">Step 1: AI Job Description</h4>
+                      <p className="text-sm text-gray-600 mb-2">Generate bias-free, inclusive job descriptions</p>
+                      <Button
+                        onClick={() => generateAIContent('job-description')}
+                        disabled={generatingContent === 'job-description'}
+                        className="w-full mb-3 text-xs"
+                        variant="outline"
+                      >
+                        <Wand2 className="w-3 h-3 mr-1" />
+                        {generatingContent === 'job-description' ? 'Generating...' : 'Generate Job Description'}
+                      </Button>
+                      {aiContent.jobDescription && (
+                        <div className="space-y-2">
+                          <div className="bg-green-50 p-2 rounded text-xs max-h-32 overflow-y-auto">
+                            <AIContentDisplay content={aiContent.jobDescription} />
+                          </div>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => copyContent(aiContent.jobDescription!, 'Job Description')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => downloadContent(aiContent.jobDescription!, 'job-description.txt')}
+                            >
+                              <Download className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     
                     <div className="bg-white p-4 rounded border">
-                      <h4 className="font-medium text-orange-800 mb-2">Step 2: Screening</h4>
-                      <p className="text-sm text-gray-600 mb-2">AI matches skills, removes bias</p>
-                      <div className="bg-blue-50 p-2 rounded text-sm">
-                        📊 85% skill match<br/>
-                        🎯 Diverse candidate pool<br/>
-                        💡 Hidden gems identified
-                      </div>
+                      <h4 className="font-medium text-orange-800 mb-2">Step 2: Interview Questions</h4>
+                      <p className="text-sm text-gray-600 mb-2">AI-powered bias-free interview questions</p>
+                      <Button
+                        onClick={() => generateAIContent('interview-questions')}
+                        disabled={generatingContent === 'interview-questions'}
+                        className="w-full mb-3 text-xs"
+                        variant="outline"
+                      >
+                        <Wand2 className="w-3 h-3 mr-1" />
+                        {generatingContent === 'interview-questions' ? 'Generating...' : 'Generate Questions'}
+                      </Button>
+                      {aiContent.interviewQuestions && (
+                        <div className="space-y-2">
+                          <div className="bg-blue-50 p-2 rounded text-xs max-h-32 overflow-y-auto">
+                            <AIContentDisplay content={aiContent.interviewQuestions} />
+                          </div>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => copyContent(aiContent.interviewQuestions!, 'Interview Questions')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => downloadContent(aiContent.interviewQuestions!, 'interview-questions.txt')}
+                            >
+                              <Download className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     
                     <div className="bg-white p-4 rounded border">
-                      <h4 className="font-medium text-orange-800 mb-2">Step 3: Human Touch</h4>
-                      <p className="text-sm text-gray-600 mb-2">Personal connection and values alignment</p>
-                      <div className="bg-purple-50 p-2 rounded text-sm">
-                        💬 Empathetic interviews<br/>
-                        🤝 Cultural fit assessment<br/>
-                        ❤️ Candidate experience focus
-                      </div>
+                      <h4 className="font-medium text-orange-800 mb-2">Step 3: Candidate Analysis</h4>
+                      <p className="text-sm text-gray-600 mb-2">Objective evaluation with human empathy</p>
+                      <Button
+                        onClick={() => generateAIContent('candidate-analysis')}
+                        disabled={generatingContent === 'candidate-analysis'}
+                        className="w-full mb-3 text-xs"
+                        variant="outline"
+                      >
+                        <Wand2 className="w-3 h-3 mr-1" />
+                        {generatingContent === 'candidate-analysis' ? 'Generating...' : 'Generate Analysis'}
+                      </Button>
+                      {aiContent.candidateAnalysis && (
+                        <div className="space-y-2">
+                          <div className="bg-purple-50 p-2 rounded text-xs max-h-32 overflow-y-auto">
+                            <AIContentDisplay content={aiContent.candidateAnalysis} />
+                          </div>
+                          <div className="flex gap-1">
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => copyContent(aiContent.candidateAnalysis!, 'Candidate Analysis')}
+                            >
+                              <Copy className="w-3 h-3" />
+                            </Button>
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => downloadContent(aiContent.candidateAnalysis!, 'candidate-analysis.txt')}
+                            >
+                              <Download className="w-3 h-3" />
+                            </Button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
