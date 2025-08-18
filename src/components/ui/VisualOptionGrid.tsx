@@ -150,15 +150,15 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
   return (
     <Card className={cn('w-full nm-card', className)}>
       <CardContent className="p-6">
-        {/* Header */}
-        <div className="mb-6">
-          <h3 className="text-lg font-semibold mb-2 nm-text-primary">{title}</h3>
+        {/* Header - Compact */}
+        <div className="mb-4">
+          <h3 className="text-lg font-semibold mb-2 nm-text-primary leading-tight">{title}</h3>
           {description && (
-            <p className="text-sm mb-4 nm-text-secondary">{description}</p>
+            <p className="text-sm mb-3 nm-text-secondary leading-relaxed">{description}</p>
           )}
           
           {/* Selection Summary */}
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between mt-4">
             <div className="flex items-center gap-2">
               {selectedIds.length > 0 && (
                 <Badge variant="secondary">
@@ -221,7 +221,7 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
                     transition={{ duration: 0.2 }}
-                    className={cn('grid gap-3', gridColsClass[gridCols])}
+                    className={cn('grid gap-4', gridColsClass[gridCols])}
                   >
                     {categoryOptions.map((option, index) => {
                       const isSelected = selectedIds.includes(option.id);
@@ -237,8 +237,9 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
                           onClick={() => handleOptionClick(option.id)}
                           disabled={isDisabled || isMaxedOut}
                           className={cn(
-                            'relative p-4 rounded-lg border-2 text-left transition-all duration-200',
+                            'relative p-3 rounded-lg border-2 text-left transition-all duration-200',
                             'nm-button focus:outline-none focus:ring-2 focus:ring-offset-2',
+                            'min-h-[80px] space-y-1',
                             isSelected ? theme.selected : theme.secondary,
                             (isDisabled || isMaxedOut) && 'opacity-50 cursor-not-allowed',
                             'group'
@@ -260,42 +261,42 @@ export const VisualOptionGrid: React.FC<VisualOptionGridProps> = ({
                           </div>
 
                           {/* Option Content */}
-                          <div className="pr-8">
+                          <div className="pr-8 space-y-1">
                             {option.icon && (
-                              <div className="mb-2">
+                              <div className="flex items-center justify-start">
                                 {typeof option.icon === 'string' ? (
                                   <img 
                                     src={getCarmenManagementIconUrl(option.icon as any)} 
                                     alt={option.label}
-                                    className="w-6 h-6 object-contain"
+                                    className="w-8 h-8 object-contain"
                                   />
                                 ) : (
-                                  <div className="text-xl">{option.icon}</div>
+                                  <div className="text-2xl">{option.icon}</div>
                                 )}
                               </div>
                             )}
                             
-                            <div className="flex items-start gap-2 mb-2">
-                              <h4 className="font-semibold text-sm nm-text-primary group-hover:opacity-80">
+                            <div className="flex items-start gap-2">
+                              <h4 className="font-semibold text-sm nm-text-primary group-hover:opacity-80 leading-tight flex-1">
                                 {option.label}
                               </h4>
                               {option.recommended && (
-                                <Badge variant="secondary" className="text-xs">
-                                  Recommended
+                                <Badge variant="secondary" className="text-xs px-1 py-0 shrink-0">
+                                  Rec
                                 </Badge>
                               )}
                             </div>
                             
                             {option.description && (
-                              <p className="text-xs mb-2 nm-text-secondary">
+                              <p className="text-xs nm-text-secondary leading-relaxed">
                                 {option.description}
                               </p>
                             )}
                             
                             {option.tags && option.tags.length > 0 && (
-                              <div className="flex flex-wrap gap-1">
+                              <div className="flex flex-wrap gap-2">
                                 {option.tags.map(tag => (
-                                  <Badge key={tag} variant="outline" className="text-xs">
+                                  <Badge key={tag} variant="outline" className="text-sm px-2 py-1">
                                     {tag}
                                   </Badge>
                                 ))}

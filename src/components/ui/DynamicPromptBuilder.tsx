@@ -173,7 +173,7 @@ export const DynamicPromptBuilder: React.FC<DynamicPromptBuilderProps> = ({
             />
           </div>
           
-          <p className="text-sm text-gray-600 mt-2">
+          <p className="text-base text-gray-600 mt-3 leading-relaxed">
             Watch how your selections build the AI prompt in real-time
           </p>
         </CardHeader>
@@ -186,7 +186,7 @@ export const DynamicPromptBuilder: React.FC<DynamicPromptBuilderProps> = ({
               Prompt Components
             </h4>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {segments.map((segment, index) => (
                 <motion.div
                   key={segment.id}
@@ -194,7 +194,7 @@ export const DynamicPromptBuilder: React.FC<DynamicPromptBuilderProps> = ({
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
                   className={cn(
-                    'p-3 rounded-lg border-l-4 nm-surface shadow-sm',
+                    'p-4 rounded-lg border-l-4 nm-surface shadow-sm space-y-2',
                     segment.value.trim() ? segment.color + ' border-opacity-100' : 'border-gray-200 border-opacity-50'
                   )}
                 >
@@ -228,16 +228,16 @@ export const DynamicPromptBuilder: React.FC<DynamicPromptBuilderProps> = ({
                     />
                   </div>
                   
-                  <h5 className="font-medium text-sm text-gray-900 mb-1">
+                  <h5 className="font-medium text-base text-gray-900 mb-2">
                     {segment.label}
                   </h5>
                   
                   {segment.value.trim() ? (
-                    <p className="text-xs text-gray-600 italic line-clamp-2">
+                    <p className="text-sm text-gray-600 italic leading-relaxed break-words">
                       "{segment.value}"
                     </p>
                   ) : (
-                    <p className="text-xs text-gray-400">
+                    <p className="text-sm text-gray-400">
                       Not yet configured
                     </p>
                   )}
@@ -278,7 +278,7 @@ export const DynamicPromptBuilder: React.FC<DynamicPromptBuilderProps> = ({
             </div>
             
             <div className={cn('bg-gradient-to-br', theme.gradient, 'p-4 rounded-lg border nm-surface-elevated')}>
-              <pre className="text-xs whitespace-pre-wrap font-mono max-h-64 overflow-y-auto nm-text-secondary">
+              <pre className="text-sm leading-relaxed whitespace-pre-wrap font-mono nm-text-secondary">
                 {finalPrompt || 'Configure the segments above to see your AI prompt...'}
               </pre>
             </div>

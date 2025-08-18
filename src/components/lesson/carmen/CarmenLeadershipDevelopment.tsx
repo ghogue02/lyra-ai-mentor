@@ -10,12 +10,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
-import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
+import { cn } from '@/lib/utils';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -306,7 +307,7 @@ const CarmenLeadershipDevelopment: React.FC = () => {
                   <div className="w-12 h-12 mx-auto mb-3">
                     <VideoAnimation
                       src={getAnimationUrl(item.animation)}
-                      fallbackIcon={item.fallback}
+                      fallbackIcon={<img src={getCarmenManagementIconUrl('retentionLeadership')} alt="Leadership Development" className="w-8 h-8" />}
                       className="w-full h-full"
                       context="character"
                     />
@@ -320,19 +321,32 @@ const CarmenLeadershipDevelopment: React.FC = () => {
           ))}
         </div>
 
-        {/* Begin Button */}
-        <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+        {/* Navigation and Begin Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          {/* Back to Chapter 7 Button */}
           <Button 
-            onClick={() => setCurrentPhase('narrative')}
-            size="lg"
-            className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
-            aria-label="Start Carmen's leadership development journey - Learn to develop next-generation leaders with AI-enhanced coaching and systematic skill building"
+            onClick={() => navigate('/chapter/7')}
+            variant="outline"
+            className="nm-button nm-button-secondary px-6 py-3"
+            aria-label="Return to Chapter 7 main page"
           >
-            <Play className="w-5 h-5 mr-2" aria-hidden="true" />
-            Begin Carmen's Leadership Journey
-            <span className="sr-only">This workshop teaches comprehensive leadership development using AI coaching and systematic skill building</span>
+            Back to Chapter 7
           </Button>
+          
+          {/* Begin Button */}
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+            <Button 
+              onClick={() => setCurrentPhase('narrative')}
+              size="lg"
+              className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
+              aria-label="Start Carmen's leadership development journey - Learn to develop next-generation leaders with AI-enhanced coaching and systematic skill building"
+            >
+              <Play className="w-5 h-5 mr-2" aria-hidden="true" />
+              Begin Carmen's Leadership Journey
+              <span className="sr-only">This workshop teaches comprehensive leadership development using AI coaching and systematic skill building</span>
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -389,70 +403,89 @@ const CarmenLeadershipDevelopment: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Side - Configuration */}
-          <div className="space-y-6">
-            {/* Leadership Challenges */}
+        {/* Mobile Tabbed Layout (visible only on mobile) */}
+        <div className="lg:hidden mb-6">
+          <div className="flex space-x-2 mb-4">
+            {['Options', 'Prompt', 'Results'].map((tab, index) => (
+              <Button
+                key={tab}
+                variant={currentStep === index ? "default" : "outline"}
+                onClick={() => setCurrentStep(index)}
+                className="flex-1 text-sm"
+              >
+                {tab}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Three-Panel Viewport Optimized Layout */}
+        <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
+          {/* Left Panel - Option Selection (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 space-y-4 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pr-4",
+            "lg:block", 
+            currentStep === 0 ? "block" : "hidden"
+          )}>
+            {/* Leadership Challenges - Compact */}
             <VisualOptionGrid
-              title="Leadership Challenges"
-              description="What leadership situations do you want to improve?"
+              title="Challenges"
+              description="Leadership situations"
               options={challengeOptions}
               selectedIds={selectedChallenges}
               onSelectionChange={setSelectedChallenges}
               multiSelect={true}
               maxSelections={3}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
-              enableCustom={true}
-              customPlaceholder="Add your own challenge..."
             />
 
-            {/* Leadership Skills */}
+            {/* Leadership Skills - Compact */}
             <VisualOptionGrid
-              title="Leadership Skills to Develop"
-              description="Which leadership capabilities do you want to build?"
+              title="Skills"
+              description="Capabilities to build"
               options={skillOptions}
               selectedIds={selectedSkills}
               onSelectionChange={setSelectedSkills}
               multiSelect={true}
               maxSelections={4}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Leadership Goals */}
+            {/* Leadership Goals - Compact */}
             <VisualOptionGrid
-              title="Leadership Goals"
-              description="What leadership outcomes do you want to achieve?"
+              title="Goals"
+              description="Leadership outcomes"
               options={goalOptions}
               selectedIds={selectedGoals}
               onSelectionChange={setSelectedGoals}
               multiSelect={true}
               maxSelections={3}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Development Methods */}
+            {/* Development Methods - Compact */}
             <VisualOptionGrid
-              title="Development Methods"
-              description="How do you prefer to learn and develop?"
+              title="Methods"
+              description="How to learn and develop"
               options={methodOptions}
               selectedIds={selectedMethods}
               onSelectionChange={setSelectedMethods}
               multiSelect={true}
               maxSelections={4}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Generate Button */}
+            {/* Generate Button - Compact */}
             <Card>
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-4 text-center">
                 <Button 
                   onClick={generateLeadershipProgram}
                   disabled={selectedChallenges.length === 0 || selectedSkills.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-lg py-3"
+                  className="w-full nm-button nm-button-primary text-base py-2"
                   aria-label={isGenerating ? "Creating your leadership development program" : "Generate comprehensive leadership development program with AI-enhanced coaching"}
                   aria-describedby="leadership-generation-status"
                 >
@@ -475,8 +508,12 @@ const CarmenLeadershipDevelopment: React.FC = () => {
             </Card>
           </div>
 
-          {/* Right Side - Framework & Results */}
-          <div className="space-y-6">
+          {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 lg:sticky lg:top-4 lg:self-start max-h-[calc(100vh-18rem)] overflow-y-auto lg:px-4",
+            "lg:block",
+            currentStep === 1 ? "block" : "hidden"
+          )}>
             {/* Dynamic Prompt Builder */}
             <DynamicPromptBuilder
               segments={promptSegments}
@@ -485,18 +522,26 @@ const CarmenLeadershipDevelopment: React.FC = () => {
               showCopyButton={true}
               autoUpdate={true}
             />
+          </div>
 
-            {/* Generated Program */}
-            {generatedProgram && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+          {/* Right Panel - Results (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 space-y-6 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pl-4",
+            "lg:block",
+            currentStep === 2 ? "block" : "hidden"
+          )}>
+
+            {/* Generated Program - Full Height */}
+            {generatedProgram ? (
+              <Card className="h-full">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     <Crown className="w-5 h-5 text-green-600" />
-                    Your Leadership Development Program
+                    Your Leadership Program
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                <CardContent className="h-full">
+                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
                     <TemplateContentFormatter 
                       content={generatedProgram}
                       contentType="lesson"
@@ -504,6 +549,20 @@ const CarmenLeadershipDevelopment: React.FC = () => {
                       showMergeFieldTypes={true}
                       className="formatted-ai-content"
                     />
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="h-full border-dashed border-2 border-gray-300">
+                <CardContent className="h-full flex items-center justify-center">
+                  <div className="text-center space-y-4 p-8">
+                    <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
+                      <Crown className="w-8 h-8 text-purple-600" />
+                    </div>
+                    <h3 className="font-semibold text-gray-700">Program Awaiting Creation</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
+                      Make your selections on the left and click "Create Leadership Development Program" to see Carmen's framework.
+                    </p>
                   </div>
                 </CardContent>
               </Card>

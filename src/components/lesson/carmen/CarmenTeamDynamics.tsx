@@ -10,12 +10,13 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
-import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
+import { cn } from '@/lib/utils';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -306,7 +307,7 @@ const CarmenTeamDynamics: React.FC = () => {
                   <div className="w-12 h-12 mx-auto mb-3">
                     <VideoAnimation
                       src={getAnimationUrl(item.animation)}
-                      fallbackIcon={item.fallback}
+                      fallbackIcon={<img src={getCarmenManagementIconUrl('teamMedium')} alt="Team Dynamics" className="w-8 h-8" />}
                       className="w-full h-full"
                       context="character"
                     />
@@ -320,19 +321,32 @@ const CarmenTeamDynamics: React.FC = () => {
           ))}
         </div>
 
-        {/* Begin Button */}
-        <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+        {/* Navigation and Begin Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          {/* Back to Chapter 7 Button */}
           <Button 
-            onClick={() => setCurrentPhase('narrative')}
-            size="lg"
-            className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
-            aria-label="Start Carmen's team dynamics journey - Learn to optimize team collaboration and performance using AI insights"
+            onClick={() => navigate('/chapter/7')}
+            variant="outline"
+            className="nm-button nm-button-secondary px-6 py-3"
+            aria-label="Return to Chapter 7 main page"
           >
-            <Play className="w-5 h-5 mr-2" aria-hidden="true" />
-            Begin Carmen's Team Journey
-            <span className="sr-only">This workshop teaches team dynamics optimization strategies that build high-performing collaborative teams</span>
+            Back to Chapter 7
           </Button>
+          
+          {/* Begin Button */}
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+            <Button 
+              onClick={() => setCurrentPhase('narrative')}
+              size="lg"
+              className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
+              aria-label="Start Carmen's team dynamics journey - Learn to optimize team collaboration and performance using AI insights"
+            >
+              <Play className="w-5 h-5 mr-2" aria-hidden="true" />
+              Begin Carmen's Team Journey
+              <span className="sr-only">This workshop teaches team dynamics optimization strategies that build high-performing collaborative teams</span>
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -389,69 +403,88 @@ const CarmenTeamDynamics: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Side - Configuration */}
-          <div className="space-y-6">
-            {/* Team Type Selection */}
+        {/* Mobile Tabbed Layout (visible only on mobile) */}
+        <div className="lg:hidden mb-6">
+          <div className="flex space-x-2 mb-4">
+            {['Options', 'Prompt', 'Results'].map((tab, index) => (
+              <Button
+                key={tab}
+                variant={currentStep === index ? "default" : "outline"}
+                onClick={() => setCurrentStep(index)}
+                className="flex-1 text-sm"
+              >
+                {tab}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Three-Panel Viewport Optimized Layout */}
+        <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
+          {/* Left Panel - Option Selection (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 space-y-4 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pr-4",
+            "lg:block", 
+            currentStep === 0 ? "block" : "hidden"
+          )}>
+            {/* Team Type Selection - Compact */}
             <VisualOptionGrid
               title="Team Type"
-              description="What type of team are you optimizing?"
+              description="Type of team to optimize"
               options={teamTypeOptions}
               selectedIds={selectedTeamType}
               onSelectionChange={setSelectedTeamType}
               multiSelect={false}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Team Challenges */}
+            {/* Team Challenges - Compact */}
             <VisualOptionGrid
-              title="Team Challenges"
-              description="What collaboration or performance issues is your team facing?"
+              title="Challenges"
+              description="Team collaboration issues"
               options={challengeOptions}
               selectedIds={selectedChallenges}
               onSelectionChange={setSelectedChallenges}
               multiSelect={true}
               maxSelections={4}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
-              enableCustom={true}
-              customPlaceholder="Add your own challenge..."
             />
 
-            {/* Team Strategies */}
+            {/* Team Strategies - Compact */}
             <VisualOptionGrid
-              title="Optimization Strategies"
-              description="How do you want to improve team dynamics?"
+              title="Strategies"
+              description="How to improve dynamics"
               options={strategyOptions}
               selectedIds={selectedStrategies}
               onSelectionChange={setSelectedStrategies}
               multiSelect={true}
               maxSelections={4}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Team Goals */}
+            {/* Team Goals - Compact */}
             <VisualOptionGrid
-              title="Team Goals"
-              description="What outcomes do you want to achieve?"
+              title="Goals"
+              description="Target outcomes"
               options={goalOptions}
               selectedIds={selectedGoals}
               onSelectionChange={setSelectedGoals}
               multiSelect={true}
               maxSelections={3}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Generate Button */}
+            {/* Generate Button - Compact */}
             <Card>
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-4 text-center">
                 <Button 
                   onClick={generateTeamPlan}
                   disabled={selectedTeamType.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-lg py-3"
+                  className="w-full nm-button nm-button-primary text-base py-2"
                 >
                   {isGenerating ? (
                     <>
@@ -469,8 +502,12 @@ const CarmenTeamDynamics: React.FC = () => {
             </Card>
           </div>
 
-          {/* Right Side - Framework & Results */}
-          <div className="space-y-6">
+          {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 lg:sticky lg:top-4 lg:self-start max-h-[calc(100vh-18rem)] overflow-y-auto lg:px-4",
+            "lg:block",
+            currentStep === 1 ? "block" : "hidden"
+          )}>
             {/* Dynamic Prompt Builder */}
             <DynamicPromptBuilder
               segments={promptSegments}
@@ -479,18 +516,26 @@ const CarmenTeamDynamics: React.FC = () => {
               showCopyButton={true}
               autoUpdate={true}
             />
+          </div>
 
-            {/* Generated Plan */}
-            {generatedPlan && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+          {/* Right Panel - Results (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 space-y-6 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pl-4",
+            "lg:block",
+            currentStep === 2 ? "block" : "hidden"
+          )}>
+
+            {/* Generated Plan - Full Height */}
+            {generatedPlan ? (
+              <Card className="h-full">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     <TrendingUp className="w-5 h-5 text-green-600" />
                     Your Team Optimization Plan
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                <CardContent className="h-full">
+                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
                     <TemplateContentFormatter 
                       content={generatedPlan}
                       contentType="lesson"
@@ -498,6 +543,20 @@ const CarmenTeamDynamics: React.FC = () => {
                       showMergeFieldTypes={true}
                       className="formatted-ai-content"
                     />
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="h-full border-dashed border-2 border-gray-300">
+                <CardContent className="h-full flex items-center justify-center">
+                  <div className="text-center space-y-4 p-8">
+                    <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
+                      <Users className="w-8 h-8 text-purple-600" />
+                    </div>
+                    <h3 className="font-semibold text-gray-700">Plan Awaiting Creation</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
+                      Make your selections on the left and click "Create Team Optimization Plan" to see Carmen's framework.
+                    </p>
                   </div>
                 </CardContent>
               </Card>

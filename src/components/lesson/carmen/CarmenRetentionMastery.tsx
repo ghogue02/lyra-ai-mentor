@@ -10,12 +10,13 @@ import { CheckCircle, Shield, Heart, TrendingUp, Award, Copy, Download, Wand2, P
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
-import { getAnimationUrl } from '@/utils/supabaseIcons';
+import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
+import { cn } from '@/lib/utils';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
 
@@ -227,7 +228,7 @@ const CarmenRetentionMastery: React.FC = () => {
           <VideoAnimation
             src={getAnimationUrl('carmen-retention-prep.mp4')}
             fallbackIcon={<div className="w-24 h-24 bg-purple-100 rounded-full flex items-center justify-center">
-              <Shield className="w-12 h-12 text-purple-600" />
+              <img src={getCarmenManagementIconUrl('retentionHandshake')} alt="Retention" className="w-12 h-12" />
             </div>}
             className="w-full h-full rounded-full"
             context="character"
@@ -246,9 +247,9 @@ const CarmenRetentionMastery: React.FC = () => {
         {/* 3-Step Journey Preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
           {[
-            { title: 'Retention Crisis', desc: 'Losing star talent unexpectedly', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-retention-crisis.mp4', fallback: <Heart className="w-8 h-8 text-red-500" /> },
-            { title: 'Predictive Mastery', desc: 'AI + empathy = retention success', color: 'from-purple-500/10 to-purple-500/5', animation: 'carmen-predictive-retention.mp4', fallback: <TrendingUp className="w-8 h-8 text-purple-500" /> },
-            { title: 'Flourishing Teams', desc: 'People choose to stay and grow', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-retention-success.mp4', fallback: <Award className="w-8 h-8 text-green-500" /> }
+            { title: 'Retention Crisis', desc: 'Losing star talent unexpectedly', color: 'from-red-500/10 to-red-500/5', animation: 'carmen-retention-crisis.mp4', fallback: <img src={getCarmenManagementIconUrl('retentionDecline')} alt="Crisis" className="w-8 h-8" /> },
+            { title: 'Predictive Mastery', desc: 'AI + empathy = retention success', color: 'from-purple-500/10 to-purple-500/5', animation: 'carmen-predictive-retention.mp4', fallback: <img src={getCarmenManagementIconUrl('retentionCrystalBall')} alt="Predictive" className="w-8 h-8" /> },
+            { title: 'Flourishing Teams', desc: 'People choose to stay and grow', color: 'from-green-500/10 to-green-500/5', animation: 'carmen-retention-success.mp4', fallback: <img src={getCarmenManagementIconUrl('retentionUp')} alt="Success" className="w-8 h-8" /> }
           ].map((item, index) => (
             <div key={index} className="relative group">
               <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
@@ -271,19 +272,32 @@ const CarmenRetentionMastery: React.FC = () => {
           ))}
         </div>
 
-        {/* Begin Button */}
-        <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+        {/* Navigation and Begin Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+          {/* Back to Chapter 7 Button */}
           <Button 
-            onClick={() => setCurrentPhase('narrative')}
-            size="lg"
-            className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
-            aria-label="Start Carmen's retention mastery journey - Learn predictive retention strategies with AI and empathy"
+            onClick={() => navigate('/chapter/7')}
+            variant="outline"
+            className="nm-button nm-button-secondary px-6 py-3"
+            aria-label="Return to Chapter 7 main page"
           >
-            <Play className="w-5 h-5 mr-2" aria-hidden="true" />
-            Begin Retention Mastery Journey
-            <span className="sr-only">This workshop teaches advanced retention strategies using AI prediction combined with human connection</span>
+            Back to Chapter 7
           </Button>
+          
+          {/* Begin Button */}
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+            <Button 
+              onClick={() => setCurrentPhase('narrative')}
+              size="lg"
+              className="relative nm-button nm-button-primary text-white text-lg px-8 py-4 font-semibold transition-all duration-300"
+              aria-label="Start Carmen's retention mastery journey - Learn predictive retention strategies with AI and empathy"
+            >
+              <Play className="w-5 h-5 mr-2" aria-hidden="true" />
+              Begin Retention Mastery Journey
+              <span className="sr-only">This workshop teaches advanced retention strategies using AI prediction combined with human connection</span>
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -340,80 +354,101 @@ const CarmenRetentionMastery: React.FC = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* Left Side - Configuration */}
-          <div className="space-y-6">
-            {/* Risk Factors */}
+        {/* Mobile Tabbed Layout (visible only on mobile) */}
+        <div className="lg:hidden mb-6">
+          <div className="flex space-x-2 mb-4">
+            {['Options', 'Prompt', 'Results'].map((tab, index) => (
+              <Button
+                key={tab}
+                variant={currentStep === index ? "default" : "outline"}
+                onClick={() => setCurrentStep(index)}
+                className="flex-1 text-sm"
+              >
+                {tab}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {/* Three-Panel Viewport Optimized Layout */}
+        <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
+          {/* Left Panel - Option Selection (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 space-y-4 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pr-4",
+            "lg:block", 
+            currentStep === 0 ? "block" : "hidden"
+          )}>
+            {/* Risk Factors - Compact */}
             <VisualOptionGrid
-              title="Retention Risk Factors"
-              description="What warning signs do you want to predict and prevent?"
+              title="Risk Factors"
+              description="Warning signs to predict"
               options={riskOptions}
               selectedIds={selectedRisks}
               onSelectionChange={setSelectedRisks}
               multiSelect={true}
               maxSelections={4}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Intervention Strategies */}
+            {/* Intervention Strategies - Compact */}
             <VisualOptionGrid
-              title="Intervention Strategies"
-              description="How will you proactively address retention risks?"
+              title="Interventions"
+              description="Proactive strategies"
               options={interventionOptions}
               selectedIds={selectedInterventions}
               onSelectionChange={setSelectedInterventions}
               multiSelect={true}
               maxSelections={4}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Retention Goals */}
+            {/* Retention Goals - Compact */}
             <VisualOptionGrid
-              title="Strategic Retention Goals"
-              description="What outcomes do you want to achieve?"
+              title="Goals"
+              description="Target outcomes"
               options={goalOptions}
               selectedIds={selectedGoals}
               onSelectionChange={setSelectedGoals}
               multiSelect={true}
               maxSelections={3}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Success Metrics */}
+            {/* Success Metrics - Compact */}
             <VisualOptionGrid
-              title="Success Metrics"
-              description="How will you measure retention success?"
+              title="Metrics"
+              description="Success measures"
               options={metricsOptions}
               selectedIds={selectedMetrics}
               onSelectionChange={setSelectedMetrics}
               multiSelect={true}
               maxSelections={4}
-              gridCols={2}
+              gridCols={1}
               characterTheme="carmen"
             />
 
-            {/* Generate Button */}
+            {/* Generate Button - Compact */}
             <Card>
-              <CardContent className="p-6 text-center">
+              <CardContent className="p-4 text-center">
                 <Button 
                   onClick={generateRetentionStrategy}
                   disabled={selectedRisks.length === 0 || selectedInterventions.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-lg py-3"
+                  className="w-full nm-button nm-button-primary text-base py-2"
                   aria-label={isGenerating ? "Creating your advanced retention strategy" : "Generate advanced retention strategy using Carmen's PREDICT-CONNECT-ELEVATE model"}
                   aria-describedby="retention-generation-status"
                 >
                   {isGenerating ? (
                     <>
-                      <Shield className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
-                      <span aria-live="polite">Carmen is crafting your retention strategy...</span>
+                      <Shield className="w-4 h-4 mr-2 animate-pulse" aria-hidden="true" />
+                      <span aria-live="polite">Creating Strategy...</span>
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Create Advanced Retention Strategy
+                      <Sparkles className="w-4 h-4 mr-2" aria-hidden="true" />
+                      Generate Strategy
                     </>
                   )}
                   <div id="retention-generation-status" className="sr-only">
@@ -424,8 +459,12 @@ const CarmenRetentionMastery: React.FC = () => {
             </Card>
           </div>
 
-          {/* Right Side - Framework & Results */}
-          <div className="space-y-6">
+          {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 lg:sticky lg:top-4 lg:self-start max-h-[calc(100vh-18rem)] overflow-y-auto lg:px-4",
+            "lg:block",
+            currentStep === 1 ? "block" : "hidden"
+          )}>
             {/* Dynamic Prompt Builder */}
             <DynamicPromptBuilder
               segments={promptSegments}
@@ -434,18 +473,26 @@ const CarmenRetentionMastery: React.FC = () => {
               showCopyButton={true}
               autoUpdate={true}
             />
+          </div>
 
-            {/* Generated Strategy */}
-            {generatedStrategy && (
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
+          {/* Right Panel - Results (4 columns on desktop) */}
+          <div className={cn(
+            "lg:col-span-4 space-y-6 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pl-4",
+            "lg:block",
+            currentStep === 2 ? "block" : "hidden"
+          )}>
+
+            {/* Generated Strategy - Full Height */}
+            {generatedStrategy ? (
+              <Card className="h-full">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-lg">
                     <Award className="w-5 h-5 text-green-600" />
-                    Your Advanced Retention Strategy
+                    Your Retention Strategy
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg max-h-96 overflow-y-auto">
+                <CardContent className="h-full">
+                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
                     <TemplateContentFormatter 
                       content={generatedStrategy}
                       contentType="lesson"
@@ -453,6 +500,20 @@ const CarmenRetentionMastery: React.FC = () => {
                       showMergeFieldTypes={true}
                       className="formatted-ai-content"
                     />
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card className="h-full border-dashed border-2 border-gray-300">
+                <CardContent className="h-full flex items-center justify-center">
+                  <div className="text-center space-y-4 p-8">
+                    <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
+                      <Shield className="w-8 h-8 text-purple-600" />
+                    </div>
+                    <h3 className="font-semibold text-gray-700">Strategy Awaiting Creation</h3>
+                    <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
+                      Make your selections on the left and click "Generate Strategy" to see Carmen's advanced retention framework.
+                    </p>
                   </div>
                 </CardContent>
               </Card>
