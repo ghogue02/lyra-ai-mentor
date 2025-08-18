@@ -44,9 +44,12 @@ const CarmenTalentAcquisition: React.FC = () => {
       
       const result = await callAI('article', prompt, context, 'carmen');
       
+      // Convert kebab-case to camelCase for proper key mapping
+      const camelCaseKey = type.replace(/-([a-z])/g, (match, letter) => letter.toUpperCase());
+      
       setAiContent(prev => ({
         ...prev,
-        [type.replace('-', '')]: result
+        [camelCaseKey]: result
       }));
       
       toast({
@@ -54,6 +57,7 @@ const CarmenTalentAcquisition: React.FC = () => {
         description: `Carmen's ${type.replace('-', ' ')} has been created with empathy and precision.`,
       });
     } catch (error) {
+      console.error('AI Generation Error:', error);
       toast({
         title: "Generation Failed",
         description: "Could not generate content. Please try again.",
