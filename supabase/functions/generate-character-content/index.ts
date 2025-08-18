@@ -15,6 +15,7 @@ const CHARACTER_MODELS = {
   'david': 'google/gemini-2.0-flash-001',
   'alex': 'google/gemini-2.0-flash-001',
   'maya': 'google/gemini-2.0-flash-001',
+  'carmen': 'google/gemini-2.0-flash-001',
   'default': 'google/gemini-2.0-flash-001' // Cost-effective default
 };
 
@@ -54,6 +55,12 @@ const characterPersonalities = {
     personality: "AI learning and foundational concepts expert who makes complex technology accessible",
     tone: "Clear, educational, encouraging, patient",
     expertise: "AI fundamentals, machine learning concepts, technology education, beginner-friendly explanations"
+  },
+  carmen: {
+    name: "Carmen",
+    personality: "Compassionate people management expert who balances AI efficiency with human empathy in HR processes",
+    tone: "Warm, empathetic, professional, growth-focused",
+    expertise: "HR strategy, talent acquisition, performance management, employee engagement, diversity and inclusion"
   }
 };
 

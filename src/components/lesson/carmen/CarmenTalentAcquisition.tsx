@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { CheckCircle, Users, Target, Brain, Heart, Copy, Download, Wand2 } from 'lucide-react';
 import { useAITestingAssistant } from '@/hooks/useAITestingAssistant';
 import { AIContentDisplay } from '@/components/ui/AIContentDisplay';
-import { FloatingLyraAvatar } from '@/components/lesson/FloatingLyraAvatar';
+import { FloatingCarmenAvatar } from '@/components/lesson/FloatingCarmenAvatar';
 
 const CarmenTalentAcquisition: React.FC = () => {
   const [currentPhase, setCurrentPhase] = useState<'intro' | 'workshop' | 'results'>('intro');
@@ -42,7 +42,7 @@ const CarmenTalentAcquisition: React.FC = () => {
           break;
       }
       
-      const result = await callAI('hiring-tool', prompt, context, 'carmen');
+      const result = await callAI('article', prompt, context, 'carmen');
       
       setAiContent(prev => ({
         ...prev,
@@ -143,7 +143,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       </div>
 
       {/* Carmen's Floating Avatar */}
-      <FloatingLyraAvatar
+      <FloatingCarmenAvatar
         position="bottom-right"
         className="z-40"
         disabled={showChat}
