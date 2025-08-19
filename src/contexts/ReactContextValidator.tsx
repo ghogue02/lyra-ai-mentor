@@ -1,1 +1,177 @@
-import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';\n\n// React Context Validation for Production Safety\ninterface ReactValidationState {\n  isReactLoaded: boolean;\n  reactVersion: string | null;\n  contextErrors: string[];\n  retryCount: number;\n}\n\ninterface ReactValidatorContextType {\n  state: ReactValidationState;\n  validateReactContext: () => boolean;\n  reportError: (error: string) => void;\n  clearErrors: () => void;\n}\n\nconst ReactValidatorContext = createContext<ReactValidatorContextType | null>(null);\n\nexport const useReactValidator = () => {\n  const context = useContext(ReactValidatorContext);\n  if (!context) {\n    throw new Error('useReactValidator must be used within ReactValidatorProvider');\n  }\n  return context;\n};\n\ninterface ReactValidatorProviderProps {\n  children: ReactNode;\n  maxRetries?: number;\n}\n\nexport const ReactValidatorProvider: React.FC<ReactValidatorProviderProps> = ({ \n  children, \n  maxRetries = 3 \n}) => {\n  const [state, setState] = useState<ReactValidationState>({\n    isReactLoaded: false,\n    reactVersion: null,\n    contextErrors: [],\n    retryCount: 0\n  });\n\n  const validateReactContext = (): boolean => {\n    try {\n      // Core React validation\n      if (!React || typeof React !== 'object') {\n        throw new Error('React object not available');\n      }\n\n      if (!React.version) {\n        throw new Error('React version not available');\n      }\n\n      // Context API validation\n      if (!React.createContext || typeof React.createContext !== 'function') {\n        throw new Error('React.createContext not available');\n      }\n\n      if (!React.useContext || typeof React.useContext !== 'function') {\n        throw new Error('React.useContext not available');\n      }\n\n      // Hook validation\n      if (!React.useState || typeof React.useState !== 'function') {\n        throw new Error('React.useState not available');\n      }\n\n      if (!React.useEffect || typeof React.useEffect !== 'function') {\n        throw new Error('React.useEffect not available');\n      }\n\n      // JSX runtime validation\n      if (!React.createElement || typeof React.createElement !== 'function') {\n        throw new Error('React.createElement not available');\n      }\n\n      setState(prev => ({\n        ...prev,\n        isReactLoaded: true,\n        reactVersion: React.version,\n        contextErrors: []\n      }));\n\n      console.log(`[React Validator] ✅ React ${React.version} context validated successfully`);\n      return true;\n\n    } catch (error) {\n      const errorMessage = error instanceof Error ? error.message : 'Unknown React validation error';\n      \n      setState(prev => ({\n        ...prev,\n        isReactLoaded: false,\n        contextErrors: [...prev.contextErrors, errorMessage],\n        retryCount: prev.retryCount + 1\n      }));\n\n      console.error('[React Validator] ❌ React context validation failed:', errorMessage);\n      return false;\n    }\n  };\n\n  const reportError = (error: string) => {\n    setState(prev => ({\n      ...prev,\n      contextErrors: [...prev.contextErrors, error]\n    }));\n  };\n\n  const clearErrors = () => {\n    setState(prev => ({\n      ...prev,\n      contextErrors: []\n    }));\n  };\n\n  useEffect(() => {\n    const isValid = validateReactContext();\n    \n    if (!isValid && state.retryCount < maxRetries) {\n      console.log(`[React Validator] Retrying validation (${state.retryCount + 1}/${maxRetries})...`);\n      \n      const timeout = setTimeout(() => {\n        validateReactContext();\n      }, 1000 * Math.pow(2, state.retryCount)); // Exponential backoff\n\n      return () => clearTimeout(timeout);\n    }\n  }, [state.retryCount, maxRetries]);\n\n  const contextValue: ReactValidatorContextType = {\n    state,\n    validateReactContext,\n    reportError,\n    clearErrors\n  };\n\n  // Render fallback if React context is not valid and max retries exceeded\n  if (!state.isReactLoaded && state.retryCount >= maxRetries) {\n    return (\n      <div className=\"react-context-error\">\n        <h1>React Context Error</h1>\n        <p>Unable to validate React context after {maxRetries} attempts.</p>\n        <details>\n          <summary>Error Details</summary>\n          <ul>\n            {state.contextErrors.map((error, index) => (\n              <li key={index}>{error}</li>\n            ))}\n          </ul>\n        </details>\n        <button onClick={() => window.location.reload()}>\n          Reload Application\n        </button>\n      </div>\n    );\n  }\n\n  return (\n    <ReactValidatorContext.Provider value={contextValue}>\n      {children}\n    </ReactValidatorContext.Provider>\n  );\n};\n\n// Higher-order component for React context validation\nexport const withReactValidation = <P extends object>(\n  Component: React.ComponentType<P>\n): React.FC<P> => {\n  return (props: P) => (\n    <ReactValidatorProvider>\n      <Component {...props} />\n    </ReactValidatorProvider>\n  );\n};\n\nexport default ReactValidatorProvider;\n
+import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
+
+// React Context Validation for Production Safety
+interface ReactValidationState {
+  isReactLoaded: boolean;
+  reactVersion: string | null;
+  contextErrors: string[];
+  retryCount: number;
+}
+
+interface ReactValidatorContextType {
+  state: ReactValidationState;
+  validateReactContext: () => boolean;
+  reportError: (error: string) => void;
+  clearErrors: () => void;
+}
+
+const ReactValidatorContext = createContext<ReactValidatorContextType | null>(null);
+
+export const useReactValidator = () => {
+  const context = useContext(ReactValidatorContext);
+  if (!context) {
+    throw new Error('useReactValidator must be used within ReactValidatorProvider');
+  }
+  return context;
+};
+
+interface ReactValidatorProviderProps {
+  children: ReactNode;
+  maxRetries?: number;
+}
+
+export const ReactValidatorProvider: React.FC<ReactValidatorProviderProps> = ({ 
+  children, 
+  maxRetries = 3 
+}) => {
+  const [state, setState] = useState<ReactValidationState>({
+    isReactLoaded: false,
+    reactVersion: null,
+    contextErrors: [],
+    retryCount: 0
+  });
+
+  const validateReactContext = (): boolean => {
+    try {
+      // Core React validation
+      if (!React || typeof React !== 'object') {
+        throw new Error('React object not available');
+      }
+
+      if (!React.version) {
+        throw new Error('React version not available');
+      }
+
+      // Context API validation
+      if (!React.createContext || typeof React.createContext !== 'function') {
+        throw new Error('React.createContext not available');
+      }
+
+      if (!React.useContext || typeof React.useContext !== 'function') {
+        throw new Error('React.useContext not available');
+      }
+
+      // Hook validation
+      if (!React.useState || typeof React.useState !== 'function') {
+        throw new Error('React.useState not available');
+      }
+
+      if (!React.useEffect || typeof React.useEffect !== 'function') {
+        throw new Error('React.useEffect not available');
+      }
+
+      // JSX runtime validation
+      if (!React.createElement || typeof React.createElement !== 'function') {
+        throw new Error('React.createElement not available');
+      }
+
+      setState(prev => ({
+        ...prev,
+        isReactLoaded: true,
+        reactVersion: React.version,
+        contextErrors: []
+      }));
+
+      console.log(`[React Validator] ✅ React ${React.version} context validated successfully`);
+      return true;
+
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown React validation error';
+      
+      setState(prev => ({
+        ...prev,
+        isReactLoaded: false,
+        contextErrors: [...prev.contextErrors, errorMessage],
+        retryCount: prev.retryCount + 1
+      }));
+
+      console.error('[React Validator] ❌ React context validation failed:', errorMessage);
+      return false;
+    }
+  };
+
+  const reportError = (error: string) => {
+    setState(prev => ({
+      ...prev,
+      contextErrors: [...prev.contextErrors, error]
+    }));
+  };
+
+  const clearErrors = () => {
+    setState(prev => ({
+      ...prev,
+      contextErrors: []
+    }));
+  };
+
+  useEffect(() => {
+    const isValid = validateReactContext();
+    
+    if (!isValid && state.retryCount < maxRetries) {
+      console.log(`[React Validator] Retrying validation (${state.retryCount + 1}/${maxRetries})...`);
+      
+      const timeout = setTimeout(() => {
+        validateReactContext();
+      }, 1000 * Math.pow(2, state.retryCount)); // Exponential backoff
+
+      return () => clearTimeout(timeout);
+    }
+  }, [state.retryCount, maxRetries]);
+
+  const contextValue: ReactValidatorContextType = {
+    state,
+    validateReactContext,
+    reportError,
+    clearErrors
+  };
+
+  // Render fallback if React context is not valid and max retries exceeded
+  if (!state.isReactLoaded && state.retryCount >= maxRetries) {
+    return (
+      <div className="react-context-error">
+        <h1>React Context Error</h1>
+        <p>Unable to validate React context after {maxRetries} attempts.</p>
+        <details>
+          <summary>Error Details</summary>
+          <ul>
+            {state.contextErrors.map((error, index) => (
+              <li key={index}>{error}</li>
+            ))}
+          </ul>
+        </details>
+        <button onClick={() => window.location.reload()}>
+          Reload Application
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <ReactValidatorContext.Provider value={contextValue}>
+      {children}
+    </ReactValidatorContext.Provider>
+  );
+};
+
+// Higher-order component for React context validation
+export const withReactValidation = <P extends object>(
+  Component: React.ComponentType<P>
+): React.FC<P> => {
+  return (props: P) => (
+    <ReactValidatorProvider>
+      <Component {...props} />
+    </ReactValidatorProvider>
+  );
+};
+
+export default ReactValidatorProvider;
