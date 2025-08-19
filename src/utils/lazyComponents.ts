@@ -7,15 +7,15 @@ export const LazyInteractiveDecisionTree = lazy(() => import('@/components/ui/in
 export const LazyTimelineScenarioBuilder = lazy(() => import('@/components/ui/interaction-patterns/TimelineScenarioBuilder'));
 export const LazyConversationalFlow = lazy(() => import('@/components/ui/interaction-patterns/ConversationalFlow'));
 
-// Lazy load Carmen components (Chapter 7)
-export const LazyCarmenPeopleManagementJourney = lazy(() => import('@/components/lesson/carmen/CarmenPeopleManagementJourney'));
-export const LazyCarmenTalentAcquisition = lazy(() => import('@/components/lesson/carmen/CarmenTalentAcquisition'));
-export const LazyCarmenPerformanceInsights = lazy(() => import('@/components/lesson/carmen/CarmenPerformanceInsights'));
-export const LazyCarmenEngagementBuilder = lazy(() => import('@/components/lesson/carmen/CarmenEngagementBuilder'));
-export const LazyCarmenRetentionMastery = lazy(() => import('@/components/lesson/carmen/CarmenRetentionMastery'));
-export const LazyCarmenTeamDynamics = lazy(() => import('@/components/lesson/carmen/CarmenTeamDynamics'));
-export const LazyCarmenCulturalIntelligence = lazy(() => import('@/components/lesson/carmen/CarmenCulturalIntelligence'));
-export const LazyCarmenLeadershipDevelopment = lazy(() => import('@/components/lesson/carmen/CarmenLeadershipDevelopment'));
+// Lazy load Carmen components (Chapter 7) - using placeholder components
+export const LazyCarmenPeopleManagementJourney = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenPeopleManagement })));
+export const LazyCarmenTalentAcquisition = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenTalentAcquisition })));
+export const LazyCarmenPerformanceInsights = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenPerformanceInsights })));
+export const LazyCarmenEngagementBuilder = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenEngagementBuilder })));
+export const LazyCarmenRetentionMastery = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenRetentionMastery })));
+export const LazyCarmenTeamDynamics = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenTeamDynamics })));
+export const LazyCarmenCulturalIntelligence = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenCulturalIntelligence })));
+export const LazyCarmenLeadershipDevelopment = lazy(() => import('@/components/lesson/carmen/CarmenComponentFixes').then(m => ({ default: m.CarmenLeadershipDevelopment })));
 
 // Lazy load Maya components
 export const LazyMayaInteractiveJourney = lazy(() => import('@/components/lesson/chat/lyra/maya/MayaInteractiveJourney'));

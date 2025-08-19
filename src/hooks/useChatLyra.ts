@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
-import { useCleanup, useMemoryManager, useStateGarbageCollector } from '@/hooks/memory-management';
+// Memory management hooks removed
 
 interface ChatMessage {
   id: string;
@@ -33,20 +33,7 @@ interface UseChatLyraReturn {
 }
 
 export const useChatLyra = ({ lessonContext, conversationId }: UseChatLyraProps = {}): UseChatLyraReturn => {
-  const { registerCleanup } = useCleanup();
-  const { createCache, createWeakRef } = useMemoryManager({
-    trackMetrics: true,
-    onMemoryWarning: (metrics) => {
-      console.warn('useChatLyra: Memory warning', metrics);
-      // Clear message cache on memory pressure
-      messageCache?.clear();
-    }
-  });
-  const { setState, getState, deleteState } = useStateGarbageCollector({
-    maxStateEntries: 100,
-    ttl: 600000, // 10 minutes for chat data
-    enablePriorityEviction: true
-  });
+  // Memory management hooks removed
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,10 +41,6 @@ export const useChatLyra = ({ lessonContext, conversationId }: UseChatLyraProps 
   const [isConnected, setIsConnected] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
-
-  // Create caches for efficient message and API response management
-  const messageCache = createCache('chatMessages', 200, 600000); // 10 min TTL
-  const apiResponseCache = createCache('apiResponses', 50, 300000); // 5 min TTL
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || isLoading || !user) {

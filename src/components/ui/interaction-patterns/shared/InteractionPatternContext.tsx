@@ -142,8 +142,8 @@ export const InteractionPatternProvider: React.FC<InteractionPatternProviderProp
     }));
 
     // Optional: Send analytics to external service
-    if (typeof window !== 'undefined' && window.gtag) {
-      window.gtag('event', 'interaction_pattern_event', {
+    if (typeof window !== 'undefined' && (window as any).gtag) {
+      (window as any).gtag('event', 'interaction_pattern_event', {
         pattern_type: state.config.patternType,
         interaction_type: type,
         character_theme: state.config.characterTheme

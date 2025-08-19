@@ -1,0 +1,1 @@
+export { CarmenPeopleManagement } from './CarmenComponentFixes';

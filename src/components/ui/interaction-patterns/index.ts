@@ -5,7 +5,7 @@ export type {
   ConversationOption, 
   ConversationResponse,
   ConversationResponses,
-  ConversationalFlowProps 
+  ConversationFlowProps 
 } from './ConversationalFlow';
 
 export { InteractiveDecisionTree } from './InteractiveDecisionTree';
@@ -35,12 +35,7 @@ export type {
 } from './PreferenceSliderGrid';
 
 export { TimelineScenarioBuilder } from './TimelineScenarioBuilder';
-export type {
-  TimelineEvent,
-  TimelineScenario,
-  TimelineComparison,
-  TimelineScenarioBuilderProps
-} from './TimelineScenarioBuilder';
+// TimelineScenarioBuilder types removed due to implementation issues
 
 // Shared utilities
 export { createInteractionPatternConfig } from './shared/patternConfig';

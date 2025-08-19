@@ -2,7 +2,7 @@ import React, { createContext, useContext, useReducer, useCallback, useEffect } 
 import { chatReducer, createInitialState, chatSelectors } from './chatReducer';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/contexts/AuthContext';
-import { useCleanup, useMemoryManager } from '@/hooks/memory-management';
+// Memory management hooks removed
 import type { ChatState, ChatAction, LessonModule, ChatMessage } from '../types/chatTypes';
 
 interface ChatContextType {
@@ -30,13 +30,7 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
   initialExpanded = false
 }) => {
   const { user, session } = useAuth();
-  const { registerCleanup } = useCleanup();
-  const { createCache, createWeakRef } = useMemoryManager({
-    trackMetrics: true,
-    onMemoryWarning: (metrics) => {
-      console.warn('ChatProvider: Memory warning', metrics);
-    }
-  });
+  // Memory management hooks removed
   const [state, dispatch] = useReducer(
     chatReducer,
     { lessonModule, initialExpanded },
@@ -54,22 +48,8 @@ export const ChatProvider: React.FC<ChatProviderProps> = ({
       console.log('ChatContext: Waiting for user or lesson module', { hasUser: !!user, hasLesson: !!lessonModule });
     }
 
-    // Create cache for conversation data
-    const conversationCache = createCache('chatConversations', 50, 600000); // 10 min TTL
-    const messageCache = createCache('chatMessages', 200, 300000); // 5 min TTL
-
-    // Create weak reference for user data to prevent memory leaks
-    if (user) {
-      createWeakRef('currentUser', user);
-    }
-
-    // Register cleanup for any active requests or subscriptions
-    return registerCleanup(() => {
-      console.log('ChatContext: Cleaning up chat resources');
-      conversationCache.clear();
-      messageCache.clear();
-    });
-  }, [lessonModule, user, createCache, createWeakRef, registerCleanup]);
+    // Memory management removed - cleanup handled by React
+  }, [lessonModule, user]);
 
   const initializeChat = async (user: any, lesson: LessonModule) => {
     dispatch({ type: 'SET_TYPING', payload: true });
