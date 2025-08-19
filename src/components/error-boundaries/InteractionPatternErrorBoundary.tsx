@@ -57,7 +57,6 @@ export class InteractionPatternErrorBoundary extends Component<InteractionPatter
       componentStack: errorInfo.componentStack,
       context: `InteractionPattern:${patternType}`,
       patternType,
-      userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),
       url: window.location.href,
       errorId: `pattern_${patternType}_${Date.now()}`

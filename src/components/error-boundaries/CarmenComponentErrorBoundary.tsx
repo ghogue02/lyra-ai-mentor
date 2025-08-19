@@ -62,7 +62,6 @@ export class CarmenComponentErrorBoundary extends Component<CarmenComponentError
       componentType,
       chapterNumber,
       characterName: 'Carmen',
-      userAgent: navigator.userAgent,
       timestamp: new Date().toISOString(),
       url: window.location.href,
       errorId: `carmen_${componentType}_${Date.now()}`

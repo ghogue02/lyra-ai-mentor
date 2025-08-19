@@ -287,7 +287,7 @@ export const PriorityCardSystem: React.FC<PriorityCardSystemProps> = ({
         }
       };
       
-      return getValue(String(bValue)) - getValue(String(aValue));
+      return getValue(bValue) - getValue(aValue);
     });
     
     // Update priorities
@@ -389,7 +389,7 @@ export const PriorityCardSystem: React.FC<PriorityCardSystemProps> = ({
                   <div className="text-lg">
                     {typeof card.icon === 'string' ? (
                       <img 
-                        src={getCarmenManagementIconUrl(String(card.icon) as any)}
+                        src={getCarmenManagementIconUrl(card.icon)}
                         alt={card.title}
                         className="w-5 h-5 object-contain"
                       />

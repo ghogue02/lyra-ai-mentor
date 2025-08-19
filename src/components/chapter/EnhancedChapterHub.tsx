@@ -10,7 +10,6 @@ import { OptimizedVideoAnimation } from '@/components/performance/OptimizedVideo
 import AnimatedProgress from '@/components/ui/AnimatedProgress';
 import { ProgressCelebration } from '@/components/ui/ProgressCelebration';
 import { getAnimationUrl, getLyraIconUrl } from '@/utils/supabaseIcons';
-import { CharacterType } from '@/types/characters';
 
 interface MicroLesson {
   id: string;
@@ -31,7 +30,7 @@ interface EnhancedChapterHubProps {
   title: string;
   description: string;
   characterName: string;
-  characterType: CharacterType;
+  characterType: 'lyra' | 'maya' | 'sofia' | 'david' | 'rachel' | 'alex' | 'carmen';
   microLessons: MicroLesson[];
   bgGradient: string;
   completionRoute?: string;

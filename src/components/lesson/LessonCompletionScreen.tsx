@@ -6,12 +6,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl, getSupabaseIconUrl } from '@/utils/supabaseIcons';
 import { BrandedIcon } from '@/components/ui/BrandedIcon';
-import { CharacterType } from '@/types/characters';
 
 interface LessonCompletionScreenProps {
   title: string;
   description: string;
-  characterType?: CharacterType;
+  characterType?: 'lyra' | 'maya' | 'sofia' | 'david' | 'rachel' | 'alex';
   achievementType?: 'ethics' | 'data' | 'workflow' | 'communication' | 'achievement' | 'growth';
   backRoute: string;
   nextRoute?: string;
