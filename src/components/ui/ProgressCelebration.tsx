@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { OptimizedVideoAnimation } from '../performance/OptimizedVideoAnimation';
 import { getAnimationUrl } from '@/utils/supabaseIcons';
 import { BrandedIcon } from './BrandedIcon';
+import { CharacterType } from '@/types/characters';
 
 // CSS animation styles
 const animationStyles = `
@@ -45,7 +46,7 @@ interface ProgressCelebrationProps {
   title?: string;
   subtitle?: string;
   duration?: number;
-  characterType?: 'lyra' | 'maya' | 'sofia' | 'david' | 'rachel' | 'alex';
+  characterType?: CharacterType;
 }
 
 const CELEBRATION_CONFIGS = {

@@ -13,7 +13,7 @@ import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PerformanceWrapper, PerformanceMonitor, BundleAnalyzer, AccessibilityTester } from "@/components/performance/PerformanceIntegration";
 import { BrandedToastContainer } from "@/hooks/use-branded-toast";
 import LoadingSuspense from "@/components/ui/LoadingSuspense";
-import { ApplicationErrorBoundary, AsyncErrorBoundary } from "@/components/error-boundaries";
+import MinimalErrorBoundary from "@/components/ui/minimal-error-boundary";
 import {
   LazyIndex,
   LazyAuth,
@@ -41,15 +41,7 @@ const queryClient = new QueryClient();
 
 const App = () => {
   return (
-    <ApplicationErrorBoundary
-      context="Application Root"
-      enableAutoRecovery={true}
-      maxRetries={3}
-      showDetails={process.env.NODE_ENV === 'development'}
-    >
-      <AsyncErrorBoundary
-        enableAutoRecovery={true}
-      >
+    <MinimalErrorBoundary>
         <PerformanceWrapper 
           enablePerformanceMonitoring={true}
           enableAccessibilityFeatures={true}
@@ -264,8 +256,7 @@ const App = () => {
             </TooltipProvider>
           </QueryClientProvider>
         </PerformanceWrapper>
-      </AsyncErrorBoundary>
-    </ApplicationErrorBoundary>
+    </MinimalErrorBoundary>
   );
 };
 

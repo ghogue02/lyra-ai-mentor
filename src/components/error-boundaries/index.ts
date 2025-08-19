@@ -54,8 +54,9 @@ export const ErrorBoundaryWrapper: React.FC<ErrorBoundaryWrapperProps> = ({
         enableAutoRecovery,
         maxRetries,
         showDetails,
-        onError
-      }, children);
+        onError,
+        children
+      });
     
     case 'interaction-pattern':
       if (!patternType) {
@@ -65,8 +66,9 @@ export const ErrorBoundaryWrapper: React.FC<ErrorBoundaryWrapperProps> = ({
         patternType,
         enableFallbackMode: true,
         maxRetries,
-        onError
-      }, children);
+        onError,
+        children
+      });
     
     case 'carmen-component':
       if (!componentType) {
@@ -77,8 +79,9 @@ export const ErrorBoundaryWrapper: React.FC<ErrorBoundaryWrapperProps> = ({
         chapterNumber,
         enableChapterRecovery: true,
         maxRetries,
-        onError
-      }, children);
+        onError,
+        children
+      });
     
     default:
       throw new Error(`Unknown error boundary type: ${type}`);

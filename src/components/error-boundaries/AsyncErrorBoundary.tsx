@@ -243,7 +243,7 @@ export const useAsyncError = () => {
 
   const handleAsyncError = React.useCallback(async (
     asyncError: Error,
-    errorType: 'network' | 'chunk' | 'state' | 'unknown' = 'unknown'
+    errorType: 'network' | 'chunk' | 'state' | 'component' = 'component'
   ) => {
     const recovered = await recoverFromError(asyncError, errorType);
     
