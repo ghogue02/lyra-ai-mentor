@@ -1,0 +1,23 @@
+{
+  "timestamp": "2025-08-19T03:16:22.380Z",
+  "success": false,
+  "errors": [
+    "No cache-busting timestamps found in asset filenames"
+  ],
+  "warnings": [
+    "HTML may not be properly minified"
+  ],
+  "validationResults": {
+    "reactVendorChunk": "vendor-react-mehz0fp5-HPmI3iHJ.js",
+    "reactVendorFile": "vendor-react-mehz0fp5-HPmI3iHJ.js",
+    "reactContextAvailable": true,
+    "previewAvailable": true
+  },
+  "summary": {
+    "totalErrors": 1,
+    "totalWarnings": 1,
+    "reactContextAvailable": true,
+    "cacheInvalidationEnabled": false,
+    "reactVendorChunkPresent": true
+  }
+}

@@ -34,6 +34,19 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       external: [],
       output: {
+        // Force cache invalidation with timestamp
+        entryFileNames: (chunkInfo) => {
+          const timestamp = Date.now().toString(36);
+          return `assets/[name]-${timestamp}-[hash].js`;
+        },
+        chunkFileNames: (chunkInfo) => {
+          const timestamp = Date.now().toString(36);
+          return `assets/[name]-${timestamp}-[hash].js`;
+        },
+        assetFileNames: (assetInfo) => {
+          const timestamp = Date.now().toString(36);
+          return `assets/[name]-${timestamp}-[hash].[ext]`;
+        },
         manualChunks: (id) => {
           // Vendor chunks - ensure React is properly bundled
           if (id.includes('node_modules')) {
