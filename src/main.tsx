@@ -1,4 +1,6 @@
-// 🚨 CRITICAL: Emergency debug MUST load FIRST
+// 🚨 CRITICAL: React global setup MUST load FIRST
+import './react-global-setup';
+// 🚨 CRITICAL: Emergency debug MUST load SECOND
 import './emergency-debug';
 
 // 🚨 IMMEDIATE DEBUG: Log before ANY other code runs

@@ -34,6 +34,10 @@ export default defineConfig(({ mode }) => ({
     rollupOptions: {
       external: [],
       output: {
+        globals: {
+          'react': 'React',
+          'react-dom': 'ReactDOM'
+        },
         // Force cache invalidation with timestamp
         entryFileNames: (chunkInfo) => {
           const timestamp = Date.now().toString(36);
@@ -52,7 +56,8 @@ export default defineConfig(({ mode }) => ({
           if (id.includes('node_modules')) {
             if (id.includes('react/') || id.includes('react-dom/') || id.includes('react-router-dom/')) {
               console.log('🔍 [VITE DEBUG] Bundling React module:', id);
-              return 'vendor-react';
+              // Force React into main vendor bundle to ensure global exposure
+              return 'vendor';
             }
             if (id.includes('@radix-ui')) {
               return 'vendor-ui';
