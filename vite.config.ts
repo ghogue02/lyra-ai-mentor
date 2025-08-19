@@ -48,9 +48,10 @@ export default defineConfig(({ mode }) => ({
           return `assets/[name]-${timestamp}-[hash].[ext]`;
         },
         manualChunks: (id) => {
-          // Vendor chunks - ensure React is properly bundled
+          // 🔍 DEBUG: Enhanced React bundling with logging
           if (id.includes('node_modules')) {
             if (id.includes('react/') || id.includes('react-dom/') || id.includes('react-router-dom/')) {
+              console.log('🔍 [VITE DEBUG] Bundling React module:', id);
               return 'vendor-react';
             }
             if (id.includes('@radix-ui')) {
@@ -93,12 +94,13 @@ export default defineConfig(({ mode }) => ({
     chunkSizeWarningLimit: 1000,
     target: 'esnext',
     minify: mode === 'production' ? 'terser' : false,
+    // 🔍 DEBUG: DISABLE console removal to see debug logs in production
     ...(mode === 'production' && {
       terserOptions: {
         compress: {
-          drop_console: true,
-          drop_debugger: true,
-          pure_funcs: ['console.log', 'console.info']
+          drop_console: false, // Keep console for debugging
+          drop_debugger: false, // Keep debugger for debugging
+          pure_funcs: [] // Don't remove any console methods
         }
       }
     })

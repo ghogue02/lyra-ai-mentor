@@ -43,19 +43,40 @@ export const ReactValidatorProvider: React.FC<ReactValidatorProviderProps> = ({
 
   const validateReactContext = (): boolean => {
     try {
+      console.group('🔍 [CONTEXT VALIDATOR] Detailed React Validation');
+      console.log('🔍 [CONTEXT VALIDATOR] Timestamp:', new Date().toISOString());
+      console.log('🔍 [CONTEXT VALIDATOR] React object:', React);
+      console.log('🔍 [CONTEXT VALIDATOR] typeof React:', typeof React);
+      
       // Core React validation
       if (!React || typeof React !== 'object') {
+        console.error('🚨 [CONTEXT VALIDATOR] React object validation failed');
+        console.error('🚨 [CONTEXT VALIDATOR] React value:', React);
+        console.error('🚨 [CONTEXT VALIDATOR] React type:', typeof React);
         throw new Error('React object not available');
       }
+      console.log('✅ [CONTEXT VALIDATOR] React object validation passed');
 
       if (!React.version) {
+        console.error('🚨 [CONTEXT VALIDATOR] React version missing');
+        console.error('🚨 [CONTEXT VALIDATOR] React keys:', Object.keys(React));
         throw new Error('React version not available');
       }
+      console.log('✅ [CONTEXT VALIDATOR] React version validation passed:', React.version);
 
       // Context API validation
+      console.log('🔍 [CONTEXT VALIDATOR] Checking createContext...');
+      console.log('🔍 [CONTEXT VALIDATOR] React.createContext:', React.createContext);
+      console.log('🔍 [CONTEXT VALIDATOR] typeof React.createContext:', typeof React.createContext);
+      
       if (!React.createContext || typeof React.createContext !== 'function') {
+        console.error('🚨 [CONTEXT VALIDATOR] createContext validation failed');
+        console.error('🚨 [CONTEXT VALIDATOR] createContext value:', React.createContext);
+        console.error('🚨 [CONTEXT VALIDATOR] createContext type:', typeof React.createContext);
+        console.error('🚨 [CONTEXT VALIDATOR] Available React methods:', Object.keys(React).filter(key => typeof React[key] === 'function'));
         throw new Error('React.createContext not available');
       }
+      console.log('✅ [CONTEXT VALIDATOR] createContext validation passed');
 
       if (!React.useContext || typeof React.useContext !== 'function') {
         throw new Error('React.useContext not available');
@@ -82,11 +103,26 @@ export const ReactValidatorProvider: React.FC<ReactValidatorProviderProps> = ({
         contextErrors: []
       }));
 
-      console.log(`[React Validator] ✅ React ${React.version} context validated successfully`);
+      // Final success validation
+      console.log('✅ [CONTEXT VALIDATOR] All React validation checks passed');
+      console.groupEnd();
+      
+      setState(prev => ({
+        ...prev,
+        isReactLoaded: true,
+        reactVersion: React.version,
+        contextErrors: []
+      }));
+
+      console.log(`✅ [CONTEXT VALIDATOR] React ${React.version} context validated successfully`);
       return true;
 
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown React validation error';
+      
+      console.error('🚨 [CONTEXT VALIDATOR] Validation failed with error:', errorMessage);
+      console.error('🚨 [CONTEXT VALIDATOR] Error stack:', error.stack);
+      console.groupEnd();
       
       setState(prev => ({
         ...prev,
@@ -95,7 +131,7 @@ export const ReactValidatorProvider: React.FC<ReactValidatorProviderProps> = ({
         retryCount: prev.retryCount + 1
       }));
 
-      console.error('[React Validator] ❌ React context validation failed:', errorMessage);
+      console.error('🚨 [CONTEXT VALIDATOR] React context validation failed:', errorMessage);
       return false;
     }
   };
