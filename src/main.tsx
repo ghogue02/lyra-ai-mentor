@@ -1,7 +1,22 @@
+// 🚨 IMMEDIATE DEBUG: Log before ANY other code runs
+console.log('🚨 [IMMEDIATE] main.tsx entry point - timestamp:', new Date().toISOString());
+console.log('🚨 [IMMEDIATE] typeof React before import:', typeof React);
+console.log('🚨 [IMMEDIATE] window.React before import:', window.React);
+
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
+
+// 🚨 POST-IMPORT DEBUG: Check React after import
+console.log('🚨 [POST-IMPORT] typeof React after import:', typeof React);
+console.log('🚨 [POST-IMPORT] React object after import:', React);
+console.log('🚨 [POST-IMPORT] React.createContext after import:', React?.createContext);
+if (React) {
+  console.log('🚨 [POST-IMPORT] React keys:', Object.keys(React));
+} else {
+  console.error('🚨 [POST-IMPORT] React is undefined after import!');
+}
 
 // 🔍 COMPREHENSIVE REACT DEBUG LOGGING
 const logReactDebugInfo = () => {
