@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
-import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
+import { PriorityCardSystem, PriorityCard } from '@/components/ui/interaction-patterns/PriorityCardSystem';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
@@ -34,61 +34,175 @@ const CarmenTeamDynamics: React.FC = () => {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedTeamType, setSelectedTeamType] = useState<string[]>([]);
-  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
-  const [selectedStrategies, setSelectedStrategies] = useState<string[]>([]);
-  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
+  const [teamDynamicsPriorities, setTeamDynamicsPriorities] = useState<PriorityCard[]>([]);
+  const [currentOptimizationPhase, setCurrentOptimizationPhase] = useState<'assessment' | 'prioritization' | 'planning' | 'complete'>('assessment');
+  const [teamContext, setTeamContext] = useState<string>('');
   const [generatedPlan, setGeneratedPlan] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
 
-  // Team type options
-  const teamTypeOptions: OptionItem[] = [
-    { id: 'cross-functional', label: 'Cross-Functional Team', description: 'Members from different departments', icon: 'teamCrossFunctional', recommended: true },
-    { id: 'product-team', label: 'Product Development Team', description: 'Focused on building products', icon: 'teamProduct' },
-    { id: 'remote-team', label: 'Remote/Distributed Team', description: 'Team members work remotely', icon: 'teamRemote' },
-    { id: 'project-team', label: 'Project Team', description: 'Temporary team for specific project', icon: 'teamProject' },
-    { id: 'leadership-team', label: 'Leadership Team', description: 'Senior management group', icon: 'teamLeadership' },
-    { id: 'technical-team', label: 'Technical/Engineering Team', description: 'Focused on technical work', icon: 'teamTechnical' },
-    { id: 'sales-team', label: 'Sales Team', description: 'Revenue-focused team', icon: 'teamSales' },
-    { id: 'creative-team', label: 'Creative Team', description: 'Design and content creation', icon: 'teamCreative' }
+  // Team Dynamics Priority Cards - for drag-and-drop prioritization
+  const teamDynamicsCards: PriorityCard[] = [
+    {
+      id: 'communication-improvement',
+      title: 'Communication Enhancement',
+      description: 'Improve clarity, frequency, and effectiveness of team communication',
+      category: 'Communication',
+      icon: '💬',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'high',
+        effort: 'medium',
+        urgency: 'high',
+        risk: 'low',
+        estimatedTime: 8,
+        tags: ['communication', 'collaboration']
+      }
+    },
+    {
+      id: 'trust-building',
+      title: 'Trust & Psychological Safety',
+      description: 'Create an environment where team members feel safe to be vulnerable and take risks',
+      category: 'Culture',
+      icon: '🤝',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'high',
+        effort: 'high',
+        urgency: 'medium',
+        risk: 'low',
+        estimatedTime: 16,
+        tags: ['trust', 'psychological-safety', 'culture']
+      }
+    },
+    {
+      id: 'role-clarity',
+      title: 'Role Clarity & Accountability',
+      description: 'Define clear responsibilities and decision-making authority for each team member',
+      category: 'Structure',
+      icon: '🎯',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'high',
+        effort: 'medium',
+        urgency: 'high',
+        risk: 'low',
+        estimatedTime: 6,
+        tags: ['roles', 'accountability', 'clarity']
+      }
+    },
+    {
+      id: 'conflict-resolution',
+      title: 'Conflict Resolution Skills',
+      description: 'Develop healthy approaches to disagreement and problem-solving',
+      category: 'Skills',
+      icon: '⚖️',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'medium',
+        effort: 'medium',
+        urgency: 'medium',
+        risk: 'medium',
+        estimatedTime: 12,
+        tags: ['conflict', 'resolution', 'skills']
+      }
+    },
+    {
+      id: 'collaboration-tools',
+      title: 'Collaboration Tools & Processes',
+      description: 'Implement technology and workflows that support effective teamwork',
+      category: 'Tools',
+      icon: '🛠️',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'medium',
+        effort: 'low',
+        urgency: 'low',
+        risk: 'low',
+        estimatedTime: 4,
+        tags: ['tools', 'processes', 'technology']
+      }
+    },
+    {
+      id: 'team-building',
+      title: 'Team Building & Relationships',
+      description: 'Strengthen interpersonal connections and shared identity',
+      category: 'Culture',
+      icon: '🏗️',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'medium',
+        effort: 'medium',
+        urgency: 'low',
+        risk: 'low',
+        estimatedTime: 8,
+        tags: ['team-building', 'relationships', 'culture']
+      }
+    },
+    {
+      id: 'performance-feedback',
+      title: 'Performance Feedback Systems',
+      description: 'Create regular, constructive feedback loops for continuous improvement',
+      category: 'Performance',
+      icon: '📊',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'high',
+        effort: 'medium',
+        urgency: 'medium',
+        risk: 'low',
+        estimatedTime: 10,
+        tags: ['feedback', 'performance', 'improvement']
+      }
+    },
+    {
+      id: 'decision-making',
+      title: 'Decision-Making Processes',
+      description: 'Establish clear frameworks for how decisions are made and communicated',
+      category: 'Structure',
+      icon: '🎲',
+      priority: 5,
+      originalPriority: 5,
+      metadata: {
+        impact: 'high',
+        effort: 'medium',
+        urgency: 'medium',
+        risk: 'medium',
+        estimatedTime: 8,
+        tags: ['decision-making', 'processes', 'governance']
+      }
+    }
   ];
 
-  // Team challenge options
-  const challengeOptions: OptionItem[] = [
-    { id: 'poor-communication', label: 'Poor Communication', description: 'Information not shared effectively', icon: 'teamCommunication', recommended: true },
-    { id: 'lack-trust', label: 'Lack of Trust', description: 'Team members don\'t trust each other', icon: 'teamTrust', recommended: true },
-    { id: 'role-confusion', label: 'Role Confusion', description: 'Unclear responsibilities', icon: 'teamRoles' },
-    { id: 'conflict-management', label: 'Conflict Management', description: 'Difficulty resolving disagreements', icon: 'teamConflict' },
-    { id: 'low-engagement', label: 'Low Engagement', description: 'Team members seem disinterested', icon: 'teamEngagement' },
-    { id: 'coordination-issues', label: 'Coordination Problems', description: 'Work not synchronized well', icon: 'teamCoordination' },
-    { id: 'cultural-differences', label: 'Cultural Differences', description: 'Diverse backgrounds creating friction', icon: 'teamCultural' },
-    { id: 'remote-challenges', label: 'Remote Work Challenges', description: 'Distributed team coordination', icon: 'teamRemoteWork' }
-  ];
-
-  // Team strategy options
-  const strategyOptions: OptionItem[] = [
-    { id: 'team-building-activities', label: 'Team Building Activities', description: 'Social and collaborative exercises', icon: 'teamBuilding', recommended: true },
-    { id: 'communication-protocols', label: 'Communication Protocols', description: 'Clear guidelines for sharing info', icon: 'teamProtocols', recommended: true },
-    { id: 'psychological-safety', label: 'Psychological Safety', description: 'Create safe space for open dialogue', icon: 'teamSafety' },
-    { id: 'role-clarification', label: 'Role Clarification', description: 'Define clear responsibilities', icon: 'teamClarity' },
-    { id: 'feedback-systems', label: 'Regular Feedback Systems', description: 'Ongoing performance discussions', icon: 'teamFeedback' },
-    { id: 'collaboration-tools', label: 'Collaboration Tools', description: 'Technology to support teamwork', icon: 'teamTools' },
-    { id: 'conflict-resolution', label: 'Conflict Resolution Training', description: 'Skills for managing disagreements', icon: 'teamResolution' },
-    { id: 'shared-goals', label: 'Shared Goal Setting', description: 'Align on common objectives', icon: 'teamGoals' }
-  ];
-
-  // Team goal options
-  const goalOptions: OptionItem[] = [
-    { id: 'improve-collaboration', label: 'Improve Collaboration', description: 'Better teamwork and cooperation', icon: 'teamCollaboration', recommended: true },
-    { id: 'increase-productivity', label: 'Increase Team Productivity', description: 'Higher output and efficiency', icon: 'teamProductivity', recommended: true },
-    { id: 'enhance-communication', label: 'Enhance Communication', description: 'Clearer, more effective dialogue', icon: 'teamCommunication' },
-    { id: 'build-trust', label: 'Build Trust', description: 'Stronger relationships and confidence', icon: 'teamTrustBuilding' },
-    { id: 'reduce-conflicts', label: 'Reduce Conflicts', description: 'Fewer disputes and tensions', icon: 'teamPeace' },
-    { id: 'improve-innovation', label: 'Improve Innovation', description: 'More creative solutions and ideas', icon: 'teamInnovation' },
-    { id: 'enhance-adaptability', label: 'Enhance Adaptability', description: 'Better response to changes', icon: 'teamAdaptability' },
-    { id: 'strengthen-culture', label: 'Strengthen Team Culture', description: 'Positive, inclusive environment', icon: 'teamCulture' }
-  ];
+  // Helper function to generate insights from priority ranking
+  const generatePriorityInsights = (prioritizedCards: PriorityCard[]) => {
+    const topPriorities = prioritizedCards.slice(0, 3);
+    const insights: string[] = [];
+    
+    insights.push(`Top 3 priorities: ${topPriorities.map(card => card.title).join(', ')}`);
+    
+    const categories = prioritizedCards.reduce((acc, card) => {
+      acc[card.category || 'Other'] = (acc[card.category || 'Other'] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const topCategory = Object.entries(categories).sort(([,a], [,b]) => b - a)[0];
+    if (topCategory) {
+      insights.push(`Primary focus area: ${topCategory[0]} (${topCategory[1]} priorities)`);
+    }
+    
+    const highImpactCount = prioritizedCards.filter(card => card.metadata?.impact === 'high').length;
+    insights.push(`${highImpactCount} high-impact initiatives identified`);
+    
+    return insights;
+  };
 
   const dynamicsElements: TeamDynamicsElement[] = [
     {
@@ -160,8 +274,10 @@ const CarmenTeamDynamics: React.FC = () => {
     }
   ];
 
-  // Update prompt segments when selections change
+  // Update prompt segments when priorities change
   useEffect(() => {
+    const insights = teamDynamicsPriorities.length > 0 ? generatePriorityInsights(teamDynamicsPriorities) : [];
+    
     const segments: PromptSegment[] = [
       {
         id: 'context',
@@ -172,41 +288,35 @@ const CarmenTeamDynamics: React.FC = () => {
         required: true
       },
       {
-        id: 'team-type',
-        label: 'Team Type',
-        value: selectedTeamType.length > 0 ? `Team type: ${teamTypeOptions.find(opt => selectedTeamType.includes(opt.id))?.label || selectedTeamType.join(', ')}` : '',
+        id: 'team-context',
+        label: 'Team Context',
+        value: teamContext ? `Team context: ${teamContext}` : '',
         type: 'data',
         color: 'border-l-blue-400',
         required: false
       },
       {
-        id: 'challenges',
-        label: 'Team Challenges',
-        value: selectedChallenges.length > 0 ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        id: 'priority-insights',
+        label: 'Team Dynamics Priorities',
+        value: insights.length > 0 ? `Priority analysis: ${insights.join('. ')}` : '',
         type: 'data',
-        color: 'border-l-red-400',
+        color: 'border-l-cyan-400',
         required: false
       },
       {
-        id: 'strategies',
-        label: 'Optimization Strategies',
-        value: selectedStrategies.length > 0 ? `Preferred strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        id: 'prioritized-approach',
+        label: 'Prioritized Implementation',
+        value: teamDynamicsPriorities.length > 0 
+          ? 'Based on the priority ranking, create a focused team optimization plan that addresses the highest-priority areas first while building synergies between related initiatives.' 
+          : '',
         type: 'instruction',
         color: 'border-l-green-400',
         required: false
       },
       {
-        id: 'goals',
-        label: 'Team Goals',
-        value: selectedGoals.length > 0 ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
-        type: 'instruction',
-        color: 'border-l-purple-400',
-        required: false
-      },
-      {
         id: 'format',
         label: 'Output Framework',
-        value: 'Create a comprehensive team optimization plan with: 1) Team Assessment (current dynamics analysis), 2) Optimization Strategy (custom collaboration approaches), 3) Implementation Plan (step-by-step roadmap), 4) Performance Monitoring (continuous improvement system). Focus on psychological safety, communication optimization, and leveraging individual strengths.',
+        value: 'Create a comprehensive team optimization plan with: 1) Team Assessment (current dynamics analysis based on priorities), 2) Optimization Strategy (prioritized collaboration approaches), 3) Implementation Plan (step-by-step roadmap following priority order), 4) Performance Monitoring (continuous improvement system). Focus on psychological safety, communication optimization, and leveraging individual strengths.',
         type: 'format',
         color: 'border-l-gray-400',
         required: true
@@ -214,10 +324,13 @@ const CarmenTeamDynamics: React.FC = () => {
     ];
     
     setPromptSegments(segments);
-  }, [selectedTeamType, selectedChallenges, selectedStrategies, selectedGoals]);
+  }, [teamDynamicsPriorities, teamContext]);
 
   const generateTeamPlan = async () => {
-    if (selectedTeamType.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0) return;
+    if (teamDynamicsPriorities.length === 0) return;
+    
+    const insights = generatePriorityInsights(teamDynamicsPriorities);
+    const topPriorities = teamDynamicsPriorities.slice(0, 5);
     
     setIsGenerating(true);
     try {
@@ -226,14 +339,17 @@ const CarmenTeamDynamics: React.FC = () => {
           characterType: 'carmen',
           contentType: 'strategic_plan',
           topic: 'Team Dynamics Optimization with AI Insights',
-          context: `Carmen Rodriguez needs to optimize team dynamics for better collaboration and performance.
+          context: `Carmen Rodriguez needs to optimize team dynamics based on a prioritized assessment of team improvement areas.
           
-          Team Type: ${teamTypeOptions.find(opt => selectedTeamType.includes(opt.id))?.label || selectedTeamType.join(', ')}
-          Current Challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Optimization Strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Team Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Team Context: ${teamContext || 'General team optimization'}
+          Priority Analysis: ${insights.join('. ')}
           
-          Create a comprehensive team dynamics optimization plan that includes: 1) AI-powered team assessment, 2) Custom collaboration strategies, 3) Implementation roadmap, 4) Performance monitoring system. Focus on building psychological safety, optimizing communication, and leveraging individual strengths for collective success.`
+          Top Priority Areas (in order):
+          ${topPriorities.map((card, index) => 
+            `${index + 1}. ${card.title} - ${card.description} (Impact: ${card.metadata?.impact}, Effort: ${card.metadata?.effort})`
+          ).join('\n')}
+          
+          Create a comprehensive team dynamics optimization plan that includes: 1) AI-powered team assessment focused on priority areas, 2) Prioritized collaboration strategies targeting highest-impact improvements, 3) Implementation roadmap following priority order with quick wins and strategic initiatives, 4) Performance monitoring system tracking priority metrics. Focus on building psychological safety, optimizing communication, and leveraging individual strengths for collective success.`
         }
       });
 
@@ -427,79 +543,61 @@ const CarmenTeamDynamics: React.FC = () => {
             "lg:block", 
             currentStep === 0 ? "block" : "hidden"
           )}>
-            {/* Team Type Selection - Compact */}
-            <VisualOptionGrid
-              title="Team Type"
-              description="Type of team to optimize"
-              options={teamTypeOptions}
-              selectedIds={selectedTeamType}
-              onSelectionChange={setSelectedTeamType}
-              multiSelect={false}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Team Challenges - Compact */}
-            <VisualOptionGrid
-              title="Challenges"
-              description="Team collaboration issues"
-              options={challengeOptions}
-              selectedIds={selectedChallenges}
-              onSelectionChange={setSelectedChallenges}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Team Strategies - Compact */}
-            <VisualOptionGrid
-              title="Strategies"
-              description="How to improve dynamics"
-              options={strategyOptions}
-              selectedIds={selectedStrategies}
-              onSelectionChange={setSelectedStrategies}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Team Goals - Compact */}
-            <VisualOptionGrid
-              title="Goals"
-              description="Target outcomes"
-              options={goalOptions}
-              selectedIds={selectedGoals}
-              onSelectionChange={setSelectedGoals}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Generate Button - Compact */}
+            {/* Team Context Input */}
             <Card>
-              <CardContent className="p-4 text-center">
-                <Button 
-                  onClick={generateTeamPlan}
-                  disabled={selectedTeamType.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-base py-2"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2 animate-pulse" />
-                      Carmen is optimizing your team...
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" />
-                      Create Team Optimization Plan
-                    </>
-                  )}
-                </Button>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-base">Team Context</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <textarea
+                  placeholder="Describe your team (size, type, current challenges, etc.)..."
+                  value={teamContext}
+                  onChange={(e) => setTeamContext(e.target.value)}
+                  className="w-full p-3 border rounded-lg resize-none h-20 text-sm"
+                />
               </CardContent>
             </Card>
+
+            {/* Team Dynamics Priority System */}
+            <PriorityCardSystem
+              title="Team Dynamics Prioritization"
+              description="Drag and rank team improvement areas by priority"
+              availableCards={teamDynamicsCards}
+              selectedCards={teamDynamicsPriorities}
+              onCardsChange={setTeamDynamicsPriorities}
+              maxSelections={8}
+              showMetadata={true}
+              enableComparison={true}
+              enableFiltering={true}
+              characterTheme="carmen"
+              viewMode="compact"
+              className="max-h-none"
+            />
+
+            {/* Generate Button - Appears after priorities set */}
+            {teamDynamicsPriorities.length > 0 && (
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <Button 
+                    onClick={generateTeamPlan}
+                    disabled={teamDynamicsPriorities.length === 0 || isGenerating}
+                    className="w-full nm-button nm-button-primary text-base py-2"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2 animate-pulse" />
+                        Carmen is optimizing your team...
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2" />
+                        Create Prioritized Team Plan
+                      </>
+                    )}
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}

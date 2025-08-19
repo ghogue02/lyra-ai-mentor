@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useCleanup, useMemoryLeakDetector, useStateGarbageCollector } from '@/hooks/memory-management';
 import { 
   MessageCircle, 
   Send, 
@@ -52,6 +53,18 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
   onChatClose,
   config = {}
 }) => {
+  const { registerCleanup } = useCleanup();
+  const leakDetector = useMemoryLeakDetector({
+    componentName: 'ContextualLyraChat',
+    trackEventListeners: true,
+    trackMemoryUsage: true
+  });
+  const { setState, getState, deleteState } = useStateGarbageCollector({
+    maxStateEntries: 50,
+    ttl: 300000, // 5 minutes
+    enablePriorityEviction: true
+  });
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [currentMessage, setCurrentMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -131,6 +144,26 @@ export const ContextualLyraChat: React.FC<ContextualLyraChatProps> = ({
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Memory management for chat state
+  useEffect(() => {
+    // Store chat session data with high priority
+    setState(`chat_session_${lessonContext.chapterNumber}`, {
+      lessonContext,
+      startTime: new Date(),
+      messageCount: messages.length
+    }, 'high');
+
+    // Store engagement data with medium priority
+    setState(`engagement_${lessonContext.chapterNumber}`, engagement, 'medium');
+
+    // Cleanup function to remove temporary chat data
+    return registerCleanup(() => {
+      // Keep only essential data, remove temporary UI state
+      deleteState(`temp_ui_${lessonContext.chapterNumber}`);
+      console.log('ContextualLyraChat: Cleaned up temporary chat state');
+    });
+  }, [lessonContext, messages.length, engagement, setState, deleteState, registerCleanup]);
 
   // Handle sending messages
   const sendMessage = async (content: string) => {

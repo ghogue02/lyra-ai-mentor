@@ -10,7 +10,14 @@ import {
   DecisionTreeState,
   DecisionPath
 } from './InteractiveDecisionTree';
-import { OptionItem } from '@/components/ui/VisualOptionGrid';
+// OptionItem interface defined locally to remove VisualOptionGrid dependency
+interface OptionItem {
+  id: string;
+  label: string;
+  description?: string;
+  icon?: string;
+  recommended?: boolean;
+}
 import { GitBranch, Sparkles, Heart, RotateCcw, Play, ChevronRight } from 'lucide-react';
 
 // ================================

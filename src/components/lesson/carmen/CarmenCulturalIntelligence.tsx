@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
-import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
+import { ConversationalFlow, ConversationQuestion, ConversationAnswer } from '@/components/ui/interaction-patterns/ConversationalFlow';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
@@ -34,61 +34,113 @@ const CarmenCulturalIntelligence: React.FC = () => {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
-  const [selectedChallenges, setSelectedChallenges] = useState<string[]>([]);
-  const [selectedStrategies, setSelectedStrategies] = useState<string[]>([]);
-  const [selectedGoals, setSelectedGoals] = useState<string[]>([]);
-  const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
+  const [conversationAnswers, setConversationAnswers] = useState<ConversationAnswer[]>([]);
+  const [currentConversationPhase, setCurrentConversationPhase] = useState<'assessment' | 'strategy' | 'planning' | 'complete'>('assessment');
   const [generatedStrategy, setGeneratedStrategy] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
 
-  // Cultural challenge options
-  const challengeOptions: OptionItem[] = [
-    { id: 'lack-representation', label: 'Lack of Representation', description: 'Limited diversity in leadership/teams', icon: 'culturalDiversity', recommended: true },
-    { id: 'communication-barriers', label: 'Communication Barriers', description: 'Language or cultural misunderstandings', icon: 'culturalCommunication', recommended: true },
-    { id: 'unconscious-bias', label: 'Unconscious Bias', description: 'Unfair treatment or assumptions', icon: 'culturalBias' },
-    { id: 'exclusive-practices', label: 'Exclusive Practices', description: 'Processes that exclude certain groups', icon: 'culturalExclusion' },
-    { id: 'microaggressions', label: 'Microaggressions', description: 'Subtle discriminatory comments/actions', icon: 'culturalMicro' },
-    { id: 'cultural-misunderstanding', label: 'Cultural Misunderstandings', description: 'Different work styles/values clash', icon: 'culturalMisunderstanding' },
-    { id: 'limited-cultural-awareness', label: 'Limited Cultural Awareness', description: 'Lack of global/cultural knowledge', icon: 'culturalAwareness' },
-    { id: 'inequitable-opportunities', label: 'Inequitable Opportunities', description: 'Unequal access to growth/advancement', icon: 'culturalInequity' }
+  // Cultural Intelligence Conversation Flow
+  const culturalIntelligenceQuestions: ConversationQuestion[] = [
+    {
+      id: 'cultural-background',
+      type: 'multiple-choice',
+      question: 'What best describes your current workplace cultural environment?',
+      description: 'Help Carmen understand your starting point for cultural intelligence development',
+      required: true,
+      options: [
+        { id: 'homogeneous', label: 'Primarily homogeneous team/organization', description: 'Limited cultural diversity' },
+        { id: 'emerging-diversity', label: 'Emerging diversity initiatives', description: 'Starting to build inclusive practices' },
+        { id: 'diverse-but-siloed', label: 'Diverse but siloed groups', description: 'Diversity exists but limited interaction' },
+        { id: 'integrated-diverse', label: 'Well-integrated diverse environment', description: 'Active cultural collaboration' }
+      ]
+    },
+    {
+      id: 'cultural-challenges',
+      type: 'multiple-choice',
+      question: 'Which cultural challenges does your organization face most often?',
+      description: 'Identify specific areas where cultural intelligence can make an impact',
+      required: true,
+      options: [
+        { id: 'communication-barriers', label: 'Communication barriers', description: 'Language or cultural misunderstandings' },
+        { id: 'unconscious-bias', label: 'Unconscious bias', description: 'Unfair treatment or assumptions' },
+        { id: 'exclusive-practices', label: 'Exclusive practices', description: 'Processes that exclude certain groups' },
+        { id: 'limited-representation', label: 'Limited representation', description: 'Lack of diversity in leadership/teams' },
+        { id: 'cultural-conflicts', label: 'Cultural conflicts', description: 'Different values and work styles clash' }
+      ]
+    },
+    {
+      id: 'personal-experience',
+      type: 'scale',
+      question: 'How comfortable do you feel navigating cross-cultural interactions at work?',
+      description: 'Your honest self-assessment helps Carmen tailor the development approach',
+      required: true,
+      scaleConfig: {
+        min: 1,
+        max: 10,
+        minLabel: 'Very uncomfortable',
+        maxLabel: 'Very comfortable',
+        step: 1
+      }
+    },
+    {
+      id: 'improvement-goals',
+      type: 'multiple-choice',
+      question: 'What cultural intelligence outcomes matter most to you?',
+      description: 'Focus on what success looks like for your organization',
+      required: true,
+      options: [
+        { id: 'belonging', label: 'Increase sense of belonging', description: 'Everyone feels valued and included' },
+        { id: 'collaboration', label: 'Improve cross-cultural collaboration', description: 'Better teamwork across differences' },
+        { id: 'innovation', label: 'Enhance innovation through diversity', description: 'Leverage diverse perspectives' },
+        { id: 'retention', label: 'Improve retention of diverse talent', description: 'Keep great people longer' },
+        { id: 'reputation', label: 'Build inclusive reputation', description: 'Become known for great culture' }
+      ]
+    },
+    {
+      id: 'implementation-preference',
+      type: 'single-choice',
+      question: 'How would you prefer to implement cultural intelligence development?',
+      description: 'Choose the approach that fits your organizational style',
+      required: true,
+      options: [
+        { id: 'gradual-systematic', label: 'Gradual, systematic approach', description: 'Steady, long-term cultural transformation' },
+        { id: 'intensive-immersive', label: 'Intensive, immersive program', description: 'Concentrated cultural intelligence bootcamp' },
+        { id: 'organic-grassroots', label: 'Organic, grassroots movement', description: 'Bottom-up cultural change initiative' },
+        { id: 'leadership-driven', label: 'Leadership-driven cascade', description: 'Top-down cultural intelligence rollout' }
+      ]
+    }
   ];
 
-  // Cultural strategy options
-  const strategyOptions: OptionItem[] = [
-    { id: 'cultural-training', label: 'Cultural Intelligence Training', description: 'Education on cultural awareness', icon: 'culturalTraining', recommended: true },
-    { id: 'inclusive-leadership', label: 'Inclusive Leadership Development', description: 'Train leaders on inclusive practices', icon: 'culturalLeadership', recommended: true },
-    { id: 'diverse-hiring', label: 'Diverse Hiring Practices', description: 'Expand recruitment to diverse pools', icon: 'culturalHiring' },
-    { id: 'employee-resource-groups', label: 'Employee Resource Groups', description: 'Communities based on shared identity', icon: 'culturalGroups' },
-    { id: 'mentorship-programs', label: 'Cross-Cultural Mentorship', description: 'Pair people from different backgrounds', icon: 'culturalMentorship' },
-    { id: 'celebration-programs', label: 'Cultural Celebration Programs', description: 'Honor different cultures and traditions', icon: 'culturalCelebration' },
-    { id: 'policy-review', label: 'Inclusive Policy Review', description: 'Update policies for fairness', icon: 'culturalPolicy' },
-    { id: 'feedback-systems', label: 'Anonymous Feedback Systems', description: 'Safe reporting of cultural issues', icon: 'culturalFeedback' }
-  ];
-
-  // Cultural goal options
-  const goalOptions: OptionItem[] = [
-    { id: 'increase-belonging', label: 'Increase Sense of Belonging', description: 'Everyone feels valued and included', icon: 'culturalBelonging', recommended: true },
-    { id: 'improve-collaboration', label: 'Improve Cross-Cultural Collaboration', description: 'Better teamwork across differences', icon: 'culturalCollaboration', recommended: true },
-    { id: 'reduce-bias', label: 'Reduce Unconscious Bias', description: 'Fair treatment for all employees', icon: 'culturalBalance' },
-    { id: 'enhance-innovation', label: 'Enhance Innovation', description: 'Leverage diverse perspectives', icon: 'culturalInnovation' },
-    { id: 'improve-retention', label: 'Improve Retention', description: 'Keep diverse talent longer', icon: 'culturalRetention' },
-    { id: 'build-reputation', label: 'Build Inclusive Reputation', description: 'Become known for great culture', icon: 'culturalReputation' },
-    { id: 'global-competency', label: 'Develop Global Competency', description: 'Work effectively across cultures', icon: 'culturalGlobal' },
-    { id: 'leadership-diversity', label: 'Increase Leadership Diversity', description: 'Diverse representation in leadership', icon: 'culturalLeadership' }
-  ];
-
-  // Cultural metrics options
-  const metricsOptions: OptionItem[] = [
-    { id: 'inclusion-surveys', label: 'Inclusion Survey Scores', description: 'Regular employee sentiment tracking', icon: 'culturalSurvey', recommended: true },
-    { id: 'diversity-metrics', label: 'Diversity Representation', description: 'Demographics across all levels', icon: 'culturalDemographics', recommended: true },
-    { id: 'promotion-equity', label: 'Promotion Equity', description: 'Fair advancement across groups', icon: 'culturalPromotion' },
-    { id: 'retention-rates', label: 'Retention by Demographics', description: 'Track who stays vs. leaves', icon: 'culturalRetention' },
-    { id: 'cultural-competency', label: 'Cultural Competency Assessments', description: 'Skill development tracking', icon: 'culturalSkills' },
-    { id: 'bias-incidents', label: 'Bias Incident Reporting', description: 'Track and address issues', icon: 'culturalIncidents' },
-    { id: 'cross-cultural-collaboration', label: 'Cross-Cultural Collaboration', description: 'Quality of diverse team performance', icon: 'culturalTeamwork' },
-    { id: 'leadership-effectiveness', label: 'Inclusive Leadership Effectiveness', description: 'Leader cultural intelligence scores', icon: 'culturalLeadership' }
-  ];
+  // Helper function to extract conversation insights
+  const extractConversationInsights = () => {
+    const insights: string[] = [];
+    
+    conversationAnswers.forEach(answer => {
+      const question = culturalIntelligenceQuestions.find(q => q.id === answer.questionId);
+      if (!question) return;
+      
+      switch (answer.questionId) {
+        case 'cultural-background':
+          insights.push(`Current environment: ${Array.isArray(answer.value) ? answer.value.join(', ') : answer.value}`);
+          break;
+        case 'cultural-challenges':
+          insights.push(`Primary challenges: ${Array.isArray(answer.value) ? answer.value.join(', ') : answer.value}`);
+          break;
+        case 'personal-experience':
+          insights.push(`Comfort level: ${answer.value}/10`);
+          break;
+        case 'improvement-goals':
+          insights.push(`Target outcomes: ${Array.isArray(answer.value) ? answer.value.join(', ') : answer.value}`);
+          break;
+        case 'implementation-preference':
+          insights.push(`Preferred approach: ${answer.value}`);
+          break;
+      }
+    });
+    
+    return insights;
+  };
 
   const culturalElements: CulturalElement[] = [
     {
@@ -160,8 +212,10 @@ const CarmenCulturalIntelligence: React.FC = () => {
     }
   ];
 
-  // Update prompt segments when selections change
+  // Update prompt segments when conversation progresses
   useEffect(() => {
+    const insights = extractConversationInsights();
+    
     const segments: PromptSegment[] = [
       {
         id: 'context',
@@ -172,41 +226,27 @@ const CarmenCulturalIntelligence: React.FC = () => {
         required: true
       },
       {
-        id: 'challenges',
-        label: 'Cultural Challenges',
-        value: selectedChallenges.length > 0 ? `Current challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        id: 'conversation-insights',
+        label: 'Cultural Intelligence Conversation',
+        value: insights.length > 0 ? `Conversation insights: ${insights.join('. ')}` : '',
         type: 'data',
-        color: 'border-l-red-400',
+        color: 'border-l-cyan-400',
         required: false
       },
       {
-        id: 'strategies',
-        label: 'Cultural Strategies',
-        value: selectedStrategies.length > 0 ? `Preferred strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
+        id: 'personalization',
+        label: 'Personalized Approach',
+        value: conversationAnswers.length > 0 
+          ? 'Based on the conversational assessment, create a personalized cultural intelligence development strategy that addresses the specific context, challenges, and goals identified.' 
+          : '',
         type: 'instruction',
         color: 'border-l-green-400',
         required: false
       },
       {
-        id: 'goals',
-        label: 'Cultural Goals',
-        value: selectedGoals.length > 0 ? `Desired outcomes: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
-        type: 'instruction',
-        color: 'border-l-blue-400',
-        required: false
-      },
-      {
-        id: 'metrics',
-        label: 'Success Metrics',
-        value: selectedMetrics.length > 0 ? `Key metrics: ${selectedMetrics.map(id => metricsOptions.find(opt => opt.id === id)?.label).join(', ')}` : '',
-        type: 'instruction',
-        color: 'border-l-purple-400',
-        required: false
-      },
-      {
         id: 'format',
         label: 'Output Framework',
-        value: 'Create a comprehensive cultural intelligence strategy with: 1) Cultural Assessment (current state analysis), 2) Inclusion Strategy (targeted approaches), 3) Cultural Transformation (implementation roadmap), 4) Progress Tracking (measurement systems). Focus on building authentic inclusion and leveraging diverse perspectives for innovation.',
+        value: 'Create a comprehensive cultural intelligence strategy with: 1) Cultural Assessment (current state analysis based on conversation), 2) Inclusion Strategy (targeted approaches for identified challenges), 3) Cultural Transformation (implementation roadmap aligned with preferences), 4) Progress Tracking (measurement systems for desired outcomes). Focus on building authentic inclusion and leveraging diverse perspectives for innovation.',
         type: 'format',
         color: 'border-l-gray-400',
         required: true
@@ -214,10 +254,12 @@ const CarmenCulturalIntelligence: React.FC = () => {
     ];
     
     setPromptSegments(segments);
-  }, [selectedChallenges, selectedStrategies, selectedGoals, selectedMetrics]);
+  }, [conversationAnswers]);
 
   const generateCulturalStrategy = async () => {
-    if (selectedChallenges.length === 0 || selectedStrategies.length === 0 || selectedGoals.length === 0) return;
+    if (conversationAnswers.length === 0) return;
+    
+    const insights = extractConversationInsights();
     
     setIsGenerating(true);
     try {
@@ -226,14 +268,11 @@ const CarmenCulturalIntelligence: React.FC = () => {
           characterType: 'carmen',
           contentType: 'strategic_plan',
           topic: 'Cultural Intelligence and Inclusive Workplace Development',
-          context: `Carmen Rodriguez needs to develop a comprehensive cultural intelligence strategy for creating an inclusive workplace.
+          context: `Carmen Rodriguez needs to develop a comprehensive cultural intelligence strategy based on a personalized conversational assessment.
           
-          Current Challenges: ${selectedChallenges.map(id => challengeOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Cultural Strategies: ${selectedStrategies.map(id => strategyOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Cultural Goals: ${selectedGoals.map(id => goalOptions.find(opt => opt.id === id)?.label).join(', ')}
-          Success Metrics: ${selectedMetrics.map(id => metricsOptions.find(opt => opt.id === id)?.label).join(', ')}
+          Conversation Insights: ${insights.join('. ')}
           
-          Create a comprehensive cultural intelligence strategy that includes: 1) Current culture assessment with AI analytics, 2) Inclusive culture development strategy, 3) Implementation roadmap with cultural transformation steps, 4) Progress measurement and continuous improvement system. Focus on building genuine inclusion, cultural bridge-building, and leveraging diverse perspectives for innovation.`
+          Based on this conversational assessment, create a highly personalized cultural intelligence strategy that includes: 1) Cultural assessment tailored to the identified environment and challenges, 2) Inclusive culture development strategy aligned with comfort level and goals, 3) Implementation roadmap matching the preferred approach, 4) Progress measurement system focused on desired outcomes. Focus on building genuine inclusion, cultural bridge-building, and leveraging diverse perspectives for innovation while respecting the specific context and preferences identified.`
         }
       });
 
@@ -427,85 +466,51 @@ const CarmenCulturalIntelligence: React.FC = () => {
             "lg:block", 
             currentStep === 0 ? "block" : "hidden"
           )}>
-            {/* Cultural Challenges - Compact */}
-            <VisualOptionGrid
-              title="Challenges"
-              description="Inclusion issues"
-              options={challengeOptions}
-              selectedIds={selectedChallenges}
-              onSelectionChange={setSelectedChallenges}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
+            {/* Cultural Intelligence Conversational Flow */}
+            <ConversationalFlow
+              title="Cultural Intelligence Assessment"
+              description="Let's have a thoughtful conversation about your cultural intelligence needs"
+              questions={culturalIntelligenceQuestions}
+              onAnswersChange={setConversationAnswers}
+              onComplete={() => setCurrentConversationPhase('complete')}
               characterTheme="carmen"
+              enableProgress={true}
+              allowBacktrack={true}
+              showQuestionNumbers={true}
+              autoSave={true}
+              conversationStyle="guided"
+              className="max-h-none"
             />
 
-            {/* Cultural Strategies - Compact */}
-            <VisualOptionGrid
-              title="Strategies"
-              description="How to build inclusive culture"
-              options={strategyOptions}
-              selectedIds={selectedStrategies}
-              onSelectionChange={setSelectedStrategies}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Cultural Goals - Compact */}
-            <VisualOptionGrid
-              title="Goals"
-              description="Cultural transformation"
-              options={goalOptions}
-              selectedIds={selectedGoals}
-              onSelectionChange={setSelectedGoals}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Success Metrics - Compact */}
-            <VisualOptionGrid
-              title="Metrics"
-              description="How to measure progress"
-              options={metricsOptions}
-              selectedIds={selectedMetrics}
-              onSelectionChange={setSelectedMetrics}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Generate Button - Compact */}
-            <Card>
-              <CardContent className="p-4 text-center">
-                <Button 
-                  onClick={generateCulturalStrategy}
-                  disabled={selectedChallenges.length === 0 || selectedStrategies.length === 0 || selectedGoals.length === 0 || isGenerating}
-                  className="w-full nm-button nm-button-primary text-base py-2"
-                  aria-label={isGenerating ? "Creating your cultural intelligence strategy" : "Generate cultural intelligence strategy for building inclusive workplace culture"}
-                  aria-describedby="cultural-generation-status"
-                >
-                  {isGenerating ? (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
-                      <span aria-live="polite">Carmen is building your culture strategy...</span>
-                    </>
-                  ) : (
-                    <>
-                      <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
-                      Create Cultural Intelligence Strategy
-                    </>
-                  )}
-                  <div id="cultural-generation-status" className="sr-only">
-                    {isGenerating ? "AI is currently generating your cultural intelligence strategy. Please wait." : "Click to generate your cultural strategy"}
-                  </div>
-                </Button>
-              </CardContent>
-            </Card>
+            {/* Generate Button - Appears after conversation complete */}
+            {currentConversationPhase === 'complete' && (
+              <Card>
+                <CardContent className="p-4 text-center">
+                  <Button 
+                    onClick={generateCulturalStrategy}
+                    disabled={conversationAnswers.length === 0 || isGenerating}
+                    className="w-full nm-button nm-button-primary text-base py-2"
+                    aria-label={isGenerating ? "Creating your cultural intelligence strategy" : "Generate personalized cultural intelligence strategy"}
+                    aria-describedby="cultural-generation-status"
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                        <span aria-live="polite">Carmen is building your personalized strategy...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-5 h-5 mr-2" aria-hidden="true" />
+                        Create My Cultural Intelligence Strategy
+                      </>
+                    )}
+                    <div id="cultural-generation-status" className="sr-only">
+                      {isGenerating ? "AI is currently generating your personalized cultural intelligence strategy. Please wait." : "Click to generate your cultural strategy based on the conversation"}
+                    </div>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
           </div>
 
           {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}

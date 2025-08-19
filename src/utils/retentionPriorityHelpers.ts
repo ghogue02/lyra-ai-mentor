@@ -3,7 +3,6 @@
  */
 
 import { PriorityCard } from '@/components/ui/interaction-patterns/PriorityCardSystem';
-import { OptionItem } from '@/components/ui/VisualOptionGrid';
 
 export interface RetentionCardData {
   riskFactors: string[];
@@ -13,10 +12,10 @@ export interface RetentionCardData {
 }
 
 /**
- * Convert VisualOptionGrid OptionItems to PriorityCards for retention factors
+ * Convert option data to PriorityCards for retention factors
  */
 export function convertRiskFactorsToPriorityCards(
-  riskOptions: OptionItem[],
+  riskOptions: Array<{id: string, label: string, description?: string, icon?: string, recommended?: boolean}>,
   selectedRisks: string[]
 ): PriorityCard[] {
   return selectedRisks.map((riskId, index) => {
@@ -47,7 +46,7 @@ export function convertRiskFactorsToPriorityCards(
  * Convert intervention strategies to PriorityCards
  */
 export function convertInterventionsToPriorityCards(
-  interventionOptions: OptionItem[],
+  interventionOptions: Array<{id: string, label: string, description?: string, icon?: string, recommended?: boolean}>,
   selectedInterventions: string[]
 ): PriorityCard[] {
   return selectedInterventions.map((interventionId, index) => {
@@ -78,7 +77,7 @@ export function convertInterventionsToPriorityCards(
  * Convert goals to PriorityCards
  */
 export function convertGoalsToPriorityCards(
-  goalOptions: OptionItem[],
+  goalOptions: Array<{id: string, label: string, description?: string, icon?: string, recommended?: boolean}>,
   selectedGoals: string[]
 ): PriorityCard[] {
   return selectedGoals.map((goalId, index) => {
@@ -110,9 +109,9 @@ export function convertGoalsToPriorityCards(
  */
 export function createRetentionPriorityCards(
   cardData: RetentionCardData,
-  riskOptions: OptionItem[],
-  interventionOptions: OptionItem[],
-  goalOptions: OptionItem[]
+  riskOptions: Array<{id: string, label: string, description?: string, icon?: string, recommended?: boolean}>,
+  interventionOptions: Array<{id: string, label: string, description?: string, icon?: string, recommended?: boolean}>,
+  goalOptions: Array<{id: string, label: string, description?: string, icon?: string, recommended?: boolean}>
 ): {
   riskCards: PriorityCard[];
   interventionCards: PriorityCard[];
