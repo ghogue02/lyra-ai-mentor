@@ -11,7 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
-import { ConversationalFlow, ConversationQuestion, ConversationAnswer } from '@/components/ui/interaction-patterns/ConversationalFlow';
+import { ConversationalFlow, ConversationQuestion, ConversationResponse } from '@/components/ui/interaction-patterns/ConversationalFlow';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
@@ -34,7 +34,7 @@ const CarmenCulturalIntelligence: React.FC = () => {
   const { toast } = useToast();
   const [currentPhase, setCurrentPhase] = useState<Phase>('intro');
   const [currentStep, setCurrentStep] = useState(0);
-  const [conversationAnswers, setConversationAnswers] = useState<ConversationAnswer[]>([]);
+  const [conversationAnswers, setConversationAnswers] = useState<ConversationResponse[]>([]);
   const [currentConversationPhase, setCurrentConversationPhase] = useState<'assessment' | 'strategy' | 'planning' | 'complete'>('assessment');
   const [generatedStrategy, setGeneratedStrategy] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -49,10 +49,10 @@ const CarmenCulturalIntelligence: React.FC = () => {
       description: 'Help Carmen understand your starting point for cultural intelligence development',
       required: true,
       options: [
-        { id: 'homogeneous', label: 'Primarily homogeneous team/organization', description: 'Limited cultural diversity' },
-        { id: 'emerging-diversity', label: 'Emerging diversity initiatives', description: 'Starting to build inclusive practices' },
-        { id: 'diverse-but-siloed', label: 'Diverse but siloed groups', description: 'Diversity exists but limited interaction' },
-        { id: 'integrated-diverse', label: 'Well-integrated diverse environment', description: 'Active cultural collaboration' }
+        { id: 'homogeneous', label: 'Primarily homogeneous team/organization', description: 'Limited cultural diversity', value: 'homogeneous' },
+        { id: 'emerging-diversity', label: 'Emerging diversity initiatives', description: 'Starting to build inclusive practices', value: 'emerging-diversity' },
+        { id: 'diverse-but-siloed', label: 'Diverse but siloed groups', description: 'Diversity exists but limited interaction', value: 'diverse-but-siloed' },
+        { id: 'integrated-diverse', label: 'Well-integrated diverse environment', description: 'Active cultural collaboration', value: 'integrated-diverse' }
       ]
     },
     {
@@ -62,11 +62,11 @@ const CarmenCulturalIntelligence: React.FC = () => {
       description: 'Identify specific areas where cultural intelligence can make an impact',
       required: true,
       options: [
-        { id: 'communication-barriers', label: 'Communication barriers', description: 'Language or cultural misunderstandings' },
-        { id: 'unconscious-bias', label: 'Unconscious bias', description: 'Unfair treatment or assumptions' },
-        { id: 'exclusive-practices', label: 'Exclusive practices', description: 'Processes that exclude certain groups' },
-        { id: 'limited-representation', label: 'Limited representation', description: 'Lack of diversity in leadership/teams' },
-        { id: 'cultural-conflicts', label: 'Cultural conflicts', description: 'Different values and work styles clash' }
+        { id: 'communication-barriers', label: 'Communication barriers', description: 'Language or cultural misunderstandings', value: 'communication-barriers' },
+        { id: 'unconscious-bias', label: 'Unconscious bias', description: 'Unfair treatment or assumptions', value: 'unconscious-bias' },
+        { id: 'exclusive-practices', label: 'Exclusive practices', description: 'Processes that exclude certain groups', value: 'exclusive-practices' },
+        { id: 'limited-representation', label: 'Limited representation', description: 'Lack of diversity in leadership/teams', value: 'limited-representation' },
+        { id: 'cultural-conflicts', label: 'Cultural conflicts', description: 'Different values and work styles clash', value: 'cultural-conflicts' }
       ]
     },
     {
@@ -90,11 +90,11 @@ const CarmenCulturalIntelligence: React.FC = () => {
       description: 'Focus on what success looks like for your organization',
       required: true,
       options: [
-        { id: 'belonging', label: 'Increase sense of belonging', description: 'Everyone feels valued and included' },
-        { id: 'collaboration', label: 'Improve cross-cultural collaboration', description: 'Better teamwork across differences' },
-        { id: 'innovation', label: 'Enhance innovation through diversity', description: 'Leverage diverse perspectives' },
-        { id: 'retention', label: 'Improve retention of diverse talent', description: 'Keep great people longer' },
-        { id: 'reputation', label: 'Build inclusive reputation', description: 'Become known for great culture' }
+        { id: 'belonging', label: 'Increase sense of belonging', description: 'Everyone feels valued and included', value: 'belonging' },
+        { id: 'collaboration', label: 'Improve cross-cultural collaboration', description: 'Better teamwork across differences', value: 'collaboration' },
+        { id: 'innovation', label: 'Enhance innovation through diversity', description: 'Leverage diverse perspectives', value: 'innovation' },
+        { id: 'retention', label: 'Improve retention of diverse talent', description: 'Keep great people longer', value: 'retention' },
+        { id: 'reputation', label: 'Build inclusive reputation', description: 'Become known for great culture', value: 'reputation' }
       ]
     },
     {
@@ -104,10 +104,10 @@ const CarmenCulturalIntelligence: React.FC = () => {
       description: 'Choose the approach that fits your organizational style',
       required: true,
       options: [
-        { id: 'gradual-systematic', label: 'Gradual, systematic approach', description: 'Steady, long-term cultural transformation' },
-        { id: 'intensive-immersive', label: 'Intensive, immersive program', description: 'Concentrated cultural intelligence bootcamp' },
-        { id: 'organic-grassroots', label: 'Organic, grassroots movement', description: 'Bottom-up cultural change initiative' },
-        { id: 'leadership-driven', label: 'Leadership-driven cascade', description: 'Top-down cultural intelligence rollout' }
+        { id: 'gradual-systematic', label: 'Gradual, systematic approach', description: 'Steady, long-term cultural transformation', value: 'gradual-systematic' },
+        { id: 'intensive-immersive', label: 'Intensive, immersive program', description: 'Concentrated cultural intelligence bootcamp', value: 'intensive-immersive' },
+        { id: 'organic-grassroots', label: 'Organic, grassroots movement', description: 'Bottom-up cultural change initiative', value: 'organic-grassroots' },
+        { id: 'leadership-driven', label: 'Leadership-driven cascade', description: 'Top-down cultural intelligence rollout', value: 'leadership-driven' }
       ]
     }
   ];
