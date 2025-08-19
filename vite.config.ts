@@ -10,22 +10,34 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
   },
   plugins: [
-    react(),
+    react({
+      jsxRuntime: 'automatic',
+      jsxImportSource: 'react'
+    }),
     mode === 'development' &&
     componentTagger(),
   ].filter(Boolean),
+  define: {
+    global: 'globalThis',
+  },
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+    dedupe: ['react', 'react-dom'],
+  },
+  optimizeDeps: {
+    include: ['react', 'react-dom', 'react/jsx-runtime'],
+    exclude: [],
   },
   build: {
     rollupOptions: {
+      external: [],
       output: {
         manualChunks: (id) => {
-          // Vendor chunks
+          // Vendor chunks - ensure React is properly bundled
           if (id.includes('node_modules')) {
-            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+            if (id.includes('react/') || id.includes('react-dom/') || id.includes('react-router-dom/')) {
               return 'vendor-react';
             }
             if (id.includes('@radix-ui')) {
