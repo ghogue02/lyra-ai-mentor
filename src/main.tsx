@@ -1,3 +1,6 @@
+// 🚨 CRITICAL: Emergency debug MUST load FIRST
+import './emergency-debug';
+
 // 🚨 IMMEDIATE DEBUG: Log before ANY other code runs
 console.log('🚨 [IMMEDIATE] main.tsx entry point - timestamp:', new Date().toISOString());
 console.log('🚨 [IMMEDIATE] typeof React before import:', typeof React);
