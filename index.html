@@ -5,6 +5,79 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HelloLyra</title>
+    
+    <!-- 🚨 CRITICAL: Inline emergency debug - CANNOT be bypassed -->
+    <script>
+      console.log('🚨 [INLINE] Emergency debug loaded at:', new Date().toISOString());
+      console.log('🚨 [INLINE] Document readyState:', document.readyState);
+      console.log('🚨 [INLINE] window.React before any scripts:', window.React);
+      
+      // Global React monitoring
+      window.__REACT_DEBUG__ = {
+        originalCreateContext: null,
+        createContextCalls: 0,
+        errors: [],
+        reactChecks: 0
+      };
+      
+      // Monitor for React becoming available
+      const checkReactInterval = setInterval(() => {
+        window.__REACT_DEBUG__.reactChecks++;
+        const reactAvailable = !!window.React;
+        console.log(`🚨 [INLINE] React check #${window.__REACT_DEBUG__.reactChecks}:`, reactAvailable);
+        
+        if (reactAvailable) {
+          const React = window.React;
+          console.log('✅ [INLINE] React found! Version:', React.version);
+          console.log('✅ [INLINE] React.createContext:', React.createContext);
+          
+          // Wrap createContext to catch issues
+          if (React.createContext && !window.__REACT_DEBUG__.originalCreateContext) {
+            window.__REACT_DEBUG__.originalCreateContext = React.createContext;
+            React.createContext = function(...args) {
+              window.__REACT_DEBUG__.createContextCalls++;
+              console.log(`✅ [INLINE] createContext called #${window.__REACT_DEBUG__.createContextCalls}`, args);
+              try {
+                return window.__REACT_DEBUG__.originalCreateContext.apply(this, args);
+              } catch (error) {
+                console.error('🚨 [INLINE] createContext error:', error);
+                window.__REACT_DEBUG__.errors.push(error);
+                throw error;
+              }
+            };
+          }
+          clearInterval(checkReactInterval);
+        }
+      }, 50);
+      
+      // Clear interval after 15 seconds
+      setTimeout(() => {
+        clearInterval(checkReactInterval);
+        console.log('🚨 [INLINE] React monitoring stopped. Final state:', {
+          reactAvailable: !!window.React,
+          createContextCalls: window.__REACT_DEBUG__.createContextCalls,
+          errors: window.__REACT_DEBUG__.errors.length,
+          totalChecks: window.__REACT_DEBUG__.reactChecks
+        });
+      }, 15000);
+      
+      // Catch all errors with createContext
+      window.addEventListener('error', (event) => {
+        if (event.message.includes('createContext')) {
+          console.error('🚨 [INLINE] createContext error caught:', {
+            message: event.message,
+            filename: event.filename,
+            lineno: event.lineno,
+            colno: event.colno,
+            error: event.error,
+            stack: event.error?.stack
+          });
+          window.__REACT_DEBUG__.errors.push(event.error);
+        }
+      });
+      
+      console.log('✅ [INLINE] Emergency debug setup complete');
+    </script>
     <meta name="description" content="Master AI Without the Mystery - Transform your impact with AI-powered workflows" />
     <meta name="author" content="HelloLyra" />
     
