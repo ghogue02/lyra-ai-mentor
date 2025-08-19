@@ -1,142 +1,154 @@
 import React from 'react';
 import { useParams, Navigate } from 'react-router-dom';
-import MayaInteractiveJourney from '@/components/lesson/chat/lyra/maya/MayaInteractiveJourney';
-import MayaToneMastery from '@/components/lesson/chat/lyra/maya/MayaToneMastery';
-import MayaTemplateLibraryBuilder from '@/components/lesson/MayaTemplateLibraryBuilder';
-import MayaDifficultConversationsGuide from '@/components/lesson/MayaDifficultConversationsGuide';
-import MayaSubjectLineWorkshop from '@/components/lesson/MayaSubjectLineWorkshop';
-import LyraFoundationsJourney from '@/components/lesson/chat/lyra/LyraFoundationsJourney';
-import { LyraUnderstandingAIModelsLesson } from '@/components/lesson/LyraUnderstandingAIModelsLesson';
-import { LyraPromptingFundamentalsLesson } from '@/components/lesson/LyraPromptingFundamentalsLesson';
-import { LyraAIEthicsLesson } from '@/components/lesson/LyraAIEthicsLesson';
-import { LyraAIToolkitSetupLesson } from '@/components/lesson/LyraAIToolkitSetupLesson';
-import SofiaStorytellingJourney from '@/components/lesson/chat/sofia/SofiaStorytellingJourney';
-import DavidDataJourney from '@/components/lesson/chat/david/DavidDataJourney';
-import RachelAutomationJourney from '@/components/lesson/chat/rachel/RachelAutomationJourney';
-import AlexLeadershipJourney from '@/components/lesson/chat/alex/AlexLeadershipJourney';
+import LoadingSuspense from '@/components/ui/LoadingSuspense';
+import {
+  // Maya components
+  LazyMayaInteractiveJourney,
+  LazyMayaToneMastery,
+  LazyMayaTemplateLibraryBuilder,
+  LazyMayaDifficultConversationsGuide,
+  LazyMayaSubjectLineWorkshop,
+  
+  // Lyra components
+  LazyLyraFoundationsJourney,
+  LazyLyraUnderstandingAIModelsLesson,
+  LazyLyraPromptingFundamentalsLesson,
+  LazyLyraAIEthicsLesson,
+  LazyLyraAIToolkitSetupLesson,
+  
+  // Sofia components
+  LazySofiaStorytellingJourney,
+  LazySofiaMissionStoryCreator,
+  LazySofiaVoiceDiscovery,
+  LazySofiaStoryBreakthrough,
+  LazySofiaImpactScaling,
+  
+  // David components
+  LazyDavidDataJourney,
+  LazyDavidDataFoundations,
+  LazyDavidVisualStorytelling,
+  LazyDavidDataRevival,
+  LazyDavidStakeholderCommunication,
+  LazyDavidPredictiveInsights,
+  LazyDavidDataEcosystem,
+  
+  // Rachel components
+  LazyRachelAutomationJourney,
+  LazyRachelAutomationVision,
+  LazyRachelHumanCenteredDesign,
+  LazyRachelAutomationPlanning,
+  LazyRachelWorkflowDesign,
+  LazyRachelScalingSystems,
+  LazyRachelEcosystemBuilder,
+  
+  // Alex components
+  LazyAlexLeadershipJourney,
+  LazyAlexLeadershipChallenges,
+  LazyAlexVisionBuilding,
+  LazyAlexTransformationPlanning,
+  LazyAlexTeamAlignment,
+  LazyAlexFutureLeadership,
+  LazyAlexLeadershipFramework,
+  
+  // Tool components
+  LazyDecisionMatrixRenderer,
+  LazyTeamCapacityCalculator,
+  LazyTeamCapacityResults,
+  LazyProjectCharterBuilder,
+  
+  // Carmen components
+  LazyCarmenPeopleManagementJourney,
+  LazyCarmenTalentAcquisition,
+  LazyCarmenPerformanceInsights,
+  LazyCarmenEngagementBuilder,
+  LazyCarmenRetentionMastery,
+  LazyCarmenTeamDynamics,
+  LazyCarmenCulturalIntelligence,
+  LazyCarmenLeadershipDevelopment,
+} from '@/utils/lazyComponents';
 
-// Three-phase character components
-import SofiaMissionStoryCreator from "@/components/lesson/SofiaMissionStoryCreator";
-import SofiaVoiceDiscovery from "@/components/lesson/SofiaVoiceDiscovery";
-import SofiaStoryBreakthrough from "@/components/lesson/SofiaStoryBreakthrough";
-import SofiaImpactScaling from "@/components/lesson/SofiaImpactScaling";
-import DavidDataFoundations from "@/components/lesson/david/DavidDataFoundations";
-import DavidVisualStorytelling from "@/components/lesson/david/DavidVisualStorytelling";
-import DavidDataRevival from "@/components/lesson/david/DavidDataRevival";
-import DavidStakeholderCommunication from "@/components/lesson/david/DavidStakeholderCommunication";
-import DavidPredictiveInsights from "@/components/lesson/david/DavidPredictiveInsights";
-import DavidDataEcosystem from "@/components/lesson/david/DavidDataEcosystem";
-import RachelAutomationVision from "@/components/lesson/RachelAutomationVision";
-import RachelHumanCenteredDesign from "@/components/lesson/RachelHumanCenteredDesign";
-import RachelAutomationPlanning from "@/components/lesson/RachelAutomationPlanning";
-import RachelWorkflowDesign from "@/components/lesson/RachelWorkflowDesign";
-import RachelScalingSystems from "@/components/lesson/RachelScalingSystems";
-import RachelEcosystemBuilder from "@/components/lesson/RachelEcosystemBuilder";
-import AlexLeadershipChallenges from "@/components/lesson/AlexLeadershipChallenges";
-import AlexVisionBuilding from "@/components/lesson/AlexVisionBuilding";
-import AlexTransformationPlanning from "@/components/lesson/AlexTransformationPlanning";
-import AlexTeamAlignment from "@/components/lesson/AlexTeamAlignment";
-import AlexFutureLeadership from "@/components/lesson/AlexFutureLeadership";
-import AlexLeadershipFramework from "@/components/lesson/AlexLeadershipFramework";
-
-// Tools for Chapter 3
-import DecisionMatrixRenderer from '@/components/lesson/tools/DecisionMatrixRenderer';
-import TeamCapacityCalculator from '@/components/lesson/tools/TeamCapacityCalculator';
-import TeamCapacityResults from '@/components/lesson/tools/TeamCapacityResults';
-import ProjectCharterBuilder from '@/components/lesson/tools/ProjectCharterBuilder';
-
-// Carmen Chapter 7 lessons  
-import CarmenPeopleManagementJourney from '@/components/lesson/carmen/CarmenPeopleManagementJourney';
-import CarmenTalentAcquisition from '@/components/lesson/carmen/CarmenTalentAcquisition';
-import CarmenPerformanceInsights from '@/components/lesson/carmen/CarmenPerformanceInsights';
-import CarmenEngagementBuilder from '@/components/lesson/carmen/CarmenEngagementBuilder';
-import CarmenRetentionMastery from '@/components/lesson/carmen/CarmenRetentionMastery';
-import CarmenTeamDynamics from '@/components/lesson/carmen/CarmenTeamDynamics';
-import CarmenCulturalIntelligence from '@/components/lesson/carmen/CarmenCulturalIntelligence';
-import CarmenLeadershipDevelopment from '@/components/lesson/carmen/CarmenLeadershipDevelopment';
-
-// Journey configuration registry
+// Journey configuration registry with lazy components
 const journeyRegistry = {
   'lyra-foundations': {
-    component: LyraFoundationsJourney,
+    component: LazyLyraFoundationsJourney,
     characterId: 'lyra',
     title: 'Lyra\'s AI Foundations Journey',
     description: 'Start your AI journey with Lyra as your guide'
   },
   'understanding-models': {
-    component: LyraUnderstandingAIModelsLesson,
+    component: LazyLyraUnderstandingAIModelsLesson,
     characterId: 'lyra',
     title: 'Understanding AI Models',
     description: 'Learn to choose the right AI model for different tasks'
   },
   'prompting-fundamentals': {
-    component: LyraPromptingFundamentalsLesson,
+    component: LazyLyraPromptingFundamentalsLesson,
     characterId: 'lyra',
     title: 'AI Prompting Fundamentals',
     description: 'Master the art of communicating with AI'
   },
   'ai-ethics': {
-    component: LyraAIEthicsLesson,
+    component: LazyLyraAIEthicsLesson,
     characterId: 'lyra',
     title: 'AI Ethics for Nonprofits',
     description: 'Navigate responsible AI use in mission-driven work'
   },
   'ai-toolkit-setup': {
-    component: LyraAIToolkitSetupLesson,
+    component: LazyLyraAIToolkitSetupLesson,
     characterId: 'lyra',
     title: 'Setting Up Your AI Toolkit',
     description: 'Build your personalized AI workspace'
   },
   'maya-pace': {
-    component: MayaInteractiveJourney,
+    component: LazyMayaInteractiveJourney,
     characterId: 'maya',
     title: 'Maya\'s PACE Framework Journey',
     description: 'Master AI communication through Maya\'s transformation'
   },
   'maya-tone-mastery': {
-    component: MayaToneMastery,
+    component: LazyMayaToneMastery,
     characterId: 'maya',
     title: 'Maya\'s Tone Mastery Workshop',
     description: 'Master tone adaptation with Maya Rodriguez'
   },
   'template-library': {
-    component: MayaTemplateLibraryBuilder,
+    component: LazyMayaTemplateLibraryBuilder,
     characterId: 'maya',
     title: 'Maya\'s Template Library Builder',
     description: 'Create reusable email templates for organizational efficiency'
   },
   'difficult-conversations': {
-    component: MayaDifficultConversationsGuide,
+    component: LazyMayaDifficultConversationsGuide,
     characterId: 'maya',
     title: 'Maya\'s Difficult Conversations Guide',
     description: 'Handle challenging communications with empathy and skill'
   },
   'subject-workshop': {
-    component: MayaSubjectLineWorkshop,
+    component: LazyMayaSubjectLineWorkshop,
     characterId: 'maya',
     title: 'Maya\'s Subject Line Workshop',
     description: 'Craft compelling email openings that get opened and read'
   },
   'sofia-storytelling': {
-    component: SofiaStorytellingJourney,
+    component: LazySofiaStorytellingJourney,
     characterId: 'sofia',
     title: 'Sofia\'s Storytelling Journey',
     description: 'Discover your authentic voice with Sofia Martinez'
   },
   'david-data': {
-    component: DavidDataJourney,
+    component: LazyDavidDataJourney,
     characterId: 'david',
     title: 'David\'s Data Storytelling Journey',
     description: 'Transform data into compelling stories with David Chen'
   },
   'rachel-automation': {
-    component: RachelAutomationJourney,
+    component: LazyRachelAutomationJourney,
     characterId: 'rachel',
     title: 'Rachel\'s Automation Journey',
     description: 'Build efficient workflows with Rachel Thompson'
   },
   'alex-leadership': {
-    component: AlexLeadershipJourney,
+    component: LazyAlexLeadershipJourney,
     characterId: 'alex',
     title: 'Alex\'s Leadership Journey',
     description: 'Lead AI transformation with Alex Rivera'
@@ -144,25 +156,25 @@ const journeyRegistry = {
   
   // Sofia's micro-lessons (Chapter 3)
   'mission-story-creator': {
-    component: SofiaMissionStoryCreator,
+    component: LazySofiaMissionStoryCreator,
     characterId: 'sofia',
     title: 'Sofia\'s Mission Story Creator',
     description: 'Transform invisible mission into compelling narrative'
   },
   'voice-discovery': {
-    component: SofiaVoiceDiscovery,
+    component: LazySofiaVoiceDiscovery,
     characterId: 'sofia',
     title: 'Sofia\'s Voice Discovery Workshop',
     description: 'Discover authentic communication style'
   },
   'story-breakthrough': {
-    component: SofiaStoryBreakthrough,
+    component: LazySofiaStoryBreakthrough,
     characterId: 'sofia',
     title: 'Sofia\'s Story Breakthrough Lab',
     description: 'Craft breakthrough story for high-stakes presentation'
   },
   'impact-scaling': {
-    component: SofiaImpactScaling,
+    component: LazySofiaImpactScaling,
     characterId: 'sofia',
     title: 'Sofia\'s Impact Scaling Mastery',
     description: 'Scale storytelling across all communication channels'
@@ -170,37 +182,37 @@ const journeyRegistry = {
   
   // David's micro-lessons (Chapter 4)
   'david-data-foundations': {
-    component: DavidDataFoundations,
+    component: LazyDavidDataFoundations,
     characterId: 'david',
     title: 'David\'s Data Foundations',
     description: 'Transform raw nonprofit data into compelling impact narratives'
   },
   'visual-storytelling': {
-    component: DavidVisualStorytelling,
+    component: LazyDavidVisualStorytelling,
     characterId: 'david',
     title: 'Visual Storytelling Workshop',
     description: 'Create stunning data visualizations that communicate impact clearly'
   },
   'data-revival': {
-    component: DavidDataRevival,
+    component: LazyDavidDataRevival,
     characterId: 'david',
     title: 'Data Narrative Construction Lab',
     description: 'Build compelling stories from complex datasets with AI assistance'
   },
   'stakeholder-communication': {
-    component: DavidStakeholderCommunication,
+    component: LazyDavidStakeholderCommunication,
     characterId: 'david',
     title: 'Stakeholder Communication Mastery',
     description: 'Tailor data presentations for different audience types and contexts'
   },
   'predictive-insights': {
-    component: DavidPredictiveInsights,
+    component: LazyDavidPredictiveInsights,
     characterId: 'david', 
     title: 'Predictive Insights Strategy',
     description: 'Use AI to forecast trends and create forward-looking impact reports'
   },
   'data-ecosystem': {
-    component: DavidDataEcosystem,
+    component: LazyDavidDataEcosystem,
     characterId: 'david',
     title: 'Data Ecosystem Builder',
     description: 'Create comprehensive data systems for ongoing impact measurement'
@@ -208,37 +220,37 @@ const journeyRegistry = {
   
   // Rachel's micro-lessons (Chapter 5)
   'rachel-automation-vision': {
-    component: RachelAutomationVision,
+    component: LazyRachelAutomationVision,
     characterId: 'rachel',
     title: 'Rachel\'s Automation Vision',
     description: 'Discover how to map and automate your nonprofit\'s key processes'
   },
   'human-centered-design': {
-    component: RachelHumanCenteredDesign,
+    component: LazyRachelHumanCenteredDesign,
     characterId: 'rachel',
     title: 'Human-Centered Design Workshop',
     description: 'Build automation that enhances rather than replaces human connection'
   },
   'automation-planning': {
-    component: RachelAutomationPlanning,
+    component: LazyRachelAutomationPlanning,
     characterId: 'rachel',
     title: 'Automation Planning Lab',
     description: 'Create step-by-step implementation roadmaps with AI guidance'
   },
   'workflow-design': {
-    component: RachelWorkflowDesign,
+    component: LazyRachelWorkflowDesign,
     characterId: 'rachel',
     title: 'Workflow Design Mastery',
     description: 'Lead organizational transformation with AI-powered workflow optimization'
   },
   'scaling-systems': {
-    component: RachelScalingSystems,
+    component: LazyRachelScalingSystems,
     characterId: 'rachel',
     title: 'Scaling Systems Strategy',
     description: 'Build a comprehensive AI automation ecosystem for your organization'
   },
   'ecosystem-builder': {
-    component: RachelEcosystemBuilder,
+    component: LazyRachelEcosystemBuilder,
     characterId: 'rachel',
     title: 'Ecosystem Builder',
     description: 'Create comprehensive AI ecosystem for lasting organizational transformation'
@@ -246,31 +258,31 @@ const journeyRegistry = {
   
   // Alex's micro-lessons (Chapter 6)
   'leadership-challenges': {
-    component: AlexLeadershipChallenges,
+    component: LazyAlexLeadershipChallenges,
     characterId: 'alex',
     title: 'Alex\'s Leadership Challenges',
     description: 'Navigate the complexities of leading AI transformation in nonprofits'
   },
   'vision-building': {
-    component: AlexVisionBuilding,
+    component: LazyAlexVisionBuilding,
     characterId: 'alex',
     title: 'Vision Building Workshop',
     description: 'Create compelling AI transformation visions with strategic facilitation'
   },
   'transformation-planning': {
-    component: AlexTransformationPlanning,
+    component: LazyAlexTransformationPlanning,
     characterId: 'alex',
     title: 'Transformation Planning Lab',
     description: 'Design comprehensive change management strategies with AI guidance'
   },
   'team-alignment': {
-    component: AlexTeamAlignment,
+    component: LazyAlexTeamAlignment,
     characterId: 'alex',
     title: 'Team Alignment Mastery',
     description: 'Unite your organization around AI adoption with communication tools'
   },
   'leadership-framework': {
-    component: AlexLeadershipFramework,
+    component: LazyAlexLeadershipFramework,
     characterId: 'alex',
     title: 'Leadership Framework Mastery',
     description: 'Develop comprehensive AI leadership skills for lasting organizational transformation'
@@ -278,74 +290,74 @@ const journeyRegistry = {
   
   // Tools (Chapter 3 integrations)
   'decision-matrix': {
-    component: DecisionMatrixRenderer,
+    component: LazyDecisionMatrixRenderer,
     characterId: 'sofia',
     title: 'Decision Matrix',
     description: 'Evaluate and prioritize storytelling initiatives with weighted criteria'
   },
   'team-capacity': {
-    component: TeamCapacityCalculator,
+    component: LazyTeamCapacityCalculator,
     characterId: 'sofia',
     title: 'Team Capacity Calculator',
     description: 'Validate feasibility and optimize workload for upcoming campaigns'
   },
   'team-capacity-results': {
-    component: TeamCapacityResults,
+    component: LazyTeamCapacityResults,
     characterId: 'sofia',
     title: 'Team Capacity Analysis Results',
     description: 'Visual analysis and insights from your capacity assessment'
   },
   'project-charter': {
-    component: ProjectCharterBuilder,
+    component: LazyProjectCharterBuilder,
     characterId: 'sofia',
     title: 'Project Charter',
     description: 'Draft a clear charter with AI-marked placeholders to review'
   },
   // Chapter 7 - Carmen's AI-Powered People Management  
   'carmen-people-management-journey': {
-    component: CarmenPeopleManagementJourney,
+    component: LazyCarmenPeopleManagementJourney,
     characterId: 'carmen',
     title: 'Carmen\'s People Management Journey', 
     description: 'Experience Carmen\'s transformation and learn her AI-powered people management approach'
   },
   'talent-acquisition': {
-    component: CarmenTalentAcquisition,
+    component: LazyCarmenTalentAcquisition,
     characterId: 'carmen',
     title: 'AI-Powered Talent Acquisition',
     description: 'Transform your hiring process with Carmen\'s compassionate approach'
   },
   'performance-insights': {
-    component: CarmenPerformanceInsights,
+    component: LazyCarmenPerformanceInsights,
     characterId: 'carmen', 
     title: 'Performance Insights Workshop',
     description: 'Master data-driven performance management while maintaining human connection'
   },
   'engagement-builder': {
-    component: CarmenEngagementBuilder,
+    component: LazyCarmenEngagementBuilder,
     characterId: 'carmen',
     title: 'Employee Engagement Builder', 
     description: 'Create personalized engagement strategies using AI-powered people analytics'
   },
   'retention-mastery': {
-    component: CarmenRetentionMastery,
+    component: LazyCarmenRetentionMastery,
     characterId: 'carmen',
     title: 'Retention Strategy Mastery',
     description: 'Develop AI-enhanced retention strategies that honor both data and humanity'
   },
   'team-dynamics': {
-    component: CarmenTeamDynamics,
+    component: LazyCarmenTeamDynamics,
     characterId: 'carmen',
     title: 'Team Dynamics Optimizer',
     description: 'Build stronger, more cohesive teams using AI-powered insights'
   },
   'cultural-intelligence': {
-    component: CarmenCulturalIntelligence,
+    component: LazyCarmenCulturalIntelligence,
     characterId: 'carmen', 
     title: 'Cultural Intelligence Hub',
     description: 'Foster inclusive workplace cultures by combining AI analytics with cultural sensitivity'
   },
   'leadership-development': {
-    component: CarmenLeadershipDevelopment,
+    component: LazyCarmenLeadershipDevelopment,
     characterId: 'carmen',
     title: 'Leadership Development Lab',
     description: 'Develop next-generation leaders using personalized AI coaching'
@@ -367,7 +379,11 @@ const InteractiveJourney: React.FC = () => {
 
   const JourneyComponent = journey.component;
 
-  return <JourneyComponent />;
+  return (
+    <LoadingSuspense>
+      <JourneyComponent />
+    </LoadingSuspense>
+  );
 };
 
 export default InteractiveJourney;

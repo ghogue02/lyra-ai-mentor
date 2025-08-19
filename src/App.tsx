@@ -12,52 +12,84 @@ import GlobalChatLyra from "@/components/chat-system/GlobalChatLyra";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
 import { PerformanceWrapper, PerformanceMonitor, BundleAnalyzer, AccessibilityTester } from "@/components/performance/PerformanceIntegration";
 import { BrandedToastContainer } from "@/hooks/use-branded-toast";
-import Index from "./pages/Index";
-import Auth from "./pages/Auth";
-import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile";
-import NotFound from "./pages/NotFound";
-import ContentLab from "./pages/ContentLab";
-import Lesson from "./pages/Lesson";
-import InteractiveJourney from "./pages/InteractiveJourney";
-import Chapter1Hub from "./pages/Chapter1Hub";
-import Chapter2Hub from "./pages/Chapter2Hub";
-import Chapter3Hub from "./pages/Chapter3Hub";
-import Chapter4Hub from "./pages/Chapter4Hub";
-import Chapter5Hub from "./pages/Chapter5Hub";
-import Chapter6Hub from "./pages/Chapter6Hub";
-import Chapter7Hub from "./pages/Chapter7Hub";
-import TestLyra from "./pages/TestLyra";
-import TestMaya from "./pages/TestMaya";
-import { ChapterOverviewPage, ChapterLessonPage } from "./components/chapter/ChapterPages";
+import LoadingSuspense from "@/components/ui/LoadingSuspense";
+import { ApplicationErrorBoundary, AsyncErrorBoundary } from "@/components/error-boundaries";
+import {
+  LazyIndex,
+  LazyAuth,
+  LazyDashboard,
+  LazyProfile,
+  LazyNotFound,
+  LazyContentLab,
+  LazyLesson,
+  LazyInteractiveJourney,
+  LazyChapter1Hub,
+  LazyChapter2Hub,
+  LazyChapter3Hub,
+  LazyChapter4Hub,
+  LazyChapter5Hub,
+  LazyChapter6Hub,
+  LazyChapter7Hub,
+  LazyTestLyra,
+  LazyTestMaya,
+  LazyChapterOverviewPage,
+  LazyChapterLessonPage,
+} from "./utils/lazyRoutes";
 
 const queryClient = new QueryClient();
 
 
 const App = () => {
   return (
-    <PerformanceWrapper 
-      enablePerformanceMonitoring={true}
-      enableAccessibilityFeatures={true}
+    <ApplicationErrorBoundary
+      context="Application Root"
+      enableAutoRecovery={true}
+      maxRetries={3}
+      showDetails={process.env.NODE_ENV === 'development'}
     >
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <AuthProvider>
-            <CharacterStoryProvider>
-              <BrowserRouter>
-                <GlobalChatProvider>
+      <AsyncErrorBoundary
+        enableAutoRecovery={true}
+      >
+        <PerformanceWrapper 
+          enablePerformanceMonitoring={true}
+          enableAccessibilityFeatures={true}
+        >
+          <QueryClientProvider client={queryClient}>
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <AuthProvider>
+                <CharacterStoryProvider>
+                  <BrowserRouter>
+                    <GlobalChatProvider>
                 <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/auth" element={<Auth />} />
-              <Route path="/test-lyra" element={<TestLyra />} />
-              <Route path="/test-maya" element={<TestMaya />} />
+              <Route path="/" element={
+                <LoadingSuspense>
+                  <LazyIndex />
+                </LoadingSuspense>
+              } />
+              <Route path="/auth" element={
+                <LoadingSuspense>
+                  <LazyAuth />
+                </LoadingSuspense>
+              } />
+              <Route path="/test-lyra" element={
+                <LoadingSuspense>
+                  <LazyTestLyra />
+                </LoadingSuspense>
+              } />
+              <Route path="/test-maya" element={
+                <LoadingSuspense>
+                  <LazyTestMaya />
+                </LoadingSuspense>
+              } />
               <Route 
                 path="/dashboard" 
                 element={
                   <ProtectedRoute>
-                    <Dashboard />
+                    <LoadingSuspense>
+                      <LazyDashboard />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -65,7 +97,9 @@ const App = () => {
                 path="/profile" 
                 element={
                   <ProtectedRoute>
-                    <Profile />
+                    <LoadingSuspense>
+                      <LazyProfile />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -73,7 +107,9 @@ const App = () => {
                 path="/content-lab" 
                 element={
                   <ProtectedRoute>
-                    <ContentLab />
+                    <LoadingSuspense>
+                      <LazyContentLab />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -82,7 +118,9 @@ const App = () => {
                 path="/lesson/:lessonId" 
                 element={
                   <ProtectedRoute>
-                    <Lesson />
+                    <LoadingSuspense>
+                      <LazyLesson />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -91,7 +129,9 @@ const App = () => {
                 path="/chapter/1" 
                 element={
                   <ProtectedRoute>
-                    <Chapter1Hub />
+                    <LoadingSuspense>
+                      <LazyChapter1Hub />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -99,7 +139,9 @@ const App = () => {
                 path="/chapter/2" 
                 element={
                   <ProtectedRoute>
-                    <Chapter2Hub />
+                    <LoadingSuspense>
+                      <LazyChapter2Hub />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -107,7 +149,9 @@ const App = () => {
                 path="/chapter/3" 
                 element={
                   <ProtectedRoute>
-                    <Chapter3Hub />
+                    <LoadingSuspense>
+                      <LazyChapter3Hub />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -115,7 +159,9 @@ const App = () => {
                 path="/chapter/4" 
                 element={
                   <ProtectedRoute>
-                    <Chapter4Hub />
+                    <LoadingSuspense>
+                      <LazyChapter4Hub />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -123,7 +169,9 @@ const App = () => {
                 path="/chapter/5" 
                 element={
                   <ProtectedRoute>
-                    <Chapter5Hub />
+                    <LoadingSuspense>
+                      <LazyChapter5Hub />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -131,7 +179,9 @@ const App = () => {
                 path="/chapter/6" 
                 element={
                   <ProtectedRoute>
-                    <Chapter6Hub />
+                    <LoadingSuspense>
+                      <LazyChapter6Hub />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -139,7 +189,9 @@ const App = () => {
                 path="/chapter/7" 
                 element={
                   <ProtectedRoute>
-                    <Chapter7Hub />
+                    <LoadingSuspense>
+                      <LazyChapter7Hub />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -147,7 +199,9 @@ const App = () => {
                 path="/chapter/:chapterId" 
                 element={
                   <ProtectedRoute>
-                    <ChapterOverviewPage />
+                    <LoadingSuspense>
+                      <LazyChapterOverviewPage />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -156,7 +210,9 @@ const App = () => {
                 path="/chapter/:chapterId/interactive/:journeyId" 
                 element={
                   <ProtectedRoute>
-                    <InteractiveJourney />
+                    <LoadingSuspense>
+                      <LazyInteractiveJourney />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -165,7 +221,9 @@ const App = () => {
                 path="/chapter/:chapterId/interactive/:journeyId/results" 
                 element={
                   <ProtectedRoute>
-                    <InteractiveJourney />
+                    <LoadingSuspense>
+                      <LazyInteractiveJourney />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
@@ -178,28 +236,36 @@ const App = () => {
                 path="/chapter/:chapterId/lesson/:lessonId" 
                 element={
                   <ProtectedRoute>
-                    <ChapterLessonPage />
+                    <LoadingSuspense>
+                      <LazyChapterLessonPage />
+                    </LoadingSuspense>
                   </ProtectedRoute>
                 } 
               />
-               <Route path="*" element={<NotFound />} />
+               <Route path="*" element={
+                <LoadingSuspense>
+                  <LazyNotFound />
+                </LoadingSuspense>
+              } />
                 </Routes>
                 <GlobalChatLyra />
-                </GlobalChatProvider>
-              </BrowserRouter>
-            </CharacterStoryProvider>
-          </AuthProvider>
-          
-          {/* Development Tools */}
-          <PerformanceMonitor />
-          <BundleAnalyzer />
-          <AccessibilityTester />
-          
-          {/* Branded Toast Container */}
-          <BrandedToastContainer />
-        </TooltipProvider>
-      </QueryClientProvider>
-    </PerformanceWrapper>
+                    </GlobalChatProvider>
+                  </BrowserRouter>
+                </CharacterStoryProvider>
+              </AuthProvider>
+              
+              {/* Development Tools */}
+              <PerformanceMonitor />
+              <BundleAnalyzer />
+              <AccessibilityTester />
+              
+              {/* Branded Toast Container */}
+              <BrandedToastContainer />
+            </TooltipProvider>
+          </QueryClientProvider>
+        </PerformanceWrapper>
+      </AsyncErrorBoundary>
+    </ApplicationErrorBoundary>
   );
 };
 

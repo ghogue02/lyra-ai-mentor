@@ -19,4 +19,63 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: (id) => {
+          // Vendor chunks
+          if (id.includes('node_modules')) {
+            if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+              return 'vendor-react';
+            }
+            if (id.includes('@radix-ui')) {
+              return 'vendor-ui';
+            }
+            if (id.includes('framer-motion')) {
+              return 'vendor-animation';
+            }
+            if (id.includes('lucide-react')) {
+              return 'vendor-icons';
+            }
+            if (id.includes('@tanstack/react-query')) {
+              return 'vendor-query';
+            }
+            if (id.includes('react-hook-form') || id.includes('@hookform') || id.includes('zod')) {
+              return 'vendor-form';
+            }
+            return 'vendor';
+          }
+          
+          // Feature-based chunks
+          if (id.includes('src/components/chat-system') || id.includes('src/contexts/GlobalChatContext')) {
+            return 'chat-system';
+          }
+          if (id.includes('src/components/lesson/carmen')) {
+            return 'carmen-components';
+          }
+          if (id.includes('src/components/lesson')) {
+            return 'lesson-components';
+          }
+          if (id.includes('src/components/ui/interaction-patterns')) {
+            return 'ui-patterns';
+          }
+          if (id.includes('src/pages/Chapter')) {
+            return 'chapter-pages';
+          }
+        }
+      }
+    },
+    chunkSizeWarningLimit: 1000,
+    target: 'esnext',
+    minify: mode === 'production' ? 'terser' : false,
+    ...(mode === 'production' && {
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+          pure_funcs: ['console.log', 'console.info']
+        }
+      }
+    })
+  }
 }));
