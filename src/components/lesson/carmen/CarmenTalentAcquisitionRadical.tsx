@@ -16,7 +16,6 @@ import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigat
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 import { StrategyContentRendererFocused } from './StrategyContentRendererFocused';
-import { StrategyActionButtons } from './StrategyActionButtons';
 import { cn } from '@/lib/utils';
 
 type Phase = 'intro' | 'narrative' | 'workshop';
@@ -770,13 +769,22 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
                 tabConfigs={tabConfigs}
               />
 
-              {/* Enhanced Action Buttons */}
-              <StrategyActionButtons 
-                generatedStrategy={generatedStrategy}
-                selections={selections}
-                tabConfigs={tabConfigs}
-                onComplete={handleComplete}
-              />
+              {/* Complete Workshop Button */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="text-center"
+              >
+                <Button 
+                  onClick={handleComplete}
+                  size="lg"
+                  className="bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 text-white text-lg px-8 py-4 font-semibold"
+                >
+                  <Check className="w-5 h-5 mr-2" />
+                  Complete Workshop
+                </Button>
+              </motion.div>
             </div>
           )}
 

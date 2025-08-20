@@ -185,24 +185,12 @@ export const StrategyContentRendererFocused: React.FC<StrategyContentRendererFoc
         className="nm-card p-6 bg-gradient-to-br from-green-50 to-blue-50"
       >
         <div className="text-center">
-          <h4 className="font-semibold text-gray-900 mb-4">Export Your Strategy</h4>
+          <h4 className="font-semibold text-gray-900 mb-4">Take Action</h4>
           <div className="flex flex-wrap gap-3 justify-center mb-4">
             <ActionButton
               icon={<Copy className="w-4 h-4" />}
-              label="Copy Text"
+              label="Copy Strategy"
               onClick={copyStrategy}
-              variant="outline"
-            />
-            <ActionButton
-              icon={<FileText className="w-4 h-4" />}
-              label="Download PDF"
-              onClick={downloadPDF}
-              variant="outline"
-            />
-            <ActionButton
-              icon={<FileSpreadsheet className="w-4 h-4" />}
-              label="Download Spreadsheet"
-              onClick={downloadSpreadsheet}
               variant="outline"
             />
             <ActionButton
@@ -350,7 +338,12 @@ const ActionButton: React.FC<{
 function extractExecutiveSummary(strategy: string): string {
   const lines = strategy.split('\n').filter(line => line.trim());
   const keyInsights = lines.slice(0, 2).join(' ');
-  return keyInsights || 'I know hiring can feel overwhelming sometimes. Let me help you build a process that finds great people while treating everyone with respect. This strategy is designed specifically for your team and challenges.';
+  
+  if (!keyInsights.trim()) {
+    throw new Error('No strategy content generated - AI response was empty');
+  }
+  
+  return keyInsights;
 }
 
 function generateEnhancedActionItems(): ActionItem[] {
