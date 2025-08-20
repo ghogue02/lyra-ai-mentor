@@ -1,8 +1,4 @@
-// 🚨 EMERGENCY DEBUGGING - This file loads FIRST to catch React issues
-
-console.log('🚨 [EMERGENCY] emergency-debug.ts loaded at:', new Date().toISOString());
-console.log('🚨 [EMERGENCY] Document readyState:', document.readyState);
-console.log('🚨 [EMERGENCY] Scripts loaded:', document.scripts.length);
+// 🔧 Emergency React monitoring (silent mode)
 
 // Global React debugging
 (window as any).__REACT_DEBUG__ = {
@@ -11,26 +7,20 @@ console.log('🚨 [EMERGENCY] Scripts loaded:', document.scripts.length);
   errors: []
 };
 
-// Monitor for React becoming available
+// Silent monitoring for React becoming available
 const checkReactInterval = setInterval(() => {
-  const reactAvailable = !!(window as any).React;
-  console.log('🚨 [EMERGENCY] React availability check:', reactAvailable);
-  
-  if (reactAvailable) {
+  if ((window as any).React && (window as any).React.createContext) {
     const React = (window as any).React;
-    console.log('🚨 [EMERGENCY] React found! Version:', React.version);
-    console.log('🚨 [EMERGENCY] React.createContext:', React.createContext);
     
-    // Wrap createContext to catch issues
-    if (React.createContext && !(window as any).__REACT_DEBUG__.originalCreateContext) {
+    // Wrap createContext for error monitoring only
+    if (!((window as any).__REACT_DEBUG__.originalCreateContext)) {
       (window as any).__REACT_DEBUG__.originalCreateContext = React.createContext;
       React.createContext = function(...args: any[]) {
         (window as any).__REACT_DEBUG__.createContextCalls++;
-        console.log('🚨 [EMERGENCY] createContext called #', (window as any).__REACT_DEBUG__.createContextCalls);
         try {
           return (window as any).__REACT_DEBUG__.originalCreateContext.apply(this, args);
         } catch (error) {
-          console.error('🚨 [EMERGENCY] createContext error:', error);
+          console.error('🚨 React createContext error:', error);
           (window as any).__REACT_DEBUG__.errors.push(error);
           throw error;
         }
@@ -38,30 +28,15 @@ const checkReactInterval = setInterval(() => {
     }
     clearInterval(checkReactInterval);
   }
-}, 10);
+}, 50);
 
-// Clear interval after 10 seconds to avoid infinite checking
-setTimeout(() => {
-  clearInterval(checkReactInterval);
-  console.log('🚨 [EMERGENCY] React check timeout - Final state:', {
-    reactAvailable: !!(window as any).React,
-    createContextCalls: (window as any).__REACT_DEBUG__.createContextCalls,
-    errors: (window as any).__REACT_DEBUG__.errors.length
-  });
-}, 10000);
+// Cleanup timeout
+setTimeout(() => clearInterval(checkReactInterval), 10000);
 
-// Catch all errors
-window.addEventListener('error', (event) => {
+// Log errors only
+(window as any).addEventListener('error', (event: any) => {
   if (event.message.includes('createContext')) {
-    console.error('🚨 [EMERGENCY] createContext error caught:', {
-      message: event.message,
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-      error: event.error,
-      stack: event.error?.stack
-    });
+    console.error('🚨 React createContext error:', event.message);
+    (window as any).__REACT_DEBUG__.errors.push(event.error);
   }
 });
-
-console.log('🚨 [EMERGENCY] emergency-debug.ts setup complete');
