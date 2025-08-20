@@ -9,7 +9,7 @@ export const LazyConversationalFlow = lazy(() => import('@/components/ui/interac
 
 // Lazy load Carmen components (Chapter 7)
 export const LazyCarmenPeopleManagementJourney = lazy(() => import('@/components/lesson/carmen/CarmenPeopleManagementJourney'));
-export const LazyCarmenTalentAcquisition = lazy(() => import('@/components/lesson/carmen/CarmenTalentAcquisition'));
+export const LazyCarmenTalentAcquisition = lazy(() => import('@/components/lesson/carmen/CarmenTalentAcquisitionTest'));
 export const LazyCarmenPerformanceInsights = lazy(() => import('@/components/lesson/carmen/CarmenPerformanceInsights'));
 export const LazyCarmenEngagementBuilder = lazy(() => import('@/components/lesson/carmen/CarmenEngagementBuilder'));
 export const LazyCarmenRetentionMastery = lazy(() => import('@/components/lesson/carmen/CarmenRetentionMastery'));
