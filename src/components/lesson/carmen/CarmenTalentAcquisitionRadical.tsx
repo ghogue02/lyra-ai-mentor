@@ -210,11 +210,11 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
           characterType: 'carmen',
           contentType: 'compassionate-hiring-strategy',
           topic: 'AI-powered talent acquisition with human empathy',
-          context: `Carmen Rodriguez needs to create a comprehensive hiring strategy using her compassionate AI approach.
-          
+          context: `You're helping someone build a hiring strategy that actually works. Based on their specific needs:
+
           ${context}
           
-          Create a structured hiring strategy that follows Carmen's framework: 1) Inclusive Job Descriptions (bias removal, skills focus), 2) Bias-Free Screening (objective assessment), 3) Empathetic Interviews (human connection with growth mindset), 4) Holistic Evaluation (complete candidate picture), 5) Exceptional Candidate Experience (respect and value for all). The strategy should combine AI efficiency with human empathy for compassionate, effective hiring.`
+          Write a warm, conversational response from Carmen that feels like genuine advice from an experienced HR leader. Use natural language - no lists in parentheses, no robotic phrasing. Start with empathy about their challenges, then give practical guidance. Make it sound like Carmen is sitting across from them having coffee, sharing her real experience. Focus on the "why" behind each recommendation, not just the "what." Keep paragraphs short and readable.`
         }
       });
 

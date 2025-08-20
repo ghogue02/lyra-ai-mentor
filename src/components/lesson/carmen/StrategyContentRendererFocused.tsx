@@ -350,7 +350,7 @@ const ActionButton: React.FC<{
 function extractExecutiveSummary(strategy: string): string {
   const lines = strategy.split('\n').filter(line => line.trim());
   const keyInsights = lines.slice(0, 2).join(' ');
-  return keyInsights || 'Your personalized hiring strategy focuses on creating an inclusive, efficient recruitment process that attracts top talent while ensuring every candidate feels valued and respected.';
+  return keyInsights || 'I know hiring can feel overwhelming sometimes. Let me help you build a process that finds great people while treating everyone with respect. This strategy is designed specifically for your team and challenges.';
 }
 
 function generateEnhancedActionItems(): ActionItem[] {
