@@ -23,6 +23,7 @@ type WorkshopStep = 'setup' | 'configure' | 'generate' | 'review';
 interface CompactOption {
   id: string;
   label: string;
+  description?: string;
   icon?: string;
 }
 
@@ -54,12 +55,12 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
       label: 'Roles',
       icon: <Users className="w-3 h-3" />,
       options: [
-        { id: 'program-manager', label: 'Program Manager' },
-        { id: 'software-engineer', label: 'Software Engineer' },
-        { id: 'marketing-coordinator', label: 'Marketing Coordinator' },
-        { id: 'data-analyst', label: 'Data Analyst' },
-        { id: 'communications-manager', label: 'Communications Manager' },
-        { id: 'operations-specialist', label: 'Operations Specialist' }
+        { id: 'program-manager', label: 'Program Manager', description: 'Cross-functional project leadership' },
+        { id: 'software-engineer', label: 'Software Engineer', description: 'Technical development roles' },
+        { id: 'marketing-coordinator', label: 'Marketing Coordinator', description: 'Brand and campaign management' },
+        { id: 'data-analyst', label: 'Data Analyst', description: 'Analytics and insights roles' },
+        { id: 'communications-manager', label: 'Communications Manager', description: 'Internal and external communications' },
+        { id: 'operations-specialist', label: 'Operations Specialist', description: 'Process and efficiency optimization' }
       ],
       maxSelections: 2
     },
@@ -68,12 +69,12 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
       label: 'Challenges',
       icon: <Target className="w-3 h-3" />,
       options: [
-        { id: 'long-time-to-hire', label: 'Long Time to Hire' },
-        { id: 'poor-candidate-quality', label: 'Poor Candidate Quality' },
-        { id: 'lack-diversity', label: 'Lack of Diversity' },
-        { id: 'high-rejection-rate', label: 'High Offer Rejection Rate' },
-        { id: 'bias-in-process', label: 'Unconscious Bias' },
-        { id: 'poor-candidate-experience', label: 'Poor Candidate Experience' }
+        { id: 'long-time-to-hire', label: 'Long Time to Hire', description: 'Recruitment process takes too long' },
+        { id: 'poor-candidate-quality', label: 'Poor Candidate Quality', description: 'Applicants don\'t meet requirements' },
+        { id: 'lack-diversity', label: 'Lack of Diversity', description: 'Not reaching diverse talent pools' },
+        { id: 'high-rejection-rate', label: 'High Offer Rejection Rate', description: 'Candidates decline job offers' },
+        { id: 'bias-in-process', label: 'Unconscious Bias', description: 'Unfair evaluation practices' },
+        { id: 'poor-candidate-experience', label: 'Poor Candidate Experience', description: 'Negative feedback about process' }
       ],
       maxSelections: 3
     },
@@ -82,12 +83,12 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
       label: 'Strategies',
       icon: <TrendingUp className="w-3 h-3" />,
       options: [
-        { id: 'inclusive-job-descriptions', label: 'Inclusive Job Descriptions' },
-        { id: 'structured-interviews', label: 'Structured Interviews' },
-        { id: 'diverse-sourcing', label: 'Diverse Sourcing Channels' },
-        { id: 'skills-assessments', label: 'Skills-Based Assessments' },
-        { id: 'cultural-fit-interviews', label: 'Culture Fit Evaluation' },
-        { id: 'employer-branding', label: 'Strong Employer Branding' }
+        { id: 'inclusive-job-descriptions', label: 'Inclusive Job Descriptions', description: 'Bias-free, welcoming language' },
+        { id: 'structured-interviews', label: 'Structured Interviews', description: 'Consistent evaluation framework' },
+        { id: 'diverse-sourcing', label: 'Diverse Sourcing Channels', description: 'Reach underrepresented groups' },
+        { id: 'skills-assessments', label: 'Skills-Based Assessments', description: 'Objective capability evaluation' },
+        { id: 'cultural-fit-interviews', label: 'Culture Fit Evaluation', description: 'Values alignment assessment' },
+        { id: 'employer-branding', label: 'Strong Employer Branding', description: 'Attractive company reputation' }
       ],
       maxSelections: 3
     },
@@ -96,12 +97,12 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
       label: 'Goals',
       icon: <Heart className="w-3 h-3" />,
       options: [
-        { id: 'faster-hiring', label: 'Faster Hiring Process' },
-        { id: 'better-quality', label: 'Higher Quality Candidates' },
-        { id: 'improve-diversity', label: 'Increase Diversity' },
-        { id: 'reduce-bias', label: 'Eliminate Bias' },
-        { id: 'better-experience', label: 'Improve Candidate Experience' },
-        { id: 'higher-retention', label: 'Better New Hire Retention' }
+        { id: 'faster-hiring', label: 'Faster Hiring Process', description: 'Reduce time-to-hire significantly' },
+        { id: 'better-quality', label: 'Higher Quality Candidates', description: 'Find better-qualified applicants' },
+        { id: 'improve-diversity', label: 'Increase Diversity', description: 'Build more inclusive teams' },
+        { id: 'reduce-bias', label: 'Eliminate Bias', description: 'Fair and objective evaluations' },
+        { id: 'better-experience', label: 'Improve Candidate Experience', description: 'Positive recruitment journey' },
+        { id: 'higher-retention', label: 'Better New Hire Retention', description: 'Find people who stay longer' }
       ],
       maxSelections: 2
     }
@@ -222,13 +223,13 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
       
       toast({
         title: "Strategy Created!",
-        description: "Carmen crafted your hiring plan.",
+        description: "Lyra generated your personalized hiring plan.",
       });
     } catch (error) {
       console.error('Error generating strategy:', error);
       toast({
         title: "Generation Failed",
-        description: "Please try again.",
+        description: `Unable to connect to AI service. ${error instanceof Error ? error.message : 'Please check your connection and try again.'}`,
         variant: "destructive"
       });
       setWorkshopStep('configure');
@@ -370,7 +371,7 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
                 className="text-xs"
               >
                 <Settings className="w-3 h-3 mr-1" />
-                {showPromptPreview ? 'Hide' : 'Preview'}
+                {showPromptPreview ? 'Hide' : 'AI Prompt'}
               </Button>
               <Button 
                 onClick={() => navigate('/chapter/7')} 
@@ -440,16 +441,10 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
                 </div>
               </div>
 
-              {/* Benefits Preview */}
-              <div className="bg-purple-50 rounded-lg p-4 text-center">
-                <h3 className="font-semibold text-purple-800 mb-2">What You'll Build:</h3>
-                <div className="flex flex-wrap justify-center gap-2 text-sm">
-                  <Badge variant="secondary">Inclusive Job Descriptions</Badge>
-                  <Badge variant="secondary">Bias-Free Screening</Badge>
-                  <Badge variant="secondary">Empathetic Interviews</Badge>
-                  <Badge variant="secondary">Holistic Evaluation</Badge>
-                  <Badge variant="secondary">Exceptional Experience</Badge>
-                </div>
+              {/* Clear Call to Action */}
+              <div className="bg-gradient-to-r from-purple-100 to-cyan-100 rounded-lg p-4 text-center border border-purple-200">
+                <p className="text-purple-800 font-medium">👆 Choose one approach above to get started</p>
+                <p className="text-sm text-purple-600 mt-1">Both paths will create a personalized hiring strategy for you</p>
               </div>
             </div>
           )}
@@ -538,6 +533,11 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
                                   <div className="font-semibold text-base leading-tight mb-1">
                                     {option.label}
                                   </div>
+                                  {option.description && (
+                                    <div className="text-xs text-gray-500 leading-tight">
+                                      {option.description}
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </button>
@@ -601,13 +601,127 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
             </div>
           )}
 
+          {/* Configure Step - Slider Mode */}
+          {workshopStep === 'configure' && useSliderMode && (
+            <div className="max-w-4xl mx-auto">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">Custom Calibration</h2>
+                <p className="text-gray-600">Fine-tune your hiring preferences with precision sliders</p>
+              </div>
+              
+              <div className="bg-white rounded-lg border-2 border-gray-100 p-6 shadow-sm max-h-[400px] overflow-y-auto">
+                <div className="space-y-6">
+                  {/* Quick Presets */}
+                  <div className="border rounded-lg p-4 bg-gray-50">
+                    <h3 className="font-medium text-sm mb-3">Quick Presets:</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                      {[
+                        { name: 'Startup Growth', values: { diversity: 8, speed: 3, experience: 7 } },
+                        { name: 'Enterprise Quality', values: { diversity: 7, speed: 8, experience: 3 } },
+                        { name: 'Balanced Approach', values: { diversity: 7, speed: 6, experience: 5 } },
+                        { name: 'Diversity First', values: { diversity: 10, speed: 7, experience: 6 } }
+                      ].map((preset) => (
+                        <Button
+                          key={preset.name}
+                          variant="outline"
+                          size="sm"
+                          className="h-auto p-2 text-xs"
+                          onClick={() => {
+                            // Apply preset values
+                            console.log('Applying preset:', preset.name);
+                          }}
+                        >
+                          {preset.name}
+                        </Button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Key Sliders */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Diversity Priority (7/10)
+                      </label>
+                      <input
+                        type="range"
+                        min="1"
+                        max="10"
+                        defaultValue="7"
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>Standard</span>
+                        <span>Critical Priority</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Speed vs Quality (6/10)
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="10"
+                        defaultValue="6"
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>Fast Hiring</span>
+                        <span>Thorough Process</span>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Experience vs Potential (5/10)
+                      </label>
+                      <input
+                        type="range"
+                        min="0"
+                        max="10"
+                        defaultValue="5"
+                        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+                      />
+                      <div className="flex justify-between text-xs text-gray-500 mt-1">
+                        <span>Proven Experience</span>
+                        <span>High Potential</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex justify-center mt-6">
+                <Button 
+                  onClick={generateHiringStrategy}
+                  disabled={isGenerating}
+                  className="px-6 py-2"
+                >
+                  {isGenerating ? (
+                    <>
+                      <Heart className="w-4 h-4 mr-2 animate-pulse" />
+                      Calibrating...
+                    </>
+                  ) : (
+                    <>
+                      <Sliders className="w-4 h-4 mr-2" />
+                      Generate Strategy
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+          )}
+
           {/* Generate Step */}
           {workshopStep === 'generate' && (
             <div className="text-center py-8">
               <div className="w-12 h-12 mx-auto mb-4">
                 <Heart className="w-full h-full text-purple-600 animate-pulse" />
               </div>
-              <h2 className="text-xl font-bold mb-2">Carmen is crafting your strategy...</h2>
+              <h2 className="text-xl font-bold mb-2">Lyra is generating your strategy...</h2>
               <p className="text-gray-600">Combining AI efficiency with human empathy</p>
             </div>
           )}
