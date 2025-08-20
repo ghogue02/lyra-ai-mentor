@@ -664,24 +664,31 @@ const CarmenTalentAcquisition: React.FC = () => {
       <div className="max-w-6xl mx-auto pt-20">
         {/* Header */}
         <div className="mb-8">
-          <Progress value={66 + (currentStep / 5) * 34} className="h-2 mb-4" />
-          <div className="flex items-center justify-between">
-            <p className="text-sm text-gray-600">Carmen's Compassionate Hiring Workshop</p>
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900 mb-2">Carmen's Compassionate Hiring Workshop</h1>
+              <p className="text-gray-600">Build AI-powered hiring strategies with human empathy</p>
+            </div>
             <Button className="nm-button nm-button-secondary" onClick={() => navigate('/chapter/7')} aria-label="Return to Chapter 7 main page">
               Back to Chapter 7
             </Button>
           </div>
+          <Progress value={66 + (currentStep / 5) * 34} className="h-3 mb-2" />
+          <p className="text-sm text-gray-500">Workshop Progress: {Math.round(66 + (currentStep / 5) * 34)}%</p>
         </div>
 
         {/* Single Progressive Layout - No Tabs */}
         <div className="space-y-8">
           
           {/* Mode Toggle - Prominent */}
-          <Card className="border border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50">
-            <CardContent className="p-6">
+          <Card className="border-2 border-green-400 bg-gradient-to-r from-green-50 via-purple-50 to-cyan-50">
+            <CardContent className="p-8">
               <div className="text-center mb-4">
-                <h2 className="text-xl font-semibold text-gray-800 mb-2">Choose Your Approach</h2>
-                <p className="text-gray-600 text-sm">Select how you'd like to build your hiring strategy</p>
+                <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-3 inline-block">
+                  ✨ NEW IMPROVED INTERFACE ✨
+                </div>
+                <h2 className="text-2xl font-bold text-gray-800 mb-3">Choose Your Approach</h2>
+                <p className="text-gray-600 text-base">Select how you'd like to build your hiring strategy</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
                 <Button
