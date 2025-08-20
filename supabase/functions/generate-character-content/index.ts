@@ -10,13 +10,13 @@ const corsHeaders = {
 // Character-specific model mapping for cost optimization
 const CHARACTER_MODELS = {
   'lyra': 'anthropic/claude-3.5-sonnet',
-  'rachel': 'google/gemini-2.0-flash-001',
-  'sofia': 'google/gemini-2.0-flash-001',
-  'david': 'google/gemini-2.0-flash-001',
-  'alex': 'google/gemini-2.0-flash-001',
-  'maya': 'google/gemini-2.0-flash-001',
-  'carmen': 'google/gemini-2.0-flash-001',
-  'default': 'google/gemini-2.0-flash-001' // Cost-effective default
+  'rachel': 'openai/gpt-5-mini',
+  'sofia': 'openai/gpt-5-mini', 
+  'david': 'openai/gpt-5-mini',
+  'alex': 'openai/gpt-5-mini',
+  'maya': 'openai/gpt-5-mini',
+  'carmen': 'openai/gpt-5-mini', // Updated to GPT-5-mini for better performance
+  'default': 'openai/gpt-5-mini' // Cost-effective and high-performance default
 };
 
 const characterPersonalities = {

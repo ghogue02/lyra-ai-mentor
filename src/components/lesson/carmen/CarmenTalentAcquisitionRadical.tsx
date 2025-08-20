@@ -15,7 +15,7 @@ import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicProm
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
-import { StrategyContentRendererCompact } from './StrategyContentRendererCompact';
+import { StrategyContentRendererFocused } from './StrategyContentRendererFocused';
 import { StrategyActionButtons } from './StrategyActionButtons';
 import { cn } from '@/lib/utils';
 
@@ -764,7 +764,7 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
               </motion.div>
 
               {/* Comprehensive Strategy Content */}
-              <StrategyContentRendererCompact 
+              <StrategyContentRendererFocused 
                 generatedStrategy={generatedStrategy}
                 selections={selections}
                 tabConfigs={tabConfigs}
