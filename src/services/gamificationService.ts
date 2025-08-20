@@ -389,19 +389,19 @@ class GamificationService {
             const char = this.getCharacterFromComponent(comp);
             characterCounts[char] = (characterCounts[char] || 0) + 1;
           });
-          const requiredChars = badge.requirement.componentIds.filter(id => id.includes('_any'));
+          const requiredChars = (badge.requirement.componentIds || []).filter(id => id.includes('_any'));
           const hasAllChars = requiredChars.every(req => {
             const char = req.replace('_any', '');
             return characterCounts[char] > 0;
           });
-          return hasAllChars ? 1 : requiredChars.filter(req => {
+          return hasAllChars ? 1 : (requiredChars || []).filter(req => {
             const char = req.replace('_any', '');
             return characterCounts[char] > 0;
           }).length / requiredChars.length;
         }
         
         // Regular component completion
-        const completed = badge.requirement.componentIds.filter(id => 
+        const completed = (badge.requirement.componentIds || []).filter(id => 
           this.progressData!.completedComponents.includes(id)
         ).length;
         return completed / badge.requirement.componentIds.length;

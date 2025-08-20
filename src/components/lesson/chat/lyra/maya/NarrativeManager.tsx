@@ -191,7 +191,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     }
   }, [currentMessageIndex, isTyping, interactionPoints]);
 
-  // Typing effect - enhanced with better state management
+  // Typing effect - enhanced with better state management and loop prevention
   useEffect(() => {
     if (!currentMessage?.content) return;
 
@@ -220,7 +220,7 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
       console.log('NarrativeManager: text already fully displayed, checking auto-advance');
       setIsTyping(false);
       
-      // Handle auto-advance for already completed text
+      // Handle auto-advance for already completed text (no infinite loop)
       if (autoAdvance && !isLastMessage && !paused) {
         console.log('NarrativeManager: setting up auto-advance for completed text');
         const advanceTimeout = setTimeout(() => {
@@ -240,38 +240,45 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
     
     const text = currentMessage.content;
     let index = displayedText.length; // Resume from current position
+    let typingActive = true; // Prevent state updates after cleanup
     
     typingIntervalRef.current = setInterval(() => {
-      if (paused) {
-        // Stop typing if paused mid-way
+      if (!typingActive || paused) {
+        // Stop typing if paused mid-way or component unmounted
         if (typingIntervalRef.current) {
           clearInterval(typingIntervalRef.current);
           typingIntervalRef.current = null;
         }
-        setIsTyping(false);
+        if (typingActive) setIsTyping(false);
         return;
       }
       
       if (index < text.length) {
-        setDisplayedText(text.substring(0, index + 1));
+        if (typingActive) {
+          setDisplayedText(text.substring(0, index + 1));
+        }
         index++;
       } else {
         if (typingIntervalRef.current) {
           clearInterval(typingIntervalRef.current);
           typingIntervalRef.current = null;
         }
-        setIsTyping(false);
-        console.log('NarrativeManager: typing complete for message', currentMessageIndex);
+        if (typingActive) {
+          setIsTyping(false);
+          console.log('NarrativeManager: typing complete for message', currentMessageIndex);
+        }
         
-        // Auto-advance after typing completion
-        if (autoAdvance && !isLastMessage && !paused) {
+        // Auto-advance after typing completion (prevent infinite loop)
+        if (typingActive && autoAdvance && !isLastMessage && !paused) {
           console.log('NarrativeManager: setting up auto-advance after typing completion');
           const advanceTimeout = setTimeout(() => {
-            console.log('NarrativeManager: executing auto-advance after typing completion');
-            handleAdvance();
+            if (typingActive) {
+              console.log('NarrativeManager: executing auto-advance after typing completion');
+              handleAdvance();
+            }
           }, currentMessage.delay || 1500);
           
-          // Store timeout reference for cleanup
+          // Return cleanup function that clears the timeout
           return () => {
             clearTimeout(advanceTimeout);
           };
@@ -281,12 +288,13 @@ const NarrativeManager: React.FC<NarrativeManagerProps> = ({
 
     return () => {
       console.log('NarrativeManager: cleaning up typing interval');
+      typingActive = false; // Prevent any further state updates
       if (typingIntervalRef.current) {
         clearInterval(typingIntervalRef.current);
         typingIntervalRef.current = null;
       }
     };
-  }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex, displayedText, handleAdvance, lastProcessedIndex]);
+  }, [currentMessage, autoAdvance, isLastMessage, paused, currentMessageIndex, handleAdvance, lastProcessedIndex]); // Remove displayedText from dependencies to prevent infinite loop
 
   // Force re-render when displayedText changes to ensure UI updates
   useEffect(() => {

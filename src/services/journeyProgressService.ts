@@ -255,8 +255,8 @@ class JourneyProgressService {
     if (!user) return null;
 
     const history = await this.getUserJourneyHistory();
-    const completed = history.filter(j => j.is_completed);
-    const inProgress = history.filter(j => !j.is_completed);
+    const completed = (history || []).filter(j => j.is_completed);
+    const inProgress = (history || []).filter(j => !j.is_completed);
 
     const averageScore = completed.length > 0
       ? completed.reduce((sum, j) => sum + (j.overall_score || 0), 0) / completed.length
