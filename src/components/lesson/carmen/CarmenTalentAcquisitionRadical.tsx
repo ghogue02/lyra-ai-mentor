@@ -209,11 +209,17 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
           characterType: 'carmen',
           contentType: 'compassionate-hiring-strategy',
           topic: 'AI-powered talent acquisition with human empathy',
-          context: `You're helping someone build a hiring strategy that actually works. Based on their specific needs:
+          context: `Generate a formal hiring strategy document based on these specific requirements:
 
           ${context}
           
-          Write a warm, conversational response from Carmen that feels like genuine advice from an experienced HR leader. Use natural language - no lists in parentheses, no robotic phrasing. Start with empathy about their challenges, then give practical guidance. Make it sound like Carmen is sitting across from them having coffee, sharing her real experience. Focus on the "why" behind each recommendation, not just the "what." Keep paragraphs short and readable.`
+          Create a professional strategy document with exactly 3 paragraphs. Each paragraph should be 3-4 sentences. Do not use conversational language like "I hear you" or "Let me tell you." Write in third person as a formal strategy document. Focus on:
+          
+          Paragraph 1: Current hiring challenges analysis
+          Paragraph 2: Recommended strategic approach and methodology  
+          Paragraph 3: Expected outcomes and success metrics
+          
+          Use professional business language appropriate for an executive strategy document.`
         }
       });
 

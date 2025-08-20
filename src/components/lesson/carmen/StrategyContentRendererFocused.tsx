@@ -147,9 +147,13 @@ export const StrategyContentRendererFocused: React.FC<StrategyContentRendererFoc
           </div>
         </div>
         
-        <p className="text-gray-700 leading-relaxed">
-          {strategySummary}
-        </p>
+        <div className="text-gray-700 leading-relaxed space-y-4">
+          {strategySummary.split('\n\n').filter(paragraph => paragraph.trim()).map((paragraph, index) => (
+            <p key={index} className="text-gray-700 leading-relaxed">
+              {paragraph.trim()}
+            </p>
+          ))}
+        </div>
       </motion.div>
 
       {/* Action Items - Expandable Focus */}
@@ -336,14 +340,17 @@ const ActionButton: React.FC<{
 // Utility Functions
 
 function extractExecutiveSummary(strategy: string): string {
-  const lines = strategy.split('\n').filter(line => line.trim());
-  const keyInsights = lines.slice(0, 2).join(' ');
+  // Split by double newlines for proper paragraphs, fallback to single newlines
+  const paragraphs = strategy.includes('\n\n') 
+    ? strategy.split('\n\n').filter(p => p.trim())
+    : strategy.split('\n').filter(p => p.trim());
   
-  if (!keyInsights.trim()) {
+  if (paragraphs.length === 0) {
     throw new Error('No strategy content generated - AI response was empty');
   }
   
-  return keyInsights;
+  // Return the full strategy content, properly formatted
+  return paragraphs.join('\n\n');
 }
 
 function generateEnhancedActionItems(): ActionItem[] {
