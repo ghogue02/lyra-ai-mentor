@@ -673,273 +673,281 @@ const CarmenTalentAcquisition: React.FC = () => {
           </div>
         </div>
 
-        {/* Mobile Tabbed Layout + Mode Toggle */}
-        <div className="lg:hidden mb-6">
-          <div className="flex space-x-2 mb-4">
-            {['Options', 'Prompt', 'Results'].map((tab, index) => (
-              <Button
-                key={tab}
-                variant={currentStep === index ? "default" : "outline"}
-                onClick={() => setCurrentStep(index)}
-                className="flex-1 text-sm"
-              >
-                {tab}
-              </Button>
-            ))}
-          </div>
+        {/* Single Progressive Layout - No Tabs */}
+        <div className="space-y-8">
           
-          {/* Mode Toggle */}
-          <div className="flex items-center gap-2 mb-4">
-            <Button
-              variant={!useSliderMode ? "default" : "outline"}
-              onClick={() => setUseSliderMode(false)}
-              size="sm"
-              className="flex-1"
-            >
-              <Target className="w-4 h-4 mr-2" />
-              Discrete Options
-            </Button>
-            <Button
-              variant={useSliderMode ? "default" : "outline"}
-              onClick={() => setUseSliderMode(true)}
-              size="sm"
-              className="flex-1"
-            >
-              <Sliders className="w-4 h-4 mr-2" />
-              Preference Sliders
-            </Button>
-          </div>
-        </div>
+          {/* Mode Toggle - Prominent */}
+          <Card className="border border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50">
+            <CardContent className="p-6">
+              <div className="text-center mb-4">
+                <h2 className="text-xl font-semibold text-gray-800 mb-2">Choose Your Approach</h2>
+                <p className="text-gray-600 text-sm">Select how you'd like to build your hiring strategy</p>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+                <Button
+                  variant={!useSliderMode ? "default" : "outline"}
+                  onClick={() => setUseSliderMode(false)}
+                  className="h-20 flex-col space-y-2 text-left p-4"
+                >
+                  <div className="flex items-center gap-2 font-medium">
+                    <Target className="w-5 h-5" />
+                    Quick Selection
+                  </div>
+                  <div className="text-xs text-muted-foreground">Choose from predefined options</div>
+                </Button>
+                <Button
+                  variant={useSliderMode ? "default" : "outline"}
+                  onClick={() => setUseSliderMode(true)}
+                  className="h-20 flex-col space-y-2 text-left p-4"
+                >
+                  <div className="flex items-center gap-2 font-medium">
+                    <Sliders className="w-5 h-5" />
+                    Custom Calibration
+                  </div>
+                  <div className="text-xs text-muted-foreground">Fine-tune with preference sliders</div>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-        {/* Three-Panel Viewport Optimized Layout */}
-        <div className="grid lg:grid-cols-12 gap-6 min-h-[calc(100vh-16rem)]">
-          {/* Left Panel - Option Selection (4 columns on desktop) */}
-          <div className={cn(
-            "lg:col-span-4 space-y-4 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pr-4",
-            "lg:block", 
-            currentStep === 0 ? "block" : "hidden"
-          )}>
-            
-            {/* Desktop Mode Toggle */}
-            <div className="hidden lg:flex items-center gap-2 mb-6">
-              <Button
-                variant={!useSliderMode ? "default" : "outline"}
-                onClick={() => setUseSliderMode(false)}
-                size="sm"
-                className="flex-1"
-              >
-                <Target className="w-4 h-4 mr-2" />
-                Discrete Options
-              </Button>
-              <Button
-                variant={useSliderMode ? "default" : "outline"}
-                onClick={() => setUseSliderMode(true)}
-                size="sm"
-                className="flex-1"
-              >
-                <Sliders className="w-4 h-4 mr-2" />
-                Preference Sliders
-              </Button>
-            </div>
+        {/* Main Content - Single Column Flow */}
+        <div className="max-w-4xl mx-auto space-y-8">
+          {/* Configuration Section */}
+          <div className="space-y-6">
             {useSliderMode ? (
-              /* Preference Slider Mode */
-              <PreferenceSliderGrid
-                title="Hiring Preferences"
-                description="Fine-tune your hiring priorities with nuanced preference sliders"
-                sliders={hiringPreferenceSliders}
-                values={sliderValues}
-                onValuesChange={setSliderValues}
-                characterTheme="carmen"
-                presets={sliderPresets}
-                showRadarChart={true}
-                showRealTimeUpdates={true}
-                gridColumns={1}
-                enableDependencies={true}
-                enablePresets={true}
-                enableExportImport={false}
-                showValidation={true}
-                compactMode={true}
-                className="mb-4"
-              />
+              /* Preference Slider Mode - Better Spacing */
+              <Card>
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-xl">Fine-Tune Your Hiring Preferences</CardTitle>
+                  <p className="text-muted-foreground">Calibrate your hiring approach with precision</p>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  <PreferenceSliderGrid
+                    title=""
+                    description=""
+                    sliders={hiringPreferenceSliders}
+                    values={sliderValues}
+                    onValuesChange={setSliderValues}
+                    characterTheme="carmen"
+                    presets={sliderPresets}
+                    showRadarChart={false}
+                    showRealTimeUpdates={true}
+                    gridColumns={1}
+                    enableDependencies={true}
+                    enablePresets={true}
+                    enableExportImport={false}
+                    showValidation={true}
+                    compactMode={false}
+                    className=""
+                  />
+                </CardContent>
+              </Card>
             ) : (
-              <>
-                {/* Role Types Selection - Compact */}
-                <VisualOptionGrid
-              title="Role Types"
-              description="What roles are you hiring?"
-              options={roleOptions}
-              selectedIds={selectedRoles}
-              onSelectionChange={setSelectedRoles}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Hiring Challenges - Compact */}
-            <VisualOptionGrid
-              title="Challenges"
-              description="Hiring issues"
-              options={challengeOptions}
-              selectedIds={selectedChallenges}
-              onSelectionChange={setSelectedChallenges}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Hiring Strategies - Compact */}
-            <VisualOptionGrid
-              title="Strategies"
-              description="How to improve hiring"
-              options={strategyOptions}
-              selectedIds={selectedStrategies}
-              onSelectionChange={setSelectedStrategies}
-              multiSelect={true}
-              maxSelections={4}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-            {/* Hiring Goals - Compact */}
-            <VisualOptionGrid
-              title="Goals"
-              description="Target outcomes"
-              options={goalOptions}
-              selectedIds={selectedGoals}
-              onSelectionChange={setSelectedGoals}
-              multiSelect={true}
-              maxSelections={3}
-              gridCols={1}
-              characterTheme="carmen"
-            />
-
-                {/* Generate Button - Compact */}
+              <div className="space-y-8">
+                {/* Role Types Selection - Better Spacing */}
                 <Card>
-                  <CardContent className="p-4 text-center">
-                    <Button 
-                      onClick={generateHiringStrategy}
-                      disabled={selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
-                      className="w-full nm-button nm-button-primary text-base py-2"
-                      aria-label={isGenerating ? "Creating your compassionate hiring strategy" : "Generate compassionate hiring strategy using AI-powered empathy and bias-free processes"}
-                      aria-describedby="hiring-generation-status"
-                    >
-                      {isGenerating ? (
-                        <>
-                          <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
-                          <span aria-live="polite">Carmen is crafting your strategy...</span>
-                        </>
-                      ) : (
-                        <>
-                          <Users className="w-5 h-5 mr-2" aria-hidden="true" />
-                          Create Compassionate Hiring Strategy
-                        </>
-                      )}
-                      <div id="hiring-generation-status" className="sr-only">
-                        {isGenerating ? "AI is currently generating your compassionate hiring strategy. Please wait." : "Click to generate your hiring strategy"}
-                      </div>
-                    </Button>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Users className="w-5 h-5 text-purple-600" />
+                      What roles are you hiring for?
+                    </CardTitle>
+                    <p className="text-muted-foreground text-sm">Select up to 3 role types</p>
+                  </CardHeader>
+                  <CardContent>
+                    <VisualOptionGrid
+                      title=""
+                      description=""
+                      options={roleOptions}
+                      selectedIds={selectedRoles}
+                      onSelectionChange={setSelectedRoles}
+                      multiSelect={true}
+                      maxSelections={3}
+                      gridCols={2}
+                      characterTheme="carmen"
+                    />
                   </CardContent>
                 </Card>
-              </>
+
+                {/* Hiring Challenges - Better Spacing */}
+                <Card>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Target className="w-5 h-5 text-red-600" />
+                      What hiring challenges do you face?
+                    </CardTitle>
+                    <p className="text-muted-foreground text-sm">Select up to 4 key challenges</p>
+                  </CardHeader>
+                  <CardContent>
+                    <VisualOptionGrid
+                      title=""
+                      description=""
+                      options={challengeOptions}
+                      selectedIds={selectedChallenges}
+                      onSelectionChange={setSelectedChallenges}
+                      multiSelect={true}
+                      maxSelections={4}
+                      gridCols={2}
+                      characterTheme="carmen"
+                    />
+                  </CardContent>
+                </Card>
+
+                {/* Hiring Strategies - Better Spacing */}
+                <Card>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <TrendingUp className="w-5 h-5 text-green-600" />
+                      Which strategies interest you most?
+                    </CardTitle>
+                    <p className="text-muted-foreground text-sm">Select up to 4 preferred strategies</p>
+                  </CardHeader>
+                  <CardContent>
+                    <VisualOptionGrid
+                      title=""
+                      description=""
+                      options={strategyOptions}
+                      selectedIds={selectedStrategies}
+                      onSelectionChange={setSelectedStrategies}
+                      multiSelect={true}
+                      maxSelections={4}
+                      gridCols={2}
+                      characterTheme="carmen"
+                    />
+                  </CardContent>
+                </Card>
+
+                {/* Hiring Goals - Better Spacing */}
+                <Card>
+                  <CardHeader className="pb-4">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Heart className="w-5 h-5 text-pink-600" />
+                      What are your main hiring goals?
+                    </CardTitle>
+                    <p className="text-muted-foreground text-sm">Select up to 3 priority outcomes</p>
+                  </CardHeader>
+                  <CardContent>
+                    <VisualOptionGrid
+                      title=""
+                      description=""
+                      options={goalOptions}
+                      selectedIds={selectedGoals}
+                      onSelectionChange={setSelectedGoals}
+                      multiSelect={true}
+                      maxSelections={3}
+                      gridCols={2}
+                      characterTheme="carmen"
+                    />
+                  </CardContent>
+                </Card>
+              </div>
             )}
             
-            {/* Slider Mode Generate Button */}
-            {useSliderMode && (
-              <Card>
-                <CardContent className="p-4 text-center">
+            {/* Generate Button Section - Prominent */}
+            <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50">
+              <CardContent className="p-8 text-center">
+                {useSliderMode ? (
                   <Button 
                     onClick={generateHiringStrategy}
                     disabled={Object.keys(sliderValues).length === 0 || isGenerating}
-                    className="w-full nm-button nm-button-primary text-base py-2"
+                    size="lg"
+                    className="px-12 py-4 text-lg font-semibold nm-button nm-button-primary"
                     aria-label={isGenerating ? "Creating your nuanced hiring strategy" : "Generate hiring strategy based on preference calibration"}
-                    aria-describedby="slider-generation-status"
                   >
                     {isGenerating ? (
                       <>
-                        <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                        <Heart className="w-6 h-6 mr-3 animate-pulse" aria-hidden="true" />
                         <span aria-live="polite">Carmen is calibrating your strategy...</span>
                       </>
                     ) : (
                       <>
-                        <Sliders className="w-5 h-5 mr-2" aria-hidden="true" />
+                        <Sliders className="w-6 h-6 mr-3" aria-hidden="true" />
                         Generate Calibrated Hiring Strategy
                       </>
                     )}
-                    <div id="slider-generation-status" className="sr-only">
-                      {isGenerating ? "AI is generating your preference-calibrated hiring strategy. Please wait." : "Click to generate strategy based on your slider preferences"}
-                    </div>
                   </Button>
-                </CardContent>
-              </Card>
-            )}
+                ) : (
+                  <Button 
+                    onClick={generateHiringStrategy}
+                    disabled={selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
+                    size="lg"
+                    className="px-12 py-4 text-lg font-semibold nm-button nm-button-primary"
+                    aria-label={isGenerating ? "Creating your compassionate hiring strategy" : "Generate compassionate hiring strategy using AI-powered empathy and bias-free processes"}
+                  >
+                    {isGenerating ? (
+                      <>
+                        <Heart className="w-6 h-6 mr-3 animate-pulse" aria-hidden="true" />
+                        <span aria-live="polite">Carmen is crafting your strategy...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Users className="w-6 h-6 mr-3" aria-hidden="true" />
+                        Create Compassionate Hiring Strategy
+                      </>
+                    )}
+                  </Button>
+                )}
+                <p className="text-sm text-muted-foreground mt-4 max-w-md mx-auto">
+                  {useSliderMode 
+                    ? "Carmen will create a nuanced hiring strategy based on your preference calibration"
+                    : "Carmen will create a personalized hiring strategy based on your selections"
+                  }
+                </p>
+              </CardContent>
+            </Card>
           </div>
 
-          {/* Center Panel - Sticky Prompt Builder (4 columns on desktop) */}
-          <div className={cn(
-            "lg:col-span-4 lg:sticky lg:top-4 lg:self-start max-h-[calc(100vh-18rem)] overflow-y-auto lg:px-4",
-            "lg:block",
-            currentStep === 1 ? "block" : "hidden"
-          )}>
-            {/* Dynamic Prompt Builder */}
-            <DynamicPromptBuilder
-              segments={promptSegments}
-              characterName="Carmen"
-              characterTheme="carmen"
-              showCopyButton={true}
-              autoUpdate={true}
-            />
-          </div>
-
-          {/* Right Panel - Results (4 columns on desktop) */}
-          <div className={cn(
-            "lg:col-span-4 space-y-6 max-h-[calc(100vh-18rem)] overflow-y-auto lg:pl-4",
-            "lg:block",
-            currentStep === 2 ? "block" : "hidden"
-          )}>
-
-            {/* Generated Strategy - Full Height */}
-            {generatedStrategy ? (
-              <Card className="h-full">
+          {/* AI Prompt Preview - Optional Collapsible */}
+          <details className="group">
+            <summary className="cursor-pointer list-none">
+              <Card className="group-open:border-purple-200 transition-colors">
                 <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <TrendingUp className="w-5 h-5 text-green-600" />
-                    Your Hiring Strategy
-                  </CardTitle>
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-lg flex items-center gap-2">
+                      <Play className="w-5 h-5 text-purple-600" />
+                      AI Prompt Preview
+                    </CardTitle>
+                    <ChevronRight className="w-5 h-5 text-muted-foreground group-open:rotate-90 transition-transform" />
+                  </div>
+                  <p className="text-sm text-muted-foreground">See how your selections build Carmen's AI prompt</p>
                 </CardHeader>
-                <CardContent className="h-full">
-                  <div className="bg-gradient-to-br from-purple-50 to-cyan-50 p-4 rounded-lg h-full overflow-y-auto">
-                    <TemplateContentFormatter 
-                      content={generatedStrategy}
-                      contentType="lesson"
-                      variant="default"
-                      showMergeFieldTypes={true}
-                      className="formatted-ai-content"
-                    />
-                  </div>
-                </CardContent>
               </Card>
-            ) : (
-              <Card className="h-full border-dashed border-2 border-gray-300">
-                <CardContent className="h-full flex items-center justify-center">
-                  <div className="text-center space-y-4 p-8">
-                    <div className="w-16 h-16 mx-auto bg-purple-100 rounded-full flex items-center justify-center">
-                      <Users className="w-8 h-8 text-purple-600" />
-                    </div>
-                    <h3 className="font-semibold text-gray-700">Strategy Awaiting Creation</h3>
-                    <p className="text-sm text-gray-500 leading-relaxed max-w-xs">
-                      {useSliderMode 
-                        ? "Adjust the preference sliders and click 'Generate Calibrated Hiring Strategy' to see Carmen's nuanced framework."
-                        : "Make your selections on the left and click 'Create Compassionate Hiring Strategy' to see Carmen's framework."
-                      }
-                    </p>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-          </div>
+            </summary>
+            <div className="mt-4">
+              <DynamicPromptBuilder
+                segments={promptSegments}
+                characterName="Carmen"
+                characterTheme="carmen"
+                showCopyButton={true}
+                autoUpdate={true}
+              />
+            </div>
+          </details>
+
+          {/* Generated Strategy - Prominent Display */}
+          {generatedStrategy && (
+            <Card className="border-2 border-green-200 bg-gradient-to-br from-green-50 to-purple-50">
+              <CardHeader className="pb-4">
+                <CardTitle className="flex items-center gap-2 text-xl">
+                  <TrendingUp className="w-6 h-6 text-green-600" />
+                  Your Compassionate Hiring Strategy
+                </CardTitle>
+                <p className="text-muted-foreground">Carmen's personalized framework for your organization</p>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-white p-6 rounded-lg border shadow-sm">
+                  <TemplateContentFormatter 
+                    content={generatedStrategy}
+                    contentType="lesson"
+                    variant="default"
+                    showMergeFieldTypes={true}
+                    className="formatted-ai-content prose prose-sm max-w-none"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
+      </div>
 
         {/* Completion Button */}
         {generatedStrategy && (
