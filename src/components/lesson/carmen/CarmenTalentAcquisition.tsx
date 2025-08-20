@@ -11,8 +11,8 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import VideoAnimation from '@/components/ui/VideoAnimation';
 import { getAnimationUrl, getCarmenManagementIconUrl } from '@/utils/supabaseIcons';
-import { VisualOptionGrid, OptionItem } from '@/components/ui/VisualOptionGrid';
-import { PreferenceSliderGrid, PreferenceSlider, SliderPreset } from '@/components/ui/interaction-patterns/PreferenceSliderGrid';
+import { CompactVisualOptionGrid, CompactOptionItem } from '@/components/ui/CompactVisualOptionGrid';
+import { CompactPreferenceSliders } from '@/components/ui/CompactPreferenceSliders';
 import { DynamicPromptBuilder, PromptSegment } from '@/components/ui/DynamicPromptBuilder';
 import { MicroLessonNavigator } from '@/components/navigation/MicroLessonNavigator';
 import NarrativeManager from '@/components/lesson/chat/lyra/maya/NarrativeManager';
@@ -48,7 +48,7 @@ const CarmenTalentAcquisition: React.FC = () => {
   const [promptSegments, setPromptSegments] = useState<PromptSegment[]>([]);
 
   // Role type options
-  const roleOptions: OptionItem[] = [
+  const roleOptions: CompactOptionItem[] = [
     { id: 'program-manager', label: 'Program Manager', description: 'Cross-functional project leadership', icon: 'talentManager', recommended: true },
     { id: 'software-engineer', label: 'Software Engineer', description: 'Technical development roles', icon: 'talentDeveloper' },
     { id: 'marketing-coordinator', label: 'Marketing Coordinator', description: 'Brand and campaign management', icon: 'talentMarketing' },
@@ -60,7 +60,7 @@ const CarmenTalentAcquisition: React.FC = () => {
   ];
 
   // Hiring challenge options
-  const challengeOptions: OptionItem[] = [
+  const challengeOptions: CompactOptionItem[] = [
     { id: 'long-time-to-hire', label: 'Long Time to Hire', description: 'Recruitment process takes too long', icon: 'talentClock', recommended: true },
     { id: 'poor-candidate-quality', label: 'Poor Candidate Quality', description: 'Applicants don\'t meet requirements', icon: 'talentFilter', recommended: true },
     { id: 'lack-diversity', label: 'Lack of Diversity', description: 'Not reaching diverse talent pools', icon: 'talentDiversity' },
@@ -72,7 +72,7 @@ const CarmenTalentAcquisition: React.FC = () => {
   ];
 
   // Hiring strategy options
-  const strategyOptions: OptionItem[] = [
+  const strategyOptions: CompactOptionItem[] = [
     { id: 'inclusive-job-descriptions', label: 'Inclusive Job Descriptions', description: 'Bias-free, welcoming language', icon: 'talentInclusive', recommended: true },
     { id: 'structured-interviews', label: 'Structured Interviews', description: 'Consistent evaluation framework', icon: 'talentStructured', recommended: true },
     { id: 'diverse-sourcing', label: 'Diverse Sourcing Channels', description: 'Reach underrepresented groups', icon: 'talentNetwork' },
@@ -84,7 +84,7 @@ const CarmenTalentAcquisition: React.FC = () => {
   ];
 
   // Hiring goal options
-  const goalOptions: OptionItem[] = [
+  const goalOptions: CompactOptionItem[] = [
     { id: 'faster-hiring', label: 'Faster Hiring Process', description: 'Reduce time-to-hire significantly', icon: 'talentSpeed', recommended: true },
     { id: 'better-quality', label: 'Higher Quality Candidates', description: 'Find better-qualified applicants', icon: 'talentQuality', recommended: true },
     { id: 'improve-diversity', label: 'Increase Diversity', description: 'Build more inclusive teams', icon: 'talentDiversity' },
@@ -96,7 +96,7 @@ const CarmenTalentAcquisition: React.FC = () => {
   ];
 
   // Define hiring preference sliders for nuanced calibration
-  const hiringPreferenceSliders: PreferenceSlider[] = [
+  const hiringPreferenceSliders = [
     {
       id: 'experience-vs-potential',
       label: 'Experience vs Potential',
@@ -109,7 +109,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'Proven Experience',
       maxLabel: 'High Potential',
       icon: <TrendingUp className="w-4 h-4" />,
-      category: 'Evaluation Criteria',
+      category: 'Core' as const,
       metadata: {
         priority: 'high',
         impact: 'high',
@@ -128,7 +128,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'Technical Skills',
       maxLabel: 'Culture Fit',
       icon: <Heart className="w-4 h-4" />,
-      category: 'Evaluation Criteria',
+      category: 'Core' as const,
       metadata: {
         priority: 'high',
         impact: 'high',
@@ -147,7 +147,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'Standard',
       maxLabel: 'Critical Priority',
       icon: <Users className="w-4 h-4" />,
-      category: 'Sourcing Strategy',
+      category: 'Sourcing' as const,
       color: 'accent-purple-600',
       metadata: {
         priority: 'high',
@@ -167,7 +167,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'Fast Hiring',
       maxLabel: 'Thorough Process',
       icon: <Clock className="w-4 h-4" />,
-      category: 'Process Design',
+      category: 'Core' as const,
       metadata: {
         priority: 'medium',
         impact: 'high',
@@ -186,7 +186,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'External Focus',
       maxLabel: 'Internal First',
       icon: <Building className="w-4 h-4" />,
-      category: 'Sourcing Strategy',
+      category: 'Sourcing' as const,
       metadata: {
         priority: 'medium',
         impact: 'medium',
@@ -205,7 +205,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'Budget Flexible',
       maxLabel: 'Cost Critical',
       icon: <Target className="w-4 h-4" />,
-      category: 'Budget Constraints',
+      category: 'Constraints' as const,
       inversed: true,
       metadata: {
         priority: 'medium',
@@ -225,7 +225,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'Reliable Performers',
       maxLabel: 'Innovation Focus',
       icon: <TrendingUp className="w-4 h-4" />,
-      category: 'Candidate Profile',
+      category: 'Core' as const,
       metadata: {
         priority: 'medium',
         impact: 'high',
@@ -244,7 +244,7 @@ const CarmenTalentAcquisition: React.FC = () => {
       minLabel: 'Office Required',
       maxLabel: 'Fully Remote OK',
       icon: <Users className="w-4 h-4" />,
-      category: 'Work Arrangement',
+      category: 'Sourcing' as const,
       metadata: {
         priority: 'medium',
         impact: 'medium',
@@ -254,7 +254,7 @@ const CarmenTalentAcquisition: React.FC = () => {
   ];
 
   // Predefined slider presets for common hiring scenarios
-  const sliderPresets: SliderPreset[] = [
+  const sliderPresets = [
     {
       id: 'startup-growth',
       name: 'Startup Growth Mode',
@@ -662,53 +662,53 @@ const CarmenTalentAcquisition: React.FC = () => {
       />
       
       <div className="max-w-6xl mx-auto pt-20">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-6">
+        {/* Compact Header */}
+        <div className="mb-4">
+          <div className="flex items-center justify-between mb-3">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Carmen's Compassionate Hiring Workshop</h1>
-              <p className="text-gray-600">Build AI-powered hiring strategies with human empathy</p>
+              <h1 className="text-xl font-bold text-gray-900 mb-1">Carmen's Compassionate Hiring Workshop</h1>
+              <p className="text-sm text-gray-600">Build AI-powered hiring strategies with human empathy</p>
             </div>
-            <Button className="nm-button nm-button-secondary" onClick={() => navigate('/chapter/7')} aria-label="Return to Chapter 7 main page">
+            <Button className="nm-button nm-button-secondary text-sm px-4 py-2" onClick={() => navigate('/chapter/7')} aria-label="Return to Chapter 7 main page">
               Back to Chapter 7
             </Button>
           </div>
-          <Progress value={66 + (currentStep / 5) * 34} className="h-3 mb-2" />
-          <p className="text-sm text-gray-500">Workshop Progress: {Math.round(66 + (currentStep / 5) * 34)}%</p>
+          <Progress value={66 + (currentStep / 5) * 34} className="h-2 mb-1" />
+          <p className="text-xs text-gray-500">Workshop Progress: {Math.round(66 + (currentStep / 5) * 34)}%</p>
         </div>
 
-        {/* Single Progressive Layout - No Tabs */}
-        <div className="space-y-8">
+        {/* Compact Progressive Layout */}
+        <div className="space-y-4">
           
-          {/* Mode Toggle - Prominent */}
+          {/* Compact Mode Toggle */}
           <Card className="border border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50">
-            <CardContent className="p-8">
-              <div className="text-center mb-4">
-                <h2 className="text-2xl font-bold text-gray-800 mb-3">Choose Your Approach</h2>
-                <p className="text-gray-600 text-base">Select how you'd like to build your hiring strategy</p>
+            <CardContent className="p-4">
+              <div className="text-center mb-3">
+                <h2 className="text-lg font-bold text-gray-800 mb-2">Choose Your Approach</h2>
+                <p className="text-gray-600 text-sm">Select how you'd like to build your hiring strategy</p>
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-xl mx-auto">
                 <Button
                   variant={!useSliderMode ? "default" : "outline"}
                   onClick={() => setUseSliderMode(false)}
-                  className="h-20 flex-col space-y-2 text-left p-4"
+                  className="h-16 flex-col space-y-1 text-left p-3"
                 >
                   <div className="flex items-center gap-2 font-medium">
-                    <Target className="w-5 h-5" />
+                    <Target className="w-4 h-4" />
                     Quick Selection
                   </div>
-                  <div className="text-xs text-muted-foreground">Choose from predefined options</div>
+                  <div className="text-xs text-muted-foreground">Predefined options</div>
                 </Button>
                 <Button
                   variant={useSliderMode ? "default" : "outline"}
                   onClick={() => setUseSliderMode(true)}
-                  className="h-20 flex-col space-y-2 text-left p-4"
+                  className="h-16 flex-col space-y-1 text-left p-3"
                 >
                   <div className="flex items-center gap-2 font-medium">
-                    <Sliders className="w-5 h-5" />
+                    <Sliders className="w-4 h-4" />
                     Custom Calibration
                   </div>
-                  <div className="text-xs text-muted-foreground">Fine-tune with preference sliders</div>
+                  <div className="text-xs text-muted-foreground">Custom calibration</div>
                 </Button>
               </div>
             </CardContent>
@@ -720,152 +720,76 @@ const CarmenTalentAcquisition: React.FC = () => {
           <div className="space-y-6">
             {useSliderMode ? (
               /* Preference Slider Mode - Better Spacing */
-              <Card>
-                <CardHeader className="pb-4">
-                  <CardTitle className="text-xl">Fine-Tune Your Hiring Preferences</CardTitle>
-                  <p className="text-muted-foreground">Calibrate your hiring approach with precision</p>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <PreferenceSliderGrid
-                    title=""
-                    description=""
-                    sliders={hiringPreferenceSliders}
-                    values={sliderValues}
-                    onValuesChange={setSliderValues}
-                    characterTheme="carmen"
-                    presets={sliderPresets}
-                    showRadarChart={false}
-                    showRealTimeUpdates={true}
-                    gridColumns={1}
-                    enableDependencies={true}
-                    enablePresets={true}
-                    enableExportImport={false}
-                    showValidation={true}
-                    compactMode={false}
-                    className=""
-                  />
-                </CardContent>
-              </Card>
+              <CompactPreferenceSliders
+                sliders={hiringPreferenceSliders}
+                values={sliderValues}
+                onValuesChange={setSliderValues}
+                presets={sliderPresets}
+              />
             ) : (
-              <div className="space-y-8">
-                {/* Role Types Selection - Better Spacing */}
-                <Card>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Users className="w-5 h-5 text-purple-600" />
-                      What roles are you hiring for?
-                    </CardTitle>
-                    <p className="text-muted-foreground text-sm">Select up to 3 role types</p>
-                  </CardHeader>
-                  <CardContent>
-                    <VisualOptionGrid
-                      title=""
-                      description=""
-                      options={roleOptions}
-                      selectedIds={selectedRoles}
-                      onSelectionChange={setSelectedRoles}
-                      multiSelect={true}
-                      maxSelections={3}
-                      gridCols={2}
-                      characterTheme="carmen"
-                    />
-                  </CardContent>
-                </Card>
+              <div className="space-y-3">
+                {/* Compact Role Types Selection */}
+                <CompactVisualOptionGrid
+                  title="What roles are you hiring for?"
+                  options={roleOptions}
+                  selectedIds={selectedRoles}
+                  onSelectionChange={setSelectedRoles}
+                  multiSelect={true}
+                  maxSelections={3}
+                />
 
-                {/* Hiring Challenges - Better Spacing */}
-                <Card>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Target className="w-5 h-5 text-red-600" />
-                      What hiring challenges do you face?
-                    </CardTitle>
-                    <p className="text-muted-foreground text-sm">Select up to 4 key challenges</p>
-                  </CardHeader>
-                  <CardContent>
-                    <VisualOptionGrid
-                      title=""
-                      description=""
-                      options={challengeOptions}
-                      selectedIds={selectedChallenges}
-                      onSelectionChange={setSelectedChallenges}
-                      multiSelect={true}
-                      maxSelections={4}
-                      gridCols={2}
-                      characterTheme="carmen"
-                    />
-                  </CardContent>
-                </Card>
+                {/* Compact Hiring Challenges */}
+                <CompactVisualOptionGrid
+                  title="What hiring challenges do you face?"
+                  options={challengeOptions}
+                  selectedIds={selectedChallenges}
+                  onSelectionChange={setSelectedChallenges}
+                  multiSelect={true}
+                  maxSelections={4}
+                />
 
-                {/* Hiring Strategies - Better Spacing */}
-                <Card>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <TrendingUp className="w-5 h-5 text-green-600" />
-                      Which strategies interest you most?
-                    </CardTitle>
-                    <p className="text-muted-foreground text-sm">Select up to 4 preferred strategies</p>
-                  </CardHeader>
-                  <CardContent>
-                    <VisualOptionGrid
-                      title=""
-                      description=""
-                      options={strategyOptions}
-                      selectedIds={selectedStrategies}
-                      onSelectionChange={setSelectedStrategies}
-                      multiSelect={true}
-                      maxSelections={4}
-                      gridCols={2}
-                      characterTheme="carmen"
-                    />
-                  </CardContent>
-                </Card>
+                {/* Compact Hiring Strategies */}
+                <CompactVisualOptionGrid
+                  title="Which strategies interest you most?"
+                  options={strategyOptions}
+                  selectedIds={selectedStrategies}
+                  onSelectionChange={setSelectedStrategies}
+                  multiSelect={true}
+                  maxSelections={4}
+                />
 
-                {/* Hiring Goals - Better Spacing */}
-                <Card>
-                  <CardHeader className="pb-4">
-                    <CardTitle className="text-lg flex items-center gap-2">
-                      <Heart className="w-5 h-5 text-pink-600" />
-                      What are your main hiring goals?
-                    </CardTitle>
-                    <p className="text-muted-foreground text-sm">Select up to 3 priority outcomes</p>
-                  </CardHeader>
-                  <CardContent>
-                    <VisualOptionGrid
-                      title=""
-                      description=""
-                      options={goalOptions}
-                      selectedIds={selectedGoals}
-                      onSelectionChange={setSelectedGoals}
-                      multiSelect={true}
-                      maxSelections={3}
-                      gridCols={2}
-                      characterTheme="carmen"
-                    />
-                  </CardContent>
-                </Card>
+                {/* Compact Hiring Goals */}
+                <CompactVisualOptionGrid
+                  title="What are your main hiring goals?"
+                  options={goalOptions}
+                  selectedIds={selectedGoals}
+                  onSelectionChange={setSelectedGoals}
+                  multiSelect={true}
+                  maxSelections={3}
+                />
               </div>
             )}
             
-            {/* Generate Button Section - Prominent */}
-            <Card className="border-2 border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50">
-              <CardContent className="p-8 text-center">
+            {/* Generate Button Section - Compact */}
+            <Card className="border border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50">
+              <CardContent className="p-4 text-center">
                 {useSliderMode ? (
                   <Button 
                     onClick={generateHiringStrategy}
                     disabled={Object.keys(sliderValues).length === 0 || isGenerating}
-                    size="lg"
-                    className="px-12 py-4 text-lg font-semibold nm-button nm-button-primary"
+                    size="default"
+                    className="px-8 py-3 text-base font-semibold nm-button nm-button-primary"
                     aria-label={isGenerating ? "Creating your nuanced hiring strategy" : "Generate hiring strategy based on preference calibration"}
                   >
                     {isGenerating ? (
                       <>
-                        <Heart className="w-6 h-6 mr-3 animate-pulse" aria-hidden="true" />
-                        <span aria-live="polite">Carmen is calibrating your strategy...</span>
+                        <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                        <span aria-live="polite">Carmen is calibrating...</span>
                       </>
                     ) : (
                       <>
-                        <Sliders className="w-6 h-6 mr-3" aria-hidden="true" />
-                        Generate Calibrated Hiring Strategy
+                        <Sliders className="w-5 h-5 mr-2" aria-hidden="true" />
+                        Generate Strategy
                       </>
                     )}
                   </Button>
@@ -873,27 +797,27 @@ const CarmenTalentAcquisition: React.FC = () => {
                   <Button 
                     onClick={generateHiringStrategy}
                     disabled={selectedRoles.length === 0 || selectedChallenges.length === 0 || selectedGoals.length === 0 || isGenerating}
-                    size="lg"
-                    className="px-12 py-4 text-lg font-semibold nm-button nm-button-primary"
+                    size="default"
+                    className="px-8 py-3 text-base font-semibold nm-button nm-button-primary"
                     aria-label={isGenerating ? "Creating your compassionate hiring strategy" : "Generate compassionate hiring strategy using AI-powered empathy and bias-free processes"}
                   >
                     {isGenerating ? (
                       <>
-                        <Heart className="w-6 h-6 mr-3 animate-pulse" aria-hidden="true" />
-                        <span aria-live="polite">Carmen is crafting your strategy...</span>
+                        <Heart className="w-5 h-5 mr-2 animate-pulse" aria-hidden="true" />
+                        <span aria-live="polite">Carmen is crafting...</span>
                       </>
                     ) : (
                       <>
-                        <Users className="w-6 h-6 mr-3" aria-hidden="true" />
-                        Create Compassionate Hiring Strategy
+                        <Users className="w-5 h-5 mr-2" aria-hidden="true" />
+                        Create Strategy
                       </>
                     )}
                   </Button>
                 )}
-                <p className="text-sm text-muted-foreground mt-4 max-w-md mx-auto">
+                <p className="text-xs text-muted-foreground mt-2 max-w-sm mx-auto">
                   {useSliderMode 
-                    ? "Carmen will create a nuanced hiring strategy based on your preference calibration"
-                    : "Carmen will create a personalized hiring strategy based on your selections"
+                    ? "Nuanced strategy based on your preferences"
+                    : "Personalized strategy from your selections"
                   }
                 </p>
               </CardContent>
