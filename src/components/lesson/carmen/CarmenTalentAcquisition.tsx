@@ -681,12 +681,9 @@ const CarmenTalentAcquisition: React.FC = () => {
         <div className="space-y-8">
           
           {/* Mode Toggle - Prominent */}
-          <Card className="border-2 border-green-400 bg-gradient-to-r from-green-50 via-purple-50 to-cyan-50">
+          <Card className="border border-purple-200 bg-gradient-to-r from-purple-50 to-cyan-50">
             <CardContent className="p-8">
               <div className="text-center mb-4">
-                <div className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium mb-3 inline-block">
-                  ✨ NEW IMPROVED INTERFACE ✨
-                </div>
                 <h2 className="text-2xl font-bold text-gray-800 mb-3">Choose Your Approach</h2>
                 <p className="text-gray-600 text-base">Select how you'd like to build your hiring strategy</p>
               </div>
