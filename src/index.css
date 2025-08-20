@@ -975,4 +975,23 @@ img[src=""] {
       inset 2px 2px 4px var(--nm-inset-dark),
       inset -2px -2px 4px var(--nm-inset-light);
   }
+
+  /* Additional shadow utilities for the redesigned strategy interface */
+  .shadow-neomorphic {
+    box-shadow: 
+      6px 6px 12px rgba(209, 213, 219, 0.6),
+      -6px -6px 12px rgba(255, 255, 255, 0.8);
+  }
+
+  .shadow-neomorphic-inset {
+    box-shadow: 
+      inset 4px 4px 8px rgba(209, 213, 219, 0.4),
+      inset -4px -4px 8px rgba(255, 255, 255, 0.9);
+  }
+
+  .shadow-neomorphic:hover {
+    box-shadow: 
+      8px 8px 16px rgba(209, 213, 219, 0.7),
+      -8px -8px 16px rgba(255, 255, 255, 0.9);
+  }
 }

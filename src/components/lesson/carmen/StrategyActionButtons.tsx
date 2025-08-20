@@ -122,44 +122,51 @@ export const StrategyActionButtons: React.FC<StrategyActionButtonsProps> = ({
   };
 
   return (
-    <div className="space-y-4">
-      {/* Primary Actions */}
-      <div className="flex flex-col sm:flex-row gap-3 justify-center items-center">
-        <div className="flex gap-2">
-          <Button 
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={copyStrategy}
-          >
-            <Copy className="w-4 h-4" />
-            Copy Strategy
-          </Button>
-          
-          <Button 
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={downloadStrategy}
-          >
-            <Download className="w-4 h-4" />
-            Download PDF
-          </Button>
-          
-          <Button 
-            variant="outline"
-            className="flex items-center gap-2"
-            onClick={shareStrategy}
-          >
-            <Share2 className="w-4 h-4" />
-            Share
-          </Button>
+    <div className="space-y-6">
+      {/* Primary Actions - Neomorphic Design */}
+      <div className="flex flex-col lg:flex-row gap-4 items-center justify-center">
+        {/* Consolidated Export Actions */}
+        <div className="relative group">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-100 to-green-100 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity" />
+          <div className="relative bg-gray-50 rounded-2xl p-3 shadow-neomorphic">
+            <div className="flex items-center gap-2">
+              <Button 
+                variant="outline"
+                className="flex items-center gap-2 shadow-neomorphic bg-white hover:shadow-neomorphic-inset transition-all duration-200"
+                onClick={copyStrategy}
+              >
+                <Copy className="w-4 h-4" />
+                Copy
+              </Button>
+              
+              <Button 
+                variant="outline"
+                className="flex items-center gap-2 shadow-neomorphic bg-white hover:shadow-neomorphic-inset transition-all duration-200"
+                onClick={downloadStrategy}
+              >
+                <Download className="w-4 h-4" />
+                Download
+              </Button>
+              
+              <Button 
+                variant="outline"
+                className="flex items-center gap-2 shadow-neomorphic bg-white hover:shadow-neomorphic-inset transition-all duration-200"
+                onClick={shareStrategy}
+              >
+                <Share2 className="w-4 h-4" />
+                Share
+              </Button>
+            </div>
+          </div>
         </div>
         
+        {/* Primary CTA */}
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-green-600/20 rounded-xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity" />
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600/30 to-green-600/30 rounded-2xl blur-xl opacity-60 group-hover:opacity-80 transition-opacity" />
           <Button 
             onClick={onComplete}
             size="lg"
-            className="relative text-white text-base px-8 py-3 font-semibold"
+            className="relative bg-gradient-to-r from-purple-600 to-green-600 hover:from-purple-700 hover:to-green-700 text-white text-base px-8 py-4 font-semibold rounded-xl shadow-neomorphic transition-all duration-300 hover:shadow-[0_8px_32px_rgba(124,58,237,0.4)]"
           >
             <Check className="w-5 h-5 mr-2" />
             Complete Workshop
@@ -167,50 +174,54 @@ export const StrategyActionButtons: React.FC<StrategyActionButtonsProps> = ({
         </div>
       </div>
 
-      {/* Secondary Actions */}
-      <div className="flex flex-wrap gap-2 justify-center">
-        <Button 
-          variant="ghost" 
-          size="sm"
-          className="flex items-center gap-1 text-xs"
+      {/* Secondary Actions Grid - Neomorphic Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-3xl mx-auto">
+        <NeomorphicActionCard
+          icon={<FileText className="w-5 h-5" />}
+          title="Templates"
+          description="Download all hiring templates"
           onClick={downloadTemplates}
-        >
-          <FileText className="w-3 h-3" />
-          Download Templates
-        </Button>
+          gradient="from-blue-500 to-blue-600"
+        />
         
-        <Button 
-          variant="ghost" 
-          size="sm"
-          className="flex items-center gap-1 text-xs"
+        <NeomorphicActionCard
+          icon={<Calendar className="w-5 h-5" />}
+          title="Schedule"
+          description="Set implementation reminders"
           onClick={scheduleFollowUp}
-        >
-          <Calendar className="w-3 h-3" />
-          Schedule Follow-up
-        </Button>
+          gradient="from-purple-500 to-purple-600"
+        />
         
-        <Button 
-          variant="ghost" 
-          size="sm"
-          className="flex items-center gap-1 text-xs"
+        <NeomorphicActionCard
+          icon={<BookOpen className="w-5 h-5" />}
+          title="Resources"
+          description="Access learning materials"
           onClick={() => window.open('https://lyra-ai.com/resources/hiring-guide', '_blank')}
-        >
-          <BookOpen className="w-3 h-3" />
-          View Resources
-        </Button>
+          gradient="from-green-500 to-green-600"
+        />
       </div>
 
-      {/* Implementation Hint */}
+      {/* Implementation Hint - Neomorphic */}
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        delay={1}
-        className="text-center bg-gradient-to-r from-blue-50 to-purple-50 p-3 rounded-lg border border-blue-200"
+        transition={{ delay: 0.8 }}
+        className="max-w-2xl mx-auto"
       >
-        <p className="text-sm text-gray-600">
-          💡 <strong>Pro Tip:</strong> Start with the "Immediate Action Items" and schedule your first audit for next week. 
-          Small steps lead to big improvements!
-        </p>
+        <div className="bg-gradient-to-r from-purple-50 via-white to-green-50 rounded-2xl p-6 shadow-neomorphic-inset border border-purple-100">
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-neomorphic flex-shrink-0">
+              💡
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-2">Ready to Transform Your Hiring?</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Start with the <strong className="text-purple-700">Immediate Action Items</strong> and schedule your first audit for next week. 
+                Carmen's framework works best when implemented step-by-step with consistent follow-through.
+              </p>
+            </div>
+          </div>
+        </div>
       </motion.div>
     </div>
   );
@@ -1245,3 +1256,26 @@ function generateCalendarUrl(event: any): string {
   
   return googleCalendarUrl.toString();
 }
+
+// Neomorphic Action Card Component
+const NeomorphicActionCard: React.FC<{
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  onClick: () => void;
+  gradient: string;
+}> = ({ icon, title, description, onClick, gradient }) => (
+  <button
+    onClick={onClick}
+    className="group relative w-full p-4 text-left transition-all duration-300 hover:scale-105"
+  >
+    <div className="absolute inset-0 bg-gradient-to-br from-gray-50 to-white rounded-xl shadow-neomorphic group-hover:shadow-neomorphic-inset transition-all duration-300" />
+    <div className="relative">
+      <div className={`w-10 h-10 bg-gradient-to-br ${gradient} rounded-lg flex items-center justify-center text-white shadow-neomorphic mb-3 group-hover:shadow-neomorphic-inset transition-all duration-300`}>
+        {icon}
+      </div>
+      <h3 className="font-semibold text-gray-900 mb-1">{title}</h3>
+      <p className="text-sm text-gray-600 leading-relaxed">{description}</p>
+    </div>
+  </button>
+);

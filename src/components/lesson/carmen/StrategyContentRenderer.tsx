@@ -18,14 +18,19 @@ import {
   BarChart3,
   Calendar,
   Settings,
-  Zap
+  Zap,
+  Star,
+  Briefcase,
+  Shield
 } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { TemplateContentFormatter } from '@/components/ui/TemplateContentFormatter';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface TabConfig {
   id: string;
@@ -118,56 +123,72 @@ export const StrategyContentRenderer: React.FC<StrategyContentRendererProps> = (
 
   return (
     <div className="space-y-6">
-      {/* Executive Summary */}
-      <StrategySection
-        title="Executive Summary"
-        icon={<TrendingUp className="w-5 h-5" />}
-        isExpanded={expandedSections.executive}
-        onToggle={() => toggleSection('executive')}
-        priority="high"
-      >
-        <div className="space-y-4">
-          <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-lg">
-            <h5 className="font-semibold text-gray-900 mb-2">Strategic Insights</h5>
+      {/* Executive Summary - Always Visible */}
+      <NeomorphicCard className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center shadow-neomorphic">
+            <TrendingUp className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Executive Summary</h2>
+            <p className="text-sm text-gray-600">Your AI-powered hiring strategy overview</p>
+          </div>
+        </div>
+        
+        <div className="space-y-6">
+          {/* Strategic Insights */}
+          <div className="bg-gradient-to-r from-purple-50 via-white to-green-50 p-4 rounded-xl border border-purple-100 shadow-neomorphic-inset">
+            <h3 className="font-semibold text-gray-900 mb-3 flex items-center gap-2">
+              <Star className="w-4 h-4 text-purple-600" />
+              Strategic Insights
+            </h3>
             <p className="text-sm text-gray-700 leading-relaxed">
               {parsedStrategy.executiveSummary}
             </p>
           </div>
           
+          {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <MetricCard 
+            <NeomorphicMetricCard 
               title="Roles Targeted"
               value={getSelectedRoles(selections, tabConfigs).length}
               subtitle="Position Types"
-              color="blue"
+              gradient="from-blue-500 to-blue-600"
+              icon={<Briefcase className="w-4 h-4" />}
             />
-            <MetricCard 
+            <NeomorphicMetricCard 
               title="Focus Areas"
               value={getTotalSelections(selections)}
               subtitle="Key Priorities"
-              color="green"
+              gradient="from-green-500 to-green-600"
+              icon={<Target className="w-4 h-4" />}
             />
-            <MetricCard 
+            <NeomorphicMetricCard 
               title="Timeline"
               value="4-6"
               subtitle="Weeks to Launch"
-              color="purple"
+              gradient="from-purple-500 to-purple-600"
+              icon={<Clock className="w-4 h-4" />}
             />
           </div>
         </div>
-      </StrategySection>
+      </NeomorphicCard>
 
-      {/* Action Items */}
-      <StrategySection
-        title="Immediate Action Items"
-        icon={<Target className="w-5 h-5" />}
-        isExpanded={expandedSections.actions}
-        onToggle={() => toggleSection('actions')}
-        priority="high"
-      >
-        <div className="space-y-4">
+      {/* Action Items - Always Visible */}
+      <NeomorphicCard className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-neomorphic">
+            <Target className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Immediate Action Items</h2>
+            <p className="text-sm text-gray-600">Your first steps to implementation</p>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {parsedStrategy.actionItems.map((item, index) => (
-            <ActionItem
+            <NeomorphicActionItem
               key={index}
               number={index + 1}
               title={item.title}
@@ -178,163 +199,99 @@ export const StrategyContentRenderer: React.FC<StrategyContentRendererProps> = (
             />
           ))}
         </div>
-      </StrategySection>
+      </NeomorphicCard>
 
-      {/* Implementation Timeline */}
-      <StrategySection
-        title="Implementation Roadmap"
-        icon={<Calendar className="w-5 h-5" />}
-        isExpanded={expandedSections.timeline}
-        onToggle={() => toggleSection('timeline')}
-        priority="medium"
-      >
-        <TimelineView phases={parsedStrategy.timeline} />
-      </StrategySection>
-
-      {/* Success Metrics */}
-      <StrategySection
-        title="Success Metrics & KPIs"
-        icon={<BarChart3 className="w-5 h-5" />}
-        isExpanded={expandedSections.metrics}
-        onToggle={() => toggleSection('metrics')}
-        priority="medium"
-      >
-        <MetricsGrid metrics={parsedStrategy.metrics} />
-      </StrategySection>
-
-      {/* Templates & Resources */}
-      <StrategySection
-        title="Templates & Resources"
-        icon={<FileText className="w-5 h-5" />}
-        isExpanded={expandedSections.resources}
-        onToggle={() => toggleSection('resources')}
-        priority="medium"
-      >
-        <ResourcesGrid 
-          resources={parsedStrategy.resources}
-          onDownload={downloadAsText}
-          onCopy={copyToClipboard}
-        />
-      </StrategySection>
-
-      {/* Common Pitfalls */}
-      <StrategySection
-        title="Common Pitfalls to Avoid"
-        icon={<AlertTriangle className="w-5 h-5" />}
-        isExpanded={expandedSections.pitfalls}
-        onToggle={() => toggleSection('pitfalls')}
-        priority="low"
-      >
-        <PitfallsList pitfalls={parsedStrategy.pitfalls} />
-      </StrategySection>
-
-      {/* Best Practices */}
-      <StrategySection
-        title="Industry Best Practices"
-        icon={<Lightbulb className="w-5 h-5" />}
-        isExpanded={expandedSections.practices}
-        onToggle={() => toggleSection('practices')}
-        priority="low"
-      >
-        <BestPracticesList practices={parsedStrategy.bestPractices} />
-      </StrategySection>
-
-      {/* AI-Generated Content (Fallback) */}
-      <StrategySection
-        title="Complete AI-Generated Strategy"
-        icon={<Zap className="w-5 h-5" />}
-        isExpanded={expandedSections.aiContent}
-        onToggle={() => toggleSection('aiContent')}
-        priority="low"
-      >
-        <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-lg">
-          <TemplateContentFormatter 
-            content={generatedStrategy}
-            contentType="lesson"
-            className="prose prose-sm max-w-none"
-          />
+      {/* Detailed Implementation - Tabbed */}
+      <NeomorphicCard className="p-6">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-neomorphic">
+            <BarChart3 className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">Implementation Details</h2>
+            <p className="text-sm text-gray-600">Timeline, metrics, and resources</p>
+          </div>
         </div>
-      </StrategySection>
+        
+        <Tabs defaultValue="timeline" className="w-full">
+          <TabsList className="grid w-full grid-cols-3 bg-gray-100/80 p-1 rounded-xl shadow-neomorphic-inset">
+            <TabsTrigger value="timeline" className="data-[state=active]:bg-white data-[state=active]:shadow-neomorphic rounded-lg">
+              <Calendar className="w-4 h-4 mr-2" />
+              Timeline
+            </TabsTrigger>
+            <TabsTrigger value="metrics" className="data-[state=active]:bg-white data-[state=active]:shadow-neomorphic rounded-lg">
+              <BarChart3 className="w-4 h-4 mr-2" />
+              Metrics
+            </TabsTrigger>
+            <TabsTrigger value="resources" className="data-[state=active]:bg-white data-[state=active]:shadow-neomorphic rounded-lg">
+              <FileText className="w-4 h-4 mr-2" />
+              Resources
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="timeline" className="mt-6">
+            <NeomorphicTimelineView phases={parsedStrategy.timeline} />
+          </TabsContent>
+          
+          <TabsContent value="metrics" className="mt-6">
+            <NeomorphicMetricsGrid metrics={parsedStrategy.metrics} />
+          </TabsContent>
+          
+          <TabsContent value="resources" className="mt-6">
+            <NeomorphicResourcesGrid 
+              resources={parsedStrategy.resources}
+              onDownload={downloadAsText}
+              onCopy={copyToClipboard}
+            />
+          </TabsContent>
+        </Tabs>
+      </NeomorphicCard>
     </div>
   );
 };
 
-// Supporting Components
+// Neomorphic Design Components
 
-const StrategySection: React.FC<{
-  title: string;
-  icon: React.ReactNode;
+const NeomorphicCard: React.FC<{
   children: React.ReactNode;
-  isExpanded: boolean;
-  onToggle: () => void;
-  priority: 'high' | 'medium' | 'low';
-}> = ({ title, icon, children, isExpanded, onToggle, priority }) => {
-  const priorityColors = {
-    high: 'border-red-200 bg-red-50',
-    medium: 'border-yellow-200 bg-yellow-50',
-    low: 'border-green-200 bg-green-50'
-  };
+  className?: string;
+}> = ({ children, className }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={cn(
+      "bg-gray-50 rounded-2xl border border-gray-200/50",
+      "shadow-[8px_8px_16px_#d1d9e6,-8px_-8px_16px_#ffffff]",
+      "hover:shadow-[12px_12px_24px_#d1d9e6,-12px_-12px_24px_#ffffff]",
+      "transition-all duration-300",
+      className
+    )}
+  >
+    {children}
+  </motion.div>
+);
 
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="border rounded-lg overflow-hidden bg-white shadow-sm"
-    >
-      <div 
-        className={`${priorityColors[priority]} border-b px-6 py-4 cursor-pointer hover:bg-opacity-80 transition-colors`}
-        onClick={onToggle}
-      >
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-white/80 flex items-center justify-center">
-              {icon}
-            </div>
-            <h3 className="font-bold text-lg text-gray-900">{title}</h3>
-            <Badge variant={priority === 'high' ? 'destructive' : priority === 'medium' ? 'default' : 'secondary'}>
-              {priority.toUpperCase()}
-            </Badge>
-          </div>
-          {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
-        </div>
-      </div>
-      
-      {isExpanded && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="p-6"
-        >
-          {children}
-        </motion.div>
-      )}
-    </motion.div>
-  );
-};
-
-const MetricCard: React.FC<{
+const NeomorphicMetricCard: React.FC<{
   title: string;
   value: string | number;
   subtitle: string;
-  color: 'blue' | 'green' | 'purple';
-}> = ({ title, value, subtitle, color }) => {
-  const colorClasses = {
-    blue: 'bg-blue-100 text-blue-800',
-    green: 'bg-green-100 text-green-800',
-    purple: 'bg-purple-100 text-purple-800'
-  };
-
-  return (
-    <div className={`${colorClasses[color]} p-4 rounded-lg text-center`}>
-      <div className="text-2xl font-bold mb-1">{value}</div>
-      <div className="text-sm font-medium mb-1">{title}</div>
-      <div className="text-xs opacity-75">{subtitle}</div>
+  gradient: string;
+  icon: React.ReactNode;
+}> = ({ title, value, subtitle, gradient, icon }) => (
+  <div className="relative group">
+    <div className="absolute inset-0 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl shadow-neomorphic-inset" />
+    <div className="relative p-4 text-center">
+      <div className={`w-8 h-8 mx-auto mb-3 rounded-lg bg-gradient-to-br ${gradient} flex items-center justify-center shadow-neomorphic`}>
+        <div className="text-white">{icon}</div>
+      </div>
+      <div className="text-2xl font-bold text-gray-900 mb-1">{value}</div>
+      <div className="text-sm font-medium text-gray-700 mb-1">{title}</div>
+      <div className="text-xs text-gray-500">{subtitle}</div>
     </div>
-  );
-};
+  </div>
+);
 
-const ActionItem: React.FC<{
+const NeomorphicActionItem: React.FC<{
   number: number;
   title: string;
   description: string;
@@ -342,37 +299,67 @@ const ActionItem: React.FC<{
   timeframe: string;
   owner: string;
 }> = ({ number, title, description, priority, timeframe, owner }) => (
-  <div className="border border-gray-200 rounded-lg p-4 bg-gradient-to-r from-gray-50 to-white">
-    <div className="flex items-start gap-4">
-      <div className="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
-        {number}
-      </div>
-      <div className="flex-1">
-        <h5 className="font-semibold text-gray-900 mb-1">{title}</h5>
-        <p className="text-sm text-gray-600 mb-3">{description}</p>
-        <div className="flex flex-wrap gap-2">
-          <Badge variant="secondary">{timeframe}</Badge>
-          <Badge variant={priority === 'high' ? 'destructive' : 'default'}>{priority}</Badge>
-          <Badge variant="outline">{owner}</Badge>
+  <div className="relative group">
+    <div className="absolute inset-0 bg-gradient-to-br from-white to-gray-50 rounded-xl shadow-neomorphic-inset" />
+    <div className="relative p-4">
+      <div className="flex items-start gap-4">
+        <div className={cn(
+          "w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0 shadow-neomorphic",
+          priority === 'high' ? 'bg-gradient-to-br from-red-500 to-red-600 text-white' :
+          priority === 'medium' ? 'bg-gradient-to-br from-yellow-500 to-yellow-600 text-white' :
+          'bg-gradient-to-br from-green-500 to-green-600 text-white'
+        )}>
+          {number}
+        </div>
+        <div className="flex-1">
+          <h5 className="font-semibold text-gray-900 mb-2">{title}</h5>
+          <p className="text-sm text-gray-600 mb-3 leading-relaxed">{description}</p>
+          <div className="flex flex-wrap gap-2">
+            <Badge 
+              variant="secondary" 
+              className="bg-gray-100 text-gray-700 shadow-neomorphic-inset text-xs"
+            >
+              {timeframe}
+            </Badge>
+            <Badge 
+              variant={priority === 'high' ? 'destructive' : 'default'}
+              className="shadow-neomorphic-inset text-xs"
+            >
+              {priority}
+            </Badge>
+            <Badge 
+              variant="outline"
+              className="shadow-neomorphic-inset text-xs"
+            >
+              {owner}
+            </Badge>
+          </div>
         </div>
       </div>
     </div>
   </div>
 );
 
-const TimelineView: React.FC<{ phases: any[] }> = ({ phases }) => (
+const NeomorphicTimelineView: React.FC<{ phases: any[] }> = ({ phases }) => (
   <div className="space-y-4">
     {phases.map((phase, index) => (
       <div key={index} className="flex items-start gap-4">
-        <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold flex-shrink-0">
-          {index + 1}
+        <div className="relative">
+          <div className="w-12 h-12 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 shadow-neomorphic">
+            {index + 1}
+          </div>
+          {index < phases.length - 1 && (
+            <div className="absolute top-12 left-1/2 transform -translate-x-1/2 w-0.5 h-8 bg-gradient-to-b from-purple-300 to-transparent" />
+          )}
         </div>
-        <div className="flex-1">
-          <h5 className="font-semibold text-gray-900">{phase.title}</h5>
-          <p className="text-sm text-gray-600 mb-2">{phase.description}</p>
-          <div className="flex items-center gap-2">
-            <Clock className="w-4 h-4 text-gray-400" />
-            <span className="text-sm text-gray-500">{phase.duration}</span>
+        <div className="flex-1 pb-8">
+          <div className="bg-white rounded-xl p-4 shadow-neomorphic-inset border border-gray-100">
+            <h5 className="font-semibold text-gray-900 mb-2">{phase.title}</h5>
+            <p className="text-sm text-gray-600 mb-3 leading-relaxed">{phase.description}</p>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-purple-500" />
+              <span className="text-sm text-purple-600 font-medium">{phase.duration}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -380,77 +367,62 @@ const TimelineView: React.FC<{ phases: any[] }> = ({ phases }) => (
   </div>
 );
 
-const MetricsGrid: React.FC<{ metrics: any[] }> = ({ metrics }) => (
+const NeomorphicMetricsGrid: React.FC<{ metrics: any[] }> = ({ metrics }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
     {metrics.map((metric, index) => (
-      <div key={index} className="border rounded-lg p-4 bg-gradient-to-br from-green-50 to-blue-50">
-        <h5 className="font-semibold text-gray-900 mb-2">{metric.name}</h5>
-        <div className="text-2xl font-bold text-blue-600 mb-1">{metric.target}</div>
-        <p className="text-sm text-gray-600">{metric.description}</p>
+      <div key={index} className="relative group">
+        <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-blue-50 rounded-xl shadow-neomorphic-inset" />
+        <div className="relative p-4">
+          <h5 className="font-semibold text-gray-900 mb-3">{metric.name}</h5>
+          <div className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-green-600 bg-clip-text text-transparent mb-2">
+            {metric.target}
+          </div>
+          <p className="text-sm text-gray-600 leading-relaxed">{metric.description}</p>
+        </div>
       </div>
     ))}
   </div>
 );
 
-const ResourcesGrid: React.FC<{
+const NeomorphicResourcesGrid: React.FC<{
   resources: any[];
   onDownload: (content: string, filename: string) => void;
   onCopy: (content: string, title: string) => void;
 }> = ({ resources, onDownload, onCopy }) => (
   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
     {resources.map((resource, index) => (
-      <div key={index} className="border rounded-lg p-4 bg-gradient-to-r from-yellow-50 to-orange-50">
-        <div className="flex items-start justify-between mb-3">
-          <div>
-            <h5 className="font-semibold text-gray-900">{resource.title}</h5>
-            <p className="text-sm text-gray-600">{resource.description}</p>
+      <div key={index} className="relative group">
+        <div className="absolute inset-0 bg-gradient-to-br from-yellow-50 to-orange-50 rounded-xl shadow-neomorphic-inset" />
+        <div className="relative p-4">
+          <div className="flex items-start justify-between mb-4">
+            <div className="flex-1">
+              <h5 className="font-semibold text-gray-900 mb-1">{resource.title}</h5>
+              <p className="text-sm text-gray-600 leading-relaxed">{resource.description}</p>
+            </div>
+            <div className="w-8 h-8 bg-gradient-to-br from-orange-400 to-orange-500 rounded-lg flex items-center justify-center shadow-neomorphic ml-3">
+              <FileText className="w-4 h-4 text-white" />
+            </div>
           </div>
-          <FileText className="w-5 h-5 text-gray-400 flex-shrink-0" />
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => onCopy(resource.content, resource.title)}
+              className="flex items-center gap-1 shadow-neomorphic bg-white hover:shadow-neomorphic-inset text-xs"
+            >
+              <Copy className="w-3 h-3" />
+              Copy
+            </Button>
+            <Button
+              size="sm"
+              onClick={() => onDownload(resource.content, `${resource.title.toLowerCase().replace(/\s+/g, '-')}.txt`)}
+              className="flex items-center gap-1 shadow-neomorphic text-xs"
+            >
+              <Download className="w-3 h-3" />
+              Download
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={() => onCopy(resource.content, resource.title)}
-            className="flex items-center gap-1"
-          >
-            <Copy className="w-3 h-3" />
-            Copy
-          </Button>
-          <Button
-            size="sm"
-            onClick={() => onDownload(resource.content, `${resource.title.toLowerCase().replace(/\s+/g, '-')}.txt`)}
-            className="flex items-center gap-1"
-          >
-            <Download className="w-3 h-3" />
-            Download
-          </Button>
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const PitfallsList: React.FC<{ pitfalls: any[] }> = ({ pitfalls }) => (
-  <div className="space-y-3">
-    {pitfalls.map((pitfall, index) => (
-      <div key={index} className="border-l-4 border-red-300 bg-red-50 p-4 rounded-r-lg">
-        <h5 className="font-semibold text-red-900 mb-1">{pitfall.title}</h5>
-        <p className="text-sm text-red-700 mb-2">{pitfall.description}</p>
-        <div className="text-xs text-red-600 font-medium">
-          Prevention: {pitfall.prevention}
-        </div>
-      </div>
-    ))}
-  </div>
-);
-
-const BestPracticesList: React.FC<{ practices: any[] }> = ({ practices }) => (
-  <div className="space-y-3">
-    {practices.map((practice, index) => (
-      <div key={index} className="border-l-4 border-green-300 bg-green-50 p-4 rounded-r-lg">
-        <h5 className="font-semibold text-green-900 mb-1">{practice.title}</h5>
-        <p className="text-sm text-green-700">{practice.description}</p>
       </div>
     ))}
   </div>
