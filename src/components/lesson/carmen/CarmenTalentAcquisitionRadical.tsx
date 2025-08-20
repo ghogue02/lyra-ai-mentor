@@ -252,11 +252,12 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
       className="min-h-screen bg-gradient-to-br from-purple-50 via-white to-cyan-50 flex items-center justify-center p-4"
     >
       <div className="max-w-4xl mx-auto text-center">
-        <div className="w-16 h-16 mx-auto mb-6">
+        {/* Carmen Avatar */}
+        <div className="w-20 h-20 mx-auto mb-6">
           <VideoAnimation
             src={getAnimationUrl('carmen-hiring-prep.mp4')}
-            fallbackIcon={<div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
-              <img src={getCarmenManagementIconUrl('teamMedium')} alt="Talent" className="w-8 h-8" />
+            fallbackIcon={<div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center">
+              <img src={getCarmenManagementIconUrl('teamMedium')} alt="Talent" className="w-10 h-10" />
             </div>}
             className="w-full h-full rounded-full"
             context="character"
@@ -264,29 +265,54 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
           />
         </div>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-3">
+        {/* Title */}
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
           Carmen's Compassionate Hiring
         </h1>
-        <p className="text-lg text-gray-600 mb-8">
+        <p className="text-xl text-gray-600 mb-8">
           Transform talent acquisition through AI-powered empathy and bias-free processes
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-3 items-center justify-center">
+        {/* 3-Step Journey Preview */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mb-8 mx-auto">
+          {[
+            { title: 'Hiring Struggles', desc: 'Carmen\'s bias and inefficiency challenges', color: 'from-red-500/10 to-red-500/5', icon: '😤' },
+            { title: 'AI-Empathy Framework', desc: 'Learn compassionate hiring system', color: 'from-purple-500/10 to-purple-500/5', icon: '🤖❤️' },
+            { title: 'Team Transformation', desc: 'Witness diverse team success', color: 'from-green-500/10 to-green-500/5', icon: '🌟' }
+          ].map((item, index) => (
+            <div key={index} className="relative group">
+              <div className={`absolute inset-0 bg-gradient-to-br ${item.color} rounded-2xl blur-xl opacity-50 group-hover:opacity-70 transition-opacity duration-300`} />
+              <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-gray-100 p-6">
+                <div className="text-2xl mb-3">{item.icon}</div>
+                <Badge variant="secondary" className="mb-3">{index + 1}</Badge>
+                <h3 className="font-bold text-lg mb-2 text-gray-900">{item.title}</h3>
+                <p className="text-sm text-gray-600">{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Navigation and Begin Buttons */}
+        <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
           <Button 
             onClick={() => navigate('/chapter/7')}
             variant="outline"
-            className="px-4 py-2"
+            className="px-6 py-3"
           >
             Back to Chapter 7
           </Button>
           
-          <Button 
-            onClick={() => setCurrentPhase('narrative')}
-            className="px-6 py-3 text-white"
-          >
-            <Play className="w-4 h-4 mr-2" />
-            Begin Journey
-          </Button>
+          <div className="relative group">
+            <div className="absolute inset-0 bg-gradient-to-r from-purple-600/20 to-cyan-600/20 rounded-2xl blur-lg opacity-50 group-hover:opacity-70 transition-opacity duration-300" />
+            <Button 
+              onClick={() => setCurrentPhase('narrative')}
+              size="lg"
+              className="relative text-white text-lg px-8 py-4 font-semibold"
+            >
+              <Play className="w-5 h-5 mr-2" />
+              Begin Hiring Journey
+            </Button>
+          </div>
         </div>
       </div>
     </motion.div>
@@ -370,31 +396,60 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
           
           {/* Setup Step */}
           {workshopStep === 'setup' && (
-            <div className="max-w-lg mx-auto text-center">
-              <h2 className="text-xl font-bold mb-3">Choose Your Approach</h2>
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <Button
-                  variant={!useSliderMode ? "default" : "outline"}
-                  onClick={() => {
-                    setUseSliderMode(false);
-                    setWorkshopStep('configure');
-                  }}
-                  className="h-16 flex-col gap-1 p-3"
-                >
-                  <Target className="w-4 h-4" />
-                  <span className="text-sm font-medium">Quick Selection</span>
-                </Button>
-                <Button
-                  variant={useSliderMode ? "default" : "outline"}
-                  onClick={() => {
-                    setUseSliderMode(true);
-                    setWorkshopStep('configure');
-                  }}
-                  className="h-16 flex-col gap-1 p-3"
-                >
-                  <Sliders className="w-4 h-4" />
-                  <span className="text-sm font-medium">Custom Calibration</span>
-                </Button>
+            <div className="max-w-2xl mx-auto">
+              <div className="text-center mb-6">
+                <h2 className="text-2xl font-bold text-gray-900 mb-3">Choose Your Approach</h2>
+                <p className="text-gray-600">Select how you'd like to build your compassionate hiring strategy</p>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-blue-500/5 rounded-xl opacity-50 group-hover:opacity-70 transition-opacity" />
+                  <Button
+                    variant={!useSliderMode ? "default" : "outline"}
+                    onClick={() => {
+                      setUseSliderMode(false);
+                      setWorkshopStep('configure');
+                    }}
+                    className="relative w-full h-24 flex-col gap-2 p-4 text-left"
+                  >
+                    <Target className="w-6 h-6" />
+                    <div>
+                      <div className="font-bold text-base">Quick Selection</div>
+                      <div className="text-sm opacity-75">Choose from predefined options</div>
+                    </div>
+                  </Button>
+                </div>
+                
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 to-purple-500/5 rounded-xl opacity-50 group-hover:opacity-70 transition-opacity" />
+                  <Button
+                    variant={useSliderMode ? "default" : "outline"}
+                    onClick={() => {
+                      setUseSliderMode(true);
+                      setWorkshopStep('configure');
+                    }}
+                    className="relative w-full h-24 flex-col gap-2 p-4 text-left"
+                  >
+                    <Sliders className="w-6 h-6" />
+                    <div>
+                      <div className="font-bold text-base">Custom Calibration</div>
+                      <div className="text-sm opacity-75">Fine-tune with preference sliders</div>
+                    </div>
+                  </Button>
+                </div>
+              </div>
+
+              {/* Benefits Preview */}
+              <div className="bg-purple-50 rounded-lg p-4 text-center">
+                <h3 className="font-semibold text-purple-800 mb-2">What You'll Build:</h3>
+                <div className="flex flex-wrap justify-center gap-2 text-sm">
+                  <Badge variant="secondary">Inclusive Job Descriptions</Badge>
+                  <Badge variant="secondary">Bias-Free Screening</Badge>
+                  <Badge variant="secondary">Empathetic Interviews</Badge>
+                  <Badge variant="secondary">Holistic Evaluation</Badge>
+                  <Badge variant="secondary">Exceptional Experience</Badge>
+                </div>
               </div>
             </div>
           )}
@@ -429,43 +484,76 @@ const CarmenTalentAcquisitionRadical: React.FC = () => {
               </div>
 
               {/* Active Tab Content */}
-              <div className="bg-white rounded-lg border p-4 min-h-[200px] max-h-[300px]">
+              <div className="bg-white rounded-lg border-2 border-gray-100 p-6 min-h-[280px] max-h-[350px] shadow-sm">
                 {tabConfigs[activeTab] && (
                   <div>
-                    <div className="flex items-center justify-between mb-3">
-                      <h3 className="font-semibold">
-                        Select {tabConfigs[activeTab].label}
-                      </h3>
-                      <span className="text-xs text-gray-500">
-                        {getCurrentTabSelections().length}/{tabConfigs[activeTab].maxSelections}
-                      </span>
+                    <div className="flex items-center justify-between mb-4">
+                      <div className="flex items-center gap-2">
+                        {tabConfigs[activeTab].icon}
+                        <h3 className="font-bold text-lg text-gray-900">
+                          Select {tabConfigs[activeTab].label}
+                        </h3>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm text-gray-500">
+                          {getCurrentTabSelections().length}/{tabConfigs[activeTab].maxSelections}
+                        </span>
+                        <div className="w-8 h-2 bg-gray-200 rounded-full overflow-hidden">
+                          <div 
+                            className="h-full bg-purple-500 rounded-full transition-all duration-300"
+                            style={{ width: `${(getCurrentTabSelections().length / tabConfigs[activeTab].maxSelections) * 100}%` }}
+                          />
+                        </div>
+                      </div>
                     </div>
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                       {tabConfigs[activeTab].options.map((option) => {
                         const isSelected = getCurrentTabSelections().includes(option.id);
                         const isDisabled = !isSelected && getCurrentTabSelections().length >= tabConfigs[activeTab].maxSelections;
                         
                         return (
-                          <button
-                            key={option.id}
-                            onClick={() => handleTabSelection(tabConfigs[activeTab].id, option.id)}
-                            disabled={isDisabled}
-                            className={cn(
-                              "p-3 text-left text-sm rounded-lg border-2 transition-all",
-                              isSelected 
-                                ? "border-purple-400 bg-purple-50 text-purple-900" 
-                                : "border-gray-200 bg-white hover:border-gray-300",
-                              isDisabled && "opacity-50 cursor-not-allowed"
-                            )}
-                          >
-                            <div className="flex items-center gap-2">
-                              {isSelected && <Check className="w-3 h-3 text-purple-600" />}
-                              <span className="font-medium">{option.label}</span>
-                            </div>
-                          </button>
+                          <div key={option.id} className="relative">
+                            <button
+                              onClick={() => handleTabSelection(tabConfigs[activeTab].id, option.id)}
+                              disabled={isDisabled}
+                              className={cn(
+                                "w-full p-4 text-left text-sm rounded-xl border-2 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]",
+                                isSelected 
+                                  ? "border-purple-400 bg-gradient-to-br from-purple-50 to-purple-100 text-purple-900 shadow-md" 
+                                  : "border-gray-200 bg-white hover:border-gray-300 hover:bg-gray-50",
+                                isDisabled && "opacity-50 cursor-not-allowed hover:scale-100"
+                              )}
+                            >
+                              <div className="flex items-start gap-3">
+                                <div className={cn(
+                                  "flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all",
+                                  isSelected 
+                                    ? "border-purple-500 bg-purple-500" 
+                                    : "border-gray-300"
+                                )}>
+                                  {isSelected && <Check className="w-3 h-3 text-white" />}
+                                </div>
+                                <div className="flex-1">
+                                  <div className="font-semibold text-base leading-tight mb-1">
+                                    {option.label}
+                                  </div>
+                                </div>
+                              </div>
+                            </button>
+                          </div>
                         );
                       })}
                     </div>
+
+                    {/* Selection Helper Text */}
+                    {getCurrentTabSelections().length === 0 && (
+                      <div className="text-center mt-6 p-4 bg-gray-50 rounded-lg">
+                        <p className="text-sm text-gray-600">
+                          👆 Select up to {tabConfigs[activeTab].maxSelections} {tabConfigs[activeTab].label.toLowerCase()} to continue
+                        </p>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
