@@ -1,9 +1,7 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChapterHubLayout } from '@/components/chapter/ChapterHubLayout';
+import { EnhancedChapterHub } from '@/components/chapter/EnhancedChapterHub';
 
 const Chapter7Hub: React.FC = () => {
-  const navigate = useNavigate();
   const microLessons = [
     {
       id: 'talent-acquisition',
@@ -14,10 +12,7 @@ const Chapter7Hub: React.FC = () => {
       difficulty: 'Beginner' as const,
       completed: false,
       unlocked: true,
-      progress: 0,
-      category: 'recruitment',
-      tags: ['hiring', 'screening', 'AI-powered'],
-      estimatedTime: '15-20 min'
+      progress: 0
     },
     {
       id: 'performance-insights',
@@ -28,10 +23,7 @@ const Chapter7Hub: React.FC = () => {
       difficulty: 'Beginner' as const,
       completed: false,
       unlocked: true,
-      progress: 0,
-      category: 'workshop',
-      tags: ['performance', 'analytics', 'development'],
-      estimatedTime: '20-25 min'
+      progress: 0
     },
     {
       id: 'engagement-builder',
@@ -42,10 +34,7 @@ const Chapter7Hub: React.FC = () => {
       difficulty: 'Intermediate' as const,
       completed: false,
       unlocked: true,
-      progress: 0,
-      category: 'lab',
-      tags: ['engagement', 'personalization', 'analytics'],
-      estimatedTime: '25-30 min'
+      progress: 0
     },
     {
       id: 'retention-mastery',
@@ -56,10 +45,7 @@ const Chapter7Hub: React.FC = () => {
       difficulty: 'Advanced' as const,
       completed: false,
       unlocked: true,
-      progress: 0,
-      category: 'mastery',
-      tags: ['retention', 'strategy', 'human-centered'],
-      estimatedTime: '30-35 min'
+      progress: 0
     },
     {
       id: 'team-dynamics',
@@ -70,10 +56,7 @@ const Chapter7Hub: React.FC = () => {
       difficulty: 'Intermediate' as const,
       completed: false,
       unlocked: true,
-      progress: 0,
-      category: 'optimization',
-      tags: ['teamwork', 'collaboration', 'dynamics'],
-      estimatedTime: '20-25 min'
+      progress: 0
     },
     {
       id: 'cultural-intelligence',
@@ -84,10 +67,7 @@ const Chapter7Hub: React.FC = () => {
       difficulty: 'Advanced' as const,
       completed: false,
       unlocked: true,
-      progress: 0,
-      category: 'culture',
-      tags: ['diversity', 'inclusion', 'cultural-awareness'],
-      estimatedTime: '30-35 min'
+      progress: 0
     },
     {
       id: 'leadership-development',
@@ -98,28 +78,20 @@ const Chapter7Hub: React.FC = () => {
       difficulty: 'Advanced' as const,
       completed: false,
       unlocked: true,
-      progress: 0,
-      category: 'development',
-      tags: ['leadership', 'coaching', 'development'],
-      estimatedTime: '35-40 min'
+      progress: 0
     }
   ];
 
-  const handleLessonSelect = (lesson: any) => {
-    navigate(lesson.route);
-  };
-
-  const completedCount = microLessons.filter(lesson => lesson.completed).length;
-
   return (
-    <ChapterHubLayout
+    <EnhancedChapterHub
+      chapterNumber={7}
       title="Carmen's AI-Powered People Management"
       description="Join Carmen Rodriguez as she revolutionizes HR practices by blending AI efficiency with human empathy. Learn to transform recruitment, performance management, and employee engagement while ensuring every person feels valued and heard."
       characterName="Carmen"
+      characterType="carmen"
+      bgGradient="from-orange-50 via-white to-amber-50"
       microLessons={microLessons}
-      onLessonSelect={handleLessonSelect}
-      completedCount={completedCount}
-      totalCount={microLessons.length}
+      completionRoute="/chapter/7/interactive/people-management-completion"
     />
   );
 };
